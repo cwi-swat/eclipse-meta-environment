@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>nl.cwi.sen.metastudio</name>
+	<name>meta-eclipse</name>
 	<comment></comment>
 	<projects>
-		<project>JJTraveler</project>
-		<project>aterm-java</project>
-		<project>java-adapter</project>
-		<project>shared-objects</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

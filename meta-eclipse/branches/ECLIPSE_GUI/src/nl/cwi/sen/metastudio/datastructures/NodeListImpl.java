@@ -1,7 +1,7 @@
 package nl.cwi.sen.metastudio.datastructures;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 abstract public class NodeListImpl extends DatastructuresConstructor
 {

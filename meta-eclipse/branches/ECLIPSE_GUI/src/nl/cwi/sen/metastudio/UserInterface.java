@@ -5,6 +5,14 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
+import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
+import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
+import nl.cwi.sen.metastudio.datastructures.ActionList;
+import nl.cwi.sen.metastudio.datastructures.DatastructuresFactory;
+import nl.cwi.sen.metastudio.editor.MetaEditor;
+import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
+import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -20,13 +28,6 @@ import org.eclipse.ui.PlatformUI;
 import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermList;
-import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
-import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
-import nl.cwi.sen.metastudio.datastructures.ActionList;
-import nl.cwi.sen.metastudio.datastructures.DatastructuresFactory;
-import nl.cwi.sen.metastudio.editor.MetaEditor;
-import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
-import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;

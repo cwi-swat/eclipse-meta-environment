@@ -5,7 +5,8 @@ package nl.cwi.sen.metastudio.bridge;
 // generation time: Aug 1, 2003 3:02:51 PM
 
 
-import aterm.*;
+import aterm.ATerm;
+import aterm.ATermFactory;
 
 public class UserEnvironmentBridge
   extends UserEnvironmentTool

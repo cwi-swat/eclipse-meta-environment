@@ -7,7 +7,7 @@
 package nl.cwi.sen.metastudio.moduleview;
 
 
-import nl.cwi.sen.metastudio.model.*;
+import nl.cwi.sen.metastudio.model.ModuleInfoElement;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;

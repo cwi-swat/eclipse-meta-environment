@@ -7,6 +7,8 @@
 package nl.cwi.sen.metastudio.editor;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
+import nl.cwi.sen.metastudio.datastructures.Event_Menu;
+import nl.cwi.sen.metastudio.datastructures.Menu;
 
 import org.eclipse.jface.action.Action;
 
@@ -19,18 +21,17 @@ import aterm.ATerm;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class MetaEditorAction extends Action {
-	private ATerm _menuEvent;
+	private Menu _menuEvent;
 	private ATerm _editorId;
 	
-	MetaEditorAction (ATerm editorId, ATerm menuEvent, String label) {
+	MetaEditorAction (ATerm editorId, Menu menuEvent) {
 		_menuEvent = menuEvent;
 		_editorId = editorId;
-		setText(label);
-		System.out.println("Added menuEvent: " + menuEvent);
+		setText(menuEvent.getSub());
 	}
 	
 	public void run() {
 		MetastudioConnection connection = new MetastudioConnection();
-		connection.getBridge().postEvent(connection.getFactory().make("menu-event(<term>,<term>)", _editorId, _menuEvent));
+		Event_Menu event = new Event_Menu();
 	}
 }

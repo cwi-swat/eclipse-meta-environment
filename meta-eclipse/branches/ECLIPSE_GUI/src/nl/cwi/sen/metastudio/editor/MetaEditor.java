@@ -2,14 +2,18 @@ package nl.cwi.sen.metastudio.editor;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.datastructures.ActionList;
+import nl.cwi.sen.metastudio.datastructures.Menu;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.editors.text.TextEditor;
 
 import aterm.ATerm;
@@ -103,25 +107,23 @@ public class MetaEditor extends TextEditor {
 	}
 
 	public void addActions(ATerm editorId, ActionList actionList) {
-		System.out.println("Received actions: " + actionList);
-//		IMenuManager parentMenu = getEditorSite().getActionBars().getMenuManager();
-//		IMenuManager newMenu = new MenuManager();
-
-//		String strListArg0, strListArg1, strMenu = "";
-//		IMenuManager parentMenu = getEditorSite().getActionBars().getMenuManager();
-//		IMenuManager newMenu = new MenuManager();
-//		for (int i = 0; i < actions.getChildCount(); i++) {
-//			strListArg0 = ((ATermAppl)actions.getChildAt(i).getChildAt(0)).getName();
-//			if (strMenu.equals(strListArg0) == false) {
-//				strMenu = strListArg0;
-//				newMenu = new MenuManager(strListArg0);
-//				// TODO insertBefore, prependToGroup or insertAfter? 
-//				parentMenu.insertBefore(IWorkbenchActionConstants.MB_ADDITIONS, newMenu);
-//				parentMenu.update(true);
-//			}
-//			strListArg1 = ((ATermAppl)actions.getChildAt(i).getChildAt(1)).getName();
-//			newMenu.add(new MetaEditorAction(editorId, actions.elementAt(i), strListArg1));
-//			newMenu.update(true);
-//		}
+		String menuLabel = "";
+		IMenuManager parentMenu = getEditorSite().getActionBars().getMenuManager();
+		IMenuManager newMenu = new MenuManager();
+		
+		while (actionList.isEmpty() == false) {
+			Menu menu = actionList.getHead();
+			actionList = actionList.getTail();			
+			
+			if (menuLabel.equals(menu.getMain()) == false) {
+				menuLabel = menu.getMain();
+				newMenu = new MenuManager(menuLabel);
+				// TODO insertBefore, prependToGroup or insertAfter? 
+				parentMenu.insertBefore(IWorkbenchActionConstants.MB_ADDITIONS, newMenu);
+				parentMenu.update(true);
+			}
+			newMenu.add(new MetaEditorAction(editorId, menu));
+			newMenu.update(true);
+		}
 	}
 }

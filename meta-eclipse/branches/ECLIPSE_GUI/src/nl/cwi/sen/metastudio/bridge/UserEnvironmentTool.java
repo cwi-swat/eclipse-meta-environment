@@ -5,9 +5,15 @@ package nl.cwi.sen.metastudio.bridge;
 // generation time: Aug 1, 2003 3:02:51 PM
 
 
-import aterm.*;
-import toolbus.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import toolbus.AbstractTool;
+import aterm.ATerm;
+import aterm.ATermAppl;
+import aterm.ATermFactory;
+import aterm.ATermList;
 
 abstract public class UserEnvironmentTool
   extends AbstractTool

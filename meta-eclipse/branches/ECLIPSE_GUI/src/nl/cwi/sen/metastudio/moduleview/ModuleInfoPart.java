@@ -5,9 +5,9 @@ import java.util.List;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.UserInterface;
+import nl.cwi.sen.metastudio.model.Module;
 import nl.cwi.sen.metastudio.model.ModuleInfo;
 import nl.cwi.sen.metastudio.model.ModuleInfoElement;
-import nl.cwi.sen.metastudio.model.Module;
 
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;

@@ -9,9 +9,9 @@ package nl.cwi.sen.metastudio.moduleview;
 import java.util.Iterator;
 
 import nl.cwi.sen.metastudio.model.DeltaEvent;
+import nl.cwi.sen.metastudio.model.Directory;
 import nl.cwi.sen.metastudio.model.IModelListener;
 import nl.cwi.sen.metastudio.model.Model;
-import nl.cwi.sen.metastudio.model.Directory;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
