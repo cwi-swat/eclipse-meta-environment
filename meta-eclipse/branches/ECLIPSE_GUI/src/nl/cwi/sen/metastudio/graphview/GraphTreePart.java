@@ -24,19 +24,13 @@ public class GraphTreePart extends ViewPart {
 	private static Graph graph;
 	private static Canvas canvas;
 	private static GraphLibrary graphLibrary;
-
-	private static final int ARROWHEAD_LENGTH = 15;
-	private static final int ARROWHEAD_SHARPNESS = 15;
+	private static Image image;
 
 	private int ix = 0, iy = 0;
 
 	public void createPartControl(Composite parent) {
-		graphLibrary = new GraphLibrary();
-		
 		canvas = new Canvas(parent, SWT.NONE | SWT.H_SCROLL | SWT.V_SCROLL);
 
-		//		GridData gridData = new GridData(GridData.FILL_BOTH);
-		//		canvas.setLayoutData(gridData);
 		canvas.addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent event) {
 				doPaint(event);
@@ -158,15 +152,8 @@ public class GraphTreePart extends ViewPart {
 		GC gc = event.gc;
 
 		if (graph != null) {
-			int width = graph.getBoundingBox().getSecond().getX();
-			int height = graph.getBoundingBox().getSecond().getY();
-			Image image = new Image(null, width, height);
-			GC bufferedGC = new GC(image);
-
-			bufferedGC.setBackground(new Color(null, 0, 0, 0));
-
-			graphLibrary.paintEdges(bufferedGC, graph);
-			graphLibrary.paintNodes(bufferedGC, graph);
+			graphLibrary.paintEdges(graph);
+			graphLibrary.paintNodes(graph);
 
 			gc.drawImage(image, ix, iy);
 		}
@@ -175,6 +162,13 @@ public class GraphTreePart extends ViewPart {
 	static public void setGraph(ATerm graphTerm) {
 		MetastudioConnection connection = UserInterface.getConnection();
 		graph = connection.getMetaGraphFactory().GraphFromTerm(graphTerm);
+
+		int width = graph.getBoundingBox().getSecond().getX();
+		int height = graph.getBoundingBox().getSecond().getY();
+		image = new Image(null, width, height);
+		GC bufferedGC = new GC(image);
+		graphLibrary = new GraphLibrary(bufferedGC);
+
 		canvas.redraw();
 	}
 

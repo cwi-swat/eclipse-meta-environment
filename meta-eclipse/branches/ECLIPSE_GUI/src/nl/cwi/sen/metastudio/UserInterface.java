@@ -1,13 +1,9 @@
 package nl.cwi.sen.metastudio;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 
 import metastudio.graph.Graph;
 import metastudio.graph.MetaGraphFactory;

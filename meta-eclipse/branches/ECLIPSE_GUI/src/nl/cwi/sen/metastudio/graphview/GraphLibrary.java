@@ -16,6 +16,8 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 
 public class GraphLibrary {
+	private GC gc;
+	
 	private final int ARROWHEAD_LENGTH = 15;
 	private final int ARROWHEAD_SHARPNESS = 15;
 
@@ -36,7 +38,15 @@ public class GraphLibrary {
 	private Node hoveredNode;
 	private Node selectedNode;
 
-	public GraphLibrary() {
+	public GraphLibrary(GC gc) {
+		this.gc = gc;
+
+		setupColors();
+
+		gc.setBackground(background);
+	}
+
+	private void setupColors() {
 		background = new Color(null, 0, 0, 0);
 
 		nodeBG = new Color(null, 255, 255, 221);
@@ -52,18 +62,18 @@ public class GraphLibrary {
 		nodeBorderSelected = new Color(null, 255, 0, 0);
 	}
 
-	public void paintEdges(GC gc, Graph graph) {
+	public void paintEdges(Graph graph) {
 		EdgeList edges = graph.getEdges();
 
 		while (!edges.isEmpty()) {
 			Edge edge = edges.getHead();
 			edges = edges.getTail();
 
-			paintEdge(gc, edge);
+			paintEdge(edge);
 		}
 	}
 
-	private void paintEdge(GC gc, Edge edge) {
+	private void paintEdge(Edge edge) {
 		if (!edge.isPositioned()) {
 			return;
 		}
@@ -97,21 +107,21 @@ public class GraphLibrary {
 			gc.setForeground(nodeBorder);
 		}
 
-		bspline(gc, points, n);
-		arrowHead(gc, from, to);
+		bspline(points, n);
+		arrowHead(from, to);
 	}
 
-	public void paintNodes(GC gc, Graph graph) {
+	public void paintNodes(Graph graph) {
 		NodeList nodes = graph.getNodes();
 		while (!nodes.isEmpty()) {
 			Node node = nodes.getHead();
 			nodes = nodes.getTail();
 
-			paintNode(gc, node);
+			paintNode(node);
 		}
 	}
 
-	private void paintNode(GC gc, Node node) {
+	private void paintNode(Node node) {
 		if (!node.isPositioned()) {
 			return;
 		}
@@ -149,14 +159,14 @@ public class GraphLibrary {
 		Shape shape = Graph.getNodeShape(node);
 
 		if (shape.isBox()) {
-			paintBox(gc, x, y, w, h, node_bg, node_border);
+			paintBox(x, y, w, h, node_bg, node_border);
 		} else if (shape.isEllipse()) {
-			paintEllipse(gc, x, y, w, h, node_bg, node_border);
+			paintEllipse(x, y, w, h, node_bg, node_border);
 		} else if (shape.isDiamond()) {
-			paintDiamond(gc, x, y, w, h, node_bg, node_border);
+			paintDiamond(x, y, w, h, node_bg, node_border);
 		} else {
 			// default case, we draw a rectangle
-			paintBox(gc, x, y, w, h, node_bg, node_border);
+			paintBox(x, y, w, h, node_bg, node_border);
 		}
 
 		//setting font properties
@@ -173,7 +183,6 @@ public class GraphLibrary {
 	}
 
 	private void paintDiamond(
-		GC gc,
 		int x,
 		int y,
 		int w,
@@ -198,7 +207,6 @@ public class GraphLibrary {
 	}
 
 	private void paintEllipse(
-		GC gc,
 		int x,
 		int y,
 		int w,
@@ -212,7 +220,6 @@ public class GraphLibrary {
 	}
 
 	private void paintBox(
-		GC gc,
 		int x,
 		int y,
 		int w,
@@ -225,7 +232,7 @@ public class GraphLibrary {
 		gc.drawRectangle(x, y, w, h);
 	}
 
-	private void arrowHead(GC gc, Point from, Point to) {
+	private void arrowHead(Point from, Point to) {
 		int x1 = from.getX();
 		int y1 = from.getY();
 		int x2 = to.getX();
@@ -248,7 +255,7 @@ public class GraphLibrary {
 		gc.drawPolygon(xys);
 	}
 
-	private void bspline(GC gc, int[][] P, int n) {
+	private void bspline(int[][] P, int n) {
 		float m = 500;
 		float xA, yA, xB, yB, xC, yC, xD, yD;
 		float a0, a1, a2, a3, b0, b1, b2, b3;
