@@ -385,6 +385,20 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 						.getFileForLocation(
 						path);
 
+				// file not found: try again after adding absolute path of current project
+				if (file == null) {
+					String fullPath = MetastudioPlugin.getWorkspace().getRoot().getLocation().toString();
+					path =
+						new Path(
+							"/ufs/kooiker/runtime-workspace/Pico/" + fileName);
+					file =
+						MetastudioPlugin
+							.getWorkspace()
+							.getRoot()
+							.getFileForLocation(
+							path);
+				}
+
 				IEditorPart part = null;
 				try {
 					part = page.openEditor(file);
