@@ -7,6 +7,7 @@ public class PopupMenu {
 	private static ATermList _menuItems;
 	private static ATerm _actionType;
 	private static String _moduleName;
+	private static boolean _loaded;
 	
 	public PopupMenu() {
 	}
@@ -15,6 +16,7 @@ public class PopupMenu {
 		_actionType = actionType;
 		_moduleName = moduleName;
 		_menuItems = menuItems;
+		_loaded = true;
 	}
 	
 	public ATermList getMenu() {
@@ -27,5 +29,13 @@ public class PopupMenu {
 	
 	public String getModuleName() {
 		return _moduleName;
+	}
+	
+	public void invalidate() {
+		_loaded = false;
+	}
+	
+	public boolean getLoadedState() {
+		return _loaded;
 	}
 }

@@ -17,9 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.ViewPart;
 
@@ -29,7 +27,7 @@ import aterm.ATermList;
 
 public class ModuleExplorerPart
 	extends ViewPart
-	implements IMenuListener, ISelectionListener {
+	implements IMenuListener {
 	private TreeViewer fViewer;
 	private Menu fContextMenu;
 	private ModuleExplorerContentProvider fContentProvider;
@@ -65,7 +63,7 @@ public class ModuleExplorerPart
 		site.registerContextMenu(menuMgr, fViewer);
 		site.setSelectionProvider(fViewer);
 		//site.getPage().addPartListener(fPartListener);
-		getViewSite().getPage().addSelectionListener(this);
+		//getViewSite().getPage().addSelectionListener(this);
 		//createActions();
 
 		fViewer.setInput(getInput());
@@ -98,63 +96,80 @@ public class ModuleExplorerPart
 	}
 
 	public void menuAboutToShow(IMenuManager manager) {
-		MetastudioConnection connection = new MetastudioConnection();
-		ATermList actions = popupMenu.getMenu();
-
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-		while (!actions.isEmpty()) {
-			ATerm action = actions.getFirst();
-			ATermList actionList =
-				(ATermList) ((ATermAppl) action).getArgument(0);
-			ATermAppl actionNamePrefix = (ATermAppl) (actionList.getFirst());
+		ISelection selection = fViewer.getSelection();
+		Object first = ((IStructuredSelection) selection).getFirstElement();
+		if (first instanceof Module) {
+			final String moduleName = ((Module) first).getModulePath();
+			MetastudioConnection connection = new MetastudioConnection();
 
-			actions = actions.getNext();
+			popupMenu.invalidate();
+			connection.getBridge().postEvent(
+				connection.getFactory().make(
+					"get-buttons(module-popup, <str>)",
+					moduleName));
 
-			if (actionList.getLength() == 1) {
-				manager.add(
-					new ModuleExplorerAction(
-						actionNamePrefix.getName(),
-						popupMenu.getActionType(),
-						action,
-						fViewer));
-			} else {
-				ATermList actionRunner = actions;
-				IMenuManager nextLevel =
-					new MenuManager(actionNamePrefix.getName());
-				ATerm apifyMe =
-					connection.getFactory().make(
-						"menu(<term>)",
-						actionList.getNext());
-				ATermList subMenu = connection.getFactory().makeList(apifyMe);
+			// wait until actions are received
+			while (popupMenu.getLoadedState() == false);
 
-				// collect a list of buttons that are in the same 'menuNamePrefix'
-				for (;
-					!actionRunner.isEmpty();
-					actionRunner = actionRunner.getNext()) {
-					ATerm cur = actionRunner.getFirst();
-					ATermList curList =
-						(ATermList) ((ATermAppl) cur).getArgument(0);
-					ATerm menuNamePrefix = curList.getFirst();
+			ATermList actions = popupMenu.getMenu();
 
-					if (actionNamePrefix.isEqual(menuNamePrefix)) {
-						apifyMe =
-							connection.getFactory().make(
-								"menu(<term>)",
-								curList.getNext());
-						subMenu = subMenu.insert(apifyMe);
-						actions = actions.remove(cur);
+			while (!actions.isEmpty()) {
+				ATerm action = actions.getFirst();
+				ATermList actionList =
+					(ATermList) ((ATermAppl) action).getArgument(0);
+				ATermAppl actionNamePrefix =
+					(ATermAppl) (actionList.getFirst());
+
+				actions = actions.getNext();
+
+				if (actionList.getLength() == 1) {
+					manager.add(
+						new ModuleExplorerAction(
+							actionNamePrefix.getName(),
+							popupMenu.getActionType(),
+							action,
+							fViewer));
+				} else {
+					ATermList actionRunner = actions;
+					IMenuManager nextLevel =
+						new MenuManager(actionNamePrefix.getName());
+					ATerm apifyMe =
+						connection.getFactory().make(
+							"menu(<term>)",
+							actionList.getNext());
+					ATermList subMenu =
+						connection.getFactory().makeList(apifyMe);
+
+					// collect a list of buttons that are in the same 'menuNamePrefix'
+					for (;
+						!actionRunner.isEmpty();
+						actionRunner = actionRunner.getNext()) {
+						ATerm cur = actionRunner.getFirst();
+						ATermList curList =
+							(ATermList) ((ATermAppl) cur).getArgument(0);
+						ATerm menuNamePrefix = curList.getFirst();
+
+						if (actionNamePrefix.isEqual(menuNamePrefix)) {
+							apifyMe =
+								connection.getFactory().make(
+									"menu(<term>)",
+									curList.getNext());
+							subMenu = subMenu.insert(apifyMe);
+							actions = actions.remove(cur);
+						}
 					}
-				}
 
-				addMenuItems(
-					nextLevel,
-					popupMenu.getActionType(),
-					popupMenu.getModuleName(),
-					subMenu,
-					connection.getFactory().makeList(actionNamePrefix),
-					connection);
-				manager.add(nextLevel);
+					addMenuItems(
+						nextLevel,
+						popupMenu.getActionType(),
+						popupMenu.getModuleName(),
+						subMenu,
+						connection.getFactory().makeList(actionNamePrefix),
+						connection);
+					manager.add(nextLevel);
+				}
 			}
 		}
 	}
@@ -272,19 +287,19 @@ public class ModuleExplorerPart
 		}
 	}
 
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (part instanceof ModuleExplorerPart) {
-			if (selection instanceof IStructuredSelection) {
-				Object first = ((IStructuredSelection) selection).getFirstElement();
-				if (first instanceof Module) {
-					final String moduleName = ((Module) first).getModulePath();
-					UserInterface ui = new UserInterface();
-					MetastudioConnection factory = new MetastudioConnection();
-					ui.postEvent(factory.getFactory().make("get-buttons(module-popup, <str>)", moduleName));
-				}
-			}
-		}
-	}
+	//	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+	//		if (part instanceof ModuleExplorerPart) {
+	//			if (selection instanceof IStructuredSelection) {
+	//				Object first = ((IStructuredSelection) selection).getFirstElement();
+	//				if (first instanceof Module) {
+	//					final String moduleName = ((Module) first).getModulePath();
+	//					UserInterface ui = new UserInterface();
+	//					MetastudioConnection factory = new MetastudioConnection();
+	//					ui.postEvent(factory.getFactory().make("get-buttons(module-popup, <str>)", moduleName));
+	//				}
+	//			}
+	//		}
+	//	}
 
 	public static Shell getShell() {
 		return shell;
