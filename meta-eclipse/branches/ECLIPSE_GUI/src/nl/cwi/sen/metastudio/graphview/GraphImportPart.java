@@ -1,10 +1,14 @@
 package nl.cwi.sen.metastudio.graphview;
 
 import metastudio.graph.Graph;
+import metastudio.graph.Node;
 import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.UserInterface;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -26,7 +30,7 @@ public class GraphImportPart extends ViewPart {
 	private static Canvas canvas;
 	private static GraphLibrary graphLibrary;
 	private static Image image;
-	
+
 	private int ix = 0, iy = 0;
 
 	private Color background;
@@ -41,7 +45,7 @@ public class GraphImportPart extends ViewPart {
 			}
 		});
 
-		addScrollBarListeners();
+		addListeners();
 
 		background = new Color(null, 255, 255, 255);
 		canvas.setBackground(background);
@@ -57,9 +61,10 @@ public class GraphImportPart extends ViewPart {
 		}
 	}
 
-	private void addScrollBarListeners() {
+	private void addListeners() {
 		addHorizontalListener();
 		addVerticalListener();
+		addMouseListener();
 	}
 
 	private void addHorizontalListener() {
@@ -113,6 +118,32 @@ public class GraphImportPart extends ViewPart {
 
 					canvas.scroll(ix, y, ix, iy, width, height, false);
 					iy = y;
+				}
+			}
+		});
+	}
+
+	private void addMouseListener() {
+		canvas.addMouseListener(new MouseListener() {
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+			}
+
+			public void mouseUp(MouseEvent e) {
+				Node node = graphLibrary.getNodeAt(graph, e.x, e.y);
+				if (graphLibrary.nodeSelected(node) == false) {
+					canvas.redraw();
+				}
+			}
+		});
+		
+		canvas.addMouseMoveListener(new MouseMoveListener() {
+			public void mouseMove(MouseEvent e) {
+				Node node = graphLibrary.getNodeAt(graph, e.x, e.y);
+				if (graphLibrary.nodeHighlighted(node) == false) {
+					canvas.redraw();
 				}
 			}
 		});
@@ -178,7 +209,7 @@ public class GraphImportPart extends ViewPart {
 	static public void setGraph(ATerm graphTerm) {
 		MetastudioConnection connection = UserInterface.getConnection();
 		graph = connection.getMetaGraphFactory().GraphFromTerm(graphTerm);
-		
+
 		int width = graph.getBoundingBox().getSecond().getX();
 		int height = graph.getBoundingBox().getSecond().getY();
 		image = new Image(null, width, height);

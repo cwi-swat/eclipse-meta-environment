@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.GC;
 
 public class GraphLibrary {
 	private GC gc;
-	
+
 	private final int ARROWHEAD_LENGTH = 15;
 	private final int ARROWHEAD_SHARPNESS = 15;
 
@@ -302,5 +302,53 @@ public class GraphLibrary {
 			}
 			gc.drawLine((int) x, (int) y, P[n][0], P[n][1]);
 		}
+	}
+
+	public boolean nodeSelected(Node node) {
+		if ((node == null && selectedNode != null)
+			|| (node != null
+				&& (selectedNode == null
+					|| !selectedNode.getId().equals(node.getId())))) {
+			selectedNode = node;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean nodeHighlighted(Node node) {
+		if ((node == null && hoveredNode != null)
+			|| (node != null
+				&& (hoveredNode == null
+					|| !hoveredNode.getId().equals(node.getId())))) {
+			hoveredNode = node;
+			return true;
+		}
+		return false;
+	}
+
+	public Node getNodeAt(Graph graph, int x, int y) {
+		if (graph == null) {
+			return null;
+		}
+
+		NodeList nodes = graph.getNodes();
+
+		while (!nodes.isEmpty()) {
+			Node node = nodes.getHead();
+			nodes = nodes.getTail();
+
+			if (node.isPositioned()) {
+				int width = node.getWidth();
+				int height = node.getHeight();
+
+				if (x >= node.getX() - width / 2
+					&& x < node.getX() + width / 2
+					&& y >= node.getY() - height / 2
+					&& y < node.getY() + height / 2) {
+					return node;
+				}
+			}
+		}
+		return null;
 	}
 }
