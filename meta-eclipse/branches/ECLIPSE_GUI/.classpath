@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.text_2.1.0/text.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_2.1.0/textsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_2.1.0/jfacetext.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface.text_2.1.0/jfacetextsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_2.1.0/views.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.views_2.1.0/viewssrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_2.1.0/texteditor.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench.texteditor_2.1.0/texteditorsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_2.1.0/editors.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.editors_2.1.0/editorssrc.zip"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="src" path="lib"/>
+    <classpathentry kind="src" path="/aterm-java"/>
+    <classpathentry kind="src" path="/JJTraveler"/>
+    <classpathentry kind="src" path="/java-adapter"/>
+    <classpathentry kind="src" path="/shared-objects"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_2.1.1/boot.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.1.1/resources.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_2.1.1/runtime.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_2.1.1/jface.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_2.1.1/ws/gtk/swt.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_2.1.1/ws/gtk/swt-pi.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_2.1.1/ui.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_2.1.1/workbench.jar"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>
