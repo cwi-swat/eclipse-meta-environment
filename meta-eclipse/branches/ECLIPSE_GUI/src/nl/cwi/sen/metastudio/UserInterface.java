@@ -6,7 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import aterm.ATerm;
 import aterm.ATermAppl;
@@ -19,7 +23,7 @@ import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
-	
+
 	private ATermFactory factory;
 	private static UserEnvironmentBridge bridge;
 	private static Thread t;
@@ -32,11 +36,11 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public UserInterface() {
 	}
-	
+
 	public UserInterface(IStatusLineManager statusLineManager) {
 		statusLineMgr = statusLineManager;
 	}
-	
+
 	private void initialize() {
 		popupMenu = new PopupMenu();
 
@@ -46,17 +50,17 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	public void run() {
 		factory = new aterm.pure.PureFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
-		
+
 		MetastudioConnection f = new MetastudioConnection(bridge, factory);
-		
+
 		String[] args = new String[6];
-		args[0]="-TB_HOST_NAME";
-		args[1]="localhost";
-		args[2]="-TB_PORT";
-		args[3]="9000";
-		args[4]="-TB_TOOL_NAME";
-		args[5] ="user-environment";
-		
+		args[0] = "-TB_HOST_NAME";
+		args[1] = "localhost";
+		args[2] = "-TB_PORT";
+		args[3] = "9000";
+		args[4] = "-TB_TOOL_NAME";
+		args[5] = "user-environment";
+
 		try {
 			bridge.init(args);
 		} catch (UnknownHostException e) {
@@ -65,7 +69,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			bridge.connect();
 		} catch (IOException e) {
 		}
-		
+
 		t = new Thread(bridge);
 		t.start();
 
@@ -98,7 +102,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			} else {
 				value = valueTerm.toString();
 			}
-			String[] entry = {name, value};
+			String[] entry = { name, value };
 			entries.add(entry);
 
 			pairs = pairs.getNext();
@@ -114,7 +118,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void addStatusf(ATerm t0, String s1, ATerm t2) {
-		final String message = formatString(s1, (ATermList)t2);
+		final String message = formatString(s1, (ATermList) t2);
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				statusLineMgr.setMessage(message);
@@ -131,20 +135,29 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void initializeUi(String s0) {
-//		final String str0 = s0;
-//		Display.getDefault().asyncExec(new Runnable() {
-//			public void run() {
-//				ModuleExplorerPart.addModule(str0);
-//			}
-//		});
+		//		final String str0 = s0;
+		//		Display.getDefault().asyncExec(new Runnable() {
+		//			public void run() {
+		//				ModuleExplorerPart.addModule(str0);
+		//			}
+		//		});
 	}
 
 	public void clearHistory() {
 		// TODO Auto-generated method stub
 	}
 
-	public void deleteModules(ATerm t0) {
-		// TODO Auto-generated method stub
+	public void deleteModules(ATerm mods) {
+		final ATermList _modules = (ATermList) mods;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				ATermList modules = _modules;
+				for (; !modules.isEmpty(); modules = modules.getNext()) {
+					String moduleName = ((ATermAppl) modules.getFirst()).getAFun().getName();
+					ModuleExplorerPart.removeModule(moduleName);
+				}
+			}
+		});
 	}
 
 	public void error(String s0) {
@@ -157,7 +170,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void newGraph(ATerm t0) {
 		// TODO Auto-generated method stub
-		setModules((ATermList)t0);		
+		setModules((ATermList) t0);
 	}
 
 	public void endStatus(ATerm t0) {
@@ -168,7 +181,40 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		});
 	}
 
-	public ATerm showQuestionDialog(String s0) {
+	public ATerm showQuestionDialog(String question) {
+		final String _question = question;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				// Hack to get a shell for the messagebox
+				Shell shell = ModuleExplorerPart.getShell();
+
+				ATerm answer = factory.make("snd-value(answer(cancel))");
+				if (shell != null) {
+					MessageBox messageBox =
+						new MessageBox(
+							PlatformUI
+								.getWorkbench()
+								.getActiveWorkbenchWindow()
+								.getShell(),
+							SWT.ICON_QUESTION | SWT.YES | SWT.NO | SWT.CANCEL);
+					messageBox.setMessage(_question);
+
+					int choice = messageBox.open();
+
+					if (choice == SWT.YES) {
+						answer = factory.make("snd-value(answer(yes))");
+					} else if (choice == SWT.NO) {
+						answer = factory.make("snd-value(answer(no))");
+					}
+				}
+				try {
+					bridge.sendTerm(answer);
+				} catch(IOException e) {					
+				}
+			}
+		});
+		
+		// keep compiler happy...
 		return null;
 	}
 
@@ -181,7 +227,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void recTerminate(ATerm t0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void postEvent(ATerm term) {
@@ -189,12 +235,12 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	private void setModules(ATermList importList) {
-	  // TODO moduleManager.clearModules();
-		final ATermList iL = importList;
+		// TODO moduleManager.clearModules();
+		final ATermList _importList = importList;
 
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				ATermList importList = iL;
+				ATermList importList = _importList;
 				while (!importList.isEmpty()) {
 					ATermList importPair = (ATermList) importList.getFirst();
 					importList = importList.getNext();
@@ -205,7 +251,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			}
 		});
 	}
-	
+
 	String formatString(String format, ATermList args) {
 		int index;
 		String prefix = "";
@@ -285,13 +331,16 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void buttonsFound(ATerm actionType, String moduleName, ATerm actions) {
+	public void buttonsFound(
+		ATerm actionType,
+		String moduleName,
+		ATerm actions) {
 		if (actionType.equals(ACTION_MENUBAR)) {
 			//addMenu(buttonType, moduleName, (ATermList) buttons);
 		} else if (actionType.equals(ACTION_TOOLBAR)) {
 			//addToolBarActions((ATermList) buttons);
 		} else {
-			popupMenu.setMenu(actionType, moduleName, (ATermList)actions);
+			popupMenu.setMenu(actionType, moduleName, (ATermList) actions);
 		}
 	}
 

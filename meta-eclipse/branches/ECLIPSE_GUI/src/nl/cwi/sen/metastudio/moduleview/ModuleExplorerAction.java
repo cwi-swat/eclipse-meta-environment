@@ -6,12 +6,15 @@
  */
 package nl.cwi.sen.metastudio.moduleview;
 
+import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.model.Module;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+
+import aterm.ATerm;
 
 /**
  * @author kooiker
@@ -20,27 +23,29 @@ import org.eclipse.jface.viewers.TreeViewer;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ModuleExplorerAction extends Action {
+	private ATerm _actionType;
+	private ATerm _action;
 	private TreeViewer _tree;
 
-	ModuleExplorerAction(TreeViewer tree, String label) {
+	ModuleExplorerAction(String label, ATerm actionType, ATerm action, TreeViewer tree) {
+		_actionType = actionType;
+		_action = action;
 		_tree = tree;
+		
 		setText(label);
 	}
 
 	public void run() {
+		MetastudioConnection connection = new MetastudioConnection();
 		ISelection selection = _tree.getSelection();
 
 		if (selection instanceof IStructuredSelection) {
 			Object first = ((IStructuredSelection) selection).getFirstElement();
 			if (first instanceof Module) {
-				System.out.println(
-					"+- Module: " + ((Module) first).getModulePath());
-
-//				IFile file = MetastudioPlugin.getWorkspace().getRoot().
-//				try {
-//					//page.openEditor(file);
-//				} catch (Exception e) {
-//				}
+				String fullName = ((Module)first).getModulePath();
+				ATerm event = connection.getFactory().make("button-selected(<term>, <str>, <term>)",
+							   _actionType, fullName, _action);
+				connection.getBridge().postEvent(event);
 			}
 		}
 	}
