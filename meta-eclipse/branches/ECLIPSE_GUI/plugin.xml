@@ -42,7 +42,7 @@
       <editor
             name="MetaEditor"
             icon="icons/file_obj.gif"
-            extensions="asf, sdf, trm"
+            extensions="asf, sdf, trm, out"
             class="nl.cwi.sen.metastudio.editor.MetaEditor"
             id="nl.cwi.sen.metastudio.editor">
       </editor>

@@ -142,7 +142,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void addStatus(ATerm t0, String status) {
-		System.out.println("addStatus: " + status);
 		final String _message = status;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -186,7 +185,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void displayMessage(ATerm t0, String message) {
-		System.out.println("displayMessage: " + message);
 		final String _message = message;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
