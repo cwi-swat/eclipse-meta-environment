@@ -1,0 +1,31 @@
+
+
+TextEditorPeriodAdtAPI0=\
+Action.java ActionImpl.java\
+Action_ToFrontImpl.java Action_ToFront.java\
+Action_RereadContentsImpl.java Action_RereadContents.java\
+Action_DisplayMessageImpl.java Action_DisplayMessage.java\
+Action_SetCursorAtLocationImpl.java Action_SetCursorAtLocation.java\
+Action_SetCursorAtFocusImpl.java Action_SetCursorAtFocus.java\
+Action_ClearFocusImpl.java Action_ClearFocus.java\
+Action_SetFocusImpl.java Action_SetFocus.java\
+Action_GetContentsImpl.java Action_GetContents.java\
+Action_SetActionsImpl.java Action_SetActions.java\
+ActionList.java ActionListImpl.java\
+ActionList_EmptyImpl.java ActionList_Empty.java\
+ActionList_MultiImpl.java ActionList_Multi.java\
+Menu.java MenuImpl.java\
+Menu_DefaultImpl.java Menu_Default.java\
+Event.java EventImpl.java\
+Event_MenuImpl.java Event_Menu.java\
+Event_MouseImpl.java Event_Mouse.java\
+Event_ContentsImpl.java Event_Contents.java\
+Event_ModifiedImpl.java Event_Modified.java\
+Process.java ProcessImpl.java\
+Process_DefaultImpl.java Process_Default.java\
+Pipe.java PipeImpl.java\
+Pipe_DefaultImpl.java Pipe_Default.java
+
+TextEditorPeriodAdtAPI=\
+TextEditorPeriodAdtFactory.java TextEditorPeriodAdtConstructor.java\
+${TextEditorPeriodAdtAPI0} 

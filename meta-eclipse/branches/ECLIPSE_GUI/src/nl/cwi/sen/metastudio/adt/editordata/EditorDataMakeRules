@@ -1,0 +1,31 @@
+
+
+EditorDataAPI0=\
+Focus.java FocusImpl.java\
+Focus_EmptyImpl.java Focus_Empty.java\
+Focus_NotEmptyImpl.java Focus_NotEmpty.java\
+Area.java AreaImpl.java\
+Area_DefaultImpl.java Area_Default.java\
+FocusList.java FocusListImpl.java\
+FocusList_EmptyImpl.java FocusList_Empty.java\
+FocusList_MultiImpl.java FocusList_Multi.java\
+SymbolList.java SymbolListImpl.java\
+SymbolList_EmptyImpl.java SymbolList_Empty.java\
+SymbolList_MultiImpl.java SymbolList_Multi.java\
+Path.java PathImpl.java\
+Path_RootImpl.java Path_Root.java\
+Path_LeftLayoutImpl.java Path_LeftLayout.java\
+Path_TreeImpl.java Path_Tree.java\
+Path_RightLayoutImpl.java Path_RightLayout.java\
+Steps.java StepsImpl.java\
+Steps_EmptyImpl.java Steps_Empty.java\
+Steps_MultiImpl.java Steps_Multi.java\
+Move.java MoveImpl.java\
+Move_LeftImpl.java Move_Left.java\
+Move_RightImpl.java Move_Right.java\
+Move_UpImpl.java Move_Up.java\
+Move_DownImpl.java Move_Down.java
+
+EditorDataAPI=\
+EditorDataFactory.java EditorDataConstructor.java\
+${EditorDataAPI0} 
