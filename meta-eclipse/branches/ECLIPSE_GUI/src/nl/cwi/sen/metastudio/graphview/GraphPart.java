@@ -64,6 +64,7 @@ public class GraphPart extends ViewPart {
 		addHorizontalListener();
 		addVerticalListener();
 		addMouseListener();
+		addMouseMoveListener();
 	}
 
 	private void addHorizontalListener() {
@@ -131,16 +132,18 @@ public class GraphPart extends ViewPart {
 			}
 
 			public void mouseUp(MouseEvent e) {
-				Node node = graphLibrary.getNodeAt(graph, e.x, e.y);
+				Node node = graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
 				if (graphLibrary.nodeSelected(node) == false) {
 					canvas.redraw();
 				}
 			}
 		});
-		
+	}
+	
+	private void addMouseMoveListener() {
 		canvas.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
-				Node node = graphLibrary.getNodeAt(graph, e.x, e.y);
+				Node node = graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
 				if (graphLibrary.nodeHighlighted(node) == false) {
 					canvas.redraw();
 				}
