@@ -14,9 +14,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 import aterm.ATerm;
@@ -28,8 +26,7 @@ import nl.cwi.sen.metastudio.graph.MetaGraphFactory;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
-public class UserInterface
-	implements UserEnvironmentTif, Runnable, IPartListener {
+public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
 
 	private MetaGraphFactory factory;
@@ -55,7 +52,6 @@ public class UserInterface
 		editorRegistry = new EditorRegistry();
 
 		initializeATermPatterns();
-		// addPartListener!!!!
 	}
 
 	public void run() {
@@ -415,29 +411,14 @@ public class UserInterface
 	public void rereadContents(ATerm t0) {
 	}
 
-	public void partActivated(IWorkbenchPart part) {
-	}
+	public void editorDisconnected(IEditorPart part) {
+		ATerm editorID = editorRegistry.getEditorIDByEditorPart(part);
+		MetastudioConnection connection = new MetastudioConnection();
+		connection.getBridge().postEvent(
+			connection.getFactory().make(
+				"editor-disconnected(<term>)",
+				editorID));
 
-	public void partBroughtToTop(IWorkbenchPart part) {
-	}
-
-	public void partClosed(IWorkbenchPart part) {
-		if (part instanceof IEditorPart) {
-			ATerm editorID =
-				editorRegistry.getEditorIDByEditorPart((IEditorPart) part);
-			MetastudioConnection connection = new MetastudioConnection();
-			connection.getBridge().postEvent(
-				connection.getFactory().make(
-					"editor-disconnected(<term>)",
-					editorID));
-
-			editorRegistry.removeEditor((IEditorPart) part);
-		}
-	}
-
-	public void partDeactivated(IWorkbenchPart part) {
-	}
-
-	public void partOpened(IWorkbenchPart part) {
+		editorRegistry.removeEditor((IEditorPart) part);
 	}
 }

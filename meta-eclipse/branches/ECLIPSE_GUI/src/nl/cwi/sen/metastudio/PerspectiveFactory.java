@@ -1,9 +1,3 @@
-/*
- * Created on May 26, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package nl.cwi.sen.metastudio;
 
 import java.io.IOException;
@@ -13,22 +7,19 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-/**
- * @author kooiker
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-public class PerspectiveFactory  implements IPerspectiveFactory {
+public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 	static IStatusLineManager statusLineMgr;
 	IViewPart view;
+	UserInterface ui;
 	
 	public PerspectiveFactory() throws IOException {
 		super();
@@ -43,9 +34,12 @@ public class PerspectiveFactory  implements IPerspectiveFactory {
 			.getActionBars()
 			.getStatusLineManager();
 
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
+
 		addListeners();
 	
-		Thread t = new Thread(new UserInterface(statusLineMgr));
+		ui = new UserInterface(statusLineMgr);
+		Thread t = new Thread(ui);
 		t.start();
 		//UserInterface ui = new UserInterface(statusLineMgr);
 	}
@@ -100,5 +94,24 @@ public class PerspectiveFactory  implements IPerspectiveFactory {
 		// Place ModuleExplorer to right of editor area.
 		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float)0.75, editorArea);
 		right.addView("nl.cwi.sen.metastudio.ModuleExplorer");
+	}
+
+	public void partActivated(IWorkbenchPart part) {
+	}
+
+	public void partBroughtToTop(IWorkbenchPart part) {
+	}
+
+	public void partClosed(IWorkbenchPart part) {
+		if (part instanceof IEditorPart) {
+			System.out.println("Editor closed");
+			ui.editorDisconnected((IEditorPart)part);
+		}
+	}
+
+	public void partDeactivated(IWorkbenchPart part) {
+	}
+
+	public void partOpened(IWorkbenchPart part) {
 	}
 }
