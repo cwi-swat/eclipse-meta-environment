@@ -14,17 +14,17 @@ import org.eclipse.ui.PlatformUI;
 
 import aterm.ATerm;
 import aterm.ATermAppl;
-import aterm.ATermFactory;
 import aterm.ATermList;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
+import nl.cwi.sen.metastudio.graph.MetaGraphFactory;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
 
-	private ATermFactory factory;
+	private MetaGraphFactory factory;
 	private static UserEnvironmentBridge bridge;
 	private static Thread t;
 	private static PopupMenu popupMenu;
@@ -48,7 +48,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void run() {
-		factory = new aterm.pure.PureFactory();
+		factory = new MetaGraphFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
 
 		MetastudioConnection f = new MetastudioConnection(bridge, factory);

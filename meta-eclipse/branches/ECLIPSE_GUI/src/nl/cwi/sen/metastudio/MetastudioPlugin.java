@@ -18,9 +18,6 @@ public class MetastudioPlugin extends AbstractUIPlugin {
 	// Resource bundle.
 	private ResourceBundle resourceBundle;
 	
-	/**
-	 * The constructor.
-	 */
 	public MetastudioPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
 		plugin = this;
@@ -31,6 +28,12 @@ public class MetastudioPlugin extends AbstractUIPlugin {
 		}
 	}
 	
+	public void shutdown() {
+		MetastudioConnection connection = new MetastudioConnection();
+		connection.getBridge().sendEvent(connection.getFactory().parse("quit"));
+		System.out.println("SHUTDOWN!!!");
+	}
+
 	/**
 	 * Returns the shared instance.
 	 */

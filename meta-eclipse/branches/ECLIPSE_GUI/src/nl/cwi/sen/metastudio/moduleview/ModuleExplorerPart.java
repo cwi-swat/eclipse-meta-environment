@@ -113,7 +113,11 @@ public class ModuleExplorerPart
 
 			if (actionList.getLength() == 1) {
 				manager.add(
-					new ModuleExplorerAction(actionNamePrefix.getName(), popupMenu.getActionType(), action, fViewer));
+					new ModuleExplorerAction(
+						actionNamePrefix.getName(),
+						popupMenu.getActionType(),
+						action,
+						fViewer));
 			} else {
 				ATermList actionRunner = actions;
 				IMenuManager nextLevel =
@@ -180,7 +184,11 @@ public class ModuleExplorerPart
 						"menu(<term>)",
 						prefixActionName.concat(actionList));
 				menu.add(
-					new ModuleExplorerAction(buttonNamePrefix.getName(), popupMenu.getActionType(), action, fViewer));
+					new ModuleExplorerAction(
+						buttonNamePrefix.getName(),
+						popupMenu.getActionType(),
+						action,
+						fViewer));
 			} else {
 				ATermList actionRunner = actions;
 				IMenuManager nextLevel =
@@ -249,7 +257,7 @@ public class ModuleExplorerPart
 	static public void removeModule(String moduleName) {
 		Directory dir, dirChild;
 		int i = 0;
-		
+
 		dir = root;
 		dirChild = root;
 		String[] splitModuleName = moduleName.split("/");
@@ -264,21 +272,20 @@ public class ModuleExplorerPart
 		}
 	}
 
-	public void selectionChanged(IWorkbenchPart arg0, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			Object first = ((IStructuredSelection) selection).getFirstElement();
-			if (first instanceof Module) {
-				final String moduleName = ((Module) first).getModulePath();
-				UserInterface ui = new UserInterface();
-				MetastudioConnection factory = new MetastudioConnection();
-				ui.postEvent(
-					factory.getFactory().make(
-						"get-buttons(module-popup, <str>)",
-						moduleName));
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (part instanceof ModuleExplorerPart) {
+			if (selection instanceof IStructuredSelection) {
+				Object first = ((IStructuredSelection) selection).getFirstElement();
+				if (first instanceof Module) {
+					final String moduleName = ((Module) first).getModulePath();
+					UserInterface ui = new UserInterface();
+					MetastudioConnection factory = new MetastudioConnection();
+					ui.postEvent(factory.getFactory().make("get-buttons(module-popup, <str>)", moduleName));
+				}
 			}
 		}
 	}
-	
+
 	public static Shell getShell() {
 		return shell;
 	}

@@ -1,9 +1,3 @@
-/*
- * Created on Jun 23, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package nl.cwi.sen.metastudio.moduleview;
 
 import java.util.Iterator;
@@ -28,12 +22,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
-/**
- * @author kooiker
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class ModuleInfoPart extends ViewPart implements ISelectionListener {
 	private Table table;
 	private TableViewer tableViewer;
@@ -84,17 +72,19 @@ public class ModuleInfoPart extends ViewPart implements ISelectionListener {
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		MetastudioConnection factory = new MetastudioConnection();
 		
-		if (selection instanceof IStructuredSelection) {
-			Object first = ((IStructuredSelection)selection).getFirstElement();
-			if (first instanceof Module) {
-				info.clear();
-				final String moduleName = ((Module)first).getModulePath();
-				UserInterface ui = new UserInterface();
-				ui.postEvent(factory.getFactory().make("get-module-info(<str>)", moduleName));
+		if (part instanceof ModuleExplorerPart) {
+			if (selection instanceof IStructuredSelection) {
+				Object first = ((IStructuredSelection)selection).getFirstElement();
+				if (first instanceof Module) {
+					info.clear();
+					final String moduleName = ((Module)first).getModulePath();
+					UserInterface ui = new UserInterface();
+					ui.postEvent(factory.getFactory().make("get-module-info(<str>)", moduleName));
+				}
 			}
 		}
 	}
-
+	
 	public static void setModuleInfo(String moduleName, List info) {
 //		if (module != null && moduleName.equals(module.getName())) {
 			updateInfo(info);
