@@ -19,7 +19,6 @@ import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -34,8 +33,6 @@ import aterm.ATermList;
 import aterm.pure.PureFactory;
 
 public class UserInterface implements UserEnvironmentTif, Runnable {
-	private static IStatusLineManager statusLineMgr;
-
 	// TODO: move factories to run()
 	private EditorDataFactory editorDataFactory;
 	private TextEditorFactory textEditorFactory;
@@ -54,10 +51,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	private ATerm ACTION_NEW_MODULE_POPUP;
 
 	public UserInterface() {
-	}
-
-	public UserInterface(IStatusLineManager statusLineManager) {
-		statusLineMgr = statusLineManager;
 	}
 
 	public void run() {
@@ -147,16 +140,21 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		}
 	}
 
-	public void addStatus(ATerm t0, String s1) {
-		System.out.println(
-			"UserInterface.java: Add status not implemented yet!");
+	public void addStatus(ATerm t0, String status) {
+		System.out.println("addStatus: " + status);
+		final String _message = status;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				PerspectiveFactory.getStatusLineManager().setMessage(_message);
+			}
+		});
 	}
 
 	public void addStatusf(ATerm t0, String s1, ATerm t2) {
-		final String message = formatString(s1, (ATermList) t2);
+		final String _message = formatString(s1, (ATermList) t2);
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				statusLineMgr.setMessage(message);
+				PerspectiveFactory.getStatusLineManager().setMessage(_message);
 			}
 		});
 	}
@@ -164,7 +162,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	public void endStatus(ATerm t0) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				statusLineMgr.setMessage("");
+				PerspectiveFactory.getStatusLineManager().setMessage("");
 			}
 		});
 	}
@@ -185,9 +183,14 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		System.out.println("UserInterface.java: Messagef not implemented yet!");
 	}
 
-	public void displayMessage(ATerm t0, String s1) {
-		System.out.println(
-			"UserInterface.java: Display message not implemented yet!");
+	public void displayMessage(ATerm t0, String message) {
+		System.out.println("displayMessage: " + message);
+		final String _message = message;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				PerspectiveFactory.getStatusLineManager().setMessage(_message);
+			}
+		});
 	}
 
 	public void warning(String s0) {
@@ -387,7 +390,12 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 				// file not found: try again after adding absolute path of current project
 				if (file == null) {
-					String fullPath = MetastudioPlugin.getWorkspace().getRoot().getLocation().toString();
+					String fullPath =
+						MetastudioPlugin
+							.getWorkspace()
+							.getRoot()
+							.getLocation()
+							.toString();
 					path =
 						new Path(
 							"/ufs/kooiker/runtime-workspace/Pico/" + fileName);

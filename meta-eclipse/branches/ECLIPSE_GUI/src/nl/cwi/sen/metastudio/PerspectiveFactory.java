@@ -18,8 +18,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
-	static IStatusLineManager statusLineMgr;
-	IViewPart view;
+	static IViewPart view;
 	UserInterface ui;
 	
 	private static IWorkbenchPage _page;
@@ -36,8 +35,6 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 				.getActivePage()
 				.getActivePart();
 		view = (IViewPart) part;
-		statusLineMgr =
-			view.getViewSite().getActionBars().getStatusLineManager();
 
 		PlatformUI
 			.getWorkbench()
@@ -46,7 +43,7 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 			.addPartListener(this);
 		addListeners();
 
-		ui = new UserInterface(statusLineMgr);
+		ui = new UserInterface();
 		Thread t = new Thread(ui);
 		t.start();
 	}
@@ -144,6 +141,12 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 	public static GraphPart getGraphTreePart() {
 		IViewPart part = _page.findView("nl.cwi.sen.metastudio.GraphTreeView");
 		return (GraphPart)part;
+	}
+
+	public static IStatusLineManager getStatusLineManager() {
+		IStatusLineManager statusLineManager =
+			view.getViewSite().getActionBars().getStatusLineManager();
+		return statusLineManager;
 	}
 
 	public void partActivated(IWorkbenchPart part) {
