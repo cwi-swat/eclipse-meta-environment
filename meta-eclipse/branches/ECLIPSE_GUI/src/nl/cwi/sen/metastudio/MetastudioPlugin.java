@@ -13,7 +13,7 @@ import java.util.*;
  * The main plugin class to be used in the desktop.
  */
 public class MetastudioPlugin extends AbstractUIPlugin {
-	// The shared instance.
+	//The shared instance.
 	private static MetastudioPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
