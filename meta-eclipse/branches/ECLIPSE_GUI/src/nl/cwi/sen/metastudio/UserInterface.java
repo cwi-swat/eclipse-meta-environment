@@ -37,7 +37,7 @@ import aterm.pure.PureFactory;
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
 
-	//	private PureFactory factory;
+	// TODO: move factories to run()
 	private EditorDataFactory editorDataFactory;
 	private TextEditorFactory textEditorFactory;
 	private MetaGraphFactory metaGraphFactory;
@@ -218,7 +218,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 					String name = moduleTerm.getName();
 					ModuleExplorerPart.addModule(name);
 				}
-				GraphImportPart.Paint();
 			}
 		});
 	}
@@ -278,9 +277,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void newGraph(ATerm importRelations) {
 		setModules((ATermList) importRelations);
-		graph =
-			Graph.fromImportList(metaGraphFactory, (ATermList) importRelations);
-		//layoutGraph(importGraphPanel, graph);
+		GraphImportPart.layoutGraph(importRelations);
 	}
 
 	public void displayGraph(String s0, ATerm t1) {
@@ -288,9 +285,13 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			"UserInterface.java: Display graph not implemented yet!");
 	}
 
-	public void graphLayouted(String s0, ATerm t1) {
-		System.out.println(
-			"UserInterface.java: Graph layouted not implemented yet!");
+	public void graphLayouted(String graphId, ATerm graphTerm) {
+		final ATerm _graphTerm = graphTerm;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				GraphImportPart.setGraph(_graphTerm);
+			}
+		});
 	}
 
 	public ATerm showQuestionDialog(final String question) {
