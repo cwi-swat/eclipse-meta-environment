@@ -2,6 +2,8 @@ package nl.cwi.sen.metastudio;
 
 import java.io.IOException;
 
+import nl.cwi.sen.metastudio.graphview.GraphPart;
+
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -16,27 +18,33 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
+public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 	static IStatusLineManager statusLineMgr;
 	IViewPart view;
 	UserInterface ui;
 	
+	private static IWorkbenchPage _page;
 	private static IViewPart _resourceNavigator;
-	
+
 	public PerspectiveFactory() throws IOException {
 		super();
 
 		// Hack to get the statuslinemanager, toolbarmanager
-		IWorkbenchPart part = PlatformUI.getWorkbench()
+		IWorkbenchPart part =
+			PlatformUI
+				.getWorkbench()
+				.getActiveWorkbenchWindow()
+				.getActivePage()
+				.getActivePart();
+		view = (IViewPart) part;
+		statusLineMgr =
+			view.getViewSite().getActionBars().getStatusLineManager();
+
+		PlatformUI
+			.getWorkbench()
 			.getActiveWorkbenchWindow()
 			.getActivePage()
-			.getActivePart();
-		view = (IViewPart)part;
-		statusLineMgr = view.getViewSite()
-			.getActionBars()
-			.getStatusLineManager();
-		
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
+			.addPartListener(this);
 		addListeners();
 
 		ui = new UserInterface(statusLineMgr);
@@ -49,27 +57,29 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		IResourceChangeListener listener = new ProjectListener();
 		workspace.addResourceChangeListener(listener);
 	}
-	
+
 	public void createInitialLayout(IPageLayout layout) {
 		defineActions(layout);
 		defineLayout(layout);
-		
+
 		definePartHandlers();
 	}
 
 	private void definePartHandlers() {
-		IWorkbenchPage page = PlatformUI.getWorkbench()
-			.getActiveWorkbenchWindow()
-			.getActivePage();
-		
-		_resourceNavigator = page.findView(IPageLayout.ID_RES_NAV);
+		_page =
+			PlatformUI
+				.getWorkbench()
+				.getActiveWorkbenchWindow()
+				.getActivePage();
+
+		_resourceNavigator = _page.findView(IPageLayout.ID_RES_NAV);
 	}
 
 	private void defineActions(IPageLayout layout) {
 		// Add "new wizards"
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");
-		
+
 		// Add "show views"
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		layout.addShowViewShortcut(IPageLayout.ID_BOOKMARKS);
@@ -83,34 +93,60 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		layout.addShowViewShortcut("nl.cwi.sen.metastudio.GraphImportView");
 		layout.addShowViewShortcut("nl.cwi.sen.metastudio.GraphTreeView");
 	}
-	
+
 	private void defineLayout(IPageLayout layout) {
 		// Editors are placed by default
 		String editorArea = layout.getEditorArea();
-		
+
 		// Place navigator and outline to left of editor area.
-		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea);
+		IFolderLayout left =
+			layout.createFolder(
+				"left",
+				IPageLayout.LEFT,
+				(float) 0.25,
+				editorArea);
 		left.addView(IPageLayout.ID_RES_NAV);
 		left.addView(IPageLayout.ID_OUTLINE);
-		
+
 		// Place ModuleInfo, ModuleImport and ModuleParent to bottom of editor area.
-		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea);
+		IFolderLayout bottom =
+			layout.createFolder(
+				"bottom",
+				IPageLayout.BOTTOM,
+				(float) 0.75,
+				editorArea);
 		bottom.addView("nl.cwi.sen.metastudio.views.statusview");
 		bottom.addView("nl.cwi.sen.metastudio.ModuleInfoView");
 		bottom.addView("nl.cwi.sen.metastudio.ModuleImportView");
 		bottom.addView("nl.cwi.sen.metastudio.ModuleParentView");
-		
+
 		// Place ModuleExplorer to right of editor area.
-		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float)0.75, editorArea);
+		IFolderLayout right =
+			layout.createFolder(
+				"right",
+				IPageLayout.RIGHT,
+				(float) 0.75,
+				editorArea);
 		right.addView("nl.cwi.sen.metastudio.ModuleExplorer");
-		
-		IFolderLayout top = layout.createFolder("top", IPageLayout.TOP, (float)1, editorArea);
+
+		IFolderLayout top =
+			layout.createFolder("top", IPageLayout.TOP, (float) 1, editorArea);
 		top.addView("nl.cwi.sen.metastudio.GraphImportView");
 		top.addView("nl.cwi.sen.metastudio.GraphTreeView");
 	}
 
 	public static IViewPart getResourceNavigatorPart() {
 		return _resourceNavigator;
+	}
+
+	public static GraphPart getGraphImportPart() {
+		IViewPart part = _page.findView("nl.cwi.sen.metastudio.GraphImportView");
+		return (GraphPart)part;
+	}
+	
+	public static GraphPart getGraphTreePart() {
+		IViewPart part = _page.findView("nl.cwi.sen.metastudio.GraphTreeView");
+		return (GraphPart)part;
 	}
 
 	public void partActivated(IWorkbenchPart part) {
@@ -122,7 +158,7 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 	public void partClosed(IWorkbenchPart part) {
 		if (part instanceof IEditorPart) {
 			System.out.println("Editor closed");
-			ui.editorDisconnected((IEditorPart)part);
+			ui.editorDisconnected((IEditorPart) part);
 		}
 	}
 

@@ -1,10 +1,14 @@
 package nl.cwi.sen.metastudio.graphview;
 
 import metastudio.graph.Graph;
+import metastudio.graph.Node;
 import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.UserInterface;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -20,13 +24,15 @@ import org.eclipse.ui.part.ViewPart;
 
 import aterm.ATerm;
 
-public class GraphTreePart extends ViewPart {
-	private static Graph graph;
-	private static Canvas canvas;
-	private static GraphLibrary graphLibrary;
-	private static Image image;
+public class GraphPart extends ViewPart {
+	private Graph graph;
+	private Canvas canvas;
+	private GraphLibrary graphLibrary;
+	private Image image;
 
 	private int ix = 0, iy = 0;
+
+	private Color background;
 
 	public void createPartControl(Composite parent) {
 		canvas = new Canvas(parent, SWT.NONE | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -38,14 +44,26 @@ public class GraphTreePart extends ViewPart {
 			}
 		});
 
-		addScrollBarListeners();
+		addListeners();
 
-		canvas.setBackground(new Color(null, 255, 255, 255));
+		background = new Color(null, 255, 255, 255);
+		canvas.setBackground(background);
 	}
 
-	private void addScrollBarListeners() {
+	private void doPaint(PaintEvent event) {
+		if (graph != null) {
+			graphLibrary.paintEdges(graph);
+			graphLibrary.paintNodes(graph);
+
+			GC gc = event.gc;
+			gc.drawImage(image, ix, iy);
+		}
+	}
+
+	private void addListeners() {
 		addHorizontalListener();
 		addVerticalListener();
+		addMouseListener();
 	}
 
 	private void addHorizontalListener() {
@@ -104,7 +122,33 @@ public class GraphTreePart extends ViewPart {
 		});
 	}
 
-	void resizeScrollBars() {
+	private void addMouseListener() {
+		canvas.addMouseListener(new MouseListener() {
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+
+			public void mouseDown(MouseEvent e) {
+			}
+
+			public void mouseUp(MouseEvent e) {
+				Node node = graphLibrary.getNodeAt(graph, e.x, e.y);
+				if (graphLibrary.nodeSelected(node) == false) {
+					canvas.redraw();
+				}
+			}
+		});
+		
+		canvas.addMouseMoveListener(new MouseMoveListener() {
+			public void mouseMove(MouseEvent e) {
+				Node node = graphLibrary.getNodeAt(graph, e.x, e.y);
+				if (graphLibrary.nodeHighlighted(node) == false) {
+					canvas.redraw();
+				}
+			}
+		});
+	}
+
+	private void resizeScrollBars() {
 		// Set the max and thumb for the image canvas scroll bars.
 		ScrollBar horizontal = canvas.getHorizontalBar();
 		ScrollBar vertical = canvas.getVerticalBar();
@@ -148,18 +192,7 @@ public class GraphTreePart extends ViewPart {
 		}
 	}
 
-	private void doPaint(PaintEvent event) {
-		GC gc = event.gc;
-
-		if (graph != null) {
-			graphLibrary.paintEdges(graph);
-			graphLibrary.paintNodes(graph);
-
-			gc.drawImage(image, ix, iy);
-		}
-	}
-
-	static public void setGraph(ATerm graphTerm) {
+	public void setGraph(ATerm graphTerm) {
 		MetastudioConnection connection = UserInterface.getConnection();
 		graph = connection.getMetaGraphFactory().GraphFromTerm(graphTerm);
 

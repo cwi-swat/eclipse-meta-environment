@@ -13,8 +13,6 @@ import nl.cwi.sen.metastudio.adt.texteditor.TextEditorFactory;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
 import nl.cwi.sen.metastudio.editor.MetaEditor;
-import nl.cwi.sen.metastudio.graphview.GraphImportPart;
-import nl.cwi.sen.metastudio.graphview.GraphTreePart;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
@@ -278,7 +276,15 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void newGraph(ATerm importRelations) {
 		setModules((ATermList) importRelations);
-		GraphImportPart.layoutGraph(importRelations);
+		Graph graph =
+			Graph.fromImportList(
+				connection.getMetaGraphFactory(),
+				(ATermList) importRelations);
+		connection.getBridge().postEvent(
+			connection.getPureFactory().make(
+				"layout-graph(<str>,<term>)",
+				"import",
+				graph.toTerm()));
 	}
 
 	public void displayGraph(String graphId, ATerm graphTerm) {
@@ -299,9 +305,10 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (_graphId == "import") {
-					GraphImportPart.setGraph(_graphTerm);
+					PerspectiveFactory.getGraphImportPart().setGraph(
+						_graphTerm);
 				} else {
-					GraphTreePart.setGraph(_graphTerm);
+					PerspectiveFactory.getGraphTreePart().setGraph(_graphTerm);
 				}
 			}
 		});
