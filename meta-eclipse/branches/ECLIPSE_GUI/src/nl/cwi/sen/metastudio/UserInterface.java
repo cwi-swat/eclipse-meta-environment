@@ -23,6 +23,12 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	public static ATermFactory factory;
 	public static UserEnvironmentBridge bridge;
 	private static Thread t;
+	private static PopupMenu popupMenu;
+
+	private ATerm ACTION_MENUBAR;
+	private ATerm ACTION_TOOLBAR;
+	private ATerm ACTION_MODULE_POPUP;
+	private ATerm ACTION_NEW_MODULE_POPUP;
 
 	public UserInterface() {
 	}
@@ -31,6 +37,12 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		statusLineMgr = statusLineManager;
 	}
 	
+	private void initialize() {
+		popupMenu = new PopupMenu();
+
+		initializeATermPatterns();
+	}
+
 	public void run() {
 		factory = new aterm.pure.PureFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
@@ -54,6 +66,15 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		
 		t = new Thread(bridge);
 		t.start();
+
+		initialize();
+	}
+
+	private void initializeATermPatterns() {
+		ACTION_MENUBAR = factory.parse("studio-menubar");
+		ACTION_TOOLBAR = factory.parse("studio-toolbar");
+		ACTION_MODULE_POPUP = factory.parse("module-popup");
+		ACTION_NEW_MODULE_POPUP = factory.parse("new-module-popup");
 	}
 
 	public void addStatus(ATerm t0, String s1) {
@@ -116,10 +137,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 //		});
 	}
 
-	public void buttonsFound(String s0, String s1, ATerm t2) {
-		// TODO Auto-generated method stub
-	}
-
 	public void clearHistory() {
 		// TODO Auto-generated method stub
 	}
@@ -139,10 +156,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	public void newGraph(ATerm t0) {
 		// TODO Auto-generated method stub
 		setModules((ATermList)t0);		
-	}
-
-	public void updateList(ATerm t0) {
-		// TODO Auto-generated method stub
 	}
 
 	public void endStatus(ATerm t0) {
@@ -270,8 +283,14 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void buttonsFound(ATerm t0, String s1, ATerm t2) {
-		// TODO Auto-generated method stub
+	public void buttonsFound(ATerm actionType, String moduleName, ATerm actions) {
+		if (actionType.equals(ACTION_MENUBAR)) {
+			//addMenu(buttonType, moduleName, (ATermList) buttons);
+		} else if (actionType.equals(ACTION_TOOLBAR)) {
+			//addToolBarActions((ATermList) buttons);
+		} else {
+			popupMenu.setMenu(actionType, moduleName, (ATermList)actions);
+		}
 	}
 
 	public void clearFocus(ATerm t0) {

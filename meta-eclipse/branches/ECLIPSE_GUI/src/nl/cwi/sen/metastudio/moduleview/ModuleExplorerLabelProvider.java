@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class ModuleExplorerLabelProvider extends LabelProvider {
 	private Map imageCache = new HashMap(11);
-	
+
 	public Image getImage(Object element) {
 		ImageDescriptor descriptor = null;
 		if (element instanceof Directory) {
@@ -38,28 +38,28 @@ public class ModuleExplorerLabelProvider extends LabelProvider {
 		}
 
 		//obtain the cached image corresponding to the descriptor
-		Image image = (Image)imageCache.get(descriptor);
+		Image image = (Image) imageCache.get(descriptor);
 		if (image == null) {
 			image = descriptor.createImage();
 			imageCache.put(descriptor, image);
 		}
 		return image;
 	}
-	
+
 	public String getText(Object element) {
 		if (element instanceof Directory) {
-			if(((Directory)element).getModulePath() == null) {
+			if (((Directory) element).getModulePath() == null) {
 				return "";
 			} else {
-				return ((Directory)element).getModulePath();
+				return ((Directory) element).getModulePath();
 			}
 		} else if (element instanceof Module) {
-			return ((Module)element).getModuleName();
+			return ((Module) element).getModuleName();
 		} else {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public void dispose() {
 		for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
 			((Image) i.next()).dispose();

@@ -93,9 +93,9 @@ public class ModuleInfoPart extends ViewPart implements ISelectionListener {
 	}
 
 	public static void setModuleInfo(String moduleName, List info) {
-		//if (module != null && moduleName.equals(module.getName())) {
+//		if (module != null && moduleName.equals(module.getName())) {
 			updateInfo(info);
-		//}
+//		}
 	}
 
 	private static void updateInfo(List infoList) {
