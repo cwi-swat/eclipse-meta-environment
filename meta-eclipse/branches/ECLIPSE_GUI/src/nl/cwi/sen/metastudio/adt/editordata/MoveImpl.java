@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.editordata;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class MoveImpl extends EditorDataConstructor
 {
@@ -16,7 +14,7 @@ abstract public class MoveImpl extends EditorDataConstructor
   }
   public boolean isEqual(Move peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortMove()  {
     return true;

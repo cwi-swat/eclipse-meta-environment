@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.editordata;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class PathImpl extends EditorDataConstructor
 {
@@ -16,7 +14,7 @@ abstract public class PathImpl extends EditorDataConstructor
   }
   public boolean isEqual(Path peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortPath()  {
     return true;
@@ -49,12 +47,12 @@ abstract public class PathImpl extends EditorDataConstructor
 
   public Steps getSteps()
   {
-     throw new RuntimeException("This Path has no Steps");
+     throw new UnsupportedOperationException("This Path has no Steps");
   }
 
   public Path setSteps(Steps _steps)
   {
-     throw new RuntimeException("This Path has no Steps");
+     throw new IllegalArgumentException("Illegal argument: " + _steps);
   }
 
 }

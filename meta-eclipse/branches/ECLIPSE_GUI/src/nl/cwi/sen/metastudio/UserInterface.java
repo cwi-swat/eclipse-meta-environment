@@ -7,6 +7,7 @@ import java.util.List;
 
 import metastudio.graph.MetaGraphFactory;
 import nl.cwi.sen.metastudio.adt.editordata.EditorDataFactory;
+import nl.cwi.sen.metastudio.adt.texteditor.ActionList;
 import nl.cwi.sen.metastudio.adt.texteditor.TextEditorFactory;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
@@ -57,8 +58,12 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void run() {
 		factory = new PureFactory();
-		editorDataFactory = new EditorDataFactory();
-		textEditorFactory = new TextEditorFactory();
+		editorDataFactory = new EditorDataFactory(factory);
+		textEditorFactory = new TextEditorFactory(factory);
+
+//		ATerm trm = factory.parse("[menu([\"Actions\",\"Parse\"]),menu([\"Actions\",\"ViewTree\"])]");
+//		ActionList aL = textEditorFactory.ActionListFromTerm(trm);
+
 		metaGraphFactory = new MetaGraphFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
 
@@ -358,14 +363,15 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void setActions(final ATerm editorId, final ATerm actionList) {
+		System.out.println("SetActions");
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				MetaEditor part =
 					(MetaEditor) editorRegistry.getEditorPartByeditorId(
 						editorId);
-				part.setActions(
-					editorId,
-					textEditorFactory.ActionListFromTerm(actionList));
+				ActionList _actionList =
+					textEditorFactory.ActionListFromTerm(actionList);
+				part.setActions(editorId, _actionList);
 			}
 		});
 	}

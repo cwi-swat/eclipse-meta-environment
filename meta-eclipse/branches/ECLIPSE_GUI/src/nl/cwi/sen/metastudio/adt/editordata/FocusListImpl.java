@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.editordata;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class FocusListImpl extends EditorDataConstructor
 {
@@ -16,7 +14,7 @@ abstract public class FocusListImpl extends EditorDataConstructor
   }
   public boolean isEqual(FocusList peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortFocusList()  {
     return true;
@@ -44,22 +42,22 @@ abstract public class FocusListImpl extends EditorDataConstructor
 
   public Focus getHead()
   {
-     throw new RuntimeException("This FocusList has no Head");
+     throw new UnsupportedOperationException("This FocusList has no Head");
   }
 
   public FocusList setHead(Focus _head)
   {
-     throw new RuntimeException("This FocusList has no Head");
+     throw new IllegalArgumentException("Illegal argument: " + _head);
   }
 
   public FocusList getTail()
   {
-     throw new RuntimeException("This FocusList has no Tail");
+     throw new UnsupportedOperationException("This FocusList has no Tail");
   }
 
   public FocusList setTail(FocusList _tail)
   {
-     throw new RuntimeException("This FocusList has no Tail");
+     throw new IllegalArgumentException("Illegal argument: " + _tail);
   }
 
 }

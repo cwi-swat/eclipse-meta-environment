@@ -106,9 +106,9 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float)0.75, editorArea);
 		right.addView("nl.cwi.sen.metastudio.ModuleExplorer");
 		
-		IFolderLayout top = layout.createFolder("top", IPageLayout.TOP, (float)1, editorArea);
-		top.addView("nl.cwi.sen.metastudio.GraphImportView");
-		top.addView("nl.cwi.sen.metastudio.GraphTreeView");
+//		IFolderLayout top = layout.createFolder("top", IPageLayout.TOP, (float)1, editorArea);
+//		top.addView("nl.cwi.sen.metastudio.GraphImportView");
+//		top.addView("nl.cwi.sen.metastudio.GraphTreeView");
 	}
 
 	public static IViewPart getResourceNavigatorPart() {

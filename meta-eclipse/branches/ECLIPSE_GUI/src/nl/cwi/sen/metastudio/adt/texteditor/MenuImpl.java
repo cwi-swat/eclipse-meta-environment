@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.texteditor;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class MenuImpl extends TextEditorConstructor
 {
@@ -16,7 +14,7 @@ abstract public class MenuImpl extends TextEditorConstructor
   }
   public boolean isEqual(Menu peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortMenu()  {
     return true;
@@ -39,22 +37,22 @@ abstract public class MenuImpl extends TextEditorConstructor
 
   public String getMain()
   {
-     throw new RuntimeException("This Menu has no Main");
+     throw new UnsupportedOperationException("This Menu has no Main");
   }
 
   public Menu setMain(String _main)
   {
-     throw new RuntimeException("This Menu has no Main");
+     throw new IllegalArgumentException("Illegal argument: " + _main);
   }
 
   public String getSub()
   {
-     throw new RuntimeException("This Menu has no Sub");
+     throw new UnsupportedOperationException("This Menu has no Sub");
   }
 
   public Menu setSub(String _sub)
   {
-     throw new RuntimeException("This Menu has no Sub");
+     throw new IllegalArgumentException("Illegal argument: " + _sub);
   }
 
 }

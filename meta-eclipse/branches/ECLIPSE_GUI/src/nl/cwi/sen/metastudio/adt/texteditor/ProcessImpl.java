@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.texteditor;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class ProcessImpl extends TextEditorConstructor
 {
@@ -16,7 +14,7 @@ abstract public class ProcessImpl extends TextEditorConstructor
   }
   public boolean isEqual(Process peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortProcess()  {
     return true;
@@ -39,22 +37,22 @@ abstract public class ProcessImpl extends TextEditorConstructor
 
   public Pipe getToChild()
   {
-     throw new RuntimeException("This Process has no ToChild");
+     throw new UnsupportedOperationException("This Process has no ToChild");
   }
 
   public Process setToChild(Pipe _toChild)
   {
-     throw new RuntimeException("This Process has no ToChild");
+     throw new IllegalArgumentException("Illegal argument: " + _toChild);
   }
 
   public Pipe getFromChild()
   {
-     throw new RuntimeException("This Process has no FromChild");
+     throw new UnsupportedOperationException("This Process has no FromChild");
   }
 
   public Process setFromChild(Pipe _fromChild)
   {
-     throw new RuntimeException("This Process has no FromChild");
+     throw new IllegalArgumentException("Illegal argument: " + _fromChild);
   }
 
 }

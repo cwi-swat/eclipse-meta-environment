@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.texteditor;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class ActionListImpl extends TextEditorConstructor
 {
@@ -16,7 +14,7 @@ abstract public class ActionListImpl extends TextEditorConstructor
   }
   public boolean isEqual(ActionList peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortActionList()  {
     return true;
@@ -44,22 +42,22 @@ abstract public class ActionListImpl extends TextEditorConstructor
 
   public Menu getHead()
   {
-     throw new RuntimeException("This ActionList has no Head");
+     throw new UnsupportedOperationException("This ActionList has no Head");
   }
 
   public ActionList setHead(Menu _head)
   {
-     throw new RuntimeException("This ActionList has no Head");
+     throw new IllegalArgumentException("Illegal argument: " + _head);
   }
 
   public ActionList getTail()
   {
-     throw new RuntimeException("This ActionList has no Tail");
+     throw new UnsupportedOperationException("This ActionList has no Tail");
   }
 
   public ActionList setTail(ActionList _tail)
   {
-     throw new RuntimeException("This ActionList has no Tail");
+     throw new IllegalArgumentException("Illegal argument: " + _tail);
   }
 
 }

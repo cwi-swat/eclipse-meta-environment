@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.texteditor;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class ActionImpl extends TextEditorConstructor
 {
@@ -16,7 +14,7 @@ abstract public class ActionImpl extends TextEditorConstructor
   }
   public boolean isEqual(Action peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortAction()  {
     return true;
@@ -89,42 +87,42 @@ abstract public class ActionImpl extends TextEditorConstructor
 
   public String getMessage()
   {
-     throw new RuntimeException("This Action has no Message");
+     throw new UnsupportedOperationException("This Action has no Message");
   }
 
   public Action setMessage(String _message)
   {
-     throw new RuntimeException("This Action has no Message");
+     throw new IllegalArgumentException("Illegal argument: " + _message);
   }
 
   public int getLocation()
   {
-     throw new RuntimeException("This Action has no Location");
+     throw new UnsupportedOperationException("This Action has no Location");
   }
 
   public Action setLocation(int _location)
   {
-     throw new RuntimeException("This Action has no Location");
+     throw new IllegalArgumentException("Illegal argument: " + _location);
   }
 
   public aterm.ATerm getFocus()
   {
-     throw new RuntimeException("This Action has no Focus");
+     throw new UnsupportedOperationException("This Action has no Focus");
   }
 
   public Action setFocus(aterm.ATerm _focus)
   {
-     throw new RuntimeException("This Action has no Focus");
+     throw new IllegalArgumentException("Illegal argument: " + _focus);
   }
 
   public ActionList getActions()
   {
-     throw new RuntimeException("This Action has no Actions");
+     throw new UnsupportedOperationException("This Action has no Actions");
   }
 
   public Action setActions(ActionList _actions)
   {
-     throw new RuntimeException("This Action has no Actions");
+     throw new IllegalArgumentException("Illegal argument: " + _actions);
   }
 
 }

@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.editordata;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class StepsImpl extends EditorDataConstructor
 {
@@ -16,7 +14,7 @@ abstract public class StepsImpl extends EditorDataConstructor
   }
   public boolean isEqual(Steps peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortSteps()  {
     return true;
@@ -44,22 +42,22 @@ abstract public class StepsImpl extends EditorDataConstructor
 
   public int getHead()
   {
-     throw new RuntimeException("This Steps has no Head");
+     throw new UnsupportedOperationException("This Steps has no Head");
   }
 
   public Steps setHead(int _head)
   {
-     throw new RuntimeException("This Steps has no Head");
+     throw new IllegalArgumentException("Illegal argument: " + _head);
   }
 
   public Steps getTail()
   {
-     throw new RuntimeException("This Steps has no Tail");
+     throw new UnsupportedOperationException("This Steps has no Tail");
   }
 
   public Steps setTail(Steps _tail)
   {
-     throw new RuntimeException("This Steps has no Tail");
+     throw new IllegalArgumentException("Illegal argument: " + _tail);
   }
 
 }

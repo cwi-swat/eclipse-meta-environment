@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.texteditor;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class PipeImpl extends TextEditorConstructor
 {
@@ -16,7 +14,7 @@ abstract public class PipeImpl extends TextEditorConstructor
   }
   public boolean isEqual(Pipe peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortPipe()  {
     return true;
@@ -39,22 +37,22 @@ abstract public class PipeImpl extends TextEditorConstructor
 
   public int getRead()
   {
-     throw new RuntimeException("This Pipe has no Read");
+     throw new UnsupportedOperationException("This Pipe has no Read");
   }
 
   public Pipe setRead(int _read)
   {
-     throw new RuntimeException("This Pipe has no Read");
+     throw new IllegalArgumentException("Illegal argument: " + _read);
   }
 
   public int getWrite()
   {
-     throw new RuntimeException("This Pipe has no Write");
+     throw new UnsupportedOperationException("This Pipe has no Write");
   }
 
   public Pipe setWrite(int _write)
   {
-     throw new RuntimeException("This Pipe has no Write");
+     throw new IllegalArgumentException("Illegal argument: " + _write);
   }
 
 }

@@ -3,6 +3,7 @@
 	<name>meta-eclipse</name>
 	<comment></comment>
 	<projects>
+		<project>aterm-java</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.editordata;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class SymbolListImpl extends EditorDataConstructor
 {
@@ -16,7 +14,7 @@ abstract public class SymbolListImpl extends EditorDataConstructor
   }
   public boolean isEqual(SymbolList peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortSymbolList()  {
     return true;
@@ -44,22 +42,22 @@ abstract public class SymbolListImpl extends EditorDataConstructor
 
   public String getHead()
   {
-     throw new RuntimeException("This SymbolList has no Head");
+     throw new UnsupportedOperationException("This SymbolList has no Head");
   }
 
   public SymbolList setHead(String _head)
   {
-     throw new RuntimeException("This SymbolList has no Head");
+     throw new IllegalArgumentException("Illegal argument: " + _head);
   }
 
   public SymbolList getTail()
   {
-     throw new RuntimeException("This SymbolList has no Tail");
+     throw new UnsupportedOperationException("This SymbolList has no Tail");
   }
 
   public SymbolList setTail(SymbolList _tail)
   {
-     throw new RuntimeException("This SymbolList has no Tail");
+     throw new IllegalArgumentException("Illegal argument: " + _tail);
   }
 
 }

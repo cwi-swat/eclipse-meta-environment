@@ -9,7 +9,7 @@ implements aterm.ATerm
   TextEditorFactory factory = null;
 
   public TextEditorConstructor(TextEditorFactory factory) {
-    super(factory);
+    super(factory.getPureFactory());
     this.factory = factory;
   }
 

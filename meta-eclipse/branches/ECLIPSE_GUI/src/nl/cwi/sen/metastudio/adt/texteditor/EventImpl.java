@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.texteditor;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class EventImpl extends TextEditorConstructor
 {
@@ -16,7 +14,7 @@ abstract public class EventImpl extends TextEditorConstructor
   }
   public boolean isEqual(Event peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortEvent()  {
     return true;
@@ -59,32 +57,32 @@ abstract public class EventImpl extends TextEditorConstructor
 
   public Menu getMenu()
   {
-     throw new RuntimeException("This Event has no Menu");
+     throw new UnsupportedOperationException("This Event has no Menu");
   }
 
   public Event setMenu(Menu _menu)
   {
-     throw new RuntimeException("This Event has no Menu");
+     throw new IllegalArgumentException("Illegal argument: " + _menu);
   }
 
   public int getLocation()
   {
-     throw new RuntimeException("This Event has no Location");
+     throw new UnsupportedOperationException("This Event has no Location");
   }
 
   public Event setLocation(int _location)
   {
-     throw new RuntimeException("This Event has no Location");
+     throw new IllegalArgumentException("Illegal argument: " + _location);
   }
 
   public String getText()
   {
-     throw new RuntimeException("This Event has no Text");
+     throw new UnsupportedOperationException("This Event has no Text");
   }
 
   public Event setText(String _text)
   {
-     throw new RuntimeException("This Event has no Text");
+     throw new IllegalArgumentException("Illegal argument: " + _text);
   }
 
 }

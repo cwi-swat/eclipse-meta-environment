@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.editordata;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class FocusImpl extends EditorDataConstructor
 {
@@ -16,7 +14,7 @@ abstract public class FocusImpl extends EditorDataConstructor
   }
   public boolean isEqual(Focus peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortFocus()  {
     return true;
@@ -54,42 +52,42 @@ abstract public class FocusImpl extends EditorDataConstructor
 
   public Path getPath()
   {
-     throw new RuntimeException("This Focus has no Path");
+     throw new UnsupportedOperationException("This Focus has no Path");
   }
 
   public Focus setPath(Path _path)
   {
-     throw new RuntimeException("This Focus has no Path");
+     throw new IllegalArgumentException("Illegal argument: " + _path);
   }
 
   public String getSort()
   {
-     throw new RuntimeException("This Focus has no Sort");
+     throw new UnsupportedOperationException("This Focus has no Sort");
   }
 
   public Focus setSort(String _sort)
   {
-     throw new RuntimeException("This Focus has no Sort");
+     throw new IllegalArgumentException("Illegal argument: " + _sort);
   }
 
   public Area getArea()
   {
-     throw new RuntimeException("This Focus has no Area");
+     throw new UnsupportedOperationException("This Focus has no Area");
   }
 
   public Focus setArea(Area _area)
   {
-     throw new RuntimeException("This Focus has no Area");
+     throw new IllegalArgumentException("Illegal argument: " + _area);
   }
 
   public int getUnparsed()
   {
-     throw new RuntimeException("This Focus has no Unparsed");
+     throw new UnsupportedOperationException("This Focus has no Unparsed");
   }
 
   public Focus setUnparsed(int _unparsed)
   {
-     throw new RuntimeException("This Focus has no Unparsed");
+     throw new IllegalArgumentException("Illegal argument: " + _unparsed);
   }
 
 }

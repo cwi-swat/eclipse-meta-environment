@@ -1,7 +1,5 @@
 package nl.cwi.sen.metastudio.adt.editordata;
 
-import java.io.InputStream;
-import java.io.IOException;
 
 abstract public class AreaImpl extends EditorDataConstructor
 {
@@ -16,7 +14,7 @@ abstract public class AreaImpl extends EditorDataConstructor
   }
   public boolean isEqual(Area peer)
   {
-    return term.isEqual(peer.toTerm());
+    return super.isEqual(peer);
   }
   public boolean isSortArea()  {
     return true;
@@ -39,22 +37,22 @@ abstract public class AreaImpl extends EditorDataConstructor
 
   public int getStart()
   {
-     throw new RuntimeException("This Area has no Start");
+     throw new UnsupportedOperationException("This Area has no Start");
   }
 
   public Area setStart(int _start)
   {
-     throw new RuntimeException("This Area has no Start");
+     throw new IllegalArgumentException("Illegal argument: " + _start);
   }
 
   public int getLength()
   {
-     throw new RuntimeException("This Area has no Length");
+     throw new UnsupportedOperationException("This Area has no Length");
   }
 
   public Area setLength(int _length)
   {
-     throw new RuntimeException("This Area has no Length");
+     throw new IllegalArgumentException("Illegal argument: " + _length);
   }
 
 }
