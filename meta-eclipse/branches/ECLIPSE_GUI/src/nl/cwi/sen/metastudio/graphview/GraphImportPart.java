@@ -20,9 +20,11 @@ import org.eclipse.ui.part.ViewPart;
 
 public class GraphImportPart extends ViewPart {
 	private Graph graph;
+	static private Canvas canvas;
+	static private int[] coords;
 	
 	public void createPartControl(Composite parent) {
-		Canvas canvas = new Canvas(parent, SWT.NONE);
+		canvas = new Canvas(parent, SWT.NONE);
 		//				SWT.CENTER
 		//					| SWT.BORDER
 		//					| SWT.V_SCROLL
@@ -56,9 +58,21 @@ public class GraphImportPart extends ViewPart {
 		gc.setBackground(grey);
 		Rectangle clientArea = gc.getClipping();
 
-		gc.drawLine(0, 0, clientArea.width, clientArea.height);
-		gc.drawLine(0, 50, 50, 0);
-	}	
+		if (coords == null) {
+			gc.drawLine(0, 0, clientArea.width, clientArea.height);
+		} else {
+			gc.drawLine(coords[0],coords[1],coords[2],coords[3]);
+		}
+	}
+	
+	static public void Paint() {
+		coords = new int[4];
+		coords[0] = 0;		
+		coords[1] = 50;		
+		coords[2] = 50;		
+		coords[3] = 0;		
+		canvas.redraw();
+	}
 	
 	public void setFocus() {
 	}

@@ -13,6 +13,7 @@ import nl.cwi.sen.metastudio.adt.texteditor.TextEditorFactory;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
 import nl.cwi.sen.metastudio.editor.MetaEditor;
+import nl.cwi.sen.metastudio.graphview.GraphImportPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
@@ -217,6 +218,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 					String name = moduleTerm.getName();
 					ModuleExplorerPart.addModule(name);
 				}
+				GraphImportPart.Paint();
 			}
 		});
 	}
