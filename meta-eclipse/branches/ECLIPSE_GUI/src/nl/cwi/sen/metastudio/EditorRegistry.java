@@ -8,10 +8,12 @@ import org.eclipse.ui.IEditorPart;
 import aterm.ATerm;
 
 public class EditorRegistry {
-	private List _list;
+	private static List _list;
 	
 	public EditorRegistry() {
-		_list = new ArrayList();
+		if (_list == null) {
+			_list = new ArrayList();
+		}
 	}
 	
 	public void addEditor(ATerm editorId, String fileName, IEditorPart part) {

@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
-import nl.cwi.sen.metastudio.UserInterface;
 import nl.cwi.sen.metastudio.model.Module;
 import nl.cwi.sen.metastudio.model.ModuleInfo;
 import nl.cwi.sen.metastudio.model.ModuleInfoElement;
@@ -70,7 +69,7 @@ public class ModuleInfoPart extends ViewPart implements ISelectionListener {
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		MetastudioConnection factory = new MetastudioConnection();
+		MetastudioConnection connection = new MetastudioConnection();
 		
 		if (part instanceof ModuleExplorerPart) {
 			if (selection instanceof IStructuredSelection) {
@@ -78,8 +77,7 @@ public class ModuleInfoPart extends ViewPart implements ISelectionListener {
 				if (first instanceof Module) {
 					info.clear();
 					final String moduleName = ((Module)first).getModulePath();
-					UserInterface ui = new UserInterface();
-					ui.postEvent(factory.getFactory().make("get-module-info(<str>)", moduleName));
+					connection.getBridge().postEvent(connection.getFactory().make("get-module-info(<str>)", moduleName));
 				}
 			}
 		}

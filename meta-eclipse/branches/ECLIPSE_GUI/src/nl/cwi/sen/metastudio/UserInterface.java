@@ -9,6 +9,7 @@ import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
 import nl.cwi.sen.metastudio.datastructures.ActionList;
 import nl.cwi.sen.metastudio.datastructures.DatastructuresFactory;
+import nl.cwi.sen.metastudio.datastructures.Focus;
 import nl.cwi.sen.metastudio.editor.MetaEditor;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
@@ -50,13 +51,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		statusLineMgr = statusLineManager;
 	}
 
-	private void initialize() {
-		popupMenu = new PopupMenu();
-		editorRegistry = new EditorRegistry();
-
-		initializeATermPatterns();
-	}
-
 	public void run() {
 		factory = new DatastructuresFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
@@ -86,6 +80,13 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		initialize();
 	}
 
+	private void initialize() {
+		popupMenu = new PopupMenu();
+		editorRegistry = new EditorRegistry();
+
+		initializeATermPatterns();
+	}
+
 	private void initializeATermPatterns() {
 		ACTION_MENUBAR = factory.parse("studio-menubar");
 		ACTION_TOOLBAR = factory.parse("studio-toolbar");
@@ -93,10 +94,117 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		ACTION_NEW_MODULE_POPUP = factory.parse("new-module-popup");
 	}
 
-	public void addStatus(ATerm t0, String s1) {
+	public void initializeUi(String s0) {
+		//		final String str0 = s0;
+		//		Display.getDefault().asyncExec(new Runnable() {
+		//			public void run() {
+		//				ModuleExplorerPart.addModule(str0);
+		//			}
+		//		});
 	}
 
-	public void moduleInfo(String module, ATerm info) {
+	public void buttonsFound(
+		ATerm actionType,
+		String moduleName,
+		ATerm actions) {
+		if (actionType.equals(ACTION_MENUBAR)) {
+			//addMenu(buttonType, moduleName, (ATermList) buttons);
+		} else if (actionType.equals(ACTION_TOOLBAR)) {
+			//addToolBarActions((ATermList) buttons);
+		} else {
+			popupMenu.setMenu(actionType, moduleName, (ATermList) actions);
+		}
+	}
+
+	public void addStatus(ATerm t0, String s1) {
+		System.out.println(
+			"UserInterface.java: Add status not implemented yet!");
+	}
+
+	public void addStatusf(ATerm t0, String s1, ATerm t2) {
+		final String message = formatString(s1, (ATermList) t2);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				statusLineMgr.setMessage(message);
+			}
+		});
+	}
+
+	public void endStatus(ATerm t0) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				statusLineMgr.setMessage("");
+			}
+		});
+	}
+
+	public void error(String s0) {
+		System.out.println("UserInterface.java: Error not implemented yet!");
+	}
+
+	public void errorf(String s0, ATerm t1) {
+		System.out.println("UserInterface.java: Errorf not implemented yet!");
+	}
+
+	public void message(String s0) {
+		System.out.println("UserInterface.java: Message not implemented yet!");
+	}
+
+	public void messagef(String s0, ATerm t1) {
+		System.out.println("UserInterface.java: Messagef not implemented yet!");
+	}
+
+	public void displayMessage(ATerm t0, String s1) {
+		System.out.println(
+			"UserInterface.java: Display message not implemented yet!");
+	}
+
+	public void warning(String s0) {
+		System.out.println("UserInterface.java: Warning not implemented yet!");
+	}
+
+	public void warningf(String s0, ATerm t1) {
+		System.out.println("UserInterface.java: Warningf not implemented yet!");
+	}
+
+	public void clearHistory() {
+		System.out.println(
+			"UserInterface.java: Clear history not implemented yet!");
+	}
+
+	private void setModules(ATermList importList) {
+		// TODO moduleManager.clearModules();
+		final ATermList _importList = importList;
+
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				ATermList importList = _importList;
+				while (!importList.isEmpty()) {
+					ATermList importPair = (ATermList) importList.getFirst();
+					importList = importList.getNext();
+					ATermAppl moduleTerm = (ATermAppl) importPair.getFirst();
+					String name = moduleTerm.getName();
+					ModuleExplorerPart.addModule(name);
+				}
+			}
+		});
+	}
+
+	public void deleteModules(ATerm mods) {
+		final ATermList _modules = (ATermList) mods;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				ATermList modules = _modules;
+				for (; !modules.isEmpty(); modules = modules.getNext()) {
+					String moduleName =
+						((ATermAppl) modules.getFirst()).getAFun().getName();
+					ModuleExplorerPart.removeModule(moduleName);
+				}
+			}
+		});
+	}
+
+	public void moduleInfo(final String module, ATerm info) {
 		ATermList pairs = (ATermList) info;
 		List entries = new LinkedList();
 
@@ -118,82 +226,34 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			pairs = pairs.getNext();
 		}
 
-		final String finalModule = module;
 		final List finalEntries = entries;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				ModuleInfoPart.setModuleInfo(finalModule, finalEntries);
+				ModuleInfoPart.setModuleInfo(module, finalEntries);
 			}
 		});
 	}
 
-	public void addStatusf(ATerm t0, String s1, ATerm t2) {
-		final String message = formatString(s1, (ATermList) t2);
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				statusLineMgr.setMessage(message);
-			}
-		});
-	}
-
-	public void errorf(String s0, ATerm t1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void graphLayouted(String s0, ATerm t1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void initializeUi(String s0) {
-		//		final String str0 = s0;
-		//		Display.getDefault().asyncExec(new Runnable() {
-		//			public void run() {
-		//				ModuleExplorerPart.addModule(str0);
-		//			}
-		//		});
-	}
-
-	public void clearHistory() {
-		// TODO Auto-generated method stub
-	}
-
-	public void deleteModules(ATerm mods) {
-		final ATermList _modules = (ATermList) mods;
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				ATermList modules = _modules;
-				for (; !modules.isEmpty(); modules = modules.getNext()) {
-					String moduleName =
-						((ATermAppl) modules.getFirst()).getAFun().getName();
-					ModuleExplorerPart.removeModule(moduleName);
-				}
-			}
-		});
-	}
-
-	public void error(String s0) {
-		// TODO Auto-generated method stub
-	}
-
-	public void displayGraph(String s0, ATerm t1) {
-		// TODO Auto-generated method stub
+	public void updateList(String s0, String s1) {
+		System.out.println(
+			"UserInterface.java: Update list not implemented yet!");
 	}
 
 	public void newGraph(ATerm t0) {
-		// TODO Auto-generated method stub
 		setModules((ATermList) t0);
 	}
 
-	public void endStatus(ATerm t0) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				statusLineMgr.setMessage("");
-			}
-		});
+	public void displayGraph(String s0, ATerm t1) {
+		System.out.println(
+			"UserInterface.java: Display graph not implemented yet!");
 	}
 
-	public ATerm showQuestionDialog(String question) {
-		final String _question = question;
+	public void graphLayouted(String s0, ATerm t1) {
+		System.out.println(
+			"UserInterface.java: Graph layouted not implemented yet!");
+	}
+
+	public ATerm showQuestionDialog(final String question) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				// Hack to get a shell for the messagebox
@@ -208,7 +268,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 								.getActiveWorkbenchWindow()
 								.getShell(),
 							SWT.ICON_QUESTION | SWT.YES | SWT.NO | SWT.CANCEL);
-					messageBox.setMessage(_question);
+					messageBox.setMessage(question);
 
 					int choice = messageBox.open();
 
@@ -234,31 +294,138 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		return null;
 	}
 
-	public void recAckEvent(ATerm t0) {
-	}
-
-	public void recTerminate(ATerm t0) {
-		// TODO Auto-generated method stub
-	}
-
-	public void postEvent(ATerm term) {
-		bridge.postEvent(term);
-	}
-
-	private void setModules(ATermList importList) {
-		// TODO moduleManager.clearModules();
-		final ATermList _importList = importList;
-
+	public void editFile(
+		final ATerm editorId,
+		String editor,
+		final String fileName) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				ATermList importList = _importList;
-				while (!importList.isEmpty()) {
-					ATermList importPair = (ATermList) importList.getFirst();
-					importList = importList.getNext();
-					ATermAppl moduleTerm = (ATermAppl) importPair.getFirst();
-					String name = moduleTerm.getName();
-					ModuleExplorerPart.addModule(name);
+				IWorkbenchPage page =
+					PlatformUI
+						.getWorkbench()
+						.getActiveWorkbenchWindow()
+						.getActivePage();
+
+				IPath path = new Path(fileName);
+				IFile file =
+					MetastudioPlugin
+						.getWorkspace()
+						.getRoot()
+						.getFileForLocation(
+						path);
+
+				IEditorPart part = null;
+				try {
+					part = page.openEditor(file);
+				} catch (Exception e) {
 				}
+
+				if (editorRegistry.getEditorPartByeditorId(editorId) == null
+					&& part != null) {
+					editorRegistry.addEditor(editorId, fileName, part);
+				}
+			}
+		});
+	}
+
+	public void editorDisconnected(IEditorPart part) {
+		ATerm editorId = editorRegistry.geteditorIdByEditorPart(part);
+		MetastudioConnection connection = new MetastudioConnection();
+		connection.getBridge().postEvent(
+			connection.getFactory().make(
+				"editor-disconnected(<term>)",
+				editorId));
+
+		editorRegistry.removeEditor((IEditorPart) part);
+	}
+
+	public void killEditor(ATerm editorId) {
+		System.out.println(
+			"UserInterface.java: Kill editor not implemented yet!");
+	}
+
+	public void setActions(final ATerm editorId, final ATerm actionList) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MetaEditor part =
+					(MetaEditor) editorRegistry.getEditorPartByeditorId(
+						editorId);
+				part.setActions(editorId, ActionList.fromTerm(actionList));
+			}
+		});
+	}
+
+	public void editorToFront(final ATerm editorId) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				IWorkbenchPage page =
+					PlatformUI
+						.getWorkbench()
+						.getActiveWorkbenchWindow()
+						.getActivePage();
+
+				String fileName =
+					editorRegistry.getFileNameByeditorId(editorId);
+				IPath path = new Path(fileName);
+				IFile file =
+					MetastudioPlugin
+						.getWorkspace()
+						.getRoot()
+						.getFileForLocation(
+						path);
+
+				try {
+					page.openEditor(file);
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	public void getContents(final ATerm editorId, final ATerm focus) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MetaEditor part =
+					(MetaEditor) editorRegistry.getEditorPartByeditorId(
+						editorId);
+				part.getContents(editorId, Focus.fromTerm(focus));
+			}
+		});
+	}
+
+	public void rereadContents(ATerm t0) {
+		System.out.println(
+			"UserInterface.java: Reread contents not implemented yet!");
+	}
+
+	public void setCursorAtLocation(final ATerm editorId, final int location) {
+		System.out.println(
+			"UserInterface.java: Set cursor @ location not implemented yet!");
+	}
+
+	public void setCursorAtFocus(final ATerm editorId, final ATerm focus) {
+		System.out.println(
+			"UserInterface.java: Set cursor @ focus not implemented yet!");
+	}
+
+	public void setFocus(final ATerm editorId, final ATerm focus) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MetaEditor part =
+					(MetaEditor) editorRegistry.getEditorPartByeditorId(
+						editorId);
+				part.setFocus(Focus.fromTerm(focus));
+			}
+		});
+	}
+
+	public void clearFocus(final ATerm editorId) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MetaEditor part =
+					(MetaEditor) editorRegistry.getEditorPartByeditorId(
+						editorId);
+				part.clearFocus();
 			}
 		});
 	}
@@ -286,149 +453,9 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		return prefix + postfix;
 	}
 
-	public void getContents(ATerm t0, ATerm t1) {
-		// TODO Auto-generated method stub
+	public void recAckEvent(ATerm t0) {
 	}
 
-	public void setCursorAtLocation(ATerm t0, int i1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void setFocus(ATerm t0, ATerm t1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void editFile(ATerm editorId, String editor, String fileName) {
-		final String _fileName = fileName;
-		final ATerm _editorId = editorId;
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				IWorkbenchPage page =
-					PlatformUI
-						.getWorkbench()
-						.getActiveWorkbenchWindow()
-						.getActivePage();
-
-				IPath path = new Path(_fileName);
-				IFile file =
-					MetastudioPlugin
-						.getWorkspace()
-						.getRoot()
-						.getFileForLocation(
-						path);
-
-				IEditorPart part = null;
-				try {
-					part = page.openEditor(file);
-				} catch (Exception e) {
-				}
-
-				if (editorRegistry.getEditorPartByeditorId(_editorId) == null
-					&& part != null) {
-					editorRegistry.addEditor(_editorId, _fileName, part);
-				}
-			}
-		});
-	}
-
-	public void messagef(String s0, ATerm t1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void killEditor(ATerm editorId) {
-		// TODO Auto-generated method stub
-	}
-
-	public void displayMessage(ATerm t0, String s1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void updateList(String s0, String s1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void warningf(String s0, ATerm t1) {
-		// TODO Auto-generated method stub
-	}
-
-	public void editorToFront(ATerm editorId) {
-		final ATerm _editorId = editorId;
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				IWorkbenchPage page =
-					PlatformUI
-						.getWorkbench()
-						.getActiveWorkbenchWindow()
-						.getActivePage();
-
-				String fileName =
-					editorRegistry.getFileNameByeditorId(_editorId);
-				IPath path = new Path(fileName);
-				IFile file =
-					MetastudioPlugin
-						.getWorkspace()
-						.getRoot()
-						.getFileForLocation(
-						path);
-
-				try {
-					page.openEditor(file);
-				} catch (Exception e) {
-				}
-			}
-		});
-	}
-
-	public void setCursorAtFocus(ATerm editorId, ATerm focus) {
-		// TODO Auto-generated method stub
-	}
-
-	public void message(String s0) {
-		// TODO Auto-generated method stub
-	}
-
-	public void setActions(ATerm editorId, ATerm actionList) {
-		final ActionList _actionList = ActionList.fromTerm(actionList);
-		final ATerm _editorId = editorId;
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				MetaEditor part = (MetaEditor)editorRegistry.getEditorPartByeditorId(_editorId);
-				part.addActions(_editorId, _actionList);
-			}
-		});
-	}
-
-	public void warning(String s0) {
-		// TODO Auto-generated method stub
-	}
-
-	public void buttonsFound(
-		ATerm actionType,
-		String moduleName,
-		ATerm actions) {
-		if (actionType.equals(ACTION_MENUBAR)) {
-			//addMenu(buttonType, moduleName, (ATermList) buttons);
-		} else if (actionType.equals(ACTION_TOOLBAR)) {
-			//addToolBarActions((ATermList) buttons);
-		} else {
-			popupMenu.setMenu(actionType, moduleName, (ATermList) actions);
-		}
-	}
-
-	public void clearFocus(ATerm t0) {
-	}
-
-	public void rereadContents(ATerm t0) {
-	}
-
-	public void editorDisconnected(IEditorPart part) {
-		ATerm editorId = editorRegistry.geteditorIdByEditorPart(part);
-		MetastudioConnection connection = new MetastudioConnection();
-		connection.getBridge().postEvent(
-			connection.getFactory().make(
-				"editor-disconnected(<term>)",
-				editorId));
-
-		editorRegistry.removeEditor((IEditorPart) part);
+	public void recTerminate(ATerm t0) {
 	}
 }

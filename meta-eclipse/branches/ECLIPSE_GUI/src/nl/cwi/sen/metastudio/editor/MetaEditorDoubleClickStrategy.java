@@ -10,123 +10,36 @@
  *******************************************************************************/
 package nl.cwi.sen.metastudio.editor;
 
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
+import nl.cwi.sen.metastudio.EditorRegistry;
+import nl.cwi.sen.metastudio.MetastudioConnection;
+
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
 
-public class MetaEditorDoubleClickStrategy implements ITextDoubleClickStrategy {
-	protected ITextViewer fText;
-	private MetaEditor editor;
+import aterm.ATerm;
 
-	public MetaEditorDoubleClickStrategy (MetaEditor editor) {
-		this.editor = editor;
+public class MetaEditorDoubleClickStrategy
+	implements ITextDoubleClickStrategy {
+	private MetaEditor _editor;
+
+	public MetaEditorDoubleClickStrategy(MetaEditor editor) {
+		_editor = editor;
 	}
 
 	public void doubleClicked(ITextViewer part) {
+		EditorRegistry registry = new EditorRegistry();
+		ATerm editorId = registry.geteditorIdByEditorPart(_editor);
+		MetastudioConnection connection = new MetastudioConnection();
 		int pos = part.getSelectedRange().x;
 
 		if (pos < 0)
 			return;
-						
-		Integer i = new Integer(pos - 1) ;
-//		editor.bridge.postEvent(editor.factory.make("set-current-location(<str>,<int>)", editor.editorId, i));
-//		fText = part;
 
-//		if (!selectComment(pos)) {
-//			selectWord(pos);
-//		}
-	}
-	protected boolean selectComment(int caretPos) {
-		IDocument doc = fText.getDocument();
-		int startPos, endPos;
-
-		try {
-			int pos = caretPos;
-			char c = ' ';
-
-			while (pos >= 0) {
-				c = doc.getChar(pos);
-				if (c == '\\') {
-					pos -= 2;
-					continue;
-				}
-				if (c == Character.LINE_SEPARATOR || c == '\"')
-					break;
-				--pos;
-			}
-
-			if (c != '\"')
-				return false;
-
-			startPos = pos;
-
-			pos = caretPos;
-			int length = doc.getLength();
-			c = ' ';
-
-			while (pos < length) {
-				c = doc.getChar(pos);
-				if (c == Character.LINE_SEPARATOR || c == '\"')
-					break;
-				++pos;
-			}
-			if (c != '\"')
-				return false;
-
-			endPos = pos;
-
-			int offset = startPos + 1;
-			int len = endPos - offset;
-			fText.setSelectedRange(offset, len);
-			return true;
-		} catch (BadLocationException x) {
-		}
-
-		return false;
-	}
-	protected boolean selectWord(int caretPos) {
-
-		IDocument doc = fText.getDocument();
-		int startPos, endPos;
-
-		try {
-
-			int pos = caretPos;
-			char c;
-
-			while (pos >= 0) {
-				c = doc.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c))
-					break;
-				--pos;
-			}
-
-			startPos = pos;
-
-			pos = caretPos;
-			int length = doc.getLength();
-
-			while (pos < length) {
-				c = doc.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c))
-					break;
-				++pos;
-			}
-
-			endPos = pos;
-			selectRange(startPos, endPos);
-			return true;
-
-		} catch (BadLocationException x) {
-		}
-
-		return false;
-	}
-
-	private void selectRange(int startPos, int stopPos) {
-		int offset = startPos + 1;
-		int length = stopPos - offset;
-		fText.setSelectedRange(offset, length);
+		Integer location = new Integer(pos - 1);
+		connection.getBridge().postEvent(
+			connection.getFactory().make(
+				"mouse-event(<term>,<int>)",
+				editorId,
+				location));
 	}
 }

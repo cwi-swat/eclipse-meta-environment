@@ -1,16 +1,16 @@
 package nl.cwi.sen.metastudio;
 
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
-import aterm.ATermFactory;
+import nl.cwi.sen.metastudio.datastructures.DatastructuresFactory;
 
 public class MetastudioConnection {
 	private static UserEnvironmentBridge _bridge;
-	private static ATermFactory _factory;
+	private static DatastructuresFactory _factory;
 	
 	public MetastudioConnection() {
 	}
 	
-	public MetastudioConnection(UserEnvironmentBridge bridge, ATermFactory factory) {
+	public MetastudioConnection(UserEnvironmentBridge bridge, DatastructuresFactory factory) {
 		_bridge = bridge;
 		_factory = factory;
 	}
@@ -19,7 +19,7 @@ public class MetastudioConnection {
 		return _bridge;
 	}
 
-	public ATermFactory getFactory() {
+	public DatastructuresFactory getFactory() {
 		return _factory;
 	}
 }
