@@ -6,13 +6,13 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
@@ -20,6 +20,8 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 	static IStatusLineManager statusLineMgr;
 	IViewPart view;
 	UserInterface ui;
+	
+	private static IViewPart _resourceNavigator;
 	
 	public PerspectiveFactory() throws IOException {
 		super();
@@ -33,11 +35,11 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		statusLineMgr = view.getViewSite()
 			.getActionBars()
 			.getStatusLineManager();
-
+		
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(this);
 
 		addListeners();
-	
+
 		ui = new UserInterface(statusLineMgr);
 		Thread t = new Thread(ui);
 		t.start();
@@ -45,20 +47,27 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 	}
 
 	private void addListeners() {
-		ISelectionChangedListener selectionListener = new SelectionListener();
-		view.getViewSite().getSelectionProvider().addSelectionChangedListener(selectionListener);
-
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IResourceChangeListener listener = new ProjectListener();
 		workspace.addResourceChangeListener(listener);
 	}
-
+	
 	public void createInitialLayout(IPageLayout layout) {
 		defineActions(layout);
-		defineLayout(layout);		
+		defineLayout(layout);
+		
+		definePartHandlers();
 	}
 
-	public void defineActions(IPageLayout layout) {
+	private void definePartHandlers() {
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+			.getActiveWorkbenchWindow()
+			.getActivePage();
+		
+		_resourceNavigator = page.findView(IPageLayout.ID_RES_NAV);
+	}
+
+	private void defineActions(IPageLayout layout) {
 		// Add "new wizards"
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");
@@ -75,7 +84,7 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		layout.addShowViewShortcut("nl.cwi.sen.metastudio.ModuleParentView");
 	}
 	
-	public void defineLayout(IPageLayout layout) {
+	private void defineLayout(IPageLayout layout) {
 		// Editors are placed by default
 		String editorArea = layout.getEditorArea();
 		
@@ -94,6 +103,10 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		// Place ModuleExplorer to right of editor area.
 		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float)0.75, editorArea);
 		right.addView("nl.cwi.sen.metastudio.ModuleExplorer");
+	}
+
+	public static IViewPart getResourceNavigatorPart() {
+		return _resourceNavigator;
 	}
 
 	public void partActivated(IWorkbenchPart part) {

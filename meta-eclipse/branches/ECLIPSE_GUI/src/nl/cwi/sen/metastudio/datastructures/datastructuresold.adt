@@ -1,0 +1,78 @@
+[  
+[ActionList, empty, []],
+[ActionList, multi, [<head(Menu)>, <[tail(ActionList)]>]],
+
+[Menu, default, menu([<main(str)>,<sub(str)>])],
+
+[Event, menu, menu-event(<menu(Menu)>)],
+[Event, mouse, mouse-event(<location(int)>)],
+[Event, contents, contents(<text(str)>)],
+[Event, modified, modified],
+
+[Focus, empty, empty-focus],
+[Focus, not-empty, focus(<path(Path)>,<sort(str)>,<area(Area)>,<unparsed(int)>)],
+
+[Area,  Default, area(<start(int)>,<length(int)>)],
+
+[FocusList, empty, []],
+[FocusList, multi, [<head(Focus)>,<[tail(FocusList)]>]],
+
+[Path, root, root],
+[Path, left-layout, left-layout],
+[Path, term, term(<steps(Steps)>)],
+[Path, right-layout, right-layout],
+
+[Steps, empty, []],
+[Steps, multi, [<head(int)>,<[tail(Steps)]>]],
+
+[Graph, default, graph(<nodes(NodeList)>,<edges(EdgeList)>,
+                       <attributes(AttributeList)>)],
+
+[NodeList, empty, []],
+[NodeList, multi, [<head(Node)>,<[tail(NodeList)]>]],
+
+[Node, default, node(<id(NodeId)>,<attributes(AttributeList)>)],
+
+[NodeId, default, <id(str)>],
+
+[AttributeList, empty, []],
+[AttributeList, multi, [<head(Attribute)>,<[tail(AttributeList)]>]],
+
+[Attribute, label, label(<label(str)>)],
+[Attribute, shape, shape(<shape(Shape)>)],
+[Attribute, location, location(<x(int)>,<y(int)>)],
+[Attribute, size, size(<width(int)>,<height(int)>)],
+[Attribute, curve-points, curve-points(<points(Polygon)>)],
+[Attribute, bounding-box, bounding-box(<first(Point)>,<second(Point)>)],
+[Attribute, direction, direction(<direction(Direction)>)],
+[Attribute, info, info(<key(str)>,<value(term)>)],
+
+[Shape, plaintext, plaintext],
+[Shape, ellipse, ellipse],
+[Shape, circle, circle],
+[Shape, egg, egg],
+[Shape, triangle, triangle],
+[Shape, box, box],
+[Shape, diamond, diamond],
+[Shape, trapezium, trapezium],
+[Shape, parallelogram, parallelogram],
+[Shape, house, house],
+[Shape, hexagon, hexagon],
+[Shape, octagon, octagon],
+
+[Direction, forward, forward],
+[Direction, back, back],
+[Direction, both, both],
+[Direction, none, none],
+
+[EdgeList, empty, []],
+[EdgeList, multi, [<head(Edge)>,<[tail(EdgeList)]>]],
+
+[Edge, default, edge(<from(NodeId)>,<to(NodeId)>,<attributes(AttributeList)>)],
+
+[Polygon, empty, []],
+[Polygon, multi, [<head(Point)>,<[tail(Polygon)]>]],
+
+[Point, default, point(<x(int)>,<y(int)>)]
+]
+

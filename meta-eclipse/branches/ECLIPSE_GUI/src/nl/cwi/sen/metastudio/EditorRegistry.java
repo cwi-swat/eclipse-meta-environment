@@ -8,54 +8,55 @@ import org.eclipse.ui.IEditorPart;
 import aterm.ATerm;
 
 public class EditorRegistry {
-	private List list;
+	private List _list;
 	
 	public EditorRegistry() {
-		list = new ArrayList();
+		_list = new ArrayList();
 	}
 	
-	public void addEditor(ATerm editorID, String fileName, IEditorPart part) {
-		list.add(new EditorRegistryModel(editorID, fileName, part));
+	public void addEditor(ATerm editorId, String fileName, IEditorPart part) {
+		_list.add(new EditorRegistryModel(editorId, fileName, part));
+		System.out.println("Editor added: " + editorId + ", " + fileName);
 	}
 
-	public void removeEditor(ATerm editorID) {
-		for (int i = 0; i < list.size(); i++) {
-			if (editorID.equals(((EditorRegistryModel)list.get(i)).getEditorID())) {
-				list.remove(i);
+	public void removeEditor(ATerm editorId) {
+		for (int i = 0; i < _list.size(); i++) {
+			if (editorId.equals(((EditorRegistryModel)_list.get(i)).geteditorId())) {
+				_list.remove(i);
 			}
 		}
 	}
 	
 	public void removeEditor(IEditorPart part) {
-		for (int i = 0; i < list.size(); i++) {
-			if (part.equals(((EditorRegistryModel)list.get(i)).getEditorPart())) {
-				list.remove(i);
+		for (int i = 0; i < _list.size(); i++) {
+			if (part.equals(((EditorRegistryModel)_list.get(i)).getEditorPart())) {
+				_list.remove(i);
 			}
 		}
 	}
 
-	public IEditorPart getEditorPartByEditorID(ATerm editorID) {
-		for (int i = 0; i < list.size(); i++) {
-			if (editorID.equals(((EditorRegistryModel)list.get(i)).getEditorID())) {
-				return ((EditorRegistryModel)list.get(i)).getEditorPart();
+	public IEditorPart getEditorPartByeditorId(ATerm editorId) {
+		for (int i = 0; i < _list.size(); i++) {
+			if (editorId.equals(((EditorRegistryModel)_list.get(i)).geteditorId())) {
+				return ((EditorRegistryModel)_list.get(i)).getEditorPart();
 			}
 		}
 		return null;
 	}
 	
-	public ATerm getEditorIDByEditorPart(IEditorPart part) {
-		for (int i = 0; i < list.size(); i++) {
-			if (part.equals(((EditorRegistryModel)list.get(i)).getEditorPart())) {
-				return ((EditorRegistryModel)list.get(i)).getEditorID();
+	public ATerm geteditorIdByEditorPart(IEditorPart part) {
+		for (int i = 0; i < _list.size(); i++) {
+			if (part.equals(((EditorRegistryModel)_list.get(i)).getEditorPart())) {
+				return ((EditorRegistryModel)_list.get(i)).geteditorId();
 			}
 		}
 		return null;
 	}
 	
-	public String getFileNameByEditorID(ATerm editorID) {
-		for (int i = 0; i < list.size(); i++) {
-			if (editorID.equals(((EditorRegistryModel)list.get(i)).getEditorID())) {
-				return ((EditorRegistryModel)list.get(i)).getFileName();
+	public String getFileNameByeditorId(ATerm editorId) {
+		for (int i = 0; i < _list.size(); i++) {
+			if (editorId.equals(((EditorRegistryModel)_list.get(i)).geteditorId())) {
+				return ((EditorRegistryModel)_list.get(i)).getFileName();
 			}
 		}
 		return null;

@@ -1,27 +1,23 @@
 package nl.cwi.sen.metastudio.editor;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
+import nl.cwi.sen.metastudio.datastructures.ActionList;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.editors.text.TextEditor;
 
 import aterm.ATerm;
-import aterm.ATermAppl;
 
 public class MetaEditor extends TextEditor {
 	private ColorManager colorManager;
 	private String moduleName;
 	private IFile file;
-	protected String editorId;
 	
 	public MetaEditor() {
 		super();
@@ -43,7 +39,6 @@ public class MetaEditor extends TextEditor {
 			fileExtension = file.getFileExtension();
 			moduleName = moduleName.substring(0, moduleName.length() - file.getFileExtension().length() - 1);
 		}
-		editorId = moduleName + file.getFileExtension();
 	}
 	
 	public void dispose() {
@@ -107,34 +102,26 @@ public class MetaEditor extends TextEditor {
 		return null;
 	}
 
-	public ATerm editFile(String s0) {
-		// TODO When implementing this in a perspective we need to generate a unique file reference
-//		return factory.make("snd-value(file-id(<str>))", editorId);
-		return null;
-	}
+	public void addActions(ATerm editorId, ActionList actionList) {
+		System.out.println("Received actions: " + actionList);
+//		IMenuManager parentMenu = getEditorSite().getActionBars().getMenuManager();
+//		IMenuManager newMenu = new MenuManager();
 
-	public void tbAddMenus(ATerm t0) {
-		final ATerm term0 = t0;
-		final MetaEditor editor = this;
-		Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					String strListArg0, strListArg1, strMenu = "";
-					IMenuManager parentMenu = getEditorSite().getActionBars().getMenuManager();
-					IMenuManager newMenu = new MenuManager();
-					for (int i = 0; i < term0.getChildCount(); i++) {
-						strListArg0 = ((ATermAppl)term0.getChildAt(i).getChildAt(0)).getName();
-						if (strMenu.equals(strListArg0) == false) {
-							strMenu = strListArg0;
-							newMenu = new MenuManager(strListArg0);
-							// TODO insertBefore, prependToGroup or insertAfter? 
-							parentMenu.insertBefore(IWorkbenchActionConstants.MB_ADDITIONS, newMenu);
-							parentMenu.update(true);
-						}
-						strListArg1 = ((ATermAppl)term0.getChildAt(i).getChildAt(1)).getName();
-						newMenu.add(new MetaEditorAction(editor, strListArg0, strListArg1));
-						newMenu.update(true);
-					}
-				}
-			});
+//		String strListArg0, strListArg1, strMenu = "";
+//		IMenuManager parentMenu = getEditorSite().getActionBars().getMenuManager();
+//		IMenuManager newMenu = new MenuManager();
+//		for (int i = 0; i < actions.getChildCount(); i++) {
+//			strListArg0 = ((ATermAppl)actions.getChildAt(i).getChildAt(0)).getName();
+//			if (strMenu.equals(strListArg0) == false) {
+//				strMenu = strListArg0;
+//				newMenu = new MenuManager(strListArg0);
+//				// TODO insertBefore, prependToGroup or insertAfter? 
+//				parentMenu.insertBefore(IWorkbenchActionConstants.MB_ADDITIONS, newMenu);
+//				parentMenu.update(true);
+//			}
+//			strListArg1 = ((ATermAppl)actions.getChildAt(i).getChildAt(1)).getName();
+//			newMenu.add(new MetaEditorAction(editorId, actions.elementAt(i), strListArg1));
+//			newMenu.update(true);
+//		}
 	}
 }

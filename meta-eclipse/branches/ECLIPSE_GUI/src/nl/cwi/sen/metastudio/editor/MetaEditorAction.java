@@ -6,7 +6,11 @@
  */
 package nl.cwi.sen.metastudio.editor;
 
+import nl.cwi.sen.metastudio.MetastudioConnection;
+
 import org.eclipse.jface.action.Action;
+
+import aterm.ATerm;
 
 /**
  * @author kooiker
@@ -15,17 +19,18 @@ import org.eclipse.jface.action.Action;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class MetaEditorAction extends Action {
-	String menu, label;
-	MetaEditor editor;
+	private ATerm _menuEvent;
+	private ATerm _editorId;
 	
-	MetaEditorAction (MetaEditor editor, String menu, String label) {
-		this.menu = menu;
-		this.label = label;
-		this.editor = editor;
+	MetaEditorAction (ATerm editorId, ATerm menuEvent, String label) {
+		_menuEvent = menuEvent;
+		_editorId = editorId;
 		setText(label);
+		System.out.println("Added menuEvent: " + menuEvent);
 	}
 	
 	public void run() {
-//		editor.bridge.postEvent(editor.factory.make("menu-event(<str>,<str>,<str>)", menu, label, editor.editorId));
+		MetastudioConnection connection = new MetastudioConnection();
+		connection.getBridge().postEvent(connection.getFactory().make("menu-event(<term>,<term>)", _editorId, _menuEvent));
 	}
 }

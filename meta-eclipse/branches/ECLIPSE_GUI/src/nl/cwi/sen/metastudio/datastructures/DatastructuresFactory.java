@@ -1,0 +1,1052 @@
+package nl.cwi.sen.metastudio.datastructures;
+
+import aterm.pure.PureFactory;
+public class DatastructuresFactory extends PureFactory
+{
+  private aterm.AFun funActionList_Empty;
+  private ActionList protoActionList_Empty;
+  private aterm.AFun funActionList_Multi;
+  private ActionList protoActionList_Multi;
+  private aterm.AFun funMenu_Default;
+  private Menu protoMenu_Default;
+  private aterm.AFun funEvent_Menu;
+  private Event protoEvent_Menu;
+  private aterm.AFun funEvent_Mouse;
+  private Event protoEvent_Mouse;
+  private aterm.AFun funEvent_Contents;
+  private Event protoEvent_Contents;
+  private aterm.AFun funEvent_Modified;
+  private Event protoEvent_Modified;
+  private aterm.AFun funFocus_Empty;
+  private Focus protoFocus_Empty;
+  private aterm.AFun funFocus_NotEmpty;
+  private Focus protoFocus_NotEmpty;
+  private aterm.AFun funArea_Default;
+  private Area protoArea_Default;
+  private aterm.AFun funFocusList_Empty;
+  private FocusList protoFocusList_Empty;
+  private aterm.AFun funFocusList_Multi;
+  private FocusList protoFocusList_Multi;
+  private aterm.AFun funPath_Root;
+  private Path protoPath_Root;
+  private aterm.AFun funPath_LeftLayout;
+  private Path protoPath_LeftLayout;
+  private aterm.AFun funPath_Term;
+  private Path protoPath_Term;
+  private aterm.AFun funPath_RightLayout;
+  private Path protoPath_RightLayout;
+  private aterm.AFun funSteps_Empty;
+  private Steps protoSteps_Empty;
+  private aterm.AFun funSteps_Multi;
+  private Steps protoSteps_Multi;
+  private aterm.AFun funGraph_Default;
+  private Graph protoGraph_Default;
+  private aterm.AFun funNodeList_Empty;
+  private NodeList protoNodeList_Empty;
+  private aterm.AFun funNodeList_Multi;
+  private NodeList protoNodeList_Multi;
+  private aterm.AFun funNode_Default;
+  private Node protoNode_Default;
+  private aterm.AFun funNodeId_Default;
+  private NodeId protoNodeId_Default;
+  private aterm.AFun funAttributeList_Empty;
+  private AttributeList protoAttributeList_Empty;
+  private aterm.AFun funAttributeList_Multi;
+  private AttributeList protoAttributeList_Multi;
+  private aterm.AFun funAttribute_Label;
+  private Attribute protoAttribute_Label;
+  private aterm.AFun funAttribute_Shape;
+  private Attribute protoAttribute_Shape;
+  private aterm.AFun funAttribute_Location;
+  private Attribute protoAttribute_Location;
+  private aterm.AFun funAttribute_Size;
+  private Attribute protoAttribute_Size;
+  private aterm.AFun funAttribute_CurvePoints;
+  private Attribute protoAttribute_CurvePoints;
+  private aterm.AFun funAttribute_BoundingBox;
+  private Attribute protoAttribute_BoundingBox;
+  private aterm.AFun funAttribute_Direction;
+  private Attribute protoAttribute_Direction;
+  private aterm.AFun funAttribute_Info;
+  private Attribute protoAttribute_Info;
+  private aterm.AFun funShape_Plaintext;
+  private Shape protoShape_Plaintext;
+  private aterm.AFun funShape_Ellipse;
+  private Shape protoShape_Ellipse;
+  private aterm.AFun funShape_Circle;
+  private Shape protoShape_Circle;
+  private aterm.AFun funShape_Egg;
+  private Shape protoShape_Egg;
+  private aterm.AFun funShape_Triangle;
+  private Shape protoShape_Triangle;
+  private aterm.AFun funShape_Box;
+  private Shape protoShape_Box;
+  private aterm.AFun funShape_Diamond;
+  private Shape protoShape_Diamond;
+  private aterm.AFun funShape_Trapezium;
+  private Shape protoShape_Trapezium;
+  private aterm.AFun funShape_Parallelogram;
+  private Shape protoShape_Parallelogram;
+  private aterm.AFun funShape_House;
+  private Shape protoShape_House;
+  private aterm.AFun funShape_Hexagon;
+  private Shape protoShape_Hexagon;
+  private aterm.AFun funShape_Octagon;
+  private Shape protoShape_Octagon;
+  private aterm.AFun funDirection_Forward;
+  private Direction protoDirection_Forward;
+  private aterm.AFun funDirection_Back;
+  private Direction protoDirection_Back;
+  private aterm.AFun funDirection_Both;
+  private Direction protoDirection_Both;
+  private aterm.AFun funDirection_None;
+  private Direction protoDirection_None;
+  private aterm.AFun funEdgeList_Empty;
+  private EdgeList protoEdgeList_Empty;
+  private aterm.AFun funEdgeList_Multi;
+  private EdgeList protoEdgeList_Multi;
+  private aterm.AFun funEdge_Default;
+  private Edge protoEdge_Default;
+  private aterm.AFun funPolygon_Empty;
+  private Polygon protoPolygon_Empty;
+  private aterm.AFun funPolygon_Multi;
+  private Polygon protoPolygon_Multi;
+  private aterm.AFun funPoint_Default;
+  private Point protoPoint_Default;
+  public DatastructuresFactory()
+  {
+     super();
+     initialize();
+  }
+
+  public DatastructuresFactory(int logSize)
+  {
+     super(logSize);
+     initialize();
+  }
+
+  private void initialize()
+  {
+    ActionList.initialize(this);
+
+    ActionList_Empty.initializePattern();
+    funActionList_Empty = makeAFun("_ActionList_empty", 0, false);
+    protoActionList_Empty = new ActionList_Empty();
+
+    ActionList_Multi.initializePattern();
+    funActionList_Multi = makeAFun("_ActionList_multi", 2, false);
+    protoActionList_Multi = new ActionList_Multi();
+
+    Menu.initialize(this);
+
+    Menu_Default.initializePattern();
+    funMenu_Default = makeAFun("_Menu_default", 2, false);
+    protoMenu_Default = new Menu_Default();
+
+    Event.initialize(this);
+
+    Event_Menu.initializePattern();
+    funEvent_Menu = makeAFun("_Event_menu", 1, false);
+    protoEvent_Menu = new Event_Menu();
+
+    Event_Mouse.initializePattern();
+    funEvent_Mouse = makeAFun("_Event_mouse", 1, false);
+    protoEvent_Mouse = new Event_Mouse();
+
+    Event_Contents.initializePattern();
+    funEvent_Contents = makeAFun("_Event_contents", 1, false);
+    protoEvent_Contents = new Event_Contents();
+
+    Event_Modified.initializePattern();
+    funEvent_Modified = makeAFun("_Event_modified", 0, false);
+    protoEvent_Modified = new Event_Modified();
+
+    Focus.initialize(this);
+
+    Focus_Empty.initializePattern();
+    funFocus_Empty = makeAFun("_Focus_empty", 0, false);
+    protoFocus_Empty = new Focus_Empty();
+
+    Focus_NotEmpty.initializePattern();
+    funFocus_NotEmpty = makeAFun("_Focus_not-empty", 4, false);
+    protoFocus_NotEmpty = new Focus_NotEmpty();
+
+    Area.initialize(this);
+
+    Area_Default.initializePattern();
+    funArea_Default = makeAFun("_Area_Default", 2, false);
+    protoArea_Default = new Area_Default();
+
+    FocusList.initialize(this);
+
+    FocusList_Empty.initializePattern();
+    funFocusList_Empty = makeAFun("_FocusList_empty", 0, false);
+    protoFocusList_Empty = new FocusList_Empty();
+
+    FocusList_Multi.initializePattern();
+    funFocusList_Multi = makeAFun("_FocusList_multi", 2, false);
+    protoFocusList_Multi = new FocusList_Multi();
+
+    Path.initialize(this);
+
+    Path_Root.initializePattern();
+    funPath_Root = makeAFun("_Path_root", 0, false);
+    protoPath_Root = new Path_Root();
+
+    Path_LeftLayout.initializePattern();
+    funPath_LeftLayout = makeAFun("_Path_left-layout", 0, false);
+    protoPath_LeftLayout = new Path_LeftLayout();
+
+    Path_Term.initializePattern();
+    funPath_Term = makeAFun("_Path_term", 1, false);
+    protoPath_Term = new Path_Term();
+
+    Path_RightLayout.initializePattern();
+    funPath_RightLayout = makeAFun("_Path_right-layout", 0, false);
+    protoPath_RightLayout = new Path_RightLayout();
+
+    Steps.initialize(this);
+
+    Steps_Empty.initializePattern();
+    funSteps_Empty = makeAFun("_Steps_empty", 0, false);
+    protoSteps_Empty = new Steps_Empty();
+
+    Steps_Multi.initializePattern();
+    funSteps_Multi = makeAFun("_Steps_multi", 2, false);
+    protoSteps_Multi = new Steps_Multi();
+
+    Graph.initialize(this);
+
+    Graph_Default.initializePattern();
+    funGraph_Default = makeAFun("_Graph_default", 3, false);
+    protoGraph_Default = new Graph_Default();
+
+    NodeList.initialize(this);
+
+    NodeList_Empty.initializePattern();
+    funNodeList_Empty = makeAFun("_NodeList_empty", 0, false);
+    protoNodeList_Empty = new NodeList_Empty();
+
+    NodeList_Multi.initializePattern();
+    funNodeList_Multi = makeAFun("_NodeList_multi", 2, false);
+    protoNodeList_Multi = new NodeList_Multi();
+
+    Node.initialize(this);
+
+    Node_Default.initializePattern();
+    funNode_Default = makeAFun("_Node_default", 2, false);
+    protoNode_Default = new Node_Default();
+
+    NodeId.initialize(this);
+
+    NodeId_Default.initializePattern();
+    funNodeId_Default = makeAFun("_NodeId_default", 1, false);
+    protoNodeId_Default = new NodeId_Default();
+
+    AttributeList.initialize(this);
+
+    AttributeList_Empty.initializePattern();
+    funAttributeList_Empty = makeAFun("_AttributeList_empty", 0, false);
+    protoAttributeList_Empty = new AttributeList_Empty();
+
+    AttributeList_Multi.initializePattern();
+    funAttributeList_Multi = makeAFun("_AttributeList_multi", 2, false);
+    protoAttributeList_Multi = new AttributeList_Multi();
+
+    Attribute.initialize(this);
+
+    Attribute_Label.initializePattern();
+    funAttribute_Label = makeAFun("_Attribute_label", 1, false);
+    protoAttribute_Label = new Attribute_Label();
+
+    Attribute_Shape.initializePattern();
+    funAttribute_Shape = makeAFun("_Attribute_shape", 1, false);
+    protoAttribute_Shape = new Attribute_Shape();
+
+    Attribute_Location.initializePattern();
+    funAttribute_Location = makeAFun("_Attribute_location", 2, false);
+    protoAttribute_Location = new Attribute_Location();
+
+    Attribute_Size.initializePattern();
+    funAttribute_Size = makeAFun("_Attribute_size", 2, false);
+    protoAttribute_Size = new Attribute_Size();
+
+    Attribute_CurvePoints.initializePattern();
+    funAttribute_CurvePoints = makeAFun("_Attribute_curve-points", 1, false);
+    protoAttribute_CurvePoints = new Attribute_CurvePoints();
+
+    Attribute_BoundingBox.initializePattern();
+    funAttribute_BoundingBox = makeAFun("_Attribute_bounding-box", 2, false);
+    protoAttribute_BoundingBox = new Attribute_BoundingBox();
+
+    Attribute_Direction.initializePattern();
+    funAttribute_Direction = makeAFun("_Attribute_direction", 1, false);
+    protoAttribute_Direction = new Attribute_Direction();
+
+    Attribute_Info.initializePattern();
+    funAttribute_Info = makeAFun("_Attribute_info", 2, false);
+    protoAttribute_Info = new Attribute_Info();
+
+    Shape.initialize(this);
+
+    Shape_Plaintext.initializePattern();
+    funShape_Plaintext = makeAFun("_Shape_plaintext", 0, false);
+    protoShape_Plaintext = new Shape_Plaintext();
+
+    Shape_Ellipse.initializePattern();
+    funShape_Ellipse = makeAFun("_Shape_ellipse", 0, false);
+    protoShape_Ellipse = new Shape_Ellipse();
+
+    Shape_Circle.initializePattern();
+    funShape_Circle = makeAFun("_Shape_circle", 0, false);
+    protoShape_Circle = new Shape_Circle();
+
+    Shape_Egg.initializePattern();
+    funShape_Egg = makeAFun("_Shape_egg", 0, false);
+    protoShape_Egg = new Shape_Egg();
+
+    Shape_Triangle.initializePattern();
+    funShape_Triangle = makeAFun("_Shape_triangle", 0, false);
+    protoShape_Triangle = new Shape_Triangle();
+
+    Shape_Box.initializePattern();
+    funShape_Box = makeAFun("_Shape_box", 0, false);
+    protoShape_Box = new Shape_Box();
+
+    Shape_Diamond.initializePattern();
+    funShape_Diamond = makeAFun("_Shape_diamond", 0, false);
+    protoShape_Diamond = new Shape_Diamond();
+
+    Shape_Trapezium.initializePattern();
+    funShape_Trapezium = makeAFun("_Shape_trapezium", 0, false);
+    protoShape_Trapezium = new Shape_Trapezium();
+
+    Shape_Parallelogram.initializePattern();
+    funShape_Parallelogram = makeAFun("_Shape_parallelogram", 0, false);
+    protoShape_Parallelogram = new Shape_Parallelogram();
+
+    Shape_House.initializePattern();
+    funShape_House = makeAFun("_Shape_house", 0, false);
+    protoShape_House = new Shape_House();
+
+    Shape_Hexagon.initializePattern();
+    funShape_Hexagon = makeAFun("_Shape_hexagon", 0, false);
+    protoShape_Hexagon = new Shape_Hexagon();
+
+    Shape_Octagon.initializePattern();
+    funShape_Octagon = makeAFun("_Shape_octagon", 0, false);
+    protoShape_Octagon = new Shape_Octagon();
+
+    Direction.initialize(this);
+
+    Direction_Forward.initializePattern();
+    funDirection_Forward = makeAFun("_Direction_forward", 0, false);
+    protoDirection_Forward = new Direction_Forward();
+
+    Direction_Back.initializePattern();
+    funDirection_Back = makeAFun("_Direction_back", 0, false);
+    protoDirection_Back = new Direction_Back();
+
+    Direction_Both.initializePattern();
+    funDirection_Both = makeAFun("_Direction_both", 0, false);
+    protoDirection_Both = new Direction_Both();
+
+    Direction_None.initializePattern();
+    funDirection_None = makeAFun("_Direction_none", 0, false);
+    protoDirection_None = new Direction_None();
+
+    EdgeList.initialize(this);
+
+    EdgeList_Empty.initializePattern();
+    funEdgeList_Empty = makeAFun("_EdgeList_empty", 0, false);
+    protoEdgeList_Empty = new EdgeList_Empty();
+
+    EdgeList_Multi.initializePattern();
+    funEdgeList_Multi = makeAFun("_EdgeList_multi", 2, false);
+    protoEdgeList_Multi = new EdgeList_Multi();
+
+    Edge.initialize(this);
+
+    Edge_Default.initializePattern();
+    funEdge_Default = makeAFun("_Edge_default", 3, false);
+    protoEdge_Default = new Edge_Default();
+
+    Polygon.initialize(this);
+
+    Polygon_Empty.initializePattern();
+    funPolygon_Empty = makeAFun("_Polygon_empty", 0, false);
+    protoPolygon_Empty = new Polygon_Empty();
+
+    Polygon_Multi.initializePattern();
+    funPolygon_Multi = makeAFun("_Polygon_multi", 2, false);
+    protoPolygon_Multi = new Polygon_Multi();
+
+    Point.initialize(this);
+
+    Point_Default.initializePattern();
+    funPoint_Default = makeAFun("_Point_default", 2, false);
+    protoPoint_Default = new Point_Default();
+
+  }
+
+  protected ActionList_Empty makeActionList_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoActionList_Empty) {
+      protoActionList_Empty.initHashCode(annos,fun,args);
+      return (ActionList_Empty) build(protoActionList_Empty);
+    }
+  }
+
+  public ActionList_Empty makeActionList_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeActionList_Empty( funActionList_Empty, args, empty);
+  }
+
+  protected ActionList_Multi makeActionList_Multi(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoActionList_Multi) {
+      protoActionList_Multi.initHashCode(annos,fun,args);
+      return (ActionList_Multi) build(protoActionList_Multi);
+    }
+  }
+
+  public ActionList_Multi makeActionList_Multi(Menu _head, ActionList _tail) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_head, _tail};
+    return makeActionList_Multi( funActionList_Multi, args, empty);
+  }
+
+  protected Menu_Default makeMenu_Default(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoMenu_Default) {
+      protoMenu_Default.initHashCode(annos,fun,args);
+      return (Menu_Default) build(protoMenu_Default);
+    }
+  }
+
+  public Menu_Default makeMenu_Default(String _main, String _sub) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeAppl(makeAFun(_main, 0, true)), makeAppl(makeAFun(_sub, 0, true))};
+    return makeMenu_Default( funMenu_Default, args, empty);
+  }
+
+  protected Event_Menu makeEvent_Menu(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoEvent_Menu) {
+      protoEvent_Menu.initHashCode(annos,fun,args);
+      return (Event_Menu) build(protoEvent_Menu);
+    }
+  }
+
+  public Event_Menu makeEvent_Menu(Menu _menu) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_menu};
+    return makeEvent_Menu( funEvent_Menu, args, empty);
+  }
+
+  protected Event_Mouse makeEvent_Mouse(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoEvent_Mouse) {
+      protoEvent_Mouse.initHashCode(annos,fun,args);
+      return (Event_Mouse) build(protoEvent_Mouse);
+    }
+  }
+
+  public Event_Mouse makeEvent_Mouse(Integer _location) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeInt(_location.intValue())};
+    return makeEvent_Mouse( funEvent_Mouse, args, empty);
+  }
+
+  protected Event_Contents makeEvent_Contents(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoEvent_Contents) {
+      protoEvent_Contents.initHashCode(annos,fun,args);
+      return (Event_Contents) build(protoEvent_Contents);
+    }
+  }
+
+  public Event_Contents makeEvent_Contents(String _text) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeAppl(makeAFun(_text, 0, true))};
+    return makeEvent_Contents( funEvent_Contents, args, empty);
+  }
+
+  protected Event_Modified makeEvent_Modified(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoEvent_Modified) {
+      protoEvent_Modified.initHashCode(annos,fun,args);
+      return (Event_Modified) build(protoEvent_Modified);
+    }
+  }
+
+  public Event_Modified makeEvent_Modified() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeEvent_Modified( funEvent_Modified, args, empty);
+  }
+
+  protected Focus_Empty makeFocus_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoFocus_Empty) {
+      protoFocus_Empty.initHashCode(annos,fun,args);
+      return (Focus_Empty) build(protoFocus_Empty);
+    }
+  }
+
+  public Focus_Empty makeFocus_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeFocus_Empty( funFocus_Empty, args, empty);
+  }
+
+  protected Focus_NotEmpty makeFocus_NotEmpty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoFocus_NotEmpty) {
+      protoFocus_NotEmpty.initHashCode(annos,fun,args);
+      return (Focus_NotEmpty) build(protoFocus_NotEmpty);
+    }
+  }
+
+  public Focus_NotEmpty makeFocus_NotEmpty(Path _path, String _sort, Area _area, Integer _unparsed) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_path, makeAppl(makeAFun(_sort, 0, true)), _area, makeInt(_unparsed.intValue())};
+    return makeFocus_NotEmpty( funFocus_NotEmpty, args, empty);
+  }
+
+  protected Area_Default makeArea_Default(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoArea_Default) {
+      protoArea_Default.initHashCode(annos,fun,args);
+      return (Area_Default) build(protoArea_Default);
+    }
+  }
+
+  public Area_Default makeArea_Default(Integer _start, Integer _length) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeInt(_start.intValue()), makeInt(_length.intValue())};
+    return makeArea_Default( funArea_Default, args, empty);
+  }
+
+  protected FocusList_Empty makeFocusList_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoFocusList_Empty) {
+      protoFocusList_Empty.initHashCode(annos,fun,args);
+      return (FocusList_Empty) build(protoFocusList_Empty);
+    }
+  }
+
+  public FocusList_Empty makeFocusList_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeFocusList_Empty( funFocusList_Empty, args, empty);
+  }
+
+  protected FocusList_Multi makeFocusList_Multi(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoFocusList_Multi) {
+      protoFocusList_Multi.initHashCode(annos,fun,args);
+      return (FocusList_Multi) build(protoFocusList_Multi);
+    }
+  }
+
+  public FocusList_Multi makeFocusList_Multi(Focus _head, FocusList _tail) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_head, _tail};
+    return makeFocusList_Multi( funFocusList_Multi, args, empty);
+  }
+
+  protected Path_Root makePath_Root(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoPath_Root) {
+      protoPath_Root.initHashCode(annos,fun,args);
+      return (Path_Root) build(protoPath_Root);
+    }
+  }
+
+  public Path_Root makePath_Root() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makePath_Root( funPath_Root, args, empty);
+  }
+
+  protected Path_LeftLayout makePath_LeftLayout(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoPath_LeftLayout) {
+      protoPath_LeftLayout.initHashCode(annos,fun,args);
+      return (Path_LeftLayout) build(protoPath_LeftLayout);
+    }
+  }
+
+  public Path_LeftLayout makePath_LeftLayout() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makePath_LeftLayout( funPath_LeftLayout, args, empty);
+  }
+
+  protected Path_Term makePath_Term(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoPath_Term) {
+      protoPath_Term.initHashCode(annos,fun,args);
+      return (Path_Term) build(protoPath_Term);
+    }
+  }
+
+  public Path_Term makePath_Term(Steps _steps) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_steps};
+    return makePath_Term( funPath_Term, args, empty);
+  }
+
+  protected Path_RightLayout makePath_RightLayout(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoPath_RightLayout) {
+      protoPath_RightLayout.initHashCode(annos,fun,args);
+      return (Path_RightLayout) build(protoPath_RightLayout);
+    }
+  }
+
+  public Path_RightLayout makePath_RightLayout() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makePath_RightLayout( funPath_RightLayout, args, empty);
+  }
+
+  protected Steps_Empty makeSteps_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoSteps_Empty) {
+      protoSteps_Empty.initHashCode(annos,fun,args);
+      return (Steps_Empty) build(protoSteps_Empty);
+    }
+  }
+
+  public Steps_Empty makeSteps_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeSteps_Empty( funSteps_Empty, args, empty);
+  }
+
+  protected Steps_Multi makeSteps_Multi(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoSteps_Multi) {
+      protoSteps_Multi.initHashCode(annos,fun,args);
+      return (Steps_Multi) build(protoSteps_Multi);
+    }
+  }
+
+  public Steps_Multi makeSteps_Multi(Integer _head, Steps _tail) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeInt(_head.intValue()), _tail};
+    return makeSteps_Multi( funSteps_Multi, args, empty);
+  }
+
+  protected Graph_Default makeGraph_Default(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoGraph_Default) {
+      protoGraph_Default.initHashCode(annos,fun,args);
+      return (Graph_Default) build(protoGraph_Default);
+    }
+  }
+
+  public Graph_Default makeGraph_Default(NodeList _nodes, EdgeList _edges, AttributeList _attributes) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_nodes, _edges, _attributes};
+    return makeGraph_Default( funGraph_Default, args, empty);
+  }
+
+  protected NodeList_Empty makeNodeList_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoNodeList_Empty) {
+      protoNodeList_Empty.initHashCode(annos,fun,args);
+      return (NodeList_Empty) build(protoNodeList_Empty);
+    }
+  }
+
+  public NodeList_Empty makeNodeList_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeNodeList_Empty( funNodeList_Empty, args, empty);
+  }
+
+  protected NodeList_Multi makeNodeList_Multi(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoNodeList_Multi) {
+      protoNodeList_Multi.initHashCode(annos,fun,args);
+      return (NodeList_Multi) build(protoNodeList_Multi);
+    }
+  }
+
+  public NodeList_Multi makeNodeList_Multi(Node _head, NodeList _tail) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_head, _tail};
+    return makeNodeList_Multi( funNodeList_Multi, args, empty);
+  }
+
+  protected Node_Default makeNode_Default(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoNode_Default) {
+      protoNode_Default.initHashCode(annos,fun,args);
+      return (Node_Default) build(protoNode_Default);
+    }
+  }
+
+  public Node_Default makeNode_Default(NodeId _id, AttributeList _attributes) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_id, _attributes};
+    return makeNode_Default( funNode_Default, args, empty);
+  }
+
+  protected NodeId_Default makeNodeId_Default(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoNodeId_Default) {
+      protoNodeId_Default.initHashCode(annos,fun,args);
+      return (NodeId_Default) build(protoNodeId_Default);
+    }
+  }
+
+  public NodeId_Default makeNodeId_Default(String _id) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeAppl(makeAFun(_id, 0, true))};
+    return makeNodeId_Default( funNodeId_Default, args, empty);
+  }
+
+  protected AttributeList_Empty makeAttributeList_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttributeList_Empty) {
+      protoAttributeList_Empty.initHashCode(annos,fun,args);
+      return (AttributeList_Empty) build(protoAttributeList_Empty);
+    }
+  }
+
+  public AttributeList_Empty makeAttributeList_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeAttributeList_Empty( funAttributeList_Empty, args, empty);
+  }
+
+  protected AttributeList_Multi makeAttributeList_Multi(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttributeList_Multi) {
+      protoAttributeList_Multi.initHashCode(annos,fun,args);
+      return (AttributeList_Multi) build(protoAttributeList_Multi);
+    }
+  }
+
+  public AttributeList_Multi makeAttributeList_Multi(Attribute _head, AttributeList _tail) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_head, _tail};
+    return makeAttributeList_Multi( funAttributeList_Multi, args, empty);
+  }
+
+  protected Attribute_Label makeAttribute_Label(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_Label) {
+      protoAttribute_Label.initHashCode(annos,fun,args);
+      return (Attribute_Label) build(protoAttribute_Label);
+    }
+  }
+
+  public Attribute_Label makeAttribute_Label(String _label) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeAppl(makeAFun(_label, 0, true))};
+    return makeAttribute_Label( funAttribute_Label, args, empty);
+  }
+
+  protected Attribute_Shape makeAttribute_Shape(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_Shape) {
+      protoAttribute_Shape.initHashCode(annos,fun,args);
+      return (Attribute_Shape) build(protoAttribute_Shape);
+    }
+  }
+
+  public Attribute_Shape makeAttribute_Shape(Shape _shape) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_shape};
+    return makeAttribute_Shape( funAttribute_Shape, args, empty);
+  }
+
+  protected Attribute_Location makeAttribute_Location(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_Location) {
+      protoAttribute_Location.initHashCode(annos,fun,args);
+      return (Attribute_Location) build(protoAttribute_Location);
+    }
+  }
+
+  public Attribute_Location makeAttribute_Location(Integer _x, Integer _y) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeInt(_x.intValue()), makeInt(_y.intValue())};
+    return makeAttribute_Location( funAttribute_Location, args, empty);
+  }
+
+  protected Attribute_Size makeAttribute_Size(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_Size) {
+      protoAttribute_Size.initHashCode(annos,fun,args);
+      return (Attribute_Size) build(protoAttribute_Size);
+    }
+  }
+
+  public Attribute_Size makeAttribute_Size(Integer _width, Integer _height) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeInt(_width.intValue()), makeInt(_height.intValue())};
+    return makeAttribute_Size( funAttribute_Size, args, empty);
+  }
+
+  protected Attribute_CurvePoints makeAttribute_CurvePoints(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_CurvePoints) {
+      protoAttribute_CurvePoints.initHashCode(annos,fun,args);
+      return (Attribute_CurvePoints) build(protoAttribute_CurvePoints);
+    }
+  }
+
+  public Attribute_CurvePoints makeAttribute_CurvePoints(Polygon _points) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_points};
+    return makeAttribute_CurvePoints( funAttribute_CurvePoints, args, empty);
+  }
+
+  protected Attribute_BoundingBox makeAttribute_BoundingBox(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_BoundingBox) {
+      protoAttribute_BoundingBox.initHashCode(annos,fun,args);
+      return (Attribute_BoundingBox) build(protoAttribute_BoundingBox);
+    }
+  }
+
+  public Attribute_BoundingBox makeAttribute_BoundingBox(Point _first, Point _second) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_first, _second};
+    return makeAttribute_BoundingBox( funAttribute_BoundingBox, args, empty);
+  }
+
+  protected Attribute_Direction makeAttribute_Direction(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_Direction) {
+      protoAttribute_Direction.initHashCode(annos,fun,args);
+      return (Attribute_Direction) build(protoAttribute_Direction);
+    }
+  }
+
+  public Attribute_Direction makeAttribute_Direction(Direction _direction) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_direction};
+    return makeAttribute_Direction( funAttribute_Direction, args, empty);
+  }
+
+  protected Attribute_Info makeAttribute_Info(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoAttribute_Info) {
+      protoAttribute_Info.initHashCode(annos,fun,args);
+      return (Attribute_Info) build(protoAttribute_Info);
+    }
+  }
+
+  public Attribute_Info makeAttribute_Info(String _key, aterm.ATerm _value) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeAppl(makeAFun(_key, 0, true)), _value};
+    return makeAttribute_Info( funAttribute_Info, args, empty);
+  }
+
+  protected Shape_Plaintext makeShape_Plaintext(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Plaintext) {
+      protoShape_Plaintext.initHashCode(annos,fun,args);
+      return (Shape_Plaintext) build(protoShape_Plaintext);
+    }
+  }
+
+  public Shape_Plaintext makeShape_Plaintext() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Plaintext( funShape_Plaintext, args, empty);
+  }
+
+  protected Shape_Ellipse makeShape_Ellipse(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Ellipse) {
+      protoShape_Ellipse.initHashCode(annos,fun,args);
+      return (Shape_Ellipse) build(protoShape_Ellipse);
+    }
+  }
+
+  public Shape_Ellipse makeShape_Ellipse() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Ellipse( funShape_Ellipse, args, empty);
+  }
+
+  protected Shape_Circle makeShape_Circle(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Circle) {
+      protoShape_Circle.initHashCode(annos,fun,args);
+      return (Shape_Circle) build(protoShape_Circle);
+    }
+  }
+
+  public Shape_Circle makeShape_Circle() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Circle( funShape_Circle, args, empty);
+  }
+
+  protected Shape_Egg makeShape_Egg(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Egg) {
+      protoShape_Egg.initHashCode(annos,fun,args);
+      return (Shape_Egg) build(protoShape_Egg);
+    }
+  }
+
+  public Shape_Egg makeShape_Egg() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Egg( funShape_Egg, args, empty);
+  }
+
+  protected Shape_Triangle makeShape_Triangle(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Triangle) {
+      protoShape_Triangle.initHashCode(annos,fun,args);
+      return (Shape_Triangle) build(protoShape_Triangle);
+    }
+  }
+
+  public Shape_Triangle makeShape_Triangle() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Triangle( funShape_Triangle, args, empty);
+  }
+
+  protected Shape_Box makeShape_Box(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Box) {
+      protoShape_Box.initHashCode(annos,fun,args);
+      return (Shape_Box) build(protoShape_Box);
+    }
+  }
+
+  public Shape_Box makeShape_Box() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Box( funShape_Box, args, empty);
+  }
+
+  protected Shape_Diamond makeShape_Diamond(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Diamond) {
+      protoShape_Diamond.initHashCode(annos,fun,args);
+      return (Shape_Diamond) build(protoShape_Diamond);
+    }
+  }
+
+  public Shape_Diamond makeShape_Diamond() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Diamond( funShape_Diamond, args, empty);
+  }
+
+  protected Shape_Trapezium makeShape_Trapezium(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Trapezium) {
+      protoShape_Trapezium.initHashCode(annos,fun,args);
+      return (Shape_Trapezium) build(protoShape_Trapezium);
+    }
+  }
+
+  public Shape_Trapezium makeShape_Trapezium() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Trapezium( funShape_Trapezium, args, empty);
+  }
+
+  protected Shape_Parallelogram makeShape_Parallelogram(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Parallelogram) {
+      protoShape_Parallelogram.initHashCode(annos,fun,args);
+      return (Shape_Parallelogram) build(protoShape_Parallelogram);
+    }
+  }
+
+  public Shape_Parallelogram makeShape_Parallelogram() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Parallelogram( funShape_Parallelogram, args, empty);
+  }
+
+  protected Shape_House makeShape_House(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_House) {
+      protoShape_House.initHashCode(annos,fun,args);
+      return (Shape_House) build(protoShape_House);
+    }
+  }
+
+  public Shape_House makeShape_House() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_House( funShape_House, args, empty);
+  }
+
+  protected Shape_Hexagon makeShape_Hexagon(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Hexagon) {
+      protoShape_Hexagon.initHashCode(annos,fun,args);
+      return (Shape_Hexagon) build(protoShape_Hexagon);
+    }
+  }
+
+  public Shape_Hexagon makeShape_Hexagon() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Hexagon( funShape_Hexagon, args, empty);
+  }
+
+  protected Shape_Octagon makeShape_Octagon(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoShape_Octagon) {
+      protoShape_Octagon.initHashCode(annos,fun,args);
+      return (Shape_Octagon) build(protoShape_Octagon);
+    }
+  }
+
+  public Shape_Octagon makeShape_Octagon() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeShape_Octagon( funShape_Octagon, args, empty);
+  }
+
+  protected Direction_Forward makeDirection_Forward(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoDirection_Forward) {
+      protoDirection_Forward.initHashCode(annos,fun,args);
+      return (Direction_Forward) build(protoDirection_Forward);
+    }
+  }
+
+  public Direction_Forward makeDirection_Forward() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeDirection_Forward( funDirection_Forward, args, empty);
+  }
+
+  protected Direction_Back makeDirection_Back(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoDirection_Back) {
+      protoDirection_Back.initHashCode(annos,fun,args);
+      return (Direction_Back) build(protoDirection_Back);
+    }
+  }
+
+  public Direction_Back makeDirection_Back() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeDirection_Back( funDirection_Back, args, empty);
+  }
+
+  protected Direction_Both makeDirection_Both(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoDirection_Both) {
+      protoDirection_Both.initHashCode(annos,fun,args);
+      return (Direction_Both) build(protoDirection_Both);
+    }
+  }
+
+  public Direction_Both makeDirection_Both() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeDirection_Both( funDirection_Both, args, empty);
+  }
+
+  protected Direction_None makeDirection_None(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoDirection_None) {
+      protoDirection_None.initHashCode(annos,fun,args);
+      return (Direction_None) build(protoDirection_None);
+    }
+  }
+
+  public Direction_None makeDirection_None() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeDirection_None( funDirection_None, args, empty);
+  }
+
+  protected EdgeList_Empty makeEdgeList_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoEdgeList_Empty) {
+      protoEdgeList_Empty.initHashCode(annos,fun,args);
+      return (EdgeList_Empty) build(protoEdgeList_Empty);
+    }
+  }
+
+  public EdgeList_Empty makeEdgeList_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makeEdgeList_Empty( funEdgeList_Empty, args, empty);
+  }
+
+  protected EdgeList_Multi makeEdgeList_Multi(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoEdgeList_Multi) {
+      protoEdgeList_Multi.initHashCode(annos,fun,args);
+      return (EdgeList_Multi) build(protoEdgeList_Multi);
+    }
+  }
+
+  public EdgeList_Multi makeEdgeList_Multi(Edge _head, EdgeList _tail) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_head, _tail};
+    return makeEdgeList_Multi( funEdgeList_Multi, args, empty);
+  }
+
+  protected Edge_Default makeEdge_Default(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoEdge_Default) {
+      protoEdge_Default.initHashCode(annos,fun,args);
+      return (Edge_Default) build(protoEdge_Default);
+    }
+  }
+
+  public Edge_Default makeEdge_Default(NodeId _from, NodeId _to, AttributeList _attributes) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_from, _to, _attributes};
+    return makeEdge_Default( funEdge_Default, args, empty);
+  }
+
+  protected Polygon_Empty makePolygon_Empty(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoPolygon_Empty) {
+      protoPolygon_Empty.initHashCode(annos,fun,args);
+      return (Polygon_Empty) build(protoPolygon_Empty);
+    }
+  }
+
+  public Polygon_Empty makePolygon_Empty() {
+    aterm.ATerm[] args = new aterm.ATerm[] {};
+    return makePolygon_Empty( funPolygon_Empty, args, empty);
+  }
+
+  protected Polygon_Multi makePolygon_Multi(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoPolygon_Multi) {
+      protoPolygon_Multi.initHashCode(annos,fun,args);
+      return (Polygon_Multi) build(protoPolygon_Multi);
+    }
+  }
+
+  public Polygon_Multi makePolygon_Multi(Point _head, Polygon _tail) {
+    aterm.ATerm[] args = new aterm.ATerm[] {_head, _tail};
+    return makePolygon_Multi( funPolygon_Multi, args, empty);
+  }
+
+  protected Point_Default makePoint_Default(aterm.AFun fun, aterm.ATerm[] args, aterm.ATermList annos) {
+    synchronized (protoPoint_Default) {
+      protoPoint_Default.initHashCode(annos,fun,args);
+      return (Point_Default) build(protoPoint_Default);
+    }
+  }
+
+  public Point_Default makePoint_Default(Integer _x, Integer _y) {
+    aterm.ATerm[] args = new aterm.ATerm[] {makeInt(_x.intValue()), makeInt(_y.intValue())};
+    return makePoint_Default( funPoint_Default, args, empty);
+  }
+
+}

@@ -22,14 +22,16 @@ import aterm.ATermAppl;
 import aterm.ATermList;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
-import nl.cwi.sen.metastudio.graph.MetaGraphFactory;
+import nl.cwi.sen.metastudio.datastructures.ActionList;
+import nl.cwi.sen.metastudio.datastructures.DatastructuresFactory;
+import nl.cwi.sen.metastudio.editor.MetaEditor;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
 
-	private MetaGraphFactory factory;
+	private DatastructuresFactory factory;
 	private static UserEnvironmentBridge bridge;
 	private static Thread t;
 	private static PopupMenu popupMenu;
@@ -55,7 +57,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void run() {
-		factory = new MetaGraphFactory();
+		factory = new DatastructuresFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
 
 		MetastudioConnection f = new MetastudioConnection(bridge, factory);
@@ -295,9 +297,9 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void editFile(ATerm editorID, String editor, String fileName) {
+	public void editFile(ATerm editorId, String editor, String fileName) {
 		final String _fileName = fileName;
-		final ATerm _editorID = editorID;
+		final ATerm _editorId = editorId;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				IWorkbenchPage page =
@@ -320,9 +322,9 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 				} catch (Exception e) {
 				}
 
-				if (editorRegistry.getEditorPartByEditorID(_editorID) == null
+				if (editorRegistry.getEditorPartByeditorId(_editorId) == null
 					&& part != null) {
-					editorRegistry.addEditor(_editorID, _fileName, part);
+					editorRegistry.addEditor(_editorId, _fileName, part);
 				}
 			}
 		});
@@ -332,7 +334,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void killEditor(ATerm editorID) {
+	public void killEditor(ATerm editorId) {
 		// TODO Auto-generated method stub
 	}
 
@@ -348,8 +350,8 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void editorToFront(ATerm editorID) {
-		final ATerm _editorID = editorID;
+	public void editorToFront(ATerm editorId) {
+		final ATerm _editorId = editorId;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				IWorkbenchPage page =
@@ -359,7 +361,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 						.getActivePage();
 
 				String fileName =
-					editorRegistry.getFileNameByEditorID(_editorID);
+					editorRegistry.getFileNameByeditorId(_editorId);
 				IPath path = new Path(fileName);
 				IFile file =
 					MetastudioPlugin
@@ -376,7 +378,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		});
 	}
 
-	public void setCursorAtFocus(ATerm t0, ATerm t1) {
+	public void setCursorAtFocus(ATerm editorId, ATerm focus) {
 		// TODO Auto-generated method stub
 	}
 
@@ -384,8 +386,15 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void setActions(ATerm t0, ATerm t1) {
-		// TODO Auto-generated method stub
+	public void setActions(ATerm editorId, ATerm actionList) {
+		final ActionList _actionList = ActionList.fromTerm(actionList);
+		final ATerm _editorId = editorId;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MetaEditor part = (MetaEditor)editorRegistry.getEditorPartByeditorId(_editorId);
+				part.addActions(_editorId, _actionList);
+			}
+		});
 	}
 
 	public void warning(String s0) {
@@ -412,12 +421,12 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void editorDisconnected(IEditorPart part) {
-		ATerm editorID = editorRegistry.getEditorIDByEditorPart(part);
+		ATerm editorId = editorRegistry.geteditorIdByEditorPart(part);
 		MetastudioConnection connection = new MetastudioConnection();
 		connection.getBridge().postEvent(
 			connection.getFactory().make(
 				"editor-disconnected(<term>)",
-				editorID));
+				editorId));
 
 		editorRegistry.removeEditor((IEditorPart) part);
 	}
