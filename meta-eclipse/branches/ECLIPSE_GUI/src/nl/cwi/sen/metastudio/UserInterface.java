@@ -19,7 +19,6 @@ import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -146,8 +145,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		final String _message = status;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				IStatusLineManager slm = PerspectiveFactory.getStatusLineManager();
-				slm.setMessage(_message);
+				PerspectiveFactory.getStatusLineManager().setMessage(_message);
 			}
 		});
 	}
@@ -389,7 +387,8 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 						.getFileForLocation(
 						path);
 
-				// file not found: try again after adding absolute path of current project
+				// file not found: try again after adding absolute path of
+				// current project
 				if (file == null) {
 					String fullPath =
 						MetastudioPlugin
@@ -410,7 +409,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 				IEditorPart part = null;
 				try {
-					part = IDE.openEditor(page,file,true);
+					part = IDE.openEditor(page, file, true);
 				} catch (Exception e) {
 				}
 
@@ -470,7 +469,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 						path);
 
 				try {
-					IDE.openEditor(page, file,true);
+					IDE.openEditor(page, file, true);
 				} catch (Exception e) {
 				}
 			}
