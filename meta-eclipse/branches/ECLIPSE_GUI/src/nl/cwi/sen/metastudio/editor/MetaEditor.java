@@ -1,6 +1,9 @@
 package nl.cwi.sen.metastudio.editor;
 
+import java.awt.PopupMenu;
+
 import nl.cwi.sen.metastudio.MetastudioConnection;
+import nl.cwi.sen.metastudio.UserInterface;
 import nl.cwi.sen.metastudio.adt.editordata.Area;
 import nl.cwi.sen.metastudio.adt.editordata.Focus;
 import nl.cwi.sen.metastudio.adt.texteditor.ActionList;
@@ -23,6 +26,8 @@ public class MetaEditor extends TextEditor {
 	private String moduleName;
 	private IFile file;
 	
+	private PopupMenu popupMenu = new PopupMenu();
+
 	public MetaEditor() {
 		super();
 		colorManager = new ColorManager();
@@ -31,7 +36,7 @@ public class MetaEditor extends TextEditor {
 	}
 	
 	public void createPartControl(Composite parent) {
-		MetastudioConnection connection = new MetastudioConnection();
+		MetastudioConnection connection = UserInterface.getConnection();
 		super.createPartControl(parent);
 		
 		String fileExtension = "", buttonName = "";
@@ -78,7 +83,7 @@ public class MetaEditor extends TextEditor {
 		selectAndReveal(start, length);
 		String select = ((ITextSelection)doGetSelection()).getText();
 
-		MetastudioConnection connection = new MetastudioConnection();
+		MetastudioConnection connection = UserInterface.getConnection();
 		connection.getBridge().postEvent(connection.getPureFactory().make("contents(<term>,<str>)", editorId, select));
 	}
 

@@ -2,6 +2,7 @@ package nl.cwi.sen.metastudio.actions;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.PerspectiveFactory;
+import nl.cwi.sen.metastudio.UserInterface;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
@@ -22,7 +23,7 @@ public class OpenModule implements IWorkbenchWindowActionDelegate {
 		if (selection != null) {
 			Object object = selection.getFirstElement();
 			if (object instanceof IFile) {
-				MetastudioConnection connection = new MetastudioConnection();
+				MetastudioConnection connection = UserInterface.getConnection();
 				String modulePath = ((IFile)object).getLocation().toString();
 		
 				connection.getBridge().postEvent(connection.getPureFactory().make("eclipse-open-initial-module(<str>)", modulePath));		

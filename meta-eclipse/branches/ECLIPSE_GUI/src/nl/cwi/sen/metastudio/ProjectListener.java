@@ -41,7 +41,7 @@ public class ProjectListener implements IResourceChangeListener {
 		   					System.out.println(e.getMessage());
 		   				}
 		   				
-		   				MetastudioConnection connection = new MetastudioConnection();
+		   				MetastudioConnection connection = UserInterface.getConnection();
 						ATermList fileList = connection.getPureFactory().makeList();
 		   				for (int j = 0; j < members.length; j++) {
 		   					if (members[j].getFileExtension().equals("sdf") == true) {

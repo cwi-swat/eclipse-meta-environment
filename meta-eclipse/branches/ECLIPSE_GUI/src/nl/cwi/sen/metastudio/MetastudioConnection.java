@@ -6,45 +6,49 @@ import nl.cwi.sen.metastudio.adt.texteditor.TextEditorFactory;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 
 public class MetastudioConnection {
-	private static UserEnvironmentBridge _bridge;
-	private static aterm.pure.PureFactory _factory;
-	private static EditorDataFactory _editorDataFactory;
-	private static TextEditorFactory _textEditorFactory;
-	private static MetaGraphFactory _metaGraphFactory;
-
-	public MetastudioConnection() {
-	}
+	private UserEnvironmentBridge bridge;
+	private aterm.pure.PureFactory factory;
+	private EditorDataFactory editorDataFactory;
+	private TextEditorFactory textEditorFactory;
+	private MetaGraphFactory metaGraphFactory;
 
 	public MetastudioConnection(
 		UserEnvironmentBridge bridge,
-		aterm.pure.PureFactory factory,
-		EditorDataFactory editorDataFactory,
-		TextEditorFactory textEditorFactory,
-		MetaGraphFactory metaGraphFactory) {
-		_bridge = bridge;
-		_factory = factory;
-		_editorDataFactory = editorDataFactory;
-		_textEditorFactory = textEditorFactory;
-		_metaGraphFactory = metaGraphFactory;
+		aterm.pure.PureFactory factory) {
+		this.bridge = bridge;
+		this.factory = factory;
 	}
 
 	public UserEnvironmentBridge getBridge() {
-		return _bridge;
+		return bridge;
 	}
 
 	public aterm.pure.PureFactory getPureFactory() {
-		return _factory;
+		return factory;
 	}
 
 	public EditorDataFactory getEditorDataFactory() {
-		return _editorDataFactory;
+		return editorDataFactory;
 	}
 
 	public TextEditorFactory getTextEditorFactory() {
-		return _textEditorFactory;
+		return textEditorFactory;
 	}
 
 	public MetaGraphFactory getMetaGraphFactory() {
-		return _metaGraphFactory;
+		return metaGraphFactory;
 	}
+
+	public void setEditorDataFactory(EditorDataFactory dataFactory) {
+		this.editorDataFactory = dataFactory;
+	}
+
+	public void setMetaGraphFactory(MetaGraphFactory graphFactory) {
+		this.metaGraphFactory = graphFactory;
+	}
+
+	public void setTextEditorFactory(TextEditorFactory editorFactory) {
+		this.textEditorFactory = editorFactory;
+	}
+
 }

@@ -38,14 +38,14 @@ public class GraphImportPart extends ViewPart {
 			}
 		});
 
-		MetastudioConnection connection = new MetastudioConnection();
-		MetaGraphFactory metaGraphFactory = connection.getMetaGraphFactory();
-
-		NodeList nodes = metaGraphFactory.makeNodeList_Empty();
-		EdgeList edges = metaGraphFactory.makeEdgeList_Empty();
-		AttributeList attrs = metaGraphFactory.makeAttributeList_Empty();
-
-		graph = metaGraphFactory.makeGraph_Default(nodes, edges, attrs);
+//		MetastudioConnection connection = new MetastudioConnection();
+//		MetaGraphFactory metaGraphFactory = connection.getMetaGraphFactory();
+//
+//		NodeList nodes = metaGraphFactory.makeNodeList_Empty();
+//		EdgeList edges = metaGraphFactory.makeEdgeList_Empty();
+//		AttributeList attrs = metaGraphFactory.makeAttributeList_Empty();
+//
+//		graph = metaGraphFactory.makeGraph_Default(nodes, edges, attrs);
 	}
 
 	private void doPaint(PaintEvent event) {

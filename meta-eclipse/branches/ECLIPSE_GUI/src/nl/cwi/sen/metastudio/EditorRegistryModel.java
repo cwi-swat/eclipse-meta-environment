@@ -5,25 +5,37 @@ import org.eclipse.ui.IEditorPart;
 import aterm.ATerm;
 
 public class EditorRegistryModel {
-	private ATerm _editorId;
-	private String _fileName;
-	private IEditorPart _part;
+	private ATerm editorId;
+	private String fileName;
+	private IEditorPart part;
 	
 	public EditorRegistryModel(ATerm editorId, String fileName, IEditorPart part) {
-		_editorId = editorId;
-		_fileName = fileName;
-		_part = part;
+		setEditorId(editorId);
+		setFileName(fileName);
+		setPart(part);
 	}
-	
-	public ATerm geteditorId() {
-		return _editorId;
+
+	public ATerm getEditorId() {
+		return editorId;
 	}
-	
+
+	public void setEditorId(ATerm editorId) {
+		this.editorId = editorId;
+	}
+
 	public String getFileName() {
-		return _fileName;
+		return fileName;
 	}
-	
-	public IEditorPart getEditorPart() {
-		return _part;
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public IEditorPart getPart() {
+		return part;
+	}
+
+	public void setPart(IEditorPart part) {
+		this.part = part;
 	}
 }

@@ -7,6 +7,7 @@
 package nl.cwi.sen.metastudio.moduleview;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
+import nl.cwi.sen.metastudio.UserInterface;
 import nl.cwi.sen.metastudio.model.Module;
 
 import org.eclipse.jface.action.Action;
@@ -36,7 +37,7 @@ public class ModuleExplorerAction extends Action {
 	}
 
 	public void run() {
-		MetastudioConnection connection = new MetastudioConnection();
+		MetastudioConnection connection = UserInterface.getConnection();
 		ISelection selection = _tree.getSelection();
 
 		if (selection instanceof IStructuredSelection) {

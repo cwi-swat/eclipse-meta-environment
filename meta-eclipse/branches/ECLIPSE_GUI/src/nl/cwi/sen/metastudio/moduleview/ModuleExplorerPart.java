@@ -102,7 +102,7 @@ public class ModuleExplorerPart
 		Object first = ((IStructuredSelection) selection).getFirstElement();
 		if (first instanceof Module) {
 			final String moduleName = ((Module) first).getModulePath();
-			MetastudioConnection connection = new MetastudioConnection();
+			MetastudioConnection connection = UserInterface.getConnection();
 
 			popupMenu.invalidate();
 			connection.getBridge().postEvent(

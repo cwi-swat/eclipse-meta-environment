@@ -12,6 +12,7 @@ package nl.cwi.sen.metastudio.editor;
 
 import nl.cwi.sen.metastudio.EditorRegistry;
 import nl.cwi.sen.metastudio.MetastudioConnection;
+import nl.cwi.sen.metastudio.UserInterface;
 
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
@@ -27,9 +28,9 @@ public class MetaEditorDoubleClickStrategy
 	}
 
 	public void doubleClicked(ITextViewer part) {
-		EditorRegistry registry = new EditorRegistry();
+		EditorRegistry registry = UserInterface.getEditorRegistry();
 		ATerm editorId = registry.geteditorIdByEditorPart(_editor);
-		MetastudioConnection connection = new MetastudioConnection();
+		MetastudioConnection connection = UserInterface.getConnection();
 		int pos = part.getSelectedRange().x;
 
 		if (pos < 0)

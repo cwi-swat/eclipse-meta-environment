@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
+import metastudio.graph.Graph;
 import metastudio.graph.MetaGraphFactory;
 import nl.cwi.sen.metastudio.adt.editordata.EditorDataFactory;
 import nl.cwi.sen.metastudio.adt.texteditor.ActionList;
@@ -35,14 +36,17 @@ import aterm.pure.PureFactory;
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
 
-	private PureFactory factory;
+	//	private PureFactory factory;
 	private EditorDataFactory editorDataFactory;
 	private TextEditorFactory textEditorFactory;
 	private MetaGraphFactory metaGraphFactory;
-	private static UserEnvironmentBridge bridge;
+	private static MetastudioConnection connection;
+
 	private static Thread t;
 	private static PopupMenu popupMenu;
 	private static EditorRegistry editorRegistry;
+
+	private Graph graph;
 
 	private ATerm ACTION_MENUBAR;
 	private ATerm ACTION_TOOLBAR;
@@ -57,21 +61,20 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void run() {
-		factory = new PureFactory();
-		editorDataFactory = new EditorDataFactory(factory);
-		textEditorFactory = new TextEditorFactory(factory);
+		PureFactory factory = new PureFactory();
+		createDataFactories(factory);
 
-		metaGraphFactory = new MetaGraphFactory();
-		bridge = new UserEnvironmentBridge(factory, this);
+		UserEnvironmentBridge bridge = new UserEnvironmentBridge(factory, this);
+		createConnection(factory, bridge);
 
-		MetastudioConnection f =
-			new MetastudioConnection(
-				bridge,
-				factory,
-				editorDataFactory,
-				textEditorFactory,
-				metaGraphFactory);
+		initializeBridge(bridge);
+		t = new Thread(bridge);
+		t.start();
 
+		initialize();
+	}
+
+	private void initializeBridge(UserEnvironmentBridge bridge) {
 		String[] args = new String[6];
 		args[0] = "-TB_HOST_NAME";
 		args[1] = "localhost";
@@ -88,11 +91,29 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			bridge.connect();
 		} catch (IOException e) {
 		}
+	}
 
-		t = new Thread(bridge);
-		t.start();
+	private void createConnection(
+		PureFactory factory,
+		UserEnvironmentBridge bridge) {
+		connection = new MetastudioConnection(bridge, factory);
+		connection.setEditorDataFactory(editorDataFactory);
+		connection.setTextEditorFactory(textEditorFactory);
+		connection.setMetaGraphFactory(metaGraphFactory);
+	}
 
-		initialize();
+	private void createDataFactories(PureFactory factory) {
+		editorDataFactory = new EditorDataFactory(factory);
+		textEditorFactory = new TextEditorFactory(factory);
+		metaGraphFactory = new MetaGraphFactory(factory);
+	}
+
+	public static MetastudioConnection getConnection() {
+		return connection;
+	}
+	
+	public static EditorRegistry getEditorRegistry() {
+		return editorRegistry;
 	}
 
 	private void initialize() {
@@ -103,19 +124,14 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	private void initializeATermPatterns() {
-		ACTION_MENUBAR = factory.parse("studio-menubar");
-		ACTION_TOOLBAR = factory.parse("studio-toolbar");
-		ACTION_MODULE_POPUP = factory.parse("module-popup");
-		ACTION_NEW_MODULE_POPUP = factory.parse("new-module-popup");
+		ACTION_MENUBAR = connection.getPureFactory().parse("studio-menubar");
+		ACTION_TOOLBAR = connection.getPureFactory().parse("studio-toolbar");
+		ACTION_MODULE_POPUP = connection.getPureFactory().parse("module-popup");
+		ACTION_NEW_MODULE_POPUP =
+			connection.getPureFactory().parse("new-module-popup");
 	}
 
-	public void initializeUi(String s0) {
-		//		final String str0 = s0;
-		//		Display.getDefault().asyncExec(new Runnable() {
-		//			public void run() {
-		//				ModuleExplorerPart.addModule(str0);
-		//			}
-		//		});
+	public void initializeUi(String caption) {
 	}
 
 	public void buttonsFound(
@@ -223,6 +239,17 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		ATermList pairs = (ATermList) info;
 		List entries = new LinkedList();
 
+		extractModuleInfoFromATerm(pairs, entries);
+
+		final List finalEntries = entries;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				ModuleInfoPart.setModuleInfo(module, finalEntries);
+			}
+		});
+	}
+
+	private void extractModuleInfoFromATerm(ATermList pairs, List entries) {
 		while (!pairs.isEmpty()) {
 			ATermList pair = (ATermList) pairs.getFirst();
 
@@ -240,13 +267,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 			pairs = pairs.getNext();
 		}
-
-		final List finalEntries = entries;
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				ModuleInfoPart.setModuleInfo(module, finalEntries);
-			}
-		});
 	}
 
 	public void updateList(String s0, String s1) {
@@ -254,8 +274,11 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			"UserInterface.java: Update list not implemented yet!");
 	}
 
-	public void newGraph(ATerm t0) {
-		setModules((ATermList) t0);
+	public void newGraph(ATerm importRelations) {
+		setModules((ATermList) importRelations);
+		graph =
+			Graph.fromImportList(metaGraphFactory, (ATermList) importRelations);
+		//layoutGraph(importGraphPanel, graph);
 	}
 
 	public void displayGraph(String s0, ATerm t1) {
@@ -274,29 +297,39 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 				// Hack to get a shell for the messagebox
 				Shell shell = ModuleExplorerPart.getShell();
 
-				ATerm answer = factory.make("snd-value(answer(cancel))");
+				ATerm answer =
+					connection.getPureFactory().make(
+						"snd-value(answer(cancel))");
 				if (shell != null) {
-					MessageBox messageBox =
-						new MessageBox(
-							PlatformUI
-								.getWorkbench()
-								.getActiveWorkbenchWindow()
-								.getShell(),
-							SWT.ICON_QUESTION | SWT.YES | SWT.NO | SWT.CANCEL);
-					messageBox.setMessage(question);
+					MessageBox messageBox = createMessageBox(question);
 
 					int choice = messageBox.open();
-
 					if (choice == SWT.YES) {
-						answer = factory.make("snd-value(answer(yes))");
+						answer =
+							connection.getPureFactory().make(
+								"snd-value(answer(yes))");
 					} else if (choice == SWT.NO) {
-						answer = factory.make("snd-value(answer(no))");
+						answer =
+							connection.getPureFactory().make(
+								"snd-value(answer(no))");
 					}
 				}
 				try {
-					bridge.sendTerm(answer);
+					connection.getBridge().sendTerm(answer);
 				} catch (IOException e) {
 				}
+			}
+
+			private MessageBox createMessageBox(final String question) {
+				MessageBox messageBox =
+					new MessageBox(
+						PlatformUI
+							.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getShell(),
+						SWT.ICON_QUESTION | SWT.YES | SWT.NO | SWT.CANCEL);
+				messageBox.setMessage(question);
+				return messageBox;
 			}
 		});
 
@@ -345,7 +378,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void editorDisconnected(IEditorPart part) {
 		ATerm editorId = editorRegistry.geteditorIdByEditorPart(part);
-		MetastudioConnection connection = new MetastudioConnection();
 		connection.getBridge().postEvent(
 			connection.getPureFactory().make(
 				"editor-disconnected(<term>)",
@@ -360,7 +392,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void setActions(final ATerm editorId, final ATerm actionList) {
-		System.out.println("SetActions");
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				MetaEditor part =
