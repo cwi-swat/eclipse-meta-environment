@@ -13,7 +13,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 import aterm.ATerm;
@@ -25,13 +28,15 @@ import nl.cwi.sen.metastudio.graph.MetaGraphFactory;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
-public class UserInterface implements UserEnvironmentTif, Runnable {
+public class UserInterface
+	implements UserEnvironmentTif, Runnable, IPartListener {
 	private static IStatusLineManager statusLineMgr;
 
 	private MetaGraphFactory factory;
 	private static UserEnvironmentBridge bridge;
 	private static Thread t;
 	private static PopupMenu popupMenu;
+	private static EditorRegistry editorRegistry;
 
 	private ATerm ACTION_MENUBAR;
 	private ATerm ACTION_TOOLBAR;
@@ -47,8 +52,10 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	private void initialize() {
 		popupMenu = new PopupMenu();
+		editorRegistry = new EditorRegistry();
 
 		initializeATermPatterns();
+		// addPartListener!!!!
 	}
 
 	public void run() {
@@ -157,7 +164,8 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 			public void run() {
 				ATermList modules = _modules;
 				for (; !modules.isEmpty(); modules = modules.getNext()) {
-					String moduleName = ((ATermAppl) modules.getFirst()).getAFun().getName();
+					String moduleName =
+						((ATermAppl) modules.getFirst()).getAFun().getName();
 					ModuleExplorerPart.removeModule(moduleName);
 				}
 			}
@@ -213,11 +221,11 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 				}
 				try {
 					bridge.sendTerm(answer);
-				} catch(IOException e) {					
+				} catch (IOException e) {
 				}
 			}
 		});
-		
+
 		// keep compiler happy...
 		return null;
 	}
@@ -293,16 +301,32 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void editFile(ATerm editorID, String editor, String fileName) {
 		final String _fileName = fileName;
+		final ATerm _editorID = editorID;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				IWorkbenchPage page =
+					PlatformUI
+						.getWorkbench()
+						.getActiveWorkbenchWindow()
+						.getActivePage();
 
 				IPath path = new Path(_fileName);
-				IFile file = MetastudioPlugin.getWorkspace().getRoot().getFileForLocation(path);
+				IFile file =
+					MetastudioPlugin
+						.getWorkspace()
+						.getRoot()
+						.getFileForLocation(
+						path);
 
+				IEditorPart part = null;
 				try {
-					page.openEditor(file);
+					part = page.openEditor(file);
 				} catch (Exception e) {
+				}
+
+				if (editorRegistry.getEditorPartByEditorID(_editorID) == null
+					&& part != null) {
+					editorRegistry.addEditor(_editorID, _fileName, part);
 				}
 			}
 		});
@@ -312,7 +336,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void killEditor(ATerm t0) {
+	public void killEditor(ATerm editorID) {
 		// TODO Auto-generated method stub
 	}
 
@@ -328,8 +352,32 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void editorToFront(ATerm t0) {
-		// TODO Auto-generated method stub
+	public void editorToFront(ATerm editorID) {
+		final ATerm _editorID = editorID;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				IWorkbenchPage page =
+					PlatformUI
+						.getWorkbench()
+						.getActiveWorkbenchWindow()
+						.getActivePage();
+
+				String fileName =
+					editorRegistry.getFileNameByEditorID(_editorID);
+				IPath path = new Path(fileName);
+				IFile file =
+					MetastudioPlugin
+						.getWorkspace()
+						.getRoot()
+						.getFileForLocation(
+						path);
+
+				try {
+					page.openEditor(file);
+				} catch (Exception e) {
+				}
+			}
+		});
 	}
 
 	public void setCursorAtFocus(ATerm t0, ATerm t1) {
@@ -362,10 +410,34 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void clearFocus(ATerm t0) {
-		// TODO Auto-generated method stub
 	}
 
 	public void rereadContents(ATerm t0) {
-		// TODO Auto-generated method stub
+	}
+
+	public void partActivated(IWorkbenchPart part) {
+	}
+
+	public void partBroughtToTop(IWorkbenchPart part) {
+	}
+
+	public void partClosed(IWorkbenchPart part) {
+		if (part instanceof IEditorPart) {
+			ATerm editorID =
+				editorRegistry.getEditorIDByEditorPart((IEditorPart) part);
+			MetastudioConnection connection = new MetastudioConnection();
+			connection.getBridge().postEvent(
+				connection.getFactory().make(
+					"editor-disconnected(<term>)",
+					editorID));
+
+			editorRegistry.removeEditor((IEditorPart) part);
+		}
+	}
+
+	public void partDeactivated(IWorkbenchPart part) {
+	}
+
+	public void partOpened(IWorkbenchPart part) {
 	}
 }

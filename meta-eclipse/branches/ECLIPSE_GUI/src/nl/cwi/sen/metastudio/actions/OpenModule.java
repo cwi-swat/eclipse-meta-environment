@@ -1,7 +1,7 @@
 package nl.cwi.sen.metastudio.actions;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
-import nl.cwi.sen.metastudio.Module;
+import nl.cwi.sen.metastudio.ModulePath;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -9,7 +9,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class OpenModule implements IWorkbenchWindowActionDelegate {
-	Module module = new Module();
+	ModulePath module = new ModulePath();
 
 	public OpenModule() {
 	}

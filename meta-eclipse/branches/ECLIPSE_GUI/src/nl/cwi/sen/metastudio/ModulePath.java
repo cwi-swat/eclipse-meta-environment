@@ -14,10 +14,10 @@ import org.eclipse.core.runtime.IPath;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class Module {
+public class ModulePath {
 	static IPath fullPath;
 	
-	public Module() {
+	public ModulePath() {
 	}
 	
 	public IPath getFullPath() {
