@@ -39,6 +39,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="MetaStudio"
+            icon="icons/Stop16.gif"
             class="nl.cwi.sen.metastudio.PerspectiveFactory"
             id="nl.cwi.sen.metastudio.perspective">
       </perspective>
