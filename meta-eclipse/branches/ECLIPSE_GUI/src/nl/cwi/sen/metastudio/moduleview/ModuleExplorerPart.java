@@ -238,8 +238,8 @@ public class ModuleExplorerPart
 			if (dirChild == null) {
 				dirChild = new Directory(splitModuleName[i]);
 				dir.add(dirChild);
-				dir = dirChild;
 			}
+			dir = dirChild;
 		}
 		if (dirChild.getChildModule(splitModuleName[i]) == null) {
 			dirChild.add(new Module(moduleName, splitModuleName[i]));

@@ -1,20 +1,8 @@
-/*
- * Created on Jun 4, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package nl.cwi.sen.metastudio.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author kooiker
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class Directory extends Model {
 	protected List directories;
 	protected List modules;
@@ -46,7 +34,6 @@ public class Directory extends Model {
 		public void visitModule(Module module, Object argument) {
 			((Directory)argument).removeModule(module);
 		}
-		
 	}
 	
 	public Directory(String directory) {
@@ -102,12 +89,18 @@ public class Directory extends Model {
 		modules.remove(module);
 		module.addListener(NullDeltaListener.getSoleInstance());
 		fireRemove(module);
+		if (getModules().size() == 0 && getParent() != null) {
+			getParent().remove(this);			
+		}
 	}
 	
 	protected void removeDirectory(Directory directory) {
 		directories.remove(directory);
 		directory.addListener(NullDeltaListener.getSoleInstance());
 		fireRemove(directory);	
+		if (getModules().size() == 0 && getParent() != null) {
+			getParent().remove(this);			
+		}
 	}
 
 	public void add(Model toAdd) {
