@@ -2,7 +2,7 @@ package nl.cwi.sen.metastudio.bridge;
 
 // Java tool interface class UserEnvironmentTool
 // This file is generated automatically, please do not edit!
-// generation time: Jul 31, 2003 12:03:39 PM
+// generation time: Aug 1, 2003 3:02:51 PM
 
 
 import aterm.*;
@@ -47,7 +47,6 @@ abstract public class UserEnvironmentTool
   private ATerm PendStatus0;
   private ATerm PrereadContents0;
   private ATerm PaddStatus0;
-  private ATerm PdeconsFilename0;
   private ATerm PshowQuestionDialog0;
   private ATerm PshowFileDialog0;
   private ATerm PrecAckEvent0;
@@ -93,7 +92,6 @@ abstract public class UserEnvironmentTool
     sigTable.put(factory.parse("rec-do(<user-environment>,buttons-found(<term>,<str>,<list>))"), new Boolean(true));
     sigTable.put(factory.parse("rec-eval(<user-environment>,show-file-dialog(<str>,<str>,<str>))"), new Boolean(true));
     sigTable.put(factory.parse("rec-eval(<user-environment>,show-question-dialog(<str>))"), new Boolean(true));
-    sigTable.put(factory.parse("rec-eval(<user-environment>,decons-filename(<str>,<str>))"), new Boolean(true));
     sigTable.put(factory.parse("rec-do(<user-environment>,clear-history)"), new Boolean(true));
     sigTable.put(factory.parse("rec-do(<user-environment>,update-list(<str>,<str>))"), new Boolean(true));
     sigTable.put(factory.parse("rec-do(<user-environment>,edit-file(<term>,<str>,<str>))"), new Boolean(true));
@@ -146,7 +144,6 @@ abstract public class UserEnvironmentTool
     PendStatus0 = factory.parse("rec-do(end-status(<term>))");
     PrereadContents0 = factory.parse("rec-do(reread-contents(<term>))");
     PaddStatus0 = factory.parse("rec-do(add-status(<term>,<str>))");
-    PdeconsFilename0 = factory.parse("rec-eval(decons-filename(<str>,<str>))");
     PshowQuestionDialog0 = factory.parse("rec-eval(show-question-dialog(<str>))");
     PshowFileDialog0 = factory.parse("rec-eval(show-file-dialog(<str>,<str>,<str>))");
     PrecAckEvent0 = factory.parse("rec-ack-event(<term>)");
@@ -306,10 +303,6 @@ abstract public class UserEnvironmentTool
     if (result != null) {
       addStatus((ATerm)result.get(0), (String)result.get(1));
       return null;
-    }
-    result = term.match(PdeconsFilename0);
-    if (result != null) {
-      return deconsFilename((String)result.get(0), (String)result.get(1));
     }
     result = term.match(PshowQuestionDialog0);
     if (result != null) {

@@ -1,0 +1,22 @@
+#include "p2.tb"
+#include "user-interface.idef"
+#include "editor-hive.idef"
+
+tool user-environment is {}
+
+process UE is
+let
+  UE : user-environment,
+  Pid : int
+in
+  create(P2, Pid?)
+  . rec-connect(UE?) 
+  .
+  (
+    UI(UE)
+  ||
+    Hive(UE)
+  )
+endlet
+
+toolbus(UE)

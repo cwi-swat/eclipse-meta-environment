@@ -18,8 +18,6 @@ public class OpenModule implements IWorkbenchWindowActionDelegate {
 		String modulePath = module.getFullPath().toString();
 		
 		UserInterface.bridge.postEvent(UserInterface.factory.make("eclipse-open-initial-module(<str>)", modulePath));		
-//		ATermList list = (ATermList)UserInterface.factory.make("[\"Open Module\"]");
-//		UserInterface.bridge.postEvent(UserInterface.factory.make("button-selected(<str>,<list>)", "studio-menubar", list));
 	}
 
 	public void selectionChanged(IAction action, ISelection selection)  {

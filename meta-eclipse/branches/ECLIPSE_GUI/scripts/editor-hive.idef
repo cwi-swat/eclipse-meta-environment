@@ -1,0 +1,68 @@
+process Hive(UE: user-environment) is
+let
+  ActionList : list,
+  EditorId : term,
+  Editor : str,
+  FileName : str,
+  Focus : term,
+  FocusText : str,
+  Location : int,
+  MenuEvent : term,
+  Message : str,
+  MouseEvent : int
+in
+  (
+    rec-msg(edit-file(EditorId?, Editor?, FileName?))
+    . snd-do(UE, edit-file(EditorId, Editor, FileName))
+    . rec-msg(set-actions(EditorId?, ActionList?))
+    . snd-do(UE, set-actions(EditorId, ActionList))
+  +
+    rec-msg(reread-contents(EditorId?))
+    . snd-do(UE, reread-contents(EditorId))
+  +
+    rec-msg(set-focus(EditorId?, Focus?))
+    . snd-do(UE, set-focus(EditorId, Focus))
+  +
+    rec-msg(get-contents(EditorId?, Focus?))
+    . snd-do(UE, get-contents(EditorId, Focus))
+  + 
+    rec-msg(clear-focus(EditorId))
+    . snd-do(UE, clear-focus(EditorId))
+  +
+    rec-msg(display-message(EditorId?, Message?))
+    . snd-do(UE, display-message(EditorId, Message))
+  +
+    rec-msg(set-cursor-at-location(EditorId?, Location?))
+    . snd-do(UE, set-cursor-at-location(EditorId, Location))
+  +
+    rec-msg(set-cursor-at-focus(EditorId?, Focus?))
+    . snd-do(UE, set-cursor-at-focus(EditorId, Focus))
+  +
+    rec-msg(editor-to-front(EditorId?))
+    . snd-do(UE, editor-to-front(EditorId))
+  +
+    rec-msg(kill-editor(EditorId?))
+    . snd-do(UE, kill-editor(EditorId))
+  +
+    rec-event(UE, contents-changed(EditorId?))
+    . snd-ack-event(UE, contents-changed(EditorId))
+    . snd-msg(hive(event(contents-changed(EditorId))))
+  +
+    rec-event(UE, mouse-event(EditorId?, MouseEvent?))
+    . snd-ack-event(UE, mouse-event(EditorId, MouseEvent))
+    . snd-msg(hive(event(mouse-event(EditorId, MouseEvent))))
+  +
+    rec-event(UE, menu-event(EditorId?, MenuEvent?))
+    . snd-ack-event(UE, menu-event(EditorId, MenuEvent))
+    . snd-msg(hive(event(menu-event(EditorId, MenuEvent))))
+  +
+    rec-event(UE, contents(EditorId, FocusText?))
+    . snd-ack-event(UE, contents(EditorId, FocusText))
+    . snd-msg(hive(event(contents(EditorId, FocusText))))
+  +
+    rec-event(UE, editor-disconnected(EditorId?))
+    . snd-ack-event(UE, editor-disconnected(EditorId))
+    . snd-msg(hive(event(editor-disconnected(EditorId))))
+  )
+  * delta
+endlet

@@ -85,7 +85,7 @@ public class ModuleInfoPart extends ViewPart implements ISelectionListener {
 			Object first = ((IStructuredSelection)selection).getFirstElement();
 			if (first instanceof Module) {
 				info.clear();
-				final String moduleName = ((Module)first).getModuleName();
+				final String moduleName = ((Module)first).getModulePath();
 				UserInterface ui = new UserInterface();
 				ui.postEvent(UserInterface.factory.make("get-module-info(<str>)", moduleName));
 			}

@@ -2,7 +2,7 @@ package nl.cwi.sen.metastudio.bridge;
 
 // Java tool bridge UserEnvironmentBridge
 // This file is generated automatically, please do not edit!
-// generation time: Jul 31, 2003 12:03:39 PM
+// generation time: Aug 1, 2003 3:02:51 PM
 
 
 import aterm.*;
@@ -395,19 +395,6 @@ public class UserEnvironmentBridge
     }
     else {
       throw new UnsupportedOperationException("method `addStatus' not supported.");
-    }
-  }
-
-  //}}}
-  //{{{  public ATerm deconsFilename(String s0, String s1)
-
-  public ATerm deconsFilename(String s0, String s1)
-  {
-    if (tool != null) {
-      return tool.deconsFilename(s0, s1);
-    }
-    else {
-      throw new UnsupportedOperationException("method `deconsFilename' not supported.");
     }
   }
 

@@ -30,6 +30,7 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener {
 		
 		setProviders();
 		
+		addListeners();
 		//MetastudioPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 		
 		//createMenus() for following lines
@@ -62,6 +63,11 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener {
 		
 		fLabelProvider = new ModuleExplorerLabelProvider();
 		fViewer.setLabelProvider(fLabelProvider);
+	}
+	
+	private void addListeners() {
+		ModuleExplorerMouseListener mouseListener = new ModuleExplorerMouseListener();
+		fViewer.getControl().addMouseListener(mouseListener);
 	}
 	
 	public void setFocus()  {

@@ -1,9 +1,3 @@
-/*
- * Created on Jun 19, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package nl.cwi.sen.metastudio.moduleview;
 
 import nl.cwi.sen.metastudio.model.DeltaEvent;
@@ -15,12 +9,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
-/**
- * @author kooiker
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class ModuleInfoContentProvider implements IStructuredContentProvider, IModelListener {
 	private static Object[] EMPTY_ARRAY = new Object[0];
 	private TableViewer viewer;

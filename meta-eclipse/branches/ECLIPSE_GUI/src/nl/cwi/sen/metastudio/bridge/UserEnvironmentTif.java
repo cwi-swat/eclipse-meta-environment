@@ -2,7 +2,7 @@ package nl.cwi.sen.metastudio.bridge;
 
 // Java tool interface UserEnvironmentTif
 // This file is generated automatically, please do not edit!
-// generation time: Jul 31, 2003 12:03:39 PM
+// generation time: Aug 1, 2003 3:02:51 PM
 
 
 import aterm.*;
@@ -38,7 +38,6 @@ public interface UserEnvironmentTif
   public void endStatus(ATerm t0);
   public void rereadContents(ATerm t0);
   public void addStatus(ATerm t0, String s1);
-  public ATerm deconsFilename(String s0, String s1);
   public ATerm showQuestionDialog(String s0);
   public ATerm showFileDialog(String s0, String s1, String s2);
   public void recAckEvent(ATerm t0);

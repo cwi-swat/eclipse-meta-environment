@@ -27,7 +27,6 @@ public class SelectionListener implements ISelectionChangedListener {
 			if (object instanceof IFile) {
 				IFile file = (IFile) object;
 				module.setFullPath(file.getLocation());
-				System.out.println("Full path: " + file.getLocation());
 			}
 		}
 	}
