@@ -42,8 +42,6 @@ public class GraphLibrary {
 		this.gc = gc;
 
 		setupColors();
-
-		gc.setBackground(background);
 	}
 
 	private void setupColors() {
@@ -106,6 +104,7 @@ public class GraphLibrary {
 		} else {
 			gc.setForeground(nodeBorder);
 		}
+		gc.setBackground(gc.getForeground());
 
 		bspline(points, n);
 		arrowHead(from, to);
