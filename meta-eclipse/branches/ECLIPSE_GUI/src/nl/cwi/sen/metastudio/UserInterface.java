@@ -20,8 +20,8 @@ import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
 	
-	public static ATermFactory factory;
-	public static UserEnvironmentBridge bridge;
+	private ATermFactory factory;
+	private static UserEnvironmentBridge bridge;
 	private static Thread t;
 	private static PopupMenu popupMenu;
 
@@ -46,6 +46,8 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	public void run() {
 		factory = new aterm.pure.PureFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
+		
+		MetastudioConnection f = new MetastudioConnection(bridge, factory);
 		
 		String[] args = new String[6];
 		args[0]="-TB_HOST_NAME";

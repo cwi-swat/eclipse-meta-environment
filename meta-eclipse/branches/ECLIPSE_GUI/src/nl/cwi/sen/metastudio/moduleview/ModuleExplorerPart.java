@@ -1,5 +1,6 @@
 package nl.cwi.sen.metastudio.moduleview;
 
+import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.PopupMenu;
 import nl.cwi.sen.metastudio.UserInterface;
 import nl.cwi.sen.metastudio.model.Directory;
@@ -90,7 +91,7 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 	}
 
 	public void menuAboutToShow(IMenuManager manager) {
-		UserInterface ui = new UserInterface();
+		MetastudioConnection connection = new MetastudioConnection();
 		ATermList actions = popupMenu.getMenu();
 		
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -109,8 +110,8 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 				ATermList actionRunner = actions;
 				IMenuManager nextLevel = new MenuManager(actionNamePrefix.getName());
 				ATerm apifyMe =
-					ui.factory.make("menu(<term>)", actionList.getNext());
-				ATermList subMenu = ui.factory.makeList(apifyMe);
+					connection.getFactory().make("menu(<term>)", actionList.getNext());
+				ATermList subMenu = connection.getFactory().makeList(apifyMe);
 
 				// collect a list of buttons that are in the same 'menuNamePrefix'
 				for (;
@@ -123,7 +124,7 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 
 					if (actionNamePrefix.isEqual(menuNamePrefix)) {
 						apifyMe =
-							ui.factory.make("menu(<term>)", curList.getNext());
+							connection.getFactory().make("menu(<term>)", curList.getNext());
 						subMenu = subMenu.insert(apifyMe);
 						actions = actions.remove(cur);
 					}
@@ -134,7 +135,8 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 					popupMenu.getActionType(),
 					popupMenu.getModuleName(),
 					subMenu,
-					ui.factory.makeList(actionNamePrefix));
+					connection.getFactory().makeList(actionNamePrefix),
+					connection);
 				manager.add(nextLevel);
 			}
 		}
@@ -145,7 +147,8 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 		ATerm actionType,
 		String moduleName,
 		ATermList actions,
-		ATermList prefixActionName) {
+		ATermList prefixActionName,
+		MetastudioConnection connection) {
 
 		UserInterface ui = new UserInterface();
 		actions = actions.reverse();
@@ -160,7 +163,7 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 
 			if (actionList.getLength() == 1) {
 				ATerm apifyMe =
-					ui.factory.make(
+					connection.getFactory().make(
 						"menu(<term>)",
 						prefixActionName.concat(actionList));
 				menu.add(
@@ -170,7 +173,7 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 				ATermList actionRunner = actions;
 				IMenuManager nextLevel = new MenuManager(buttonNamePrefix.getName());
 				ATermList subMenu =
-					ui.factory.makeList((ATerm) actionList.getNext());
+					connection.getFactory().makeList((ATerm) actionList.getNext());
 
 				// collect a list of buttons that are in the same 'menuNamePrefix'
 				while (!actionRunner.isEmpty()) {
@@ -181,7 +184,7 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 
 					if (buttonNamePrefix.isEqual(menuNamePrefix)) {
 						ATerm apifyMe =
-							ui.factory.make("menu(<term>)", curList.getNext());
+							connection.getFactory().make("menu(<term>)", curList.getNext());
 						// TODO: apification
 						subMenu = subMenu.insert(apifyMe);
 						actions = actions.remove(cur);
@@ -197,7 +200,8 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 					subMenu,
 					prefixActionName.insertAt(
 						buttonNamePrefix,
-						prefixActionName.getLength()));
+						prefixActionName.getLength()),
+					connection);
 				menu.add(nextLevel);
 			}
 		}
@@ -233,7 +237,8 @@ public class ModuleExplorerPart extends ViewPart  implements IMenuListener, ISel
 			if (first instanceof Module) {
 				final String moduleName = ((Module)first).getModulePath();
 				UserInterface ui = new UserInterface();
-				ui.postEvent(UserInterface.factory.make("get-buttons(module-popup, <str>)", moduleName));
+				MetastudioConnection factory = new MetastudioConnection();
+				ui.postEvent(factory.getFactory().make("get-buttons(module-popup, <str>)", moduleName));
 			}
 		}
 	}

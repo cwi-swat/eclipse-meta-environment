@@ -9,6 +9,7 @@ package nl.cwi.sen.metastudio.moduleview;
 import java.util.Iterator;
 import java.util.List;
 
+import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.UserInterface;
 import nl.cwi.sen.metastudio.model.ModuleInfo;
 import nl.cwi.sen.metastudio.model.ModuleInfoElement;
@@ -81,13 +82,15 @@ public class ModuleInfoPart extends ViewPart implements ISelectionListener {
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		MetastudioConnection factory = new MetastudioConnection();
+		
 		if (selection instanceof IStructuredSelection) {
 			Object first = ((IStructuredSelection)selection).getFirstElement();
 			if (first instanceof Module) {
 				info.clear();
 				final String moduleName = ((Module)first).getModulePath();
 				UserInterface ui = new UserInterface();
-				ui.postEvent(UserInterface.factory.make("get-module-info(<str>)", moduleName));
+				ui.postEvent(factory.getFactory().make("get-module-info(<str>)", moduleName));
 			}
 		}
 	}

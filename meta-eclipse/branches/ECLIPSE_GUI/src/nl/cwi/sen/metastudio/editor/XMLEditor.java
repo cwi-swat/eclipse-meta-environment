@@ -2,7 +2,7 @@ package nl.cwi.sen.metastudio.editor;
 
 import java.io.IOException;
 
-import nl.cwi.sen.metastudio.UserInterface;
+import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.bridge.TextEditorBridge;
 import nl.cwi.sen.metastudio.bridge.TextEditorTif;
 
@@ -40,6 +40,7 @@ public class XMLEditor extends TextEditor implements TextEditorTif {
 	}
 	
 	public void createPartControl(Composite parent) {
+		MetastudioConnection connection = new MetastudioConnection();
 		super.createPartControl(parent);
 		
 		String fileExtension = "", buttonName = "";
@@ -54,11 +55,11 @@ public class XMLEditor extends TextEditor implements TextEditorTif {
 
 		editorId = moduleName + file.getFileExtension();
 
-		ATermList buttonList = (ATermList)UserInterface.factory.make("[\"Edit Syntax\"]");
-		UserInterface.bridge.postEvent(UserInterface.factory.make("button-selected(<str>,<str>,<list>)", "module-popup", moduleName, buttonList));
+		ATermList buttonList = (ATermList)connection.getFactory().make("[\"Edit Syntax\"]");
+		connection.getBridge().postEvent(connection.getFactory().make("button-selected(<str>,<str>,<list>)", "module-popup", moduleName, buttonList));
 
-		factory = new aterm.pure.PureFactory();
-		bridge = new TextEditorBridge(factory, this);
+//		factory = new aterm.pure.PureFactory();
+//		bridge = new TextEditorBridge(factory, this);
 
 		String[] args = new String[6];
 		args[0]="-TB_HOST_NAME";

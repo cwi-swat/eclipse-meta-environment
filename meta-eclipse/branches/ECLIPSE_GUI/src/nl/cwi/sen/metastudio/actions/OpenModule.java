@@ -1,7 +1,7 @@
 package nl.cwi.sen.metastudio.actions;
 
+import nl.cwi.sen.metastudio.MetastudioConnection;
 import nl.cwi.sen.metastudio.Module;
-import nl.cwi.sen.metastudio.UserInterface;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -15,9 +15,10 @@ public class OpenModule implements IWorkbenchWindowActionDelegate {
 	}
 
 	public void run(IAction action)  {
+		MetastudioConnection connection = new MetastudioConnection();
 		String modulePath = module.getFullPath().toString();
 		
-		UserInterface.bridge.postEvent(UserInterface.factory.make("eclipse-open-initial-module(<str>)", modulePath));		
+		connection.getBridge().postEvent(connection.getFactory().make("eclipse-open-initial-module(<str>)", modulePath));		
 	}
 
 	public void selectionChanged(IAction action, ISelection selection)  {
