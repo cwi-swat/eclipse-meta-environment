@@ -61,9 +61,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		editorDataFactory = new EditorDataFactory(factory);
 		textEditorFactory = new TextEditorFactory(factory);
 
-//		ATerm trm = factory.parse("[menu([\"Actions\",\"Parse\"]),menu([\"Actions\",\"ViewTree\"])]");
-//		ActionList aL = textEditorFactory.ActionListFromTerm(trm);
-
 		metaGraphFactory = new MetaGraphFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
 

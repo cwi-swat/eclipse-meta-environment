@@ -4,21 +4,13 @@
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.0.0/resources.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.resources_3.0.0/resourcessrc.zip"/>
     <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.ui_2.1.0/ui.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui_2.1.0/uisrc.zip"/>
-    <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_LINUX_GTK_X86_SRC/org.eclipse.swt.gtk_3.0.0/ws/gtk/swtsrc.zip"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt-pi.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_LINUX_GTK_X86_SRC/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt-pisrc.zip"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_3.0.0/textsrc.zip"/>
     <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.jface_2.1.0/jface.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface_2.1.0/jfacesrc.zip"/>
-    <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface.text_3.0.0/jfacetextsrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_2.1.0/views.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.views_2.1.0/viewssrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_2.1.0/workbench.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench_2.1.0/workbenchsrc.zip"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench.texteditor_3.0.0/texteditorsrc.zip"/>
     <classpathentry kind="var"
@@ -34,5 +26,9 @@
     <classpathentry kind="lib" path="src/shared-objects-1.4.jar"/>
     <classpathentry kind="src" path="/aterm-java"/>
     <classpathentry kind="lib" path="src/aterm-1.5beta.jar" sourcepath="/ufs/kooiker/workspace/aterm-java/"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.0.0/jface.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_3.0.0/ui.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_3.0.0/views.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
