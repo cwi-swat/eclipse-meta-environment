@@ -14,6 +14,7 @@ import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
 import nl.cwi.sen.metastudio.editor.MetaEditor;
 import nl.cwi.sen.metastudio.graphview.GraphImportPart;
+import nl.cwi.sen.metastudio.graphview.GraphTreePart;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 
@@ -112,7 +113,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	public static MetastudioConnection getConnection() {
 		return connection;
 	}
-	
+
 	public static EditorRegistry getEditorRegistry() {
 		return editorRegistry;
 	}
@@ -280,16 +281,28 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		GraphImportPart.layoutGraph(importRelations);
 	}
 
-	public void displayGraph(String s0, ATerm t1) {
-		System.out.println(
-			"UserInterface.java: Display graph not implemented yet!");
+	public void displayGraph(String graphId, ATerm graphTerm) {
+		graph = connection.getMetaGraphFactory().GraphFromTerm(graphTerm);
+		graph.orderNodes();
+		if (graphId == "parsetree") {
+			connection.getBridge().postEvent(
+				connection.getPureFactory().make(
+					"layout-graph(<str>,<term>)",
+					"parsetree",
+					graph.toTerm()));
+		}
 	}
 
 	public void graphLayouted(String graphId, ATerm graphTerm) {
+		final String _graphId = graphId;
 		final ATerm _graphTerm = graphTerm;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				GraphImportPart.setGraph(_graphTerm);
+				if (_graphId == "import") {
+					GraphImportPart.setGraph(_graphTerm);
+				} else {
+					GraphTreePart.setGraph(_graphTerm);
+				}
 			}
 		});
 	}

@@ -56,7 +56,7 @@ public class GraphImportPart extends ViewPart {
 	private void setupColors() {
 		nodeBG = new Color(null, 200, 200, 200);
 		nodeFG = new Color(null, 0, 0, 0);
-		nodeBorder = new Color(null, 0, 0, 255);
+		nodeBorder = new Color(null, 0, 0, 0);
 
 		//		nodeBGHovered = Preferences.getColor(PREF_NODE_HOVERED_BG);
 		//		nodeFGHovered = Preferences.getColor(PREF_NODE_HOVERED_FG);
@@ -68,11 +68,11 @@ public class GraphImportPart extends ViewPart {
 	}
 
 	private void doPaint(PaintEvent event) {
-		Color red = new Color(null, 255, 0, 0);
-		Color grey = new Color(null, 0, 255, 0);
+		Color foreground = new Color(null, 0, 0, 0);
+		Color background = new Color(null, 0, 0, 0);
 		GC gc = event.gc;
-		gc.setForeground(red);
-		gc.setBackground(grey);
+		gc.setForeground(foreground);
+		gc.setBackground(background);
 		Rectangle clientArea = gc.getClipping();
 
 		if (graph != null) {
@@ -99,41 +99,37 @@ public class GraphImportPart extends ViewPart {
 
 		Polygon poly = edge.getPolygon();
 
-		Point from = poly.getHead();
-		Point to = from;
-		poly = poly.getTail();
+		Point to = poly.getHead();
+		Point from = to;
+
+		// TODO: Undo brute initialize of arraylength 16
+		int[][] points = new int[16][2];
+		int n = 0;
 
 		while (poly.hasTail() && !poly.getTail().isEmpty()) {
-			Point cp1 = poly.getHead();
-			poly = poly.getTail();
-			Point cp2 = poly.getHead();
-			poly = poly.getTail();
-			Point cur = poly.getHead();
-			poly = poly.getTail();
-
-			from = cp1;
-			to = cur;
-
-			gc.drawLine(from.getX(), from.getY(), to.getX(), to.getY());
-		}
-
-		if (poly.hasHead()) {
 			from = to;
-			to = poly.getHead();
+			points[n][0] = from.getX();
+			points[n][1] = from.getY();
+			n++;
 			poly = poly.getTail();
-			//			gp.lineTo((float) to.getX(), (float) to.getY());
+			to = poly.getHead();
 		}
 
-		//		Graphics2D g2d = (Graphics2D) g;
-		//		if (edge.connectedTo(hoveredNode)) {
-		//			g2d.setColor(nodeBorderHovered);
-		//		} else if (edge.connectedTo(selectedNode)) {
-		//			g2d.setColor(nodeBorderSelected);
-		//		} else {
-		//			g2d.setColor(nodeBorder);
-		//		}
+		points[n][0] = to.getX();
+		points[n][1] = to.getY();
 
-		//		g2d.draw(gp);
+		bspline(gc, points, n);
+
+		//				Graphics2D g2d = (Graphics2D) g;
+		//				if (edge.connectedTo(hoveredNode)) {
+		//					g2d.setColor(nodeBorderHovered);
+		//				} else if (edge.connectedTo(selectedNode)) {
+		//					g2d.setColor(nodeBorderSelected);
+		//				} else {
+		//					g2d.setColor(nodeBorder);
+		//				}
+		//
+		//				g2d.draw(gp);
 		arrowHead(gc, from, to);
 	}
 
@@ -156,7 +152,7 @@ public class GraphImportPart extends ViewPart {
 		int x4 = (int) (x2 + Math.cos(angle + theta) * size);
 		int y4 = (int) (y2 + Math.sin(angle + theta) * size);
 
-		int[] xys = new int[] {x2, y2, x3, y3, x4, y4, x2, y2};
+		int[] xys = new int[] { x2, y2, x3, y3, x4, y4, x2, y2 };
 
 		gc.fillPolygon(xys);
 		gc.drawPolygon(xys);
@@ -280,49 +276,53 @@ public class GraphImportPart extends ViewPart {
 		gc.drawRectangle(x, y, w, h);
 	}
 
-	private void bspline(int[][] P, int n, GC gc) {
+	private void bspline(GC gc, int[][] P, int n) {
 		float m = 500;
 		float xA, yA, xB, yB, xC, yC, xD, yD;
 		float a0, a1, a2, a3, b0, b1, b2, b3;
 		float x = 0, y = 0, x0, y0;
 		boolean first = true;
-		
-		for (int i = 1; i < n - 2; i++) {
-			xA = P[i - 1][0];
-			xB = P[i][0];
-			xC = P[i + 1][0];
-			xD = P[i + 2][0];
-			yA = P[i - 1][1];
-			yB = P[i][1];
-			yC = P[i + 1][1];
-			yD = P[i + 2][1];
-			a3 = (-xA + 3 * (xB - xC) + xD) / 6;
-			b3 = (-yA + 3 * (yB - yC) + yD) / 6;
-			a2 = (xA - 2 * xB + xC) / 2;
-			b2 = (yA - 2 * yB + yC) / 2;
-			a1 = (xC - xA) / 2;
-			b1 = (yC - yA) / 2;
-			a0 = (xA + 4 * xB + xC) / 6;
-			b0 = (yA + 4 * yB + yC) / 6;
-			for (int j = 0; j <= m; j++) {
-				x0 = x;
-				y0 = y;
-				float t = (float) j / (float) m;
-				x = (int) (((a3 * t + a2) * t + a1) * t + a0);
-				y = (int) (((b3 * t + b2) * t + b1) * t + b0);
-				if (first) {
-					first = false;
-					x0 = P[0][0];
-					y0 = P[0][1];
-					gc.drawLine((int) x0, (int) y0, (int) x, (int) y);
+
+		if (n < 5) {
+			gc.drawLine(P[0][0], P[0][1], P[n][0], P[n][1]);
+		} else {
+			for (int i = 1; i < n - 2; i++) {
+				xA = P[i - 1][0];
+				xB = P[i][0];
+				xC = P[i + 1][0];
+				xD = P[i + 2][0];
+				yA = P[i - 1][1];
+				yB = P[i][1];
+				yC = P[i + 1][1];
+				yD = P[i + 2][1];
+				a3 = (-xA + 3 * (xB - xC) + xD) / 6;
+				b3 = (-yA + 3 * (yB - yC) + yD) / 6;
+				a2 = (xA - 2 * xB + xC) / 2;
+				b2 = (yA - 2 * yB + yC) / 2;
+				a1 = (xC - xA) / 2;
+				b1 = (yC - yA) / 2;
+				a0 = (xA + 4 * xB + xC) / 6;
+				b0 = (yA + 4 * yB + yC) / 6;
+				for (int j = 0; j <= m; j++) {
 					x0 = x;
 					y0 = y;
-				} else {
-					gc.drawLine((int) x0, (int) y0, (int) x, (int) y);
+					float t = (float) j / (float) m;
+					x = (int) (((a3 * t + a2) * t + a1) * t + a0);
+					y = (int) (((b3 * t + b2) * t + b1) * t + b0);
+					if (first) {
+						first = false;
+						x0 = P[0][0];
+						y0 = P[0][1];
+						gc.drawLine((int) x0, (int) y0, (int) x, (int) y);
+						x0 = x;
+						y0 = y;
+					} else {
+						gc.drawLine((int) x0, (int) y0, (int) x, (int) y);
+					}
 				}
 			}
+			gc.drawLine((int) x, (int) y, P[n][0], P[n][1]);
 		}
-		gc.drawLine((int) x, (int) y, P[n - 1][0], P[n - 1][1]);
 	}
 
 	static public void layoutGraph(ATerm importRelations) {
