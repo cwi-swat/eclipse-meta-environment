@@ -20,7 +20,6 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.EditorPart;
 
 public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
-	static IViewPart view;
 	UserInterface ui;
 
 	private static IWorkbenchPage _page;
@@ -28,15 +27,6 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 
 	public PerspectiveFactory() throws IOException {
 		super();
-
-		// Hack to get the statuslinemanager, toolbarmanager
-		IWorkbenchPart part =
-			PlatformUI
-				.getWorkbench()
-				.getActiveWorkbenchWindow()
-				.getActivePage()
-				.getActivePart();
-		view = (IViewPart) part;
 
 		PlatformUI
 			.getWorkbench()
@@ -162,7 +152,7 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 					.getActionBars()
 					.getStatusLineManager();
 		} else {
-			view = (IViewPart) part;
+			IViewPart view = (IViewPart) part;
 			statusLineManager =
 				view.getViewSite().getActionBars().getStatusLineManager();
 		}
@@ -177,7 +167,6 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 
 	public void partClosed(IWorkbenchPart part) {
 		if (part instanceof IEditorPart) {
-			System.out.println("Editor closed");
 			ui.editorDisconnected((IEditorPart) part);
 		}
 	}
