@@ -16,8 +16,6 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.part.EditorPart;
 
 public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 	UserInterface ui;
@@ -144,8 +142,8 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 				.getActiveWorkbenchWindow()
 				.getActivePage()
 				.getActivePart();
-		if (part instanceof TextEditor) {
-			EditorPart editorPart = (EditorPart) part;
+		if (part instanceof IEditorPart) {
+			IEditorPart editorPart = (IEditorPart) part;
 			statusLineManager =
 				editorPart
 					.getEditorSite()
