@@ -3,8 +3,13 @@ package nl.cwi.sen.metastudio.graphview;
 import metastudio.graph.Graph;
 import metastudio.graph.Node;
 import nl.cwi.sen.metastudio.MetastudioConnection;
+import nl.cwi.sen.metastudio.PopupMenu;
 import nl.cwi.sen.metastudio.UserInterface;
 
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -19,20 +24,28 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import aterm.ATerm;
+import aterm.ATermAppl;
+import aterm.ATermList;
 
 public class GraphPart extends ViewPart {
+	private Node node;
 	private Graph graph;
 	private Canvas canvas;
 	private GraphLibrary graphLibrary;
 	private Image image;
 
 	private int ix = 0, iy = 0;
+	private int mouseX, mouseY;
 
 	private Color background;
+
+	private PopupMenu popupMenu = new PopupMenu();
 
 	public void createPartControl(Composite parent) {
 		canvas = new Canvas(parent, SWT.NONE | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -45,6 +58,7 @@ public class GraphPart extends ViewPart {
 		});
 
 		addListeners();
+		createContextMenu(canvas);
 
 		background = new Color(null, 255, 255, 255);
 		canvas.setBackground(background);
@@ -125,11 +139,13 @@ public class GraphPart extends ViewPart {
 			}
 
 			public void mouseDown(MouseEvent e) {
+				mouseX = e.x;
+				mouseY = e.y;
 			}
 
 			public void mouseUp(MouseEvent e) {
 				if (graphLibrary != null) {
-					Node node =
+					node =
 						graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
 					if (graphLibrary.nodeSelected(node) == true) {
 						canvas.redraw();
@@ -143,7 +159,7 @@ public class GraphPart extends ViewPart {
 		canvas.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
 				if (graphLibrary != null) {
-					Node node =
+					node =
 						graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
 					if (graphLibrary.nodeHighlighted(node) == true) {
 						canvas.redraw();
@@ -151,6 +167,169 @@ public class GraphPart extends ViewPart {
 				}
 			}
 		});
+	}
+
+	private void createContextMenu(Canvas canvas) { //create context menu
+		MenuManager menuMgr = new MenuManager();
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager mgr) {
+				if (graph != null
+					&& graphLibrary.getNodeAt(graph, mouseX, mouseY) != null) {
+					fillContextMenu(mgr);
+				}
+			}
+		});
+		Menu menu = menuMgr.createContextMenu(canvas);
+		canvas.setMenu(menu);
+	}
+	
+	public void fillContextMenu(IMenuManager manager) {
+		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
+		if (node != null) {
+			final String moduleName = node.getLabel();
+			MetastudioConnection connection = UserInterface.getConnection();
+
+			popupMenu.invalidate();
+			connection.getBridge().postEvent(
+				connection.getPureFactory().make(
+					"get-buttons(module-popup, <str>)",
+					moduleName));
+
+			// wait until actions are received
+			while (popupMenu.getLoadedState() == false);
+
+			ATermList actions = popupMenu.getMenu();
+
+			while (!actions.isEmpty()) {
+				ATerm action = actions.getFirst();
+				ATermList actionList =
+					(ATermList) ((ATermAppl) action).getArgument(0);
+				ATermAppl actionNamePrefix =
+					(ATermAppl) (actionList.getFirst());
+
+				actions = actions.getNext();
+
+				if (actionList.getLength() == 1) {
+					manager.add(
+						new GraphPartAction(
+							actionNamePrefix.getName(),
+							popupMenu.getActionType(),
+							action,
+							moduleName));
+				} else {
+					ATermList actionRunner = actions;
+					IMenuManager nextLevel =
+						new MenuManager(actionNamePrefix.getName());
+					ATerm apifyMe =
+						connection.getPureFactory().make(
+							"menu(<term>)",
+							actionList.getNext());
+					ATermList subMenu =
+						connection.getPureFactory().makeList(apifyMe);
+
+					// collect a list of buttons that are in the same 'menuNamePrefix'
+					for (;
+						!actionRunner.isEmpty();
+						actionRunner = actionRunner.getNext()) {
+						ATerm cur = actionRunner.getFirst();
+						ATermList curList =
+							(ATermList) ((ATermAppl) cur).getArgument(0);
+						ATerm menuNamePrefix = curList.getFirst();
+
+						if (actionNamePrefix.isEqual(menuNamePrefix)) {
+							apifyMe =
+								connection.getPureFactory().make(
+									"menu(<term>)",
+									curList.getNext());
+							subMenu = subMenu.insert(apifyMe);
+							actions = actions.remove(cur);
+						}
+					}
+
+					addMenuItems(
+						nextLevel,
+						popupMenu.getActionType(),
+						popupMenu.getModuleName(),
+						subMenu,
+						connection.getPureFactory().makeList(actionNamePrefix),
+						connection);
+					manager.add(nextLevel);
+				}
+			}
+		}
+	}
+
+	public void addMenuItems(
+		IMenuManager menu,
+		ATerm actionType,
+		String moduleName,
+		ATermList actions,
+		ATermList prefixActionName,
+		MetastudioConnection connection) {
+
+		UserInterface ui = new UserInterface();
+		actions = actions.reverse();
+
+		while (!actions.isEmpty()) {
+			ATerm action = actions.getFirst();
+			ATermList actionList =
+				(ATermList) ((ATermAppl) action).getArgument(0);
+			ATermAppl buttonNamePrefix = (ATermAppl) (actionList.getFirst());
+
+			actions = actions.getNext();
+
+			if (actionList.getLength() == 1) {
+				ATerm apifyMe =
+					connection.getPureFactory().make(
+						"menu(<term>)",
+						prefixActionName.concat(actionList));
+				menu.add(
+					new GraphPartAction(
+						buttonNamePrefix.getName(),
+						popupMenu.getActionType(),
+						action,
+						moduleName));
+			} else {
+				ATermList actionRunner = actions;
+				IMenuManager nextLevel =
+					new MenuManager(buttonNamePrefix.getName());
+				ATermList subMenu =
+					connection.getPureFactory().makeList(
+						(ATerm) actionList.getNext());
+
+				// collect a list of buttons that are in the same 'menuNamePrefix'
+				while (!actionRunner.isEmpty()) {
+					ATerm cur = actionRunner.getFirst();
+					ATermList curList =
+						(ATermList) ((ATermAppl) cur).getArgument(0);
+					ATerm menuNamePrefix = curList.getFirst();
+
+					if (buttonNamePrefix.isEqual(menuNamePrefix)) {
+						ATerm apifyMe =
+							connection.getPureFactory().make(
+								"menu(<term>)",
+								curList.getNext());
+						subMenu = subMenu.insert(apifyMe);
+						actions = actions.remove(cur);
+					}
+
+					actionRunner = actionRunner.getNext();
+				}
+
+				addMenuItems(
+					nextLevel,
+					actionType,
+					moduleName,
+					subMenu,
+					prefixActionName.insertAt(
+						buttonNamePrefix,
+						prefixActionName.getLength()),
+					connection);
+				menu.add(nextLevel);
+			}
+		}
 	}
 
 	private void resizeScrollBars() {
