@@ -71,15 +71,14 @@ public class GraphPart extends ViewPart {
 		ScrollBar horizontal = canvas.getHorizontalBar();
 		horizontal.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				ScrollBar scrollBar = (ScrollBar) event.widget;
-				Rectangle area = canvas.getClientArea();
-				if (graph == null)
+				if (graph == null) {
 					return;
+				}
+
+				ScrollBar scrollBar = (ScrollBar) event.widget;
 				Rectangle canvasBounds = canvas.getClientArea();
-				int width = graph.getBoundingBox().getSecond().getX();
+				int width = graph.getBoundingBox().getSecond().getX(); //xscale
 				int height = graph.getBoundingBox().getSecond().getY();
-				//				int width = Math.round(imageData.width * xscale);
-				//				int height = Math.round(imageData.height * yscale);
 				if (width > canvasBounds.width) {
 					// Only scroll if the image is bigger than the canvas.
 					int x = -scrollBar.getSelection();
@@ -87,7 +86,6 @@ public class GraphPart extends ViewPart {
 						// Don't scroll past the end of the image.
 						x = canvasBounds.width - width;
 					}
-
 					canvas.scroll(x, iy, ix, iy, width, height, false);
 					ix = x;
 				}
@@ -99,15 +97,14 @@ public class GraphPart extends ViewPart {
 		ScrollBar vertical = canvas.getVerticalBar();
 		vertical.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				ScrollBar scrollBar = (ScrollBar) event.widget;
-				Rectangle area = canvas.getClientArea();
-				if (graph == null)
+				if (graph == null) {
 					return;
+				}
+
+				ScrollBar scrollBar = (ScrollBar) event.widget;
 				Rectangle canvasBounds = canvas.getClientArea();
 				int width = graph.getBoundingBox().getSecond().getX();
 				int height = graph.getBoundingBox().getSecond().getY();
-				//				int width = Math.round(imageData.width * xscale);
-				//				int height = Math.round(imageData.height * yscale);
 				if (height > canvasBounds.height) {
 					// Only scroll if the image is bigger than the canvas.
 					int y = -scrollBar.getSelection();
@@ -115,7 +112,6 @@ public class GraphPart extends ViewPart {
 						// Don't scroll past the end of the image.
 						y = canvasBounds.height - height;
 					}
-
 					canvas.scroll(ix, y, ix, iy, width, height, false);
 					iy = y;
 				}
@@ -132,31 +128,37 @@ public class GraphPart extends ViewPart {
 			}
 
 			public void mouseUp(MouseEvent e) {
-				Node node = graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
-				if (graphLibrary.nodeSelected(node) == false) {
-					canvas.redraw();
+				if (graphLibrary != null) {
+					Node node =
+						graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
+					if (graphLibrary.nodeSelected(node) == true) {
+						canvas.redraw();
+					}
 				}
 			}
 		});
 	}
-	
+
 	private void addMouseMoveListener() {
 		canvas.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
-				Node node = graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
-				if (graphLibrary.nodeHighlighted(node) == false) {
-					canvas.redraw();
+				if (graphLibrary != null) {
+					Node node =
+						graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
+					if (graphLibrary.nodeHighlighted(node) == true) {
+						canvas.redraw();
+					}
 				}
 			}
 		});
 	}
 
 	private void resizeScrollBars() {
-		// Set the max and thumb for the image canvas scroll bars.
 		ScrollBar horizontal = canvas.getHorizontalBar();
 		ScrollBar vertical = canvas.getVerticalBar();
-		Rectangle canvasBounds = canvas.getClientArea();
 		if (graph != null) {
+			// Set the max and thumb for the image canvas scroll bars.
+			Rectangle canvasBounds = canvas.getClientArea();
 			int width = graph.getBoundingBox().getSecond().getX(); // * xscale
 			if (width > canvasBounds.width) {
 				// The image is wider than the canvas.
