@@ -43,7 +43,7 @@ public class ModuleExplorerAction extends Action {
 			Object first = ((IStructuredSelection) selection).getFirstElement();
 			if (first instanceof Module) {
 				String fullName = ((Module)first).getModulePath();
-				ATerm event = connection.getFactory().make("button-selected(<term>, <str>, <term>)",
+				ATerm event = connection.getPureFactory().make("button-selected(<term>, <str>, <term>)",
 							   _actionType, fullName, _action);
 				connection.getBridge().postEvent(event);
 			}

@@ -7,7 +7,7 @@
 package nl.cwi.sen.metastudio.editor;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
-import nl.cwi.sen.metastudio.datastructures.Menu;
+import nl.cwi.sen.metastudio.adt.texteditor.Menu;
 
 import org.eclipse.jface.action.Action;
 
@@ -32,7 +32,7 @@ public class MetaEditorAction extends Action {
 	public void run() {
 		MetastudioConnection connection = new MetastudioConnection();
 		connection.getBridge().postEvent(
-			connection.getFactory().make(
+			connection.getPureFactory().make(
 				"menu-event(<term>,<term>)",
 				_editorId,
 				_menu.toTerm()));

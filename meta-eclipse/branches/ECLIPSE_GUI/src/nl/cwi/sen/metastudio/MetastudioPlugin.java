@@ -32,7 +32,7 @@ public class MetastudioPlugin extends AbstractUIPlugin {
 	
 	public void shutdown() {
 		MetastudioConnection connection = new MetastudioConnection();
-		connection.getBridge().sendEvent(connection.getFactory().parse("quit"));
+		connection.getBridge().sendEvent(connection.getPureFactory().parse("quit"));
 		System.out.println("SHUTDOWN!!!");
 	}
 

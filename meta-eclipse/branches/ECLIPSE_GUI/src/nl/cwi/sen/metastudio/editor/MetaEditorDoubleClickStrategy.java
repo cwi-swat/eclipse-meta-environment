@@ -37,7 +37,7 @@ public class MetaEditorDoubleClickStrategy
 
 		Integer location = new Integer(pos - 1);
 		connection.getBridge().postEvent(
-			connection.getFactory().make(
+			connection.getPureFactory().make(
 				"mouse-event(<term>,<int>)",
 				editorId,
 				location));

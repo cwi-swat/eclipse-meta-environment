@@ -71,6 +71,16 @@
             class="nl.cwi.sen.metastudio.moduleview.ModuleParentPart"
             id="nl.cwi.sen.metastudio.ModuleParentView">
       </view>
+      <view
+            name="Graph Tree"
+            class="nl.cwi.sen.metastudio.graphview.GraphTreePart"
+            id="nl.cwi.sen.metastudio.GraphTreeView">
+      </view>
+      <view
+            name="Graph Import"
+            class="nl.cwi.sen.metastudio.graphview.GraphImportPart"
+            id="nl.cwi.sen.metastudio.GraphImportView">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

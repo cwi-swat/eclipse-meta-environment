@@ -5,11 +5,11 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
+import metastudio.graph.MetaGraphFactory;
+import nl.cwi.sen.metastudio.adt.editordata.EditorDataFactory;
+import nl.cwi.sen.metastudio.adt.texteditor.TextEditorFactory;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentBridge;
 import nl.cwi.sen.metastudio.bridge.UserEnvironmentTif;
-import nl.cwi.sen.metastudio.datastructures.ActionList;
-import nl.cwi.sen.metastudio.datastructures.DatastructuresFactory;
-import nl.cwi.sen.metastudio.datastructures.Focus;
 import nl.cwi.sen.metastudio.editor.MetaEditor;
 import nl.cwi.sen.metastudio.moduleview.ModuleExplorerPart;
 import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
@@ -29,11 +29,15 @@ import org.eclipse.ui.PlatformUI;
 import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermList;
+import aterm.pure.PureFactory;
 
 public class UserInterface implements UserEnvironmentTif, Runnable {
 	private static IStatusLineManager statusLineMgr;
 
-	private DatastructuresFactory factory;
+	private PureFactory factory;
+	private EditorDataFactory editorDataFactory;
+	private TextEditorFactory textEditorFactory;
+	private MetaGraphFactory metaGraphFactory;
 	private static UserEnvironmentBridge bridge;
 	private static Thread t;
 	private static PopupMenu popupMenu;
@@ -52,10 +56,19 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 	}
 
 	public void run() {
-		factory = new DatastructuresFactory();
+		factory = new PureFactory();
+		editorDataFactory = new EditorDataFactory();
+		textEditorFactory = new TextEditorFactory();
+		metaGraphFactory = new MetaGraphFactory();
 		bridge = new UserEnvironmentBridge(factory, this);
 
-		MetastudioConnection f = new MetastudioConnection(bridge, factory);
+		MetastudioConnection f =
+			new MetastudioConnection(
+				bridge,
+				factory,
+				editorDataFactory,
+				textEditorFactory,
+				metaGraphFactory);
 
 		String[] args = new String[6];
 		args[0] = "-TB_HOST_NAME";
@@ -332,7 +345,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		ATerm editorId = editorRegistry.geteditorIdByEditorPart(part);
 		MetastudioConnection connection = new MetastudioConnection();
 		connection.getBridge().postEvent(
-			connection.getFactory().make(
+			connection.getPureFactory().make(
 				"editor-disconnected(<term>)",
 				editorId));
 
@@ -350,7 +363,9 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 				MetaEditor part =
 					(MetaEditor) editorRegistry.getEditorPartByeditorId(
 						editorId);
-				part.setActions(editorId, ActionList.fromTerm(actionList));
+				part.setActions(
+					editorId,
+					textEditorFactory.ActionListFromTerm(actionList));
 			}
 		});
 	}
@@ -388,7 +403,9 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 				MetaEditor part =
 					(MetaEditor) editorRegistry.getEditorPartByeditorId(
 						editorId);
-				part.getContents(editorId, Focus.fromTerm(focus));
+				part.getContents(
+					editorId,
+					editorDataFactory.FocusFromTerm(focus));
 			}
 		});
 	}
@@ -414,7 +431,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 				MetaEditor part =
 					(MetaEditor) editorRegistry.getEditorPartByeditorId(
 						editorId);
-				part.setFocus(Focus.fromTerm(focus));
+				part.setFocus(editorDataFactory.FocusFromTerm(focus));
 			}
 		});
 	}

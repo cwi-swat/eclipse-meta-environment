@@ -25,7 +25,7 @@ public class OpenModule implements IWorkbenchWindowActionDelegate {
 				MetastudioConnection connection = new MetastudioConnection();
 				String modulePath = ((IFile)object).getLocation().toString();
 		
-				connection.getBridge().postEvent(connection.getFactory().make("eclipse-open-initial-module(<str>)", modulePath));		
+				connection.getBridge().postEvent(connection.getPureFactory().make("eclipse-open-initial-module(<str>)", modulePath));		
 			}
 		}
 	}

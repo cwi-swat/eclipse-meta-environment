@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_2.1.0/texteditor.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench.texteditor_2.1.0/texteditorsrc.zip"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="src" path="lib"/>
+    <classpathentry kind="src" path="/aterm-java"/>
+    <classpathentry kind="src" path="/JJTraveler"/>
+    <classpathentry kind="src" path="/java-adapter"/>
+    <classpathentry kind="src" path="/shared-objects"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_2.1.0/jface.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt-pi.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_2.1.0/ui.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_3.0.0/editors.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_3.0.0/views.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_3.0.0/boot.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.0.0/resources.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,10 +1,10 @@
 package nl.cwi.sen.metastudio.editor;
 
 import nl.cwi.sen.metastudio.MetastudioConnection;
-import nl.cwi.sen.metastudio.datastructures.ActionList;
-import nl.cwi.sen.metastudio.datastructures.Area;
-import nl.cwi.sen.metastudio.datastructures.Focus;
-import nl.cwi.sen.metastudio.datastructures.Menu;
+import nl.cwi.sen.metastudio.adt.editordata.Area;
+import nl.cwi.sen.metastudio.adt.editordata.Focus;
+import nl.cwi.sen.metastudio.adt.texteditor.ActionList;
+import nl.cwi.sen.metastudio.adt.texteditor.Menu;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IMenuManager;
@@ -73,19 +73,19 @@ public class MetaEditor extends TextEditor {
 
 	public void getContents(ATerm editorId, Focus focus) {
 		Area area = focus.getArea();
-		int start = area.getStart().intValue() - 1;
-		int length = area.getLength().intValue();
+		int start = area.getStart() - 1;
+		int length = area.getLength();
 		selectAndReveal(start, length);
 		String select = ((ITextSelection)doGetSelection()).getText();
 
 		MetastudioConnection connection = new MetastudioConnection();
-		connection.getBridge().postEvent(connection.getFactory().make("contents(<term>,<str>)", editorId, select));
+		connection.getBridge().postEvent(connection.getPureFactory().make("contents(<term>,<str>)", editorId, select));
 	}
 
 	public void setFocus(Focus focus) {
 		Area area = focus.getArea();
-		int start = area.getStart().intValue() - 1;
-		int length = area.getLength().intValue();
+		int start = area.getStart() - 1;
+		int length = area.getLength();
 		selectAndReveal(start, length);
 	}
 

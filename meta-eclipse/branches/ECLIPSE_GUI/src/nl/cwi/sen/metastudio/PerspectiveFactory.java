@@ -82,6 +82,8 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		layout.addShowViewShortcut("nl.cwi.sen.metastudio.ModuleInfoView");
 		layout.addShowViewShortcut("nl.cwi.sen.metastudio.ModuleImportView");
 		layout.addShowViewShortcut("nl.cwi.sen.metastudio.ModuleParentView");
+		layout.addShowViewShortcut("nl.cwi.sen.metastudio.GraphImportView");
+		layout.addShowViewShortcut("nl.cwi.sen.metastudio.GraphTreeView");
 	}
 	
 	private void defineLayout(IPageLayout layout) {
@@ -103,6 +105,10 @@ public class PerspectiveFactory  implements IPerspectiveFactory, IPartListener {
 		// Place ModuleExplorer to right of editor area.
 		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float)0.75, editorArea);
 		right.addView("nl.cwi.sen.metastudio.ModuleExplorer");
+		
+		IFolderLayout top = layout.createFolder("top", IPageLayout.TOP, (float)1, editorArea);
+		top.addView("nl.cwi.sen.metastudio.GraphImportView");
+		top.addView("nl.cwi.sen.metastudio.GraphTreeView");
 	}
 
 	public static IViewPart getResourceNavigatorPart() {

@@ -42,16 +42,16 @@ public class ProjectListener implements IResourceChangeListener {
 		   				}
 		   				
 		   				MetastudioConnection connection = new MetastudioConnection();
-						ATermList fileList = connection.getFactory().makeList();
+						ATermList fileList = connection.getPureFactory().makeList();
 		   				for (int j = 0; j < members.length; j++) {
 		   					if (members[j].getFileExtension().equals("sdf") == true) {
 								String fileName = (members[j].getLocation().removeFileExtension().lastSegment()).toString();
-								ATerm file = (ATerm)connection.getFactory().make("<str>", fileName);
+								ATerm file = (ATerm)connection.getPureFactory().make("<str>", fileName);
 								fileList = fileList.insert(file);
 		   					}
 		   				}
 						//ATermList actionEvent = (ATermList)UserInterface.factory.make("[\"Open Project\"]");
-						connection.getBridge().postEvent(connection.getFactory().make("eclipse-open-modules(<list>,sdf)", fileList));
+						connection.getBridge().postEvent(connection.getPureFactory().make("eclipse-open-modules(<list>,sdf)", fileList));
 		  			}
 		 		}
 		 	}

@@ -106,7 +106,7 @@ public class ModuleExplorerPart
 
 			popupMenu.invalidate();
 			connection.getBridge().postEvent(
-				connection.getFactory().make(
+				connection.getPureFactory().make(
 					"get-buttons(module-popup, <str>)",
 					moduleName));
 
@@ -136,11 +136,11 @@ public class ModuleExplorerPart
 					IMenuManager nextLevel =
 						new MenuManager(actionNamePrefix.getName());
 					ATerm apifyMe =
-						connection.getFactory().make(
+						connection.getPureFactory().make(
 							"menu(<term>)",
 							actionList.getNext());
 					ATermList subMenu =
-						connection.getFactory().makeList(apifyMe);
+						connection.getPureFactory().makeList(apifyMe);
 
 					// collect a list of buttons that are in the same 'menuNamePrefix'
 					for (;
@@ -153,7 +153,7 @@ public class ModuleExplorerPart
 
 						if (actionNamePrefix.isEqual(menuNamePrefix)) {
 							apifyMe =
-								connection.getFactory().make(
+								connection.getPureFactory().make(
 									"menu(<term>)",
 									curList.getNext());
 							subMenu = subMenu.insert(apifyMe);
@@ -166,7 +166,7 @@ public class ModuleExplorerPart
 						popupMenu.getActionType(),
 						popupMenu.getModuleName(),
 						subMenu,
-						connection.getFactory().makeList(actionNamePrefix),
+						connection.getPureFactory().makeList(actionNamePrefix),
 						connection);
 					manager.add(nextLevel);
 				}
@@ -195,7 +195,7 @@ public class ModuleExplorerPart
 
 			if (actionList.getLength() == 1) {
 				ATerm apifyMe =
-					connection.getFactory().make(
+					connection.getPureFactory().make(
 						"menu(<term>)",
 						prefixActionName.concat(actionList));
 				menu.add(
@@ -209,7 +209,7 @@ public class ModuleExplorerPart
 				IMenuManager nextLevel =
 					new MenuManager(buttonNamePrefix.getName());
 				ATermList subMenu =
-					connection.getFactory().makeList(
+					connection.getPureFactory().makeList(
 						(ATerm) actionList.getNext());
 
 				// collect a list of buttons that are in the same 'menuNamePrefix'
@@ -221,7 +221,7 @@ public class ModuleExplorerPart
 
 					if (buttonNamePrefix.isEqual(menuNamePrefix)) {
 						ATerm apifyMe =
-							connection.getFactory().make(
+							connection.getPureFactory().make(
 								"menu(<term>)",
 								curList.getNext());
 						subMenu = subMenu.insert(apifyMe);
@@ -295,7 +295,7 @@ public class ModuleExplorerPart
 	//					final String moduleName = ((Module) first).getModulePath();
 	//					UserInterface ui = new UserInterface();
 	//					MetastudioConnection factory = new MetastudioConnection();
-	//					ui.postEvent(factory.getFactory().make("get-buttons(module-popup, <str>)", moduleName));
+	//					ui.postEvent(factory.getPureFactory().make("get-buttons(module-popup, <str>)", moduleName));
 	//				}
 	//			}
 	//		}
