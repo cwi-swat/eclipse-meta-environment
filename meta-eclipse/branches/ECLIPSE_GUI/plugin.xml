@@ -92,14 +92,6 @@
             visible="true"
             id="nl.cwi.sen.metastudio.ToolbarActionSet">
          <action
-               label="nl.cwi.sen.metastudio.actions.NewModuleAction"
-               icon="icons/New16.gif"
-               tooltip="New Module"
-               class="nl.cwi.sen.metastudio.actions.NewModule"
-               toolbarPath="additions"
-               id="nl.cwi.sen.metastudio.actions.NewModuleAction">
-         </action>
-         <action
                label="nl.cwi.sen.metastudio.actions.OpenModuleAction"
                icon="icons/Open16.gif"
                tooltip="Open Module"

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import nl.cwi.sen.metastudio.graphview.GraphPart;
 
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -54,8 +53,6 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 
 	private void addListeners() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IResourceChangeListener listener = new ProjectListener();
-		workspace.addResourceChangeListener(listener);
 	}
 
 	public void createInitialLayout(IPageLayout layout) {
