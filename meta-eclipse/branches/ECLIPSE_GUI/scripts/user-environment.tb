@@ -1,3 +1,4 @@
+#include "p1.tb"
 #include "p2.tb"
 #include "user-interface.idef"
 #include "editor-hive.idef"
@@ -7,9 +8,11 @@ tool user-environment is {}
 process UE is
 let
   UE : user-environment,
-  Pid : int
+  Pid1 : int,
+  Pid2: int
 in
-  create(P2, Pid?)
+  create(P1, Pid1?)
+  . create(P2, Pid2?)
   . rec-connect(UE?) 
   .
   (
