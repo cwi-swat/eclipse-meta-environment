@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 
 import aterm.ATerm;
 import aterm.ATermAppl;
@@ -409,7 +410,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 				IEditorPart part = null;
 				try {
-					part = page.openEditor(file);
+					part = IDE.openEditor(page,file,true);
 				} catch (Exception e) {
 				}
 
@@ -469,7 +470,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 						path);
 
 				try {
-					page.openEditor(file);
+					IDE.openEditor(page, file,true);
 				} catch (Exception e) {
 				}
 			}

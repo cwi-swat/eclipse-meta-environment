@@ -1,34 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="src"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.0.0/resources.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.resources_3.0.0/resourcessrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_LINUX_GTK_X86_SRC/org.eclipse.swt.gtk_3.0.0/ws/gtk/swtsrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt-pi.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_LINUX_GTK_X86_SRC/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt-pisrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_3.0.0/textsrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface.text_3.0.0/jfacetextsrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench.texteditor_3.0.0/texteditorsrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_3.0.0/editors.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.editors_3.0.0/editorssrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_3.0.0/boot.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.boot_3.0.0/bootsrc.zip"/>
-    <classpathentry kind="var"
-        path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.runtime_3.0.0/runtimesrc.zip"/>
-    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry kind="lib" path="src/java-adapter-1.0.jar"/>
-    <classpathentry kind="lib" path="src/meta-studio.jar" sourcepath="/ufs/kooiker/workspace/meta-eclipse/bin/meta-studio.jar"/>
-    <classpathentry kind="lib" path="src/jjtraveler-0.4.2.jar"/>
-    <classpathentry kind="lib" path="src/shared-objects-1.4.jar"/>
-    <classpathentry kind="src" path="/aterm-java"/>
-    <classpathentry kind="lib" path="src/aterm-1.5beta.jar" sourcepath="/ufs/kooiker/workspace/aterm-java/"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.0.0/jface.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_3.0.0/ui.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_3.0.0/views.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar"/>
-    <classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/aterm-java"/>
+	<classpathentry kind="src" path="/JJTraveler"/>
+	<classpathentry kind="src" path="/shared-objects"/>
+	<classpathentry kind="lib" path="src/meta-studio.jar"/>
+	<classpathentry kind="lib" path="src/aterm-1.5beta.jar"/>
+	<classpathentry kind="lib" path="src/jjtraveler-0.4.2.jar"/>
+	<classpathentry kind="lib" path="src/shared-objects-1.4.jar"/>
+	<classpathentry kind="lib" path="src/java-adapter-1.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
