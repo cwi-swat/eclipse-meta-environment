@@ -19,6 +19,7 @@ import nl.cwi.sen.metastudio.moduleview.ModuleInfoPart;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -145,7 +146,8 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		final String _message = status;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				PerspectiveFactory.getStatusLineManager().setMessage(_message);
+				IStatusLineManager slm = PerspectiveFactory.getStatusLineManager();
+				slm.setMessage(_message);
 			}
 		});
 	}

@@ -16,11 +16,13 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.EditorPart;
 
 public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 	static IViewPart view;
 	UserInterface ui;
-	
+
 	private static IWorkbenchPage _page;
 	private static IViewPart _resourceNavigator;
 
@@ -134,18 +136,36 @@ public class PerspectiveFactory implements IPerspectiveFactory, IPartListener {
 	}
 
 	public static GraphPart getGraphImportPart() {
-		IViewPart part = _page.findView("nl.cwi.sen.metastudio.GraphImportView");
-		return (GraphPart)part;
+		IViewPart part =
+			_page.findView("nl.cwi.sen.metastudio.GraphImportView");
+		return (GraphPart) part;
 	}
-	
+
 	public static GraphPart getGraphTreePart() {
 		IViewPart part = _page.findView("nl.cwi.sen.metastudio.GraphTreeView");
-		return (GraphPart)part;
+		return (GraphPart) part;
 	}
 
 	public static IStatusLineManager getStatusLineManager() {
-		IStatusLineManager statusLineManager =
-			view.getViewSite().getActionBars().getStatusLineManager();
+		IStatusLineManager statusLineManager;
+		IWorkbenchPart part =
+			PlatformUI
+				.getWorkbench()
+				.getActiveWorkbenchWindow()
+				.getActivePage()
+				.getActivePart();
+		if (part instanceof TextEditor) {
+			EditorPart editorPart = (EditorPart) part;
+			statusLineManager =
+				editorPart
+					.getEditorSite()
+					.getActionBars()
+					.getStatusLineManager();
+		} else {
+			view = (IViewPart) part;
+			statusLineManager =
+				view.getViewSite().getActionBars().getStatusLineManager();
+		}
 		return statusLineManager;
 	}
 
