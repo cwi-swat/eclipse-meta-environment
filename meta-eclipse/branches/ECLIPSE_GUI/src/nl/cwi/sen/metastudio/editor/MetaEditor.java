@@ -1,10 +1,6 @@
 package nl.cwi.sen.metastudio.editor;
 
-import java.io.IOException;
-
 import nl.cwi.sen.metastudio.MetastudioConnection;
-import nl.cwi.sen.metastudio.bridge.TextEditorBridge;
-import nl.cwi.sen.metastudio.bridge.TextEditorTif;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IMenuManager;
@@ -20,23 +16,18 @@ import org.eclipse.ui.editors.text.TextEditor;
 
 import aterm.ATerm;
 import aterm.ATermAppl;
-import aterm.ATermFactory;
-import aterm.ATermList;
 
-public class XMLEditor extends TextEditor implements TextEditorTif {
+public class MetaEditor extends TextEditor {
 	private ColorManager colorManager;
 	private String moduleName;
 	private IFile file;
 	protected String editorId;
 	
-	protected ATermFactory factory;
-	protected TextEditorBridge bridge;
-	
-	public XMLEditor() {
+	public MetaEditor() {
 		super();
 		colorManager = new ColorManager();
-		setSourceViewerConfiguration(new XMLConfiguration(this, colorManager));
-		setDocumentProvider(new XMLDocumentProvider());
+		setSourceViewerConfiguration(new MetaEditorConfiguration(this, colorManager));
+		setDocumentProvider(new MetaEditorDocumentProvider());
 	}
 	
 	public void createPartControl(Composite parent) {
@@ -52,37 +43,11 @@ public class XMLEditor extends TextEditor implements TextEditorTif {
 			fileExtension = file.getFileExtension();
 			moduleName = moduleName.substring(0, moduleName.length() - file.getFileExtension().length() - 1);
 		}
-
 		editorId = moduleName + file.getFileExtension();
-
-		ATermList buttonList = (ATermList)connection.getFactory().make("[\"Edit Syntax\"]");
-		connection.getBridge().postEvent(connection.getFactory().make("button-selected(<str>,<str>,<list>)", "module-popup", moduleName, buttonList));
-
-//		factory = new aterm.pure.PureFactory();
-//		bridge = new TextEditorBridge(factory, this);
-
-		String[] args = new String[6];
-		args[0]="-TB_HOST_NAME";
-		args[1]="localhost";
-		args[2]="-TB_PORT";
-		args[3]="8999";
-		args[4]="-TB_TOOL_NAME";
-		args[5] ="text-editor";
-		
-		try {
-			bridge.init(args);
-			bridge.connect();
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
-		Thread t = new Thread(bridge);
-		t.start();
 	}
 	
 	public void dispose() {
 		colorManager.dispose();
-		bridge.disconnect();
 		//super.dispose();
 	}
 	
@@ -126,9 +91,6 @@ public class XMLEditor extends TextEditor implements TextEditorTif {
 		});
 	}
 
-	public void moveEditorToFront(String s0) {
-	}
-
 	public ATerm tbGetFocusText(String s0, int i1, int i2) {
 		final int int1 = i1 - 1;
 		final int int2 = i2;
@@ -136,10 +98,10 @@ public class XMLEditor extends TextEditor implements TextEditorTif {
 			public void run() {
 				selectAndReveal(int1, int2);
 				String select = ((ITextSelection)doGetSelection()).getText();
-				try {
-					bridge.sendTerm(factory.make("snd-value(focus-text(<str>,<str>))", editorId, select));
-				} catch(IOException e) {
-				}
+//				try {
+//					bridge.sendTerm(factory.make("snd-value(focus-text(<str>,<str>))", editorId, select));
+//				} catch(IOException e) {
+//				}
 			}
 		});
 		return null;
@@ -147,20 +109,13 @@ public class XMLEditor extends TextEditor implements TextEditorTif {
 
 	public ATerm editFile(String s0) {
 		// TODO When implementing this in a perspective we need to generate a unique file reference
-		return factory.make("snd-value(file-id(<str>))", editorId);
+//		return factory.make("snd-value(file-id(<str>))", editorId);
+		return null;
 	}
 
-	public void recAckEvent(ATerm t0) {
-		System.out.println("TE: Ack received");
-		// TODO Auto-generated method stub
-	}
-
-	/* (non-Javadoc)
-	 * @see MetaEditor.Bridge.TextEditorTif#tbAddMenus(aterm.ATerm)
-	 */
 	public void tbAddMenus(ATerm t0) {
 		final ATerm term0 = t0;
-		final XMLEditor editor = this;
+		final MetaEditor editor = this;
 		Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					String strListArg0, strListArg1, strMenu = "";
@@ -176,16 +131,10 @@ public class XMLEditor extends TextEditor implements TextEditorTif {
 							parentMenu.update(true);
 						}
 						strListArg1 = ((ATermAppl)term0.getChildAt(i).getChildAt(1)).getName();
-						newMenu.add(new AddMetaEditorAction(editor, strListArg0, strListArg1));
+						newMenu.add(new MetaEditorAction(editor, strListArg0, strListArg1));
 						newMenu.update(true);
 					}
 				}
 			});
-	}
-
-	public void reloadFile(String s0) {
-	}
-
-	public void recTerminate(ATerm t0) {
 	}
 }

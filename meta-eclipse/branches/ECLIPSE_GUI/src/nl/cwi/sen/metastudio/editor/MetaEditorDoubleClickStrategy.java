@@ -12,11 +12,11 @@ package nl.cwi.sen.metastudio.editor;
 
 import org.eclipse.jface.text.*;
 
-public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
+public class MetaEditorDoubleClickStrategy implements ITextDoubleClickStrategy {
 	protected ITextViewer fText;
-	private XMLEditor editor;
+	private MetaEditor editor;
 
-	public XMLDoubleClickStrategy (XMLEditor editor) {
+	public MetaEditorDoubleClickStrategy (MetaEditor editor) {
 		this.editor = editor;
 	}
 
@@ -27,7 +27,7 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
 			return;
 						
 		Integer i = new Integer(pos - 1) ;
-		editor.bridge.postEvent(editor.factory.make("set-current-location(<str>,<int>)", editor.editorId, i));
+//		editor.bridge.postEvent(editor.factory.make("set-current-location(<str>,<int>)", editor.editorId, i));
 //		fText = part;
 
 //		if (!selectComment(pos)) {

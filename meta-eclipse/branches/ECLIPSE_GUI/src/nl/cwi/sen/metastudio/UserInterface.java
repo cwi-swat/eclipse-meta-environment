@@ -5,11 +5,15 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 import aterm.ATerm;
@@ -218,6 +222,7 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		return null;
 	}
 
+	// Not used in Eclipse GUI
 	public ATerm showFileDialog(String s0, String s1, String s2) {
 		return null;
 	}
@@ -227,7 +232,6 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 
 	public void recTerminate(ATerm t0) {
 		// TODO Auto-generated method stub
-
 	}
 
 	public void postEvent(ATerm term) {
@@ -287,8 +291,21 @@ public class UserInterface implements UserEnvironmentTif, Runnable {
 		// TODO Auto-generated method stub
 	}
 
-	public void editFile(ATerm t0, String s1, String s2) {
-		// TODO Auto-generated method stub
+	public void editFile(ATerm editorID, String editor, String fileName) {
+		final String _fileName = fileName;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+
+				IPath path = new Path(_fileName);
+				IFile file = MetastudioPlugin.getWorkspace().getRoot().getFileForLocation(path);
+
+				try {
+					page.openEditor(file);
+				} catch (Exception e) {
+				}
+			}
+		});
 	}
 
 	public void messagef(String s0, ATerm t1) {

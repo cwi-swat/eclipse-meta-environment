@@ -17,7 +17,6 @@
       <import plugin="org.eclipse.ui"/>
    </requires>
 
-
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -29,10 +28,10 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Sample XML Editor"
+            name="MetaEditor"
             icon="icons/file_obj.gif"
             extensions="asf, sdf, trm"
-            class="nl.cwi.sen.metastudio.editor.XMLEditor"
+            class="nl.cwi.sen.metastudio.editor.MetaEditor"
             id="nl.cwi.sen.metastudio.editor">
       </editor>
    </extension>

@@ -14,11 +14,11 @@ import org.eclipse.jface.action.Action;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class AddMetaEditorAction extends Action {
+public class MetaEditorAction extends Action {
 	String menu, label;
-	XMLEditor editor;
+	MetaEditor editor;
 	
-	AddMetaEditorAction (XMLEditor editor, String menu, String label) {
+	MetaEditorAction (MetaEditor editor, String menu, String label) {
 		this.menu = menu;
 		this.label = label;
 		this.editor = editor;
@@ -26,6 +26,6 @@ public class AddMetaEditorAction extends Action {
 	}
 	
 	public void run() {
-		editor.bridge.postEvent(editor.factory.make("menu-event(<str>,<str>,<str>)", menu, label, editor.editorId));
+//		editor.bridge.postEvent(editor.factory.make("menu-event(<str>,<str>,<str>)", menu, label, editor.editorId));
 	}
 }

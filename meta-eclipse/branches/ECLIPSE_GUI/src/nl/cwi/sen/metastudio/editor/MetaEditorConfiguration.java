@@ -20,14 +20,14 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
-public class XMLConfiguration extends SourceViewerConfiguration {
-	private XMLEditor editor;
-	private XMLDoubleClickStrategy doubleClickStrategy;
+public class MetaEditorConfiguration extends SourceViewerConfiguration {
+	private MetaEditor editor;
+	private MetaEditorDoubleClickStrategy doubleClickStrategy;
 	private XMLTagScanner tagScanner;
 	private XMLScanner scanner;
 	private ColorManager colorManager;
 
-	public XMLConfiguration(XMLEditor editor, ColorManager colorManager) {
+	public MetaEditorConfiguration(MetaEditor editor, ColorManager colorManager) {
 		this.colorManager = colorManager;
 		this.editor = editor;
 	}
@@ -43,7 +43,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 		ISourceViewer sourceViewer,
 		String contentType) {
 		if (doubleClickStrategy == null)
-			doubleClickStrategy = new XMLDoubleClickStrategy(editor);
+			doubleClickStrategy = new MetaEditorDoubleClickStrategy(editor);
 		return doubleClickStrategy;
 	}
 
