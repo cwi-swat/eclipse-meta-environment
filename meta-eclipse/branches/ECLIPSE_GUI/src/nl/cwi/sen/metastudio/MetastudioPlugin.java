@@ -15,7 +15,7 @@ import java.util.*;
 public class MetastudioPlugin extends AbstractUIPlugin {
 	//The shared instance.
 	private static MetastudioPlugin plugin;
-	//Resource bundle.
+	//Resource bundle. tsja
 	private ResourceBundle resourceBundle;
 	
 	/**
