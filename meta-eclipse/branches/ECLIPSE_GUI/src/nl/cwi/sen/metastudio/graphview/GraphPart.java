@@ -145,10 +145,17 @@ public class GraphPart extends ViewPart {
 
 			public void mouseUp(MouseEvent e) {
 				if (graphLibrary != null) {
-					node =
-						graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
+					node = graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
 					if (graphLibrary.nodeSelected(node) == true) {
 						canvas.redraw();
+					}
+					if (node != null) {
+						if (node.hasInfo("message")) {
+							MetastudioConnection connection =
+								UserInterface.getConnection();
+							connection.getBridge().postEvent(
+								node.getInfo("message"));
+						}
 					}
 				}
 			}
@@ -159,8 +166,7 @@ public class GraphPart extends ViewPart {
 		canvas.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
 				if (graphLibrary != null) {
-					node =
-						graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
+					node = graphLibrary.getNodeAt(graph, e.x - ix, e.y - iy);
 					if (graphLibrary.nodeHighlighted(node) == true) {
 						canvas.redraw();
 					}
@@ -183,7 +189,7 @@ public class GraphPart extends ViewPart {
 		Menu menu = menuMgr.createContextMenu(canvas);
 		canvas.setMenu(menu);
 	}
-	
+
 	public void fillContextMenu(IMenuManager manager) {
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
