@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sdf_eclipse_installer_win32_x86 Fragment
+Bundle-SymbolicName: sdf_eclipse_installer_win32_x86
+Bundle-Version: 1.0.0
+Bundle-Vendor: jurgen@vinju.org
+Fragment-Host: sdf_eclipse_installer;bundle-version="1.0.0"
+Bundle-Localization: plugin
+Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86))
