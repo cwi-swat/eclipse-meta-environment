@@ -19,8 +19,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
 /**
- * This activator lazily installs the SDF tools inside of the bundle of
- * this plugin.
+ * This activator lazily installs the SDF tools inside of the bundle of this
+ * plugin.
  */
 public class Activator extends AbstractUIPlugin {
 
@@ -47,31 +47,33 @@ public class Activator extends AbstractUIPlugin {
 			+ File.separator + "windows.zip";
 
 	private BundleContext context;
-	
+
 	/**
 	 * The constructor
 	 */
 	public Activator() {
 		plugin = this;
 	}
-	
+
 	public File getBinaryPrefix() throws IOException {
 		String os = Platform.getOS();
 		if (os.equals(Platform.OS_LINUX)) {
-		  return getFile(context.getBundle(), linuxPrefix + File.separator + "bin");
+			return getFile(context.getBundle(), linuxPrefix + File.separator
+					+ "bin");
 		} else if (os.equals(Platform.OS_WIN32)) {
-		  return getFile(context.getBundle(), windowsPrefix  + File.separator + "bin");	
+			return getFile(context.getBundle(), windowsPrefix + File.separator
+					+ "bin");
 		} else {
 			return null;
 		}
 	}
-	
+
 	public String getBinaryPostfix() {
 		String os = Platform.getOS();
 		if (os.equals(Platform.OS_LINUX)) {
-		  return "";
+			return "";
 		} else if (os.equals(Platform.OS_WIN32)) {
-		  return ".exe";	
+			return ".exe";
 		} else {
 			return null;
 		}
@@ -116,16 +118,18 @@ public class Activator extends AbstractUIPlugin {
 		}
 	}
 
-	private void installWindowsBinariesIfNeeded(BundleContext context) throws BundleException {
+	private void installWindowsBinariesIfNeeded(BundleContext context)
+			throws BundleException {
 		if (!windowsWasPreviouslyInstalled(context)) {
 			try {
 				File installer = getFile(context.getBundle(), windowsInstaller);
 				File prefix = getFile(context.getBundle(), windowsPrefix);
-				Unzipper.unzip(prefix.getAbsolutePath(), installer.getAbsolutePath());
-				
+				Unzipper.unzip(prefix.getAbsolutePath(), installer
+						.getAbsolutePath());
+
 			} catch (IOException e) {
 				throw new BundleException(INSTALL_FAILED, e);
-			} 
+			}
 		}
 	}
 
@@ -152,30 +156,24 @@ public class Activator extends AbstractUIPlugin {
 				File installer = getFile(context.getBundle(), linuxInstaller);
 
 				File prefix = getFile(context.getBundle(), linuxPrefix);
-				Process installScript = Runtime.getRuntime().exec(
-						installer.getAbsolutePath());
+
+				String[] command = new String[] { installer.getAbsolutePath(),
+						"--no-java-check", "--no-clib-check",
+						"--no-platform-check", "--no-overwrite-check",
+						"--prefix", prefix.getAbsolutePath() };
+
+				Process installScript = Runtime.getRuntime().exec(command);
 
 				OutputStream out = new BufferedOutputStream(installScript
 						.getOutputStream());
 
-				// where to install
-				out.write((prefix.getAbsolutePath() + "\n").getBytes());
-
-				// absolute path of gcc
-				out.write("\n".getBytes());
-
-				// absolute path of java
-				out.write("\n".getBytes());
-
-				// absolute path of dot
-				out.write("\n".getBytes());
+				// TODO remove the need for these binary location questions
+				out.write('\n');
+				out.write('\n');
+				out.write('\n');
 				
-				// yes, overwrite
-				out.write("yes\n".getBytes());
-
-				// make the process receive everything
 				out.close();
-
+				
 				installScript.waitFor();
 
 				if (installScript.exitValue() != 0) {
@@ -227,7 +225,8 @@ public class Activator extends AbstractUIPlugin {
 			out.close();
 		}
 
-		public static void unzip(String where, String zip) throws BundleException {
+		public static void unzip(String where, String zip)
+				throws BundleException {
 			Enumeration entries;
 			ZipFile zipFile;
 
@@ -249,7 +248,7 @@ public class Activator extends AbstractUIPlugin {
 						InputStream input = zipFile.getInputStream(entry);
 						FileOutputStream output = new FileOutputStream(file
 								.getAbsolutePath());
-						pipe(input,	new BufferedOutputStream(output));
+						pipe(input, new BufferedOutputStream(output));
 					}
 				}
 
