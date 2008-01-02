@@ -21,8 +21,7 @@
          id="sdf_eclipse_installer"
          download-size="0"
          install-size="0"
-         version="1.0.0"
-         unpack="false"/>
+         version="1.0.0"/>
 
    <plugin
          id="sdf_eclipse_installer_win32_x86"
@@ -31,8 +30,7 @@
          download-size="0"
          install-size="0"
          version="1.0.0"
-         fragment="true"
-         unpack="false"/>
+         fragment="true"/>
 
    <plugin
          id="sdf_eclipse_installer_linux_x86"
@@ -41,7 +39,6 @@
          download-size="0"
          install-size="0"
          version="1.0.0"
-         fragment="true"
-         unpack="false"/>
+         fragment="true"/>
 
 </feature>
