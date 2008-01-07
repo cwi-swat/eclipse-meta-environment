@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SDF Eclipse Plug-in
 Bundle-SymbolicName: sdf_eclipse_installer
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Bundle-Activator: org.syntax_definition.sdf.Activator
 Bundle-Vendor: jurgen@vinju.org
 Bundle-Localization: plugin
