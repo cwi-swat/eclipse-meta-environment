@@ -2,7 +2,7 @@
 <feature
       id="sdf_eclipse_installer_feature"
       label="Sdf_eclipse_installer_feature Feature"
-      version="1.0.2"
+      version="1.0.3"
       provider-name="jurgen@vinju.org">
 
    <description url="http://www.meta-environment.org">
@@ -47,7 +47,7 @@
          id="sdf_eclipse_installer"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="sdf_eclipse_installer_win32_x86"
@@ -55,7 +55,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
@@ -64,7 +64,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
 </feature>
