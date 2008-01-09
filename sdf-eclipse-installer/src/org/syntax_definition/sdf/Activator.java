@@ -49,6 +49,8 @@ public class Activator extends AbstractUIPlugin {
 
 	private static final String windowsInstaller = distributions
 			+ File.separator + "windows.zip";
+	
+	private static final String DIALOG_MESSAGE = "Installing SDF and BOX";
 
 	private BundleContext context;
 
@@ -125,18 +127,36 @@ public class Activator extends AbstractUIPlugin {
 		}
 	}
 
-	private void installWindowsBinariesIfNeeded(BundleContext context)
-			throws BundleException {
+	private void installWindowsBinariesIfNeeded(final BundleContext context)
+			throws BundleException, InvocationTargetException, InterruptedException {
 		if (!windowsWasPreviouslyInstalled(context)) {
-			try {
-				File installer = getFile(context.getBundle(), windowsInstaller);
-				File prefix = getFile(context.getBundle(), windowsPrefix);
-				Unzipper.unzip(prefix.getAbsolutePath(), installer
-						.getAbsolutePath());
+			ProgressMonitorDialog dialog = new ProgressMonitorDialog(null);
+			dialog.setCancelable(false);
+			dialog.open();
 
-			} catch (IOException e) {
-				throw new BundleException(INSTALL_FAILED, e);
-			}
+			dialog.run(true, false, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
+					try {
+						installWindowsBinaries(context, monitor);
+					} catch (BundleException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+	}
+
+	private void installWindowsBinaries(BundleContext context, IProgressMonitor monitor) throws BundleException {
+		try {
+			File installer = getFile(context.getBundle(), windowsInstaller);
+			File prefix = getFile(context.getBundle(), windowsPrefix);
+			Unzipper.unzip(prefix.getAbsolutePath(), installer
+					.getAbsolutePath(), monitor);
+
+		} catch (IOException e) {
+			throw new BundleException(INSTALL_FAILED, e);
 		}
 	}
 
@@ -168,7 +188,6 @@ public class Activator extends AbstractUIPlugin {
 				public void run(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException {
 					try {
-						monitor.beginTask("Installing SDF and BOX", 4);
 						installLinuxBinaries(context, monitor);
 					} catch (BundleException e) {
 						// TODO Auto-generated catch block
@@ -182,6 +201,8 @@ public class Activator extends AbstractUIPlugin {
 	private void installLinuxBinaries(BundleContext context, IProgressMonitor monitor)
 			throws InterruptedException, BundleException {
 		try {
+			monitor.beginTask(DIALOG_MESSAGE, 4);
+			
 			File installer = getFile(context.getBundle(), linuxInstaller);
 
 			File prefix = getFile(context.getBundle(), linuxPrefix);
@@ -247,6 +268,8 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	private static class Unzipper {
+		
+
 		public static void pipe(InputStream in, OutputStream out)
 				throws IOException {
 			byte[] buffer = new byte[1024];
@@ -260,7 +283,7 @@ public class Activator extends AbstractUIPlugin {
 			out.close();
 		}
 
-		public static void unzip(String where, String zip)
+		public static void unzip(String where, String zip, IProgressMonitor monitor)
 				throws BundleException {
 			Enumeration entries;
 			ZipFile zipFile;
@@ -268,6 +291,7 @@ public class Activator extends AbstractUIPlugin {
 			try {
 				zipFile = new ZipFile(zip);
 				entries = zipFile.entries();
+				monitor.beginTask(DIALOG_MESSAGE, zipFile.size());
 
 				while (entries.hasMoreElements()) {
 					ZipEntry entry = (ZipEntry) entries.nextElement();
@@ -285,6 +309,8 @@ public class Activator extends AbstractUIPlugin {
 								.getAbsolutePath());
 						pipe(input, new BufferedOutputStream(output));
 					}
+					
+					monitor.worked(1);
 				}
 
 				zipFile.close();
