@@ -6,13 +6,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -53,6 +57,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public Activator() {
 		plugin = this;
+
 	}
 
 	public File getBinaryPrefix() throws IOException {
@@ -98,10 +103,12 @@ public class Activator extends AbstractUIPlugin {
 	 * 
 	 * @throws BundleException
 	 * @throws InterruptedException
+	 * @throws InvocationTargetException 
 	 * 
 	 */
-	private void installBinariesIfNeeded(BundleContext context)
-			throws BundleException, InterruptedException {
+	private synchronized void installBinariesIfNeeded(
+			final BundleContext context) throws BundleException,
+			InterruptedException, InvocationTargetException {
 		String arch = Platform.getOSArch();
 
 		if (arch.equals(Platform.ARCH_X86)) {
@@ -149,40 +156,68 @@ public class Activator extends AbstractUIPlugin {
 	 * @throws BundleException
 	 * @throws InterruptedException
 	 */
-	private void installLinuxBinariesIfNeeded(BundleContext context)
-			throws BundleException, InterruptedException {
+	private void installLinuxBinariesIfNeeded(final BundleContext context)
+			throws BundleException, InterruptedException,
+			InvocationTargetException {
 		if (!linuxWasPreviouslyInstalled(context)) {
-			try {
-				File installer = getFile(context.getBundle(), linuxInstaller);
+			ProgressMonitorDialog dialog = new ProgressMonitorDialog(null);
+			dialog.setCancelable(false);
+			dialog.open();
 
-				File prefix = getFile(context.getBundle(), linuxPrefix);
-
-				String[] command = new String[] { installer.getAbsolutePath(),
-						"--no-java-check", "--no-clib-check",
-						"--no-platform-check", "--no-overwrite-check",
-						"--prefix", prefix.getAbsolutePath() };
-
-				Process installScript = Runtime.getRuntime().exec(command);
-
-				OutputStream out = new BufferedOutputStream(installScript
-						.getOutputStream());
-
-				// TODO remove the need for these binary location questions
-				out.write('\n');
-				out.write('\n');
-				out.write('\n');
-				
-				out.close();
-				
-				installScript.waitFor();
-
-				if (installScript.exitValue() != 0) {
-					throw new BundleException(INSTALL_FAILED);
+			dialog.run(true, false, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
+					try {
+						monitor.beginTask("Installing SDF and BOX", 4);
+						installLinuxBinaries(context, monitor);
+					} catch (BundleException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+			});
+		}
+	}
 
-			} catch (IOException e) {
-				throw new BundleException(INSTALL_FAILED, e);
+	private void installLinuxBinaries(BundleContext context, IProgressMonitor monitor)
+			throws InterruptedException, BundleException {
+		try {
+			File installer = getFile(context.getBundle(), linuxInstaller);
+
+			File prefix = getFile(context.getBundle(), linuxPrefix);
+
+			String[] command = new String[] { "/bin/sh",
+					installer.getAbsolutePath(), "--no-java-check",
+					"--no-clib-check", "--no-platform-check",
+					"--no-overwrite-check", "--prefix",
+					prefix.getAbsolutePath() };
+
+			monitor.worked(1);
+			Process installScript = Runtime.getRuntime().exec(command);
+
+			monitor.worked(1);
+			OutputStream out = new BufferedOutputStream(installScript
+					.getOutputStream());
+
+			// TODO remove the need for these binary location questions
+			out.write('\n');
+			out.write('\n');
+			out.write('\n');
+
+			monitor.worked(1);
+			
+			out.close();
+
+			installScript.waitFor();
+
+			monitor.worked(1);
+			
+			if (installScript.exitValue() != 0) {
+				throw new BundleException(INSTALL_FAILED);
 			}
+
+		} catch (IOException e) {
+			throw new BundleException(INSTALL_FAILED, e);
 		}
 	}
 
