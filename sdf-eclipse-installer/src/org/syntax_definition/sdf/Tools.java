@@ -131,6 +131,7 @@ public class Tools {
 		for (int i = 0; i < commands.length; i++) {
 			procs[i].waitFor();
 			if (procs[i].exitValue() != 0) {
+				// TODO: throw a different exception, collect all exit codes
 				throw new IOException("Command failed (" + procs[i].exitValue() + "):" + commands[i]);
 			}
 		}
