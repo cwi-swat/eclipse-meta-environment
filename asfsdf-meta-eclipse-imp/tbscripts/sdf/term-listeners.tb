@@ -1,0 +1,97 @@
+#ifndef TERM_LISTENERS
+#define TERM_LISTENERS
+#include <term-namespace.h>
+
+process TermCreator is
+let
+  ModuleId : module-id,
+  Event : attribute-changed-event
+in
+  MM-Subscribe-Attribute-Changed(<module-id>,TERM_NAMESPACE,"status",<term>,created)
+  .
+  ( 
+    rec-note(mm-attribute-changed(Event?))
+    . printf("Term module created: %t\n", Event)
+    . ACE-GetModuleId(Event, ModuleId?)
+    . MM-SetAttribute(ModuleId, TERM_NAMESPACE, "status", idle)
+    . MM-SetAttribute(ModuleId, TERM_NAMESPACE, "language", "Main")
+  ) * delta
+endlet
+
+toolbus(TermCreator)
+
+process TermLanguageSetter is
+let
+  Filename : str,
+  Language : str,
+  ModuleId : module-id
+in
+  subscribe(tlr-set-language(<str>, <str>))
+  .
+  (
+    rec-note(tlr-set-language(Filename?, Language?))
+    . MM-GetModuleIdByAttribute(TERM_NAMESPACE, "path", path(Filename), ModuleId?)
+    . 
+    if not-equal(ModuleId, UNDEFINED) then
+      MM-SetAttribute(ModuleId, TERM_NAMESPACE, "language", Language)
+      . printf("Set language of %s to %s\n", Filename, Language)
+    else
+      printf("Could not set language of %s to %s\n", Filename, Language)
+    fi
+  ) * delta
+endlet
+
+toolbus(TermLanguageSetter)
+
+process TermEditorParser is
+let
+  Filename : str,
+  Contents : str,
+  Table : term,
+  Tree : term,
+  ErrorSummary : term,
+  ParseResult : term,
+  Annotated : term,
+  Language : str,
+  SdfModuleId : module-id,
+  ModuleId : module-id
+in
+  printf("listening for pc-parse-event(trm, Filename?, Contents?)\n") .
+  (
+    rec-msg(pc-parse-event(trm, Filename?, Contents?))
+    . printf("received pc-parse-event for trm\n")
+    . MM-GetModuleIdByAttribute(TERM_NAMESPACE, "path", path(Filename), ModuleId?)
+    . 
+    if not-equal(ModuleId, UNDEFINED) then
+      MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
+      . MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
+      .
+      if not-equal(SdfModuleId, UNDEFINED) then
+        GetParseTable(SdfModuleId, trm, Table?)
+        .
+        if not-equal(Table, UNDEFINED) then
+          snd-msg(sglr-parse(Contents, Table, "", off))
+          .
+          (
+            rec-msg(sglr-parse-tree(ParseResult?, ErrorSummary?))
+            . AnnotateTree(ParseResult, Filename, Annotated?)
+            . snd-msg(pc-parse-result(trm, Filename, ParseResult, ErrorSummary))
+          +
+            rec-msg(sglr-parse-error(ErrorSummary?))
+            . snd-msg(pc-parse-error(trm, Filename, ErrorSummary))
+          )
+        else
+          snd-msg(pc-parse-error(trm, Filename, summary("sdf-parser",Filename,[])))
+        fi
+      else
+        printf("No language %s for %s\n", Language, Filename)
+      fi
+    else
+      printf("No module found for %s\n", Filename)
+    fi
+  ) * delta 
+endlet
+
+toolbus(TermEditorParser)
+
+#endif

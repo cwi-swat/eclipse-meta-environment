@@ -1,0 +1,39 @@
+/* #include <start-meta-studio.tb> */
+#include <undefined.h>
+#include <sdf-namespace.h>
+#include <asf-namespace.h>
+#include <sdf-progress-listener.tb>
+#include <asf-progress-listener.tb>
+#include <parse-controller.idef>
+#include <builder.idef>
+#include <error-viewer.idef>
+#include <progress.idef>
+#include <resources.idef>
+
+
+
+/* meta-kernel */
+#include <module-utils.tb>
+#include <error-utils.tb>
+/* #include <error-output.tb> */
+#include <transaction-management.tb>
+#include <text-utils.tb>
+
+/* sdf-meta */
+#include <sdf-listeners.tb>
+#include <sdf-utils.tb>
+#include <parsetable-utils.tb>
+#include <sdf2-language.tb>
+#include <sdf-transactions.tb>
+#include <term-listeners.tb>
+#include <term-parsetable.tb>
+#include <term-language.idef>
+
+/* asf-sdf-meta */
+#include <asf-language.tb>
+#include <asf-utils.tb>
+#include <asf-listeners.tb>
+#include <asf-initialize.tb>
+#include <asf-transactions.tb>
+
+/* */

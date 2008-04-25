@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <extension
+         id="test-config"
+         name="test-config"
+         point="toolbus.config">
+          <toolbus config="/home/jurgenv/glt-imp/asfsdf-meta-eclipse-imp/tbscripts/asfsdf-meta.props"/>
+   </extension>
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="sdf"
+            description="Syntax Definition Formalism"
+            language="sdf">
+      </language>
+   </extension>
+    <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="asf"
+            description="Algebraic Specification Formalism"
+            language="asf">
+      </language>
+   </extension>
+     <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="trm"
+            description="Terms to parsed and transformed"
+            language="trm">
+      </language>
+   </extension>
+  <extension
+        point="org.eclipse.imp.runtime.parser">
+        <parser class="org.meta_environment.eclipse.parser.ParseController" language="sdf"/>
+  </extension>
+   <extension
+        point="org.eclipse.imp.runtime.parser">
+        <parser class="org.meta_environment.eclipse.parser.ParseController" language="trm"/>
+  </extension>
+   <extension
+        point="org.eclipse.imp.runtime.parser">
+        <parser class="org.meta_environment.eclipse.parser.ParseController" language="asf"/>
+  </extension>
+    <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="org.meta_environment.eclipse.tokens.TokenColorer"
+            language="sdf">
+      </tokenColorer>
+   </extension>
+    <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="org.meta_environment.eclipse.tokens.TokenColorer"
+            language="asf">
+      </tokenColorer>
+   </extension>
+    <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="org.meta_environment.eclipse.tokens.TokenColorer"
+            language="trm">
+      </tokenColorer>
+   </extension>
+    <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.terms.EditorActionContributor"
+             language="trm"/>
+    </extension>
+    <extension
+          point="org.eclipse.imp.runtime.hoverHelper">
+       <hoverhelper
+             class="org.meta_environment.eclipse.terms.HoverHelper"
+             language="trm"/>
+    </extension>
+</plugin>
