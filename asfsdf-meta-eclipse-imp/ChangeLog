@@ -1,0 +1,4 @@
+
+
+Fri Apr 25 12:17:34 CEST 2008 <{jurgenv,bruntink}@cwi.nl>
+ * meta-eclipse-imp.pc.in,Makefile.am,etc: introduced default package structure
