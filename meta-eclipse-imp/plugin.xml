@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.startup">
+   </extension>
+  <extension
+         id="org.meta_environment.builder"
+         name="Meta-Environment builder"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.meta_environment.eclipse.builder.Builder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="org.meta_environment.nature"
+         name="Meta-Environment Nature"
+         point="org.eclipse.core.resources.natures">
+      <builder
+            id="org.meta_environment.builder">
+      </builder>
+      <runtime>
+         <run
+               class="org.meta_environment.eclipse.builder.Nature">
+         </run>
+      </runtime>
+   </extension>
+    <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="false"
+            nameFilter="*"
+            id="org.meta_environment.projectContextMenu">
+         <action
+               label="Enable Meta-Environment"
+               tooltip="Enable the Box builder for this project"
+               class="org.meta_environment.eclipse.builder.Enabler"
+               id="org.meta_environment.enableNatureAction">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

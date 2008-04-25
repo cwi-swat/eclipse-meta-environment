@@ -1,0 +1,68 @@
+#ifndef __RESOURCES__
+#define __RESOURCES__
+#include <module-manager.tb>
+
+tool resources is { }
+
+process Resources is
+let
+  T : resources,
+  Language : str,
+  Path : str,
+  ModuleId : term,
+  Contents : str,
+  Summary : term,
+  Contents2 : term
+in
+  rec-connect(T?) 
+  . printf("Resources tool connected!\n")
+  .
+  (
+    rec-event(T, create-module(Language?, Path?))
+    . printf("Create module: %t, %t, ", Language, Path)
+    . MM-CreateModule(ModuleId?)
+    . printf(" %t.\n", ModuleId)
+    . MM-SetAttribute(ModuleId, Language, "path", path(Path))
+    . MM-SetAttribute(ModuleId, Language, "status", created)
+    . snd-ack-event(T, create-module(Language, Path))
+  +
+    rec-event(T, delete-module(Language?, Path?))
+    . MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+    . if not-equal(ModuleId, UNDEFINED) then
+        MM-DeleteModule(ModuleId)
+      else
+        printf("Can not delete module %s\n", Path)
+      fi
+    . snd-ack-event(T, delete-module(Language, Path))
+  +
+    rec-event(T, build-module(Language?, Path?))
+    . printf("build module %s, %s, ", Language, Path)
+    . MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+    . printf(" %s.\n", ModuleId)
+    . if not-equal(ModuleId, UNDEFINED) then
+        MM-SetAttribute(ModuleId, Language, "status", dirty)
+      else
+        printf("Can not build module %s\n", Path)
+      fi
+    . snd-ack-event(T, build-module(Language, Path))
+  
+ /*  +
+    rec-msg(resources-get-file-contents(Path?))
+    . printf("Asking for contents of %s\n", Path)
+    . snd-eval(T, get-file-contents(Path))
+    .
+    (
+      rec-value(T, contents(Contents2?))
+      . printf("tool send contents: %s\n", Contents2)
+      . snd-msg(resources-file-contents(Path, Contents))
+    +
+      rec-value(T, no-contents)
+      . snd-msg(resources-no-file-contents(Path))
+    ) */
+  ) * delta
+  
+endlet
+
+toolbus(Resources)
+
+#endif

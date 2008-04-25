@@ -1,0 +1,36 @@
+tool builder is { }
+
+process Builder(T : builder) is
+let
+  Filename : str,
+  Content : str,
+  Result : term
+in
+  (
+    rec-event(T, compile(Content?, Filename?))
+    . printf("toolbus: compiling %s %s\n", Filename, Content)
+    . snd-note(builder-compile(Filename, Content))
+    . snd-ack-event(T, compile(Content, Filename) , compiled)
+  +
+    rec-event(T, collect-dependencies(Content?, Filename?))
+    . printf("toolbus: deps %s %s\n", Filename, Content)
+    . snd-note(builder-collect-dependencies(Filename, Content))
+    . snd-ack-event(T, collect-dependencies(Content, Filename), depped)
+  )
+  * rec-disconnect(T)
+endlet
+
+process Builders is
+let
+  T : builder,
+  Pid : int
+in
+  (
+    rec-connect(T?)
+    . printf("Connected a Meta-Environment builder\n")
+    . create(Builder(T), Pid?)
+  ) * delta
+endlet
+
+toolbus(Builders)
+

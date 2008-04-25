@@ -1,0 +1,63 @@
+#include <config-utils.tb>
+#include <module-utils.tb>
+#include <parse-utils.tb>
+#include <structure-editor.idef>
+
+tool parse-controller is { }
+
+process ParseController(T : parse-controller) is
+let
+  Filename : str,
+  Content : str,
+  Tree : term,
+  Slices : term,
+  Language : term
+in
+  (
+    rec-event(T, parse(Language?, Filename?, Content?))
+    . ParseAdapter(Language, Filename, Content, Tree?) 
+    . snd-ack-event(T, parse(Language, Filename, Content), Tree)
+  +
+    rec-event(T, highlight(Tree?))
+    . HighlightAdapter(Tree, Slices?)
+    . snd-ack-event(T, highlight(Tree), Slices)
+  )
+  * rec-disconnect(T)
+endlet
+
+process ParseControllers is
+let
+  T : parse-controller,
+  Pid : int
+in
+  (
+    rec-connect(T?)
+    . create(ParseController(T), Pid?)
+  ) * delta
+endlet
+
+toolbus(ParseControllers)
+
+process ParseAdapter(Language : term, Filename : str, Contents : str, Result :term?) is
+let
+  ErrorSummary : term,
+  ParseResult : term
+in
+  printf("want to send pc-parse-event(%t, %t, %t)\n", Language, Filename, Contents)
+  . snd-msg(pc-parse-event(Language, Filename, Contents))
+  . 
+  (
+    rec-msg(pc-parse-result(Language, Filename, ParseResult?, ErrorSummary?))
+    . Result := quote(correct(ParseResult))
+  +
+    rec-msg(pc-parse-error(Language, Filename, ErrorSummary?))
+    . Result := quote(error(ErrorSummary))
+  )
+endlet
+
+process HighlightAdapter(Tree : term, Slices : term?) is
+   snd-msg(se-slice(Tree))
+   . rec-msg(se-sliced(Tree, Slices?))
+
+
+
