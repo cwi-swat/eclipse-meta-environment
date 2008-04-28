@@ -1,25 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Meta_Eclipse Plug-in
-Bundle-SymbolicName: meta_eclipse;singleton:=true
-Bundle-Version: 1.0.0
-Bundle-Activator: org.meta_environment.eclipse.Activator
-Bundle-Vendor: jurgen@vinju.org
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.imp.runtime,
- toolbus_ng,
- org.eclipse.core.resources,
- org.eclipse.text,
- org.eclipse.compare,
- org.eclipse.jface.text,
- aterm_java,
- JJTraveler,
- shared_objects,
- config_support
+Bundle-Name: meta-eclipse-imp
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/errorapi.jar
-Export-Package: org.meta_environment.eclipse,
- org.meta_environment.eclipse.parser,
- org.meta_environment.eclipse.tokens
+Bundle-SymbolicName: meta_eclipse_imp;singleton:=true
+Bundle-Version: 0.1
+Bundle-ClassPath: meta-eclipse-imp.jar
+Bundle-Localization: plugin
+Export-Package: org.meta_environment.eclipse,org.meta_environment.eclipse.parser,org.meta_environment.eclipse.tokens
+Require-Bundle: toolbus_ng,aterm_java,shared_objects,JJTraveler,config_support
+

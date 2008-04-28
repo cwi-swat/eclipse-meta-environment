@@ -4,8 +4,6 @@ Maintainers=jurgenv@cwi.nl
 Name: meta-eclipse-imp
 Description: 
 Version: 0.1
-Requires: toolbus-ng,aterm-java,config-support
+Requires: toolbus-ng,aterm-java,config-support-java
 JarFile=meta-eclipse-imp.jar
-Jars=
-LocalJars=
 Packages=org.meta_environment.eclipse,org.meta_environment.eclipse.parser,org.meta_environment.eclipse.tokens

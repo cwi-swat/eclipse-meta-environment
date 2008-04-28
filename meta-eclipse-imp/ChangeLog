@@ -1,4 +1,6 @@
+Mon Apr 28 16:18:18 2008    <bruntink@cwi.nl>
 
+	* meta-eclipse-imp.pc.in: Changed dependency on module-support to module-support-java.
 
 Fri Apr 25 12:17:34 CEST 2008 <{jurgenv,bruntink}@cwi.nl>
  * meta-eclipse-imp.pc.in,Makefile.am,etc: introduced default package structure
