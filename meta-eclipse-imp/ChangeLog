@@ -1,3 +1,7 @@
+Wed May  7 16:39:26 2008    <bruntink@cwi.nl>
+
+	* Added Eclipse meta data to repository.
+
 Wed May  7 16:10:52 2008    <bruntink@cwi.nl>
 
 	* meta-eclipse-imp.pc.in: Added required bundles.
