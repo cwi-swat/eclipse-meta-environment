@@ -5,7 +5,7 @@ Bundle-SymbolicName: asfsdf_meta_eclipse_imp;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.imp.runtime,
- meta_eclipse,
+ meta_eclipse_imp,
  config_support,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,

@@ -1,3 +1,7 @@
+Wed May  7 16:37:36 2008    <bruntink@cwi.nl>
+
+	* Added Eclipse meta data to repository.
+
 Mon Apr 28 16:16:38 2008    <bruntink@cwi.nl>
 
 	* asfsdf-meta-eclipse-imp.pc.in: Changed dependency on module-support to module-support-java.
