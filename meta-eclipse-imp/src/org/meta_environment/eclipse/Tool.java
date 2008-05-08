@@ -3,11 +3,11 @@ package org.meta_environment.eclipse;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import aterm.ATerm;
-import aterm.pure.PureFactory;
-import toolbus.EclipsePlugin;
+import toolbus.ToolBusEclipsePlugin;
 import toolbus.adapter.AbstractTool;
 import toolbus.adapter.java.JavaToolBridge;
+import aterm.ATerm;
+import aterm.pure.PureFactory;
 
 public class Tool extends AbstractTool {
 	protected static final String TIME_OUT = "time-out";
@@ -22,7 +22,7 @@ public class Tool extends AbstractTool {
 
 	protected static InetAddress host;
 
-	private EclipsePlugin toolbus;
+	private ToolBusEclipsePlugin toolbus;
 
 	protected ATerm acknowlegdement;
 
@@ -33,7 +33,7 @@ public class Tool extends AbstractTool {
 		// the ToolBus is alive and kicking.
 		
 		if (toolbus == null || port == -1) {
-			toolbus = EclipsePlugin.getInstance();
+			toolbus = ToolBusEclipsePlugin.getInstance();
 			try {
 				factory = (PureFactory) toolbus.getFactory();
 				// TODO find a better way of waiting for the ToolBus to start up
