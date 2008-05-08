@@ -1,6 +1,5 @@
 package org.meta_environment.eclipse.builder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.imp.builder.ProjectNatureBase;
 import org.eclipse.imp.runtime.IPluginLog;
 import org.meta_environment.eclipse.Activator;

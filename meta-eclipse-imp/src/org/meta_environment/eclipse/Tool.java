@@ -35,7 +35,7 @@ public class Tool extends AbstractTool {
 		if (toolbus == null || port == -1) {
 			toolbus = ToolBusEclipsePlugin.getInstance();
 			try {
-				factory = (PureFactory) toolbus.getFactory();
+				factory = toolbus.getFactory();
 				// TODO find a better way of waiting for the ToolBus to start up
 				while ((port = toolbus.getPort()) == -1) {
 					Thread.sleep(1000);
