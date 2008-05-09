@@ -1,3 +1,10 @@
+Fri May  9 17:19:16 2008    <{jurgenv,bruntink}@cwi.nl>
+
+	* Added Makefile.am's to subdirectories and updates
+	asfsdf-meta-eclipse-imp.pc.in.
+
+	Removed Eclipse meta data from repository.
+
 Wed May  7 16:37:36 2008    <bruntink@cwi.nl>
 
 	* Added Eclipse meta data to repository.
