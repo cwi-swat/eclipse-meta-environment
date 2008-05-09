@@ -4,7 +4,7 @@ Maintainers=jurgenv@cwi.nl
 Name: asfsdf-meta-eclipse-imp
 Description: 
 Version: 0.1
-Requires: meta-eclipse-imp,toolbus-ng,aterm-java,config-support-java
+Requires: meta-eclipse-imp,toolbus-ng-eclipse-imp,aterm-java,config-support-java
 JarFile=asfsdf-meta-eclipse-imp.jar
 Jars=
 LocalJars=
