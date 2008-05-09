@@ -29,27 +29,19 @@ public class Tool extends AbstractTool {
 	public Tool(String name) {
 		this.name = name;
 		
-		// before a tool does anything, we must make sure that
-		// the ToolBus is alive and kicking.
-		
-		if (toolbus == null || port == -1) {
-			toolbus = ToolBusEclipsePlugin.getInstance();
-			try {
-				factory = toolbus.getFactory();
-				// TODO find a better way of waiting for the ToolBus to start up
-				while ((port = toolbus.getPort()) == -1) {
-					Thread.sleep(1000);
-				}
-				host = java.net.InetAddress.getLocalHost();
-				
-				connect();
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		toolbus = ToolBusEclipsePlugin.getInstance();
+		factory = toolbus.getFactory();
+		port = toolbus.getPort();
+		try{
+			host = InetAddress.getLocalHost();
+			
+			connect();
+		}catch (UnknownHostException e){
+			e.printStackTrace();
+		}catch (InterruptedException e){
+			e.printStackTrace();
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 	}
 	
@@ -62,8 +54,7 @@ public class Tool extends AbstractTool {
 	}
 
 	public void connect(String[] args) throws Exception {
-		final JavaToolBridge bridge = new JavaToolBridge(factory,
-				AbstractTool.REMOTETOOL, this, name, -1, host, port);
+		JavaToolBridge bridge = new JavaToolBridge(factory, AbstractTool.REMOTETOOL, this, name, -1, host, port);
 		setToolBridge(bridge);
 		bridge.run();	
 	}
