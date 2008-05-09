@@ -22,20 +22,17 @@ public class Tool extends AbstractTool {
 
 	protected static InetAddress host;
 
-	private ToolBusEclipsePlugin toolbus;
-
 	protected ATerm acknowlegdement;
 
 	public Tool(String name) {
 		this.name = name;
 		
-		toolbus = ToolBusEclipsePlugin.getInstance();
-		factory = toolbus.getFactory();
-		port = toolbus.getPort();
+		factory = ToolBusEclipsePlugin.getFactory();
+		port = ToolBusEclipsePlugin.getPort();
 		try{
 			host = InetAddress.getLocalHost();
 			
-			connect();
+			connect(new String[0]);
 		}catch (UnknownHostException e){
 			e.printStackTrace();
 		}catch (InterruptedException e){
@@ -47,10 +44,6 @@ public class Tool extends AbstractTool {
 	
 	public String getName() {
 		return name;
-	}
-
-	public void connect() throws Exception {
-		connect(new String[0]);
 	}
 
 	public void connect(String[] args) throws Exception {
