@@ -1,3 +1,7 @@
+Sat May 10 00:41:37 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Added missing Jars declaration.
+
 Wed May  7 16:39:26 2008    <bruntink@cwi.nl>
 
 	* Added Eclipse meta data to repository.
