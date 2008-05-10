@@ -1,3 +1,8 @@
+Sat May 10 11:43:22 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Re-added dependency on new
+	toolbug-ng-eclipse-imp. Doh!
+
 Sat May 10 00:41:37 2008    <bruntink@cwi.nl>
 
 	* meta-eclipse-imp.pc.in: Added missing Jars declaration.
