@@ -56,55 +56,10 @@ public class Tool extends AbstractTool {
 		toolBridge.terminate();
 	}
 	
-	/**
-	 * Blocking event/return mechanism for communicating with the ToolBus.
-	 * By default, this call will fail after a few minutes returning 'time-out'
-	 * as an ATerm. Since tools may block the entire Eclipse Platform, this will
-	 * allow you to inspect the current state of system via the UI.
-	 * 
-	 * @param term will be send as an event to the Bus
-	 * @return the acknowledgement data send back from the ToolBus script.
-	 */
-	protected ATerm call(ATerm term) {
-		return call(term, EVENT_FAILURE_TIMEOUT);
-	}
-	
-	/**
-	 * Blocking event/return mechanism for communicating with the ToolBus.
-	 * 
-	 * @param term will be send as an event to the Bus
-	 * @param timeOut milliseconds will be waited until failure.
-	 * @return the acknowledgement data send back from the ToolBus script.
-	 */
-	protected ATerm call(ATerm term, int timeOut) {
-		resetAck();
-		sendEvent(term);
-		waitForAck(timeOut);
-		return acknowlegdement;
-	}
-	
-	private synchronized void waitForAck(int timeOut) {
-		
-		while (acknowlegdement == null) {
-			try {
-				wait(timeOut);
-			
-				if (acknowlegdement == null) {
-					acknowlegdement = factory.parse(TIME_OUT);
-				}
-			} catch (InterruptedException e) {
-			}
-		}
-	}
-	
 	public void receiveAckEvent(ATerm aTerm) {
 		synchronized (this) {
 			acknowlegdement = aTerm;
 			notifyAll();
 		}
-	}
-	
-	private void resetAck() {
-		acknowlegdement = null;
 	}
 }

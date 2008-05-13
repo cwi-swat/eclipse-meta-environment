@@ -101,11 +101,9 @@ public class ParseController extends Tool implements IParseController,
 	}
 
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
-		ATerm l = factory.parse(LanguageRegistry.findLanguage(filePath, null)
-				.getName());
+		ATerm l = factory.parse(LanguageRegistry.findLanguage(filePath, null).getName());
 
-		ATerm res = call(factory.make("parse(<term>,<str>,<str>)", l, absPath,
-				input));
+		ATerm res = sendRequest(factory.make("parse(<term>,<str>,<str>)", l, absPath, input));
 
 		if (res.getType() == ATerm.APPL) {
 			ATermAppl appl = (ATermAppl) res;
@@ -153,7 +151,7 @@ public class ParseController extends Tool implements IParseController,
 
 	public Iterator getTokenIterator(IRegion region) {
 		if (result != null) {
-			ATerm ack = call(factory.make("highlight(<term>)", result));
+			ATerm ack = sendRequest(factory.make("highlight(<term>)", result));
 
 			if (ack instanceof ATermList) {
 				final ATermList slices = (ATermList) ack;

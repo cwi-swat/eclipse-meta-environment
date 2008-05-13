@@ -14,13 +14,13 @@ let
   Language : term
 in
   (
-    rec-event(T, parse(Language?, Filename?, Content?))
+    rec-request(T, parse(Language?, Filename?, Content?))
     . ParseAdapter(Language, Filename, Content, Tree?) 
-    . snd-ack-event(T, parse(Language, Filename, Content), Tree)
+    . snd-response(T, parse(Tree))
   +
-    rec-event(T, highlight(Tree?))
+    rec-request(T, highlight(Tree?))
     . HighlightAdapter(Tree, Slices?)
-    . snd-ack-event(T, highlight(Tree), Slices)
+    . snd-response(T, highlight(Slices))
   )
   * rec-disconnect(T)
 endlet
