@@ -1,11 +1,20 @@
-SUBDIRS=asf sdf
+SUBDIRS = sdf asf
 
-EXTRA_DIST=$(wildcard *.tb)
-EXTRA_DIST+=$(wildcard *.src)
+TBSCRIPTS_src = \
+	$(wildcard *.tb.src) \
+	$(wildcard *.h)
 
-TB_INCLUDE_PATH=`echo ${TOOLBUSFLAGS} | sed 's: -I:,:g;'`
+TBSCRIPTS = $(TBSCRIPTS_src:.tb.src=.tb)
 
+EXTRA_DIST = $(TBSCRIPTS_src) asfsdf-meta.props.src
 
-% : %.src Makefile
-	sed "s@__SCRIPT_PATH__@${prefix}/src/tbscripts@g;\
-	     s@__INCLUDE_PATH__@${TB_INCLUDE_PATH},${prefix}/tbscripts,${prefix}/tbscripts/sdf,${prefix}/tbscripts/asf@g;" < $< > $@
+pkgdata_DATA = $(TBSCRIPTS) asfsdf-meta.props
+
+CLEANFILES = \
+	asfsdf-meta.props
+
+%.tb : %.tb.src Makefile
+	sed "s@__PREFIX__@${prefix}@g" < $< > $@
+
+asfsdf-meta.props: asfsdf-meta.props.src Makefile
+	sed "s@__PREFIX__@${prefix}@g" < $< > $@

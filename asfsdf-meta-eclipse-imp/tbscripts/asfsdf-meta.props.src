@@ -1,4 +1,46 @@
-script.path: __SCRIPT_PATH__/main.tb
+script.path: __PREFIX__/share/asfsdf-meta-eclipse-imp/main.tb
 MODULENAME: ""
 
-include.path=__INCLUDE_PATH__
+include.path=__PREFIX__/share/asfsdf-meta-eclipse-imp, \
+             __PREFIX__/share/asfsdf-meta-eclipse-imp/sdf, \
+             __PREFIX__/share/asfsdf-meta-eclipse-imp/asf, \
+             __PREFIX__/share/meta-eclipse-imp, \
+             __PREFIX__/share/asf, \
+             __PREFIX__/share/error-support, \
+             __PREFIX__/share/pt-support, \
+             __PREFIX__/share/sglr, \
+             __PREFIX__/share/tide-support, \
+             __PREFIX__/share/relation-stores, \
+             __PREFIX__/share/sdf-support, \
+             __PREFIX__/share/meta, \
+             __PREFIX__/share/config-manager, \
+             __PREFIX__/share/console-gui, \
+             __PREFIX__/share/meta-studio, \
+             __PREFIX__/share/dialog-gui, \
+             __PREFIX__/share/editor-manager, \
+             __PREFIX__/share/editor-plugin, \
+             __PREFIX__/share/error-gui, \
+             __PREFIX__/share/graph-gui, \
+             __PREFIX__/share/graph-support, \
+             __PREFIX__/share/module-details-gui, \
+             __PREFIX__/share/module-manager, \
+             __PREFIX__/share/navigator-gui, \
+             __PREFIX__/share/pandora, \
+             __PREFIX__/share/progress-gui, \
+             __PREFIX__/share/structure-editor, \
+             __PREFIX__/share/term-store, \
+             __PREFIX__/share/tide, \
+             __PREFIX__/share/console-grabber, \
+             __PREFIX__/share/svg-gui, \
+             __PREFIX__/share/pgen, \
+             __PREFIX__/share/sdf-metrics, \
+             __PREFIX__/share/vis-base, \
+             __PREFIX__/share/rstore-container, \
+             __PREFIX__/share/vis-plugin, \
+             __PREFIX__/share/vis-plugin-charts, \
+             __PREFIX__/share/vis-plugin-generic, \
+             __PREFIX__/share/vis-plugin-graph, \
+             __PREFIX__/share/io-support
+            
+
+old.stuff:        
