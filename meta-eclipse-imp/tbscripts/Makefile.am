@@ -1,3 +1,7 @@
-# $Id: Makefile.am 19991 2006-07-28 14:29:28Z jurgenv $
+TBSCRIPTS = $(wildcard *.tb) $(wildcard *.idef) $(wildcard *.h)
 
-include $(top_srcdir)/Makefile.meta
+EXTRA_DIST = $(TBSCRIPTS)
+
+pkgdata_DATA = $(TBSCRIPTS)
+
+
