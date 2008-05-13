@@ -16,7 +16,7 @@ in
     rec-msg(get-parsetable(ModuleId?, Type))
     .
     if equal(Table, UNDEFINED) then 
-      snd-msg(io-read-and-pack-term("/ufs/jurgenv/glt/install/share/pgen/Sdf2.baf"))
+      snd-msg(io-read-and-pack-term("/export/scratch1/lankamp/metaEclipse/install/share/pgen/Sdf2.baf"))
       .
       (
         rec-msg(io-packed-term(Table?))
