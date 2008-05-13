@@ -9,4 +9,4 @@ EclipseRequires=org.eclipse.imp.runtime,org.eclipse.core.runtime,org.eclipse.jfa
 JarFile=asfsdf-meta-eclipse-imp.jar
 Jars=${prefix}/share/${JarFile}
 LocalJars=
-Packages=
+Packages=org.meta_environment.eclipse.sdf,org.meta_environment.eclipse.terms
