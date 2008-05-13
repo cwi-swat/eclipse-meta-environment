@@ -1,3 +1,13 @@
+Tue May 13 16:58:29 2008    <bruntink@cwi.nl>
+
+	* tbscripts/Makefile.am: Paths in asfsdf-meta.props generated
+	based on ToolBusFlags in dependencies.
+
+Tue May 13 15:21:38 2008    <bruntink@cwi.nl>
+
+	* tbscript/*: tbscripts etc. should now be distributed with the
+	${prefix} instead of Jurgen's paths.
+
 Fri May  9 17:19:16 2008    <{jurgenv,bruntink}@cwi.nl>
 
 	* Added Makefile.am's to subdirectories and updates
