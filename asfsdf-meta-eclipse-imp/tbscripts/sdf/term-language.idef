@@ -28,20 +28,20 @@ in
   rec-connect(T?)
   .
   (
-    rec-event(T, get-languages)
+    rec-request(T, get-languages)
     . GetAllSdfModuleNames(Modules?)
-    . snd-ack-event(T, get-languages, Modules)
+    . snd-response(T, get-languages(Modules))
   +
     rec-event(T, set-language(Filename?, Language?))
     . snd-note(tlr-set-language(Filename, Language))
     . snd-ack-event(T, set-language(Filename, Language))
   +
-    rec-event(T, get-actions)
+    rec-request(T, get-actions)
     . printf("retrieving actions")
     . snd-msg(cm-get-events(term-editor))
     . rec-msg(cm-events(Events?))
     . printf("actions found")
-    . snd-ack-event(T, get-actions, Events)
+    . snd-response(T, get-actions(Events))
   +
     rec-event(T, action(Event?))
     . snd-ack-event(T, action(Event))

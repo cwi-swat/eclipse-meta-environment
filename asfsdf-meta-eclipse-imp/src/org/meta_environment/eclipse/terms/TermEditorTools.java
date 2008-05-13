@@ -32,7 +32,7 @@ public class TermEditorTools extends Tool {
 	}
 
 	public List<String> getLanguages() {
-		ATermList result = (ATermList) call(factory.make("get-languages"));
+		ATermList result = (ATermList) sendRequest(factory.make("get-languages"));
 		List<String> list = new LinkedList<String>();
 		
 		for (; !result.isEmpty(); result = result.getNext()) {
@@ -43,7 +43,7 @@ public class TermEditorTools extends Tool {
 	}
 	
 	public List<IAction> getActions() {
-		ATermList result = (ATermList) call(factory.make("get-actions"));
+		ATermList result = (ATermList) sendRequest(factory.make("get-actions"));
 		List<IAction> actions = new LinkedList<IAction>();
 		
 		for(; !result.isEmpty(); result = result.getNext()) {
