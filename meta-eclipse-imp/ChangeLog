@@ -1,6 +1,7 @@
 Tue May 13 17:32:37 2008    <bruntink@cwi.nl>
 
 	* meta-eclipse-imp.pc.in: Added dependency on meta.
+	* configure.ac: Allowed pattern ^META_.
 
 Sat May 10 11:43:22 2008    <bruntink@cwi.nl>
 
