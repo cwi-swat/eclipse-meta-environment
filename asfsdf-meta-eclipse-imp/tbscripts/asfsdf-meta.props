@@ -1,44 +1,46 @@
-script.path: /export/scratch1/lankamp/metaEclipse/asfsdf-meta-eclipse-imp/tbscripts/main.tb
+script.path: /home/jurgenv/glt-imp/asfsdf-meta-eclipse-imp/tbscripts/main.tb
 MODULENAME: ""
 
-include.path=/export/scratch1/lankamp/metaEclipse/asfsdf-meta-eclipse-imp/tbscripts, \
-             /export/scratch1/lankamp/metaEclipse/asfsdf-meta-eclipse-imp/tbscripts/sdf, \
-             /export/scratch1/lankamp/metaEclipse/asfsdf-meta-eclipse-imp/tbscripts/asf, \
-             /export/scratch1/lankamp/metaEclipse/meta-eclipse-imp/tbscripts, \
-             /export/scratch1/lankamp/metaEclipse/install/share/asf, \
-             /export/scratch1/lankamp/metaEclipse/install/share/error-support, \
-             /export/scratch1/lankamp/metaEclipse/install/share/pt-support, \
-             /export/scratch1/lankamp/metaEclipse/install/share/sglr, \
-             /export/scratch1/lankamp/metaEclipse/install/share/tide-support, \
-             /export/scratch1/lankamp/metaEclipse/install/share/relation-stores, \
-             /export/scratch1/lankamp/metaEclipse/install/share/sdf-support, \
-             /export/scratch1/lankamp/metaEclipse/install/share/meta, \
-             /export/scratch1/lankamp/metaEclipse/install/share/config-manager, \
-             /export/scratch1/lankamp/metaEclipse/install/share/console-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/meta-studio, \
-             /export/scratch1/lankamp/metaEclipse/install/share/dialog-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/editor-manager, \
-             /export/scratch1/lankamp/metaEclipse/install/share/editor-plugin, \
-             /export/scratch1/lankamp/metaEclipse/install/share/error-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/graph-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/graph-support, \
-             /export/scratch1/lankamp/metaEclipse/install/share/module-details-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/module-manager, \
-             /export/scratch1/lankamp/metaEclipse/install/share/navigator-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/pandora, \
-             /export/scratch1/lankamp/metaEclipse/install/share/progress-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/structure-editor, \
-             /export/scratch1/lankamp/metaEclipse/install/share/term-store, \
-             /export/scratch1/lankamp/metaEclipse/install/share/tide, \
-             /export/scratch1/lankamp/metaEclipse/install/share/console-grabber, \
-             /export/scratch1/lankamp/metaEclipse/install/share/svg-gui, \
-             /export/scratch1/lankamp/metaEclipse/install/share/pgen, \
-             /export/scratch1/lankamp/metaEclipse/install/share/sdf-metrics, \
-             /export/scratch1/lankamp/metaEclipse/install/share/vis-base, \
-             /export/scratch1/lankamp/metaEclipse/install/share/rstore-container, \
-             /export/scratch1/lankamp/metaEclipse/install/share/vis-plugin, \
-             /export/scratch1/lankamp/metaEclipse/install/share/vis-plugin-charts, \
-             /export/scratch1/lankamp/metaEclipse/install/share/vis-plugin-generic, \
-             /export/scratch1/lankamp/metaEclipse/install/share/vis-plugin-graph, \
-             /export/scratch1/lankamp/metaEclipse/install/share/io-support
+include.path=/home/jurgenv/glt-imp/asfsdf-meta-eclipse-imp/tbscripts, \
+             /home/jurgenv/glt-imp/asfsdf-meta-eclipse-imp/tbscripts/sdf, \
+             /home/jurgenv/glt-imp/asfsdf-meta-eclipse-imp/tbscripts/asf, \
+             /home/jurgenv/glt-imp/meta-eclipse-imp/tbscripts, \
+             /home/jurgenv/glt/install/share/asf, \
+             /home/jurgenv/glt/install/share/error-support, \
+             /home/jurgenv/glt/install/share/pt-support, \
+             /home/jurgenv/glt/install/share/sglr, \
+             /home/jurgenv/glt/install/share/tide-support, \
+             /home/jurgenv/glt/install/share/relation-stores, \
+             /home/jurgenv/glt/install/share/sdf-support, \
+             /home/jurgenv/glt/install/share/meta, \
+             /home/jurgenv/glt/install/share/config-manager, \
+             /home/jurgenv/glt/install/share/console-gui, \
+             /home/jurgenv/glt/install/share/meta-studio, \
+             /home/jurgenv/glt/install/share/dialog-gui, \
+             /home/jurgenv/glt/install/share/editor-manager, \
+             /home/jurgenv/glt/install/share/editor-plugin, \
+             /home/jurgenv/glt/install/share/error-gui, \
+             /home/jurgenv/glt/install/share/graph-gui, \
+             /home/jurgenv/glt/install/share/graph-support, \
+             /home/jurgenv/glt/install/share/module-details-gui, \
+             /home/jurgenv/glt/install/share/module-manager, \
+             /home/jurgenv/glt/install/share/navigator-gui, \
+             /home/jurgenv/glt/install/share/pandora, \
+             /home/jurgenv/glt/install/share/progress-gui, \
+             /home/jurgenv/glt/install/share/structure-editor, \
+             /home/jurgenv/glt/install/share/term-store, \
+             /home/jurgenv/glt/install/share/tide, \
+             /home/jurgenv/glt/install/share/console-grabber, \
+             /home/jurgenv/glt/install/share/svg-gui, \
+             /home/jurgenv/glt/install/share/pgen, \
+             /home/jurgenv/glt/install/share/sdf-metrics, \
+             /home/jurgenv/glt/install/share/vis-base, \
+             /home/jurgenv/glt/install/share/rstore-container, \
+             /home/jurgenv/glt/install/share/vis-plugin, \
+             /home/jurgenv/glt/install/share/vis-plugin-charts, \
+             /home/jurgenv/glt/install/share/vis-plugin-generic, \
+             /home/jurgenv/glt/install/share/vis-plugin-graph, \
+             /home/jurgenv/glt/install/share/io-support
+            
 
+old.stuff:        
