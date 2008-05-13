@@ -5,7 +5,7 @@
          id="test-config"
          name="test-config"
          point="toolbus.config">
-          <toolbus config="/export/scratch1/lankamp/metaEclipse/asfsdf-meta-eclipse-imp/tbscripts/asfsdf-meta.props"/>
+          <toolbus config="/export/scratch1/basten/meta-environment/build/asfsdf-meta-eclipse-imp/tbscripts/asfsdf-meta.props"/>
    </extension>
    <extension
          point="org.eclipse.imp.runtime.languageDescription">
