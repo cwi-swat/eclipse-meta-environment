@@ -1,3 +1,7 @@
+Tue May 13 17:33:48 2008    <bruntink@cwi.nl>
+
+	* asfsdf-meta-eclipse-imp.pc.in: Added more dependencies.
+
 Tue May 13 16:58:29 2008    <bruntink@cwi.nl>
 
 	* tbscripts/Makefile.am: Paths in asfsdf-meta.props generated
