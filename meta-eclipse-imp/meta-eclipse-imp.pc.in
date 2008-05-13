@@ -8,4 +8,4 @@ EclipseRequires=org.eclipse.imp.runtime,org.eclipse.core.runtime,org.eclipse.jfa
 Requires: toolbus-ng-eclipse-imp,aterm-java,config-support-java,error-support-java
 JarFile=meta-eclipse-imp.jar
 Jars=${prefix}/share/${JarFile}
-Packages=org.meta_environment.eclipse,org.meta_environment.eclipse.parser,org.meta_environment.eclipse.tokens
+Packages=org.meta_environment.eclipse,org.meta_environment.eclipse.builder,org.meta_environment.eclipse.errors,org.meta_environment.eclipse.files,org.meta_environment.eclipse.parser,org.meta_environment.eclipse.tokens
