@@ -321,15 +321,15 @@ in
         rec-msg(sglr-parse-tree(ParseResult?, ErrorSummary?))
         . AnnotateTree(ParseResult, Filename, Annotated?)
         . snd-msg(pc-parse-result(sdf, Filename, ParseResult, ErrorSummary))
-        . printf("sent sdf parse result")
+        . printf("sent sdf parse result\n")
       +
         rec-msg(sglr-parse-error(ErrorSummary?))
         . snd-msg(pc-parse-error(sdf, Filename, ErrorSummary))
-        . printf("sent sdf parse error")
+        . printf("sent sdf parse error\n")
       )
     else
        snd-msg(pc-parse-error(sdf, Filename, summary("sdf-parser",Filename,[])))
-       . printf("sent sdf parse error")
+       . printf("sent sdf parse error\n")
     fi
   ) * delta
 endlet
