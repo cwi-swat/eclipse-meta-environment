@@ -11,6 +11,10 @@ sdf_DATA = $(TBSCRIPTS)
 
 EXTRA_DIST = $(TBSCRIPTS_src) standard.sdf.actions.src
 
+pkgdata_DATA = $(TBSCRIPTS) standard.sdf.actions
+
+CLEANFILES = standard.sdf.actions
+
 %.tb : %.tb.src Makefile
 	sed "s@__PREFIX__@${prefix}@g;s@__PGEN_PREFIX__@${PGEN_PREFIX}@g" < $< > $@
 
