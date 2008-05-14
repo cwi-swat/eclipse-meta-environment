@@ -12,4 +12,4 @@ asf_DATA = $(TBSCRIPTS)
 EXTRA_DIST= $(TBSCRIPTS_src) 
 
 %.tb : %.tb.src Makefile
-	sed "s@__PREFIX__@${prefix}@g" < $< > $@
+	sed "s@__SDF_PRETTY_PREFIX__@${SDF_PRETTY_PREFIX}@g" < $< > $@
