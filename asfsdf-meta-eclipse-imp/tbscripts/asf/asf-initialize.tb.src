@@ -6,7 +6,7 @@ let
   Contents: str,
   Error: term
 in
-  snd-msg(io-read-file("__PREFIX__/share/asfsdf-meta/standard.asfsdf.actions")) .
+  snd-msg(io-read-file("__PREFIX__/share/asfsdf-meta-eclipse-imp/asf/standard.asfsdf.actions")) .
   (
     rec-msg(io-file-contents(Contents?))
     . snd-msg(cm-add-system-properties(Contents))
