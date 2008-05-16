@@ -1,3 +1,9 @@
+Fri May 16 13:29:00 2008    <bruntink@cwi.nl>
+
+	* tbscripts/asf/Makefile.am, tbscripts/sdf/Makefile.am: Fixed
+	several things that caused .actions and tbscript files to be
+	installed incorrectly.
+
 Wed May 14 09:01:12 2008    <bruntink@cwi.nl>
 
 	* asfsdf-meta-eclipse-imp.pc.in: Added asfsdf-meta as dependency
