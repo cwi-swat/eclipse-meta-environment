@@ -1,3 +1,7 @@
+Wed May 21 10:30:29 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Removed dependency on meta.
+
 Tue May 13 17:32:37 2008    <bruntink@cwi.nl>
 
 	* meta-eclipse-imp.pc.in: Added dependency on meta.
