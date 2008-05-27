@@ -1,0 +1,26 @@
+
+tool language-actions is { }
+
+process LanguageActions is
+let
+  T : language-actions,
+  Type : term,
+  Events : list
+in
+  printf("waiting for language-actions tool to connect...\n") .  
+  rec-connect(T?) .
+  (
+    printf("waiting for requests for actions...\n") .
+    rec-request(T, get-actions(Type?)) .
+    printf("received a request for actions of type %t\n", Type) .
+    snd-msg(cm-get-events(Type)) .
+    printf("send request for actions of type %t to config-manager\n", Type) .
+    rec-msg(cm-events(Events?)) .
+    printf("received actions of type %t from config-manager\n", Type) .
+    snd-response(T, get-actions(Events)) .
+    printf("responded to request for actions.\n")
+  )
+  * rec-disconnect(T)
+endlet
+
+toolbus(LanguageActions)
