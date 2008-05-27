@@ -1,3 +1,8 @@
+Tue May 27 14:55:26 2008    <bruntink@cwi.nl>
+
+	* language-actions.idef: Start of tool that queries config-manager
+	for (menu) actions.
+
 Wed May 21 11:23:13 2008    <bruntink@cwi.nl>
 
 	* meta-eclipse-imp.pc.in: Removed dependency on editor-manager.
