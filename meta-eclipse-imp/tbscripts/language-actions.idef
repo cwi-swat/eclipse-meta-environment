@@ -4,13 +4,26 @@ tool language-actions is { }
 process LanguageActions is
 let
   T : language-actions,
-  Type : term,
-  Events : list
+  Action : str,
+  Filename : str,
+  Pid : int
 in
-  printf("waiting for language-actions tool to connect...\n") .  
+  printf("language-actions: Waiting for Tool to connect...\n") .  
   rec-connect(T?) .
-  printf("language-actions tool connected\n") .  
+  printf("language-actions: Tool connected!\n") .
+  ( rec-event(T, perform-action(Action?, Filename?))
+  . snd-ack-event (T, perform-action)
+  . create(HandleLanguageAction(Action, Filename), Pid?)
+  ) *
   rec-disconnect(T)
 endlet
+
+process HandleLanguageAction(Action: str, Filename: str) is
+  (
+    printf("language-actions: Warning: process not found %s\n", Action)
+  +>
+    /* Action(Filename) */
+    printf("language-actions: Received language action %s on %s (nothing done)\n", Action, Filename)
+  )
 
 toolbus(LanguageActions)

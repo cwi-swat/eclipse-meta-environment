@@ -6,7 +6,10 @@ public class LanguageActionsTool extends Tool {
 
 	public LanguageActionsTool() {
 		super("language-actions");
-		System.out.println("LanguageActions constructor called.");
+	}
+	
+	public void PerformAction (String Action, String Filename) {
+		this.sendEvent(factory.make("perform-action(<str>,<str>)", Action, Filename));
 	}
 
 }
