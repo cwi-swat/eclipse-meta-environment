@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+<extension-point id="org.meta_environment.eclipse.actions.EditorMenus" name="EditorMenus" schema="schema/org.meta_environment.eclipse.actions.LanguageEditorMenu.exsd"/>
   <extension
          id="org.meta_environment.builder"
          name="Meta-Environment builder"
