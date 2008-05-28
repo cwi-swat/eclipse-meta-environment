@@ -5,7 +5,7 @@
          id="test-config"
          name="test-config"
          point="toolbus.config">
-          <toolbus config="/export/scratch1/lankamp/metaClipse/install/share/asfsdf-meta-eclipse-imp/asfsdf-meta.props"/>
+          <toolbus config="/ufs/bruntink/glt/installed/share/asfsdf-meta-eclipse-imp/asfsdf-meta.props"/>
    </extension>
    <extension
          point="org.eclipse.imp.runtime.languageDescription">
@@ -71,9 +71,47 @@
              language="trm"/>
     </extension>
     <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.actions.LanguageActions"
+             language="asf"/>
+       <editorActionContributor
+             class="org.meta_environment.eclipse.actions.LanguageActions"
+             language="sdf"/>
+    </extension>
+    <extension
           point="org.eclipse.imp.runtime.hoverHelper">
        <hoverhelper
              class="org.meta_environment.eclipse.terms.HoverHelper"
              language="trm"/>
     </extension>
-</plugin>
+    <extension
+          point="org.meta_environment.eclipse.actions.EditorMenus">
+       <EditorMenu
+             language="sdf"
+             name="SDF Editor Menu">
+          <EditorSubmenu name="Module">
+             <EditorSubmenu name="Edit">
+                <EditorMenuAction
+                      description="Edit the ASF equations of this module"
+                      name="Equations"
+                      toolbus_action="EditorEditEquationsAction"/>
+                <EditorMenuAction
+                      description="Open a term editor with this syntax definition"
+                      name="Term"
+                      toolbus_action="EditorEditTermAction"/>
+             </EditorSubmenu>
+             <EditorMenuAction
+                   description="Format this SDF module according to some standard formatting rules"
+                   name="Format"
+                   toolbus_action="PrettyPrintSdfAction"/>
+             <EditorSubmenu name="Equations">
+                <EditorMenuAction
+                      description="Run the ASF test equations, and produce an error report if there are any failed tests"
+                      name="Run Tests"
+                      toolbus_action="EditorRunAsfTestsAction"/>
+             </EditorSubmenu>
+          </EditorSubmenu>
+       </EditorMenu>
+    </extension>
+    </plugin>
