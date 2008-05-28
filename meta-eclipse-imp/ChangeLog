@@ -1,3 +1,8 @@
+Wed May 28 13:52:26 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Added
+	org.meta_environment.eclipse.actions to exported packages list.
+
 Tue May 27 14:55:26 2008    <bruntink@cwi.nl>
 
 	* src/org/meta-environment/eclipse/actions/LanguageActions.java,language-actions.idef:
