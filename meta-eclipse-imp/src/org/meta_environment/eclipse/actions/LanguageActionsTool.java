@@ -8,8 +8,8 @@ public class LanguageActionsTool extends Tool {
 		super("language-actions");
 	}
 	
-	public void PerformAction (String Action, String Filename) {
-		this.sendEvent(factory.make("perform-action(<str>,<str>)", Action, Filename));
+	public void PerformAction (String Action, String language, String Filename) {
+		this.sendEvent(factory.make("perform-action(<str>,<str>,<str>)", Action, language, Filename));
 	}
 
 }
