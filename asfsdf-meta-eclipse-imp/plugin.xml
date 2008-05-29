@@ -87,31 +87,319 @@
     </extension>
     <extension
           point="org.meta_environment.eclipse.actions.EditorMenus">
-       <EditorMenu
-             language="sdf"
-             name="SDF Editor Menu">
-          <EditorSubmenu name="Module">
-             <EditorSubmenu name="Edit">
-                <EditorMenuAction
-                      description="Edit the ASF equations of this module"
-                      name="Equations"
-                      toolbus_action="EditorEditEquationsAction"/>
-                <EditorMenuAction
-                      description="Open a term editor with this syntax definition"
-                      name="Term"
-                      toolbus_action="EditorEditTermAction"/>
-             </EditorSubmenu>
-             <EditorMenuAction
-                   description="Format this SDF module according to some standard formatting rules"
-                   name="Format"
-                   toolbus_action="PrettyPrintSdfAction"/>
-             <EditorSubmenu name="Equations">
-                <EditorMenuAction
-                      description="Run the ASF test equations, and produce an error report if there are any failed tests"
-                      name="Run Tests"
-                      toolbus_action="EditorRunAsfTestsAction"/>
-             </EditorSubmenu>
-          </EditorSubmenu>
-       </EditorMenu>
+       <EditorMenu 
+  language="new-module-popup"
+  name="new-module-popup">
+<EditorMenuAction
+  description="Close this module, and remove imports of it in all other opened modules"
+  name="Delete this module"
+  toolbus_action="delete-module"/> 
+<EditorMenuAction
+  description="Create a module with this name"
+  name="Create this module"
+  toolbus_action="create-module"/>
+</EditorMenu> 
+<EditorMenu 
+  language="module-popup"
+  name="module-popup">
+<EditorSubmenu name="Export">
+<EditorMenuAction
+  description="Export a parse table for parsing terms for this module on the commandline"
+  name="Term ParseTable..."
+  toolbus_action="DumpParseTableAction"/> 
+<EditorMenuAction
+  description="Export the full syntax definition of this module including all its imports"
+  name="SDF Definition..."
+  toolbus_action="DumpSdfDefinitionAction"/> 
+<EditorMenuAction
+  description="Export a parse table for parsing ASF equations file, for debugging purposes"
+  name="ASF ParseTable..."
+  toolbus_action="DumpEquationsParseTableAction"/> 
+<EditorMenuAction
+  description="Export the list of all necessary ASF equations for reducing terms on the commandline, or compiling them to a standalone reducer."
+  name="ASF Equations..."
+  toolbus_action="DumpEquationsAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="Tools">
+<EditorMenuAction
+  description="Get metrics data from this SDF definition and forward it to the fact browser"
+  name="Browse SDF Facts"
+  toolbus_action="ExtractSDFAction"/> 
+<EditorMenuAction
+  description="Compile the current module to a commandline source-to-source transformation tool"
+  name="Compile Equations..."
+  toolbus_action="CompileModuleAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="Edit">
+<EditorMenuAction
+  description="Open an editor for a term over this module"
+  name="Term..."
+  toolbus_action="EditTermAction"/> 
+<EditorMenuAction
+  description="Open an editor for the syntax definition of this module"
+  name="Syntax"
+  toolbus_action="EditSyntaxAction"/> 
+<EditorMenuAction
+  description="Open an editor for the equations of this module"
+  name="Equations"
+  toolbus_action="EditEquationsAction"/>
+</EditorSubmenu> 
+<EditorMenuAction
+  description="Close all other modules"
+  name="Close others"
+  toolbus_action="CloseOtherModulesAction"/> 
+<EditorMenuAction
+  description="Close this module"
+  name="Close..."
+  toolbus_action="CloseModuleAction"/> 
+<EditorSubmenu name="Check">
+<EditorMenuAction
+  description="Run the ASF test equations for this module, and produce an error report if there are any failed tests"
+  name="Run Unit Tests"
+  toolbus_action="RunAsfTestsAction"/> 
+<EditorMenuAction
+  description="Run the ASF test equations, letting the ASF debugger control each computation step (See the Processes tab)"
+  name="Debug Unit Tests"
+  toolbus_action="DebugRunAsfTestsAction"/>
+</EditorSubmenu>
+</EditorMenu> 
+<EditorMenu 
+  language="trm"
+  name="trm">
+<EditorSubmenu name="Structure">
+<EditorSubmenu name="Move">
+<EditorMenuAction
+  description="Move the focus to the leftmost child of the current focus"
+  name="Down"
+  toolbus_action="MoveCursorDownAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node up"
+  name="Up"
+  toolbus_action="MoveCursorUpAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
+  name="Right"
+  toolbus_action="MoveCursorRightAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+  name="Left"
+  toolbus_action="MoveCursorLeftAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="Export">
+<EditorMenuAction
+  description="Export focus for term"
+  name="Focus"
+  toolbus_action="DumpTermFocusAction"/> 
+<EditorMenuAction
+  description="Export parsetree for term"
+  name="Parsetree"
+  toolbus_action="DumpTermParsetreeAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="View">
+<EditorMenuAction
+  description="Visualize the tree structure for a specific focus as a graph, each tree node is maximally shared in this visualization, but not the information inside the nodes."
+  name="Shared Tree"
+  toolbus_action="ShowSharedTreeAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure for a specific focus as a graph, leaving out LAYOUT, but including lexical syntax"
+  name="Full Tree w/o Layout"
+  toolbus_action="ShowFullTreeWithoutLayoutAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure of a specific focus as a graph, including all LAYOUT and lexical syntax"
+  name="Full Tree"
+  toolbus_action="ShowFullTreeAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure of a specific focus as a graph, leaving out LAYOUT and lexical syntax"
+  name="Tree"
+  toolbus_action="ShowTreeAction"/>
+</EditorSubmenu>
+</EditorSubmenu> 
+<EditorSubmenu name="Module">
+<EditorSubmenu name="Edit">
+<EditorMenuAction
+  description="Open an new editor for a different term, with the same syntax definition as the current editor"
+  name="Term"
+  toolbus_action="EditorEditTermAction"/> 
+<EditorMenuAction
+  description="Open an editor for the SDF module  that defines the syntax of this term"
+  name="Syntax"
+  toolbus_action="EditorEditSyntaxAction"/> 
+<EditorMenuAction
+  description="Edit the ASF equations of this module"
+  name="Equations"
+  toolbus_action="EditorEditEquationsAction"/>
+</EditorSubmenu>
+</EditorSubmenu> 
+<EditorSubmenu name="Term">
+<EditorMenuAction
+  description="Format the term using a default formatter that interprets the shape of the tree to come up with a reasonable layout"
+  name="Default Formatter"
+  toolbus_action="DefaultPrettyPrintAction"/> 
+<EditorMenuAction
+  description="Add brackets to all tree nodes that have a bracket production rule defined"
+  name="Add Brackets"
+  toolbus_action="AddBracketsAction"/> 
+<EditorMenuAction
+  description="Normalize this term by applying all available equations in an innermost fashion, letting the debugger control each computation step (See the Processes tab)"
+  name="Debug Reduce"
+  toolbus_action="DebugReduceAction"/> 
+<EditorMenuAction
+  description="If this term was obtained by reducing another, try jumping to the origin of the current focus"
+  name="Goto Origin"
+  toolbus_action="ShowOriginAction"/> 
+<EditorMenuAction
+  description="Abort a running reducer"
+  name="Abort Reducer"
+  toolbus_action="AbortAsfeAction"/> 
+<EditorMenuAction
+  description="Normalize this term by applying all available equations in an innermost (fixed point) fashion"
+  name="Reduce"
+  toolbus_action="ReduceAction"/>
+</EditorSubmenu>
+</EditorMenu> 
+<EditorMenu 
+  language="sdf"
+  name="sdf">
+<EditorSubmenu name="Structure">
+<EditorSubmenu name="Move">
+<EditorMenuAction
+  description="Move the focus to the leftmost child of the current focus"
+  name="Down"
+  toolbus_action="MoveCursorDownAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node up"
+  name="Up"
+  toolbus_action="MoveCursorUpAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the rightm or up if no more siblings exist"
+  name="Right"
+  toolbus_action="MoveCursorRightAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+  name="Left"
+  toolbus_action="MoveCursorLeftAction"/>
+</EditorSubmenu>
+</EditorSubmenu> 
+<EditorSubmenu name="Module">
+<EditorSubmenu name="Edit">
+<EditorMenuAction
+  description="Open a term editor with this syntax definition"
+  name="Term"
+  toolbus_action="EditorEditTermAction"/> 
+<EditorMenuAction
+  description="Edit the ASF equations of this module"
+  name="Equations"
+  toolbus_action="EditorEditEquationsAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="Equations">
+  <EditorMenuAction
+  description="Run the ASF test equations, and produce an error report if there are any failed tests"
+  name="Run Tests"
+  toolbus_action="EditorRunAsfTestsAction"/>
+</EditorSubmenu> 
+<EditorMenuAction
+  description="Format this SDF module according to some standard formatting rules"
+  name="Format"
+  toolbus_action="PrettyPrintSdfAction"/>
+</EditorSubmenu>
+</EditorMenu> 
+<EditorMenu 
+  language="studio-menubar"
+  name="studio-menubar">
+<EditorSubmenu name="Module">
+<EditorMenuAction
+  description="Close all currently opened modules"
+  name="Close All"
+  toolbus_action="CloseAllAction"/> 
+<EditorMenuAction
+  description="Open an existing module using a file browser"
+  name="Open..."
+  toolbus_action="OpenModuleAction"/> 
+<EditorMenuAction
+  description="Create a new module using a file browser"
+  name="New..."
+  toolbus_action="NewModuleAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="File">
+<EditorMenuAction
+  description="Change the working directory, including the default search path for modules"
+  name="Change Workspace..."
+  toolbus_action="ChangeWorkspaceAction"/> 
+<EditorMenuAction
+  description="Exit The Meta-Environment"
+  name="Exit"
+  toolbus_action="ExitAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="Facts">
+  <EditorMenuAction
+  description="Load an RStore from a file"
+  name="Load RStore..."
+  toolbus_action="FBLoadRStoreAction"/>
+</EditorSubmenu>
+</EditorMenu> 
+<EditorMenu
+  language="factbrowser-popup"
+  name="factbrowser-popup">
+  <EditorMenuAction
+  description="Unload RStore"
+  name="Unload"
+  toolbus_action="UnloadRStoreAction"/>
+</EditorMenu> 
+<EditorMenu 
+  language="asf"
+  name="asf">
+<EditorSubmenu name="Structure">
+<EditorSubmenu name="Move">
+<EditorMenuAction
+  description="Move the focus to the leftmost child of the current focus"
+  name="Down"
+  toolbus_action="MoveCursorDownAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node up"
+  name="Up"
+  toolbus_action="MoveCursorUpAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the right or up if no more siblings exist"
+  name="Right"
+  toolbus_action="MoveCursorRightAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+  name="Left"
+  toolbus_action="MoveCursorLeftAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="View">
+<EditorMenuAction
+  description="Visualize the tree structure for a specific focus as a graph, leaving out LAYOUT, but including lexical syntax"
+  name="Full Tree w/o Layout"
+  toolbus_action="ShowFullTreeWithoutLayoutAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure of a specific focus as a graph, including all LAYOUT and lexical syntax"
+  name="Full Tree"
+  toolbus_action="ShowFullTreeAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure of a specific focus as a graph, leaving out LAYOUT and lexical syntax"
+  name="Tree"
+  toolbus_action="ShowTreeAction"/>
+</EditorSubmenu>
+</EditorSubmenu> 
+<EditorSubmenu name="Module">
+<EditorSubmenu name="Equations">
+  <EditorMenuAction
+  description="Run the ASF test equations, and produce an error report if there are any failed tests"
+  name="Run Tests"
+  toolbus_action="EditorRunAsfTestsAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="Edit">
+<EditorMenuAction
+  description="Open a term editor for this module"
+  name="Term"
+  toolbus_action="EditorEditTermAction"/> 
+<EditorMenuAction
+  description="Open an editor for the SDF syntax definition of this module"
+  name="Syntax"
+  toolbus_action="EditorEditSyntaxAction"/>
+</EditorSubmenu>
+</EditorSubmenu>
+</EditorMenu> 
     </extension>
     </plugin>
