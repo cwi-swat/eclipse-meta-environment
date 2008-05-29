@@ -6,7 +6,6 @@
 #include <parse-controller.idef>
 #include <builder.idef>
 #include <error-viewer.idef>
-#include <progress.idef>
 #include <resources.idef>
 #include <language-actions.idef>
 

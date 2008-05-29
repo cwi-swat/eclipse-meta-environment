@@ -1,6 +1,5 @@
 #ifndef __SDF_PROGRESS_LISTENER__
 #define __SDF_PROGRESS_LISTENER__
-#include <progress.idef>
 
 process SDFStatusToProgress is
 let
