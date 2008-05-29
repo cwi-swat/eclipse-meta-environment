@@ -1,6 +1,7 @@
 asfdir = $(pkgdatadir)/asf
 
 TBSCRIPTS_src = \
+	$(wildcard *.tb) \
 	$(wildcard *.tb.src) \
 	$(wildcard *.h) \
 	$(wildcard *.idef)

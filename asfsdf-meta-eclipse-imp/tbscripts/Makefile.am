@@ -1,12 +1,8 @@
 SUBDIRS = sdf asf
 
-TBSCRIPTS_src = \
-	$(wildcard *.tb.src) \
-	$(wildcard *.h)
+TBSCRIPTS = $(wildcard *.tb)
 
-TBSCRIPTS = $(TBSCRIPTS_src:.tb.src=.tb)
-
-EXTRA_DIST = $(TBSCRIPTS_src) asfsdf-meta.props.src
+EXTRA_DIST = $(TBSCRIPTS) asfsdf-meta.props.src
 
 pkgdata_DATA = $(TBSCRIPTS) asfsdf-meta.props
 

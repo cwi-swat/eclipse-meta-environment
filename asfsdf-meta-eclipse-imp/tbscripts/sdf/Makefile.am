@@ -1,6 +1,7 @@
 sdfdir = $(pkgdatadir)/sdf
 
 TBSCRIPTS_src = \
+	$(wildcard *.tb) \
 	$(wildcard *.tb.src) \
 	$(wildcard *.h) \
 	$(wildcard *.idef)
