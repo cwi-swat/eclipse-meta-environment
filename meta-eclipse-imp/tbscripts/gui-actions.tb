@@ -1,7 +1,6 @@
 #ifndef __GUI_ACTIONS__
 #define __GUI_ACTIONS__
 
-#include <graph-utils.tb>
 #include <module-manager.tb>
 #include <dialog.idef>
 
