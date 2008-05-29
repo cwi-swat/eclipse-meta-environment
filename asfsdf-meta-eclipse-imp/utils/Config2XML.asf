@@ -1,0 +1,109 @@
+equations
+
+[0]
+	config2xml ( $Configuration ) = <dummy> visit-properties ( $Configuration , ) </dummy>
+
+%%<hoi1
+
+[1]
+	action ([description($Id, menu-shortcut([$Item*],$ShortCut,$Str1))],$Str2) := $Property
+	======>
+	visit-properties ( $Property , $Content* ) = generate-editor-menu ($Id, $Item*, $ShortCut,$Str1,$Str2) $Content*
+
+%%<hoi2
+
+[2]
+	action ([description($Id, menu([$Item*],$Str1))],$Str2) := $Property
+	======>
+	visit-properties ( $Property , $Content* ) = generate-editor-menu ($Id, $Item*, , $Str1, $Str2) $Content*
+
+%%<hoi3
+
+[3]
+	generate-editor-menu ( $Id, $Item*, $OptionalShortCut, $Str1, $Str2) = 
+<EditorMenu
+  language=@idcon2strcon($Id)
+  name=@idcon2strcon($Id)>
+  generate-editor-submenu ($Item*, $OptionalShortCut, $Str1, $Str2)
+</EditorMenu>
+
+%%<hoi4
+
+[4]
+	generate-editor-submenu (, $OptionalShortCut, $Str1, $Str2) =
+
+%%<hoi5
+
+[5]
+	generate-editor-submenu (label($Str0), $Item*, $Item, $OptionalShortCut, $Str1, $Str2) =
+<EditorSubmenu name=@$Str0>
+  generate-editor-submenu ($Item*, $Item, $OptionalShortCut, $Str1, $Str2)
+</EditorSubmenu>
+
+%%<hoi6
+
+[6]
+	generate-editor-submenu (label($Str0), $OptionalShortCut, $Str1, $Str2)
+         =
+         generate-editor-menuaction (label($Str0), $OptionalShortCut, $Str1, $Str2)
+
+%%<hoi7
+
+[7]
+	generate-editor-menuaction (label($Str0), $OptionalShortCut, $Str1, $Str2) =
+<EditorMenuAction
+  description=@$Str1
+  name=@$Str0
+  toolbus_action=@$Str2/>
+
+%%<hoi8
+
+[8]
+	$Content*1 <EditorMenu language=@$Str name=@$Str2>$Content*2</EditorMenu> $Content*3 <EditorMenu language=@$Str name=@$Str2>$Content*4</EditorMenu> $Content*5 
+	=
+$Content*1
+<EditorMenu 
+  language=@$Str
+  name=@$Str2>
+$Content*2 
+$Content*4
+</EditorMenu> 
+$Content*3 
+$Content*5
+
+
+%%<hoi9
+
+[9]
+	$Content*1 <EditorSubmenu name=@$Str>$Content*2</EditorSubmenu> $Content*3 <EditorSubmenu name=@$Str>$Content*4</EditorSubmenu> $Content*5 
+	=
+$Content*1
+<EditorSubmenu name=@$Str>
+$Content*2 
+$Content*4
+</EditorSubmenu> 
+$Content*3 
+$Content*5
+
+%%<hoi10
+
+[10]
+
+	@"syntax-editor" = @"sdf"
+
+%%<hoi11
+
+[11]
+
+	@"equations-editor" = @"asf"
+
+%%<hoi12
+
+[12]
+
+	@"term-editor" = @"trm"
+
+%%<hoi13
+
+[13]
+	configuration([$Property*1 , action ([$ActionDescription+1, $ActionDescription+2], $Str) , $Property*2]) = configuration([$Property*1 , action ([$ActionDescription+1], $Str) , action ([$ActionDescription+2], $Str) , $Property*2])
