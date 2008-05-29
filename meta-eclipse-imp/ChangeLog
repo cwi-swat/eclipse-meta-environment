@@ -1,3 +1,10 @@
+Thu May 29 12:34:06 2008    <bruntink@cwi.nl>
+
+	* LanguageActions.java: Using Lists instead of Sets menu actions
+	stay in their specified order. The toolbus now also gets the
+	language for which the action needs to performed.
+
+	
 Wed May 28 17:43:04 2008    <bruntink@cwi.nl>
 
 	* many files: Implemented a "language service" to add
