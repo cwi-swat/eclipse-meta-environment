@@ -1,8 +1,6 @@
 #include <undefined.h>
 #include <sdf-namespace.h>
 #include <asf-namespace.h>
-#include <sdf-progress-listener.tb>
-#include <asf-progress-listener.tb>
 #include <parse-controller.idef>
 #include <builder.idef>
 #include <error-viewer.idef>

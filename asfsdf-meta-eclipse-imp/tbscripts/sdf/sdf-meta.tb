@@ -11,7 +11,6 @@
 #include <sdf-editor-actions.tb>
 #include <term-editor-actions.tb>
 #include <term-actions.tb>
-#include <sdf-progress-listener.tb>
 #include <sdf-editor-listeners.tb>
 #include <sdf-gui-listeners.tb>
 #include <sdf-transactions.tb>
