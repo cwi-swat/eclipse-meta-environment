@@ -6,7 +6,6 @@
 #include <console-gui.idef>
 #include <dialog.idef>
 #include <graph-painter.idef>
-#include <progress.idef>
 #include <moduledetails.idef>
 #include <error-viewer.idef>
 #include <svg-gui.idef>
