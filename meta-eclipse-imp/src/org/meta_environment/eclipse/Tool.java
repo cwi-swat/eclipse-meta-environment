@@ -4,7 +4,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import toolbus.ToolBusEclipsePlugin;
-import toolbus.adapter.AbstractTool;
 import toolbus.adapter.java.AbstractJavaTool;
 import toolbus.adapter.java.JavaToolBridge;
 import aterm.ATerm;
@@ -48,7 +47,7 @@ public class Tool extends AbstractJavaTool{
 	}
 
 	public void connect(String[] args) throws Exception{
-		JavaToolBridge bridge = new JavaToolBridge(factory, AbstractTool.REMOTETOOL, this, name, -1, host, port);
+		JavaToolBridge bridge = new JavaToolBridge(factory, this, name, -1, host, port);
 		setToolBridge(bridge);
 		bridge.run();	
 	}
