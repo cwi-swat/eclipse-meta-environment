@@ -8,29 +8,37 @@ import org.meta_environment.eclipse.files.Resources;
 
 public class Activator extends PluginBase implements IStartup {
 	public static final String PLUGIN_ID = "org.meta_environment";
+	
+	public final LanguageActionsTool languageActionsTool;
 
-	private static Activator plugin;
-	private LanguageActionsTool theLanguageActionsTool = null;
-
-	public Activator() {
-		plugin = this;
+	public Activator(){
+		super();
+		
+		languageActionsTool = SingletonLanguageActionTools.languageActionsTool;
+	}
+	
+	private static class SingletonLanguageActionTools{
+		private final static LanguageActionsTool languageActionsTool = new LanguageActionsTool();
+	}
+	
+	private static class InstanceKeeper{
+		public final static Activator instance = new Activator();
 	}
 
-	public static Activator getInstance() {
-		return plugin;
+	public static Activator getInstance(){
+		return InstanceKeeper.instance;
 	}
 
 	public void earlyStartup() {
 		new ErrorViewer();
 		new Resources();
-		theLanguageActionsTool = new LanguageActionsTool();
 	}
 
 	public String getID() {
 		return PLUGIN_ID;
 	}
 
-	public LanguageActionsTool getTheLanguageActionsTool() {
-		return theLanguageActionsTool;
+	public LanguageActionsTool getTheLanguageActionsTool(){
+		return languageActionsTool;
 	}
 }

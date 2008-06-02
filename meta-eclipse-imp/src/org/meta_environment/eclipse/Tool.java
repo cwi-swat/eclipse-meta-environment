@@ -31,6 +31,7 @@ public class Tool extends AbstractJavaTool{
 		this.name = name;
 		
 		// TODO Do not call connect in the constructor!
+		// It starts threads, so this is not a good idea.
 		try{
 			connect(new String[0]);
 		}catch(Exception e){
