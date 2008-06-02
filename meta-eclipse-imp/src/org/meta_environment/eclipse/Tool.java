@@ -9,35 +9,30 @@ import toolbus.adapter.java.JavaToolBridge;
 import aterm.ATerm;
 import aterm.pure.PureFactory;
 
-public class Tool extends AbstractTool {
+public class Tool extends AbstractTool{
 	protected static final String TIME_OUT = "time-out";
 
-	protected static final int EVENT_FAILURE_TIMEOUT = 1000 * 10;
+	protected static PureFactory factory = ToolBusEclipsePlugin.getFactory();
 
-	protected static PureFactory factory;
-
-	protected String name = "tool";
-
-	protected static int port = -1;
-
-	protected static InetAddress host;
-
-	protected ATerm acknowlegdement;
-
-	public Tool(String name) {
-		this.name = name;
-		
-		factory = ToolBusEclipsePlugin.getFactory();
-		port = ToolBusEclipsePlugin.getPort();
+	private static InetAddress host;
+	static{
 		try{
 			host = InetAddress.getLocalHost();
-			
+		}catch(UnknownHostException uhex){
+			uhex.printStackTrace();
+		}
+	}
+	private final static int port = ToolBusEclipsePlugin.getPort();
+	
+	private final String name;
+
+	public Tool(String name){
+		this.name = name;
+		
+		// TODO Do not call connect in the constructor!
+		try{
 			connect(new String[0]);
-		}catch (UnknownHostException e){
-			e.printStackTrace();
-		}catch (InterruptedException e){
-			e.printStackTrace();
-		}catch (Exception e){
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -46,20 +41,17 @@ public class Tool extends AbstractTool {
 		return name;
 	}
 
-	public void connect(String[] args) throws Exception {
+	public void connect(String[] args) throws Exception{
 		JavaToolBridge bridge = new JavaToolBridge(factory, AbstractTool.REMOTETOOL, this, name, -1, host, port);
 		setToolBridge(bridge);
 		bridge.run();	
 	}
 
-	public void receiveTerminate(ATerm aTerm) {
+	public void receiveTerminate(ATerm aTerm){
 		toolBridge.terminate();
 	}
 	
-	public void receiveAckEvent(ATerm aTerm) {
-		synchronized (this) {
-			acknowlegdement = aTerm;
-			notifyAll();
-		}
+	public void receiveAckEvent(ATerm aTerm){
+		// Intentionally left empty.
 	}
 }
