@@ -23,9 +23,11 @@ import aterm.ATermAppl;
 import aterm.ATermList;
 
 public class TermEditorTools extends Tool {
-	private static TermEditorTools sInstance = new TermEditorTools();
+	private final static TermEditorTools sInstance = new TermEditorTools();
 	
-	private TermEditorTools() { super("term-language-registrar"); }
+	private TermEditorTools(){
+		super("term-language-registrar");
+	}
 	
 	public static TermEditorTools getInstance() {
 		return sInstance;

@@ -1,4 +1,4 @@
-script.path: __SCRIPT_PATH__/main.tb
-MODULENAME: ""
+script.path=__SCRIPT_PATH__/main.tb
+MODULENAME=""
 
 include.path=__INCLUDE_PATH__
