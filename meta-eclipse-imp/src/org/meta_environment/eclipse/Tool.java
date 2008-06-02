@@ -5,11 +5,12 @@ import java.net.UnknownHostException;
 
 import toolbus.ToolBusEclipsePlugin;
 import toolbus.adapter.AbstractTool;
+import toolbus.adapter.java.AbstractJavaTool;
 import toolbus.adapter.java.JavaToolBridge;
 import aterm.ATerm;
 import aterm.pure.PureFactory;
 
-public class Tool extends AbstractTool{
+public class Tool extends AbstractJavaTool{
 	protected static final String TIME_OUT = "time-out";
 
 	protected static PureFactory factory = ToolBusEclipsePlugin.getFactory();
@@ -35,6 +36,10 @@ public class Tool extends AbstractTool{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	public void connectDirectly() throws Exception{
+		connectDirectly(ToolBusEclipsePlugin.getToolBus(), Thread.currentThread().getContextClassLoader(), name, -1);
 	}
 	
 	public String getName() {
