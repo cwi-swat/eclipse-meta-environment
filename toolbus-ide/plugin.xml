@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="tb,idef,h"
+            description="ToolBus scripting language"
+            language="tscript">
+      </language>
+   </extension>
+   <extension
+         point="org.eclipse.imp.runtime.parser">
+      <parser
+            class="toolbus_ide.parser.ParseController"
+            language="tscript">
+      </parser>
+   </extension>
+   <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="tscript.imp.tokenColorer.TscriptTokenColorer"
+            language="tscript">
+      </tokenColorer>
+   </extension>
+
+</plugin>

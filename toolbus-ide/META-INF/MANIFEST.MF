@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ToolBus Script IDE
+Bundle-SymbolicName: toolbus_ide;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: toolbus_ide.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.imp.runtime,
+ org.eclipse.jface.text,
+ toolbus_ng,
+ lpg.runtime
+Eclipse-LazyStart: true
