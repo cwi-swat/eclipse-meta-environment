@@ -3,6 +3,7 @@ package org.meta_environment.eclipse;
 import org.eclipse.imp.runtime.PluginBase;
 import org.eclipse.ui.IStartup;
 import org.meta_environment.eclipse.actions.LanguageActionsTool;
+import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.errors.ErrorViewer;
 import org.meta_environment.eclipse.files.Resources;
 
@@ -32,6 +33,7 @@ public class Activator extends PluginBase implements IStartup {
 	public void earlyStartup() {
 		new ErrorViewer();
 		new Resources();
+		new EditorTool();
 	}
 
 	public String getID() {

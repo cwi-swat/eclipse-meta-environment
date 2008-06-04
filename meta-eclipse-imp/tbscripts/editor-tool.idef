@@ -1,0 +1,19 @@
+tool editor-tool is { }
+
+process EditorToolProcess is
+let
+  T : editor-tool,
+  Language : str,
+  Filename : str,
+  Modules : list,
+  Events : list,
+  Event : term
+in
+  rec-connect(T?) .
+  (
+    rec-msg(et-open-editor(Filename?, Language?))
+    . snd-do(T, open(Filename, Language))
+  ) * delta
+endlet
+
+toolbus(EditorToolProcess)
