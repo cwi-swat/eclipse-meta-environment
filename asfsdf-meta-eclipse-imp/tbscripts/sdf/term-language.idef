@@ -1,21 +1,5 @@
 tool term-language-registrar is { }
 
-process AsyncAction(Type : term, Event : term) is
-let 
-  Action : str
-in
-  snd-msg(cm-get-action(Type, "", Event))
-  . rec-msg(cm-action(Action?))
-  . 
-  (
-    printf("Warning: process %s was not found\n", Action)
-  +>
-    Action(sid(0), Type, "")
-  +>
-    Action(sid(0))
-  )
-endlet
-
 process TermLanguageRegistrar is
 let
   T : term-language-registrar,
@@ -35,18 +19,6 @@ in
     rec-event(T, set-language(Filename?, Language?))
     . snd-note(tlr-set-language(Filename, Language))
     . snd-ack-event(T, set-language(Filename, Language))
-  +
-    rec-request(T, get-actions)
-    . printf("retrieving actions")
-    . snd-msg(cm-get-events(term-editor))
-    . rec-msg(cm-events(Events?))
-    . printf("actions found")
-    . snd-response(T, get-actions(Events))
-  +
-    rec-event(T, action(Event?))
-    . snd-ack-event(T, action(Event))
-    . printf("triggering ToolBus process")
-    . AsyncAction(term-editor, Event)
   + 
     rec-msg(tlr-open-editor(Filename?))
     . snd-do(T, open(Filename))
