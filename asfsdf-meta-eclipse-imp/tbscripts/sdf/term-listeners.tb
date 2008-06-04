@@ -85,9 +85,11 @@ in
         fi
       else
         printf("No language %s for %s\n", Language, Filename)
+        . snd-msg(pc-parse-error(trm, Filename, summary("sdf-parser",Filename,[])))
       fi
     else
       printf("No module found for %s\n", Filename)
+      . snd-msg(pc-parse-error(trm, Filename, summary("sdf-parser",Filename,[])))
     fi
   ) * delta 
 endlet
