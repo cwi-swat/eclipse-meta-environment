@@ -15,7 +15,6 @@ public class EditorActionContributor implements ILanguageActionsContributor {
 	public IAction[] getEditorActions(UniversalEditor editor) {
 		final UniversalEditor e = editor;
 		List<String> languages = TermEditorTools.getInstance().getLanguages();
-//		List<IAction> actions = TermEditorTools.getInstance().getActions();
 		
 		IAction[] entries = new IAction[languages.size()];
 		int i = 0;
@@ -41,10 +40,6 @@ public class EditorActionContributor implements ILanguageActionsContributor {
 		  };
 		  entries[i++] = a; 	
 		}
-		
-//		for (IAction a : actions) {
-//			entries[i++] = a;
-//		}
 		
 		return entries;
 	}
