@@ -44,24 +44,6 @@ public class TermEditorTools extends Tool {
 		return list;
 	}
 	
-	public List<IAction> getActions() {
-		ATermList result = (ATermList) sendRequest(factory.make("get-actions"));
-		List<IAction> actions = new LinkedList<IAction>();
-		
-		for(; !result.isEmpty(); result = result.getNext()) {
-			final ATerm event = result.getFirst();
-			Action a = new Action(event.toString()) {
-				public void run() {
-					System.err.println("triggering an action: " + event);
-					sendEvent(factory.make("action(<term>)", event));
-				}
-			};
-			actions.add(a);
-		}
-		
-		return actions;
-	}
-	
 	public void setLanguage(String filename, String language) {
 		sendEvent(factory.make("set-language(<str>,<str>)", filename, language));
 	}
