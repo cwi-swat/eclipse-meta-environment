@@ -1,0 +1,18 @@
+#ifndef __ASF_EDITOR_UTILS__
+#define __ASF_EDITOR_UTILS__
+
+#include <asf-namespace.h>
+
+process EditEquations(ModuleId: module-id) is
+let
+  Path: str
+in
+  GetModulePath(ModuleId, ASF_NAMESPACE, Path?) .
+  if equal(Path, "") then
+    tau // TODO create asf module
+  else
+    snd-msg(et-open-editor(Path, "asf"))
+  fi
+endlet
+
+#endif /* __ASF_EDITOR_UTILS__ */
