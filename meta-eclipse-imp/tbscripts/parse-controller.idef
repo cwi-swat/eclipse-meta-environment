@@ -43,8 +43,7 @@ let
   ErrorSummary : term,
   ParseResult : term
 in
-  printf("want to send pc-parse-event(%t, %t, %t)\n", Language, Filename, Contents)
-  . snd-msg(pc-parse-event(Language, Filename, Contents))
+  snd-msg(pc-parse-event(Language, Filename, Contents))
   . 
   (
     rec-msg(pc-parse-result(Language, Filename, ParseResult?, ErrorSummary?))
