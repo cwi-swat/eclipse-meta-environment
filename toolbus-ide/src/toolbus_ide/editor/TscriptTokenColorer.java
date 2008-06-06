@@ -1,4 +1,4 @@
-package tscript.imp.tokenColorer;
+package toolbus_ide.editor;
 
 import org.eclipse.imp.parser.IParseController;
 import org.eclipse.imp.services.ITokenColorer;

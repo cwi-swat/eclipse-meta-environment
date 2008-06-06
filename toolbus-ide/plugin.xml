@@ -13,14 +13,14 @@
    <extension
          point="org.eclipse.imp.runtime.parser">
       <parser
-            class="toolbus_ide.parser.ParseController"
+            class="toolbus_ide.editor.ParseController"
             language="tscript">
       </parser>
    </extension>
    <extension
          point="org.eclipse.imp.runtime.tokenColorer">
       <tokenColorer
-            class="tscript.imp.tokenColorer.TscriptTokenColorer"
+            class="toolbus_ide.editor.TscriptTokenColorer"
             language="tscript">
       </tokenColorer>
    </extension>

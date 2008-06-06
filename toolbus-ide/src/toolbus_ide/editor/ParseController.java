@@ -1,4 +1,4 @@
-package toolbus_ide.parser;
+package toolbus_ide.editor;
 
 import java.util.Iterator;
 
