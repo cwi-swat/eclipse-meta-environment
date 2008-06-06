@@ -31,7 +31,20 @@ public class ParseController implements IParseController {
 	
     public Iterator getTokenIterator(IRegion region) {
 //    	toolbus.getTokenIterator(region);
-    	return null;
+    	return new Iterator() {
+
+			public boolean hasNext() {
+				return false;
+			}
+
+			public Object next() {
+				return null;
+			}
+
+			public void remove() {
+			}
+    		
+    	};
     }
 
 	public Object getCurrentAst() {
