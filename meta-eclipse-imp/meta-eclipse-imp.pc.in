@@ -1,5 +1,6 @@
 prefix=@prefix@
-Maintainers=jurgenv@cwi.nl
+Maintainers=jurgenv@cwi.nl,basten@cwi.nl,lankamp@cwi.nl,bruntink@cwi.nl,storm@cw
+i.nl
 
 Name: meta-eclipse-imp
 Description: 
