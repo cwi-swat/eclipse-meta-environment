@@ -15,8 +15,10 @@ public class Tools {
 
 	/**
 	 * Execute a command, but first set up the environment and prefix the
-	 * command with the absolute path to the installation of the
-	 * Meta-Environment
+	 * command with the absolute path to the installation of commandline tool.
+	 * Note that the command is executed with its installation directory as
+	 * working directory. This is to facilitate relative search paths for
+	 * dynamically linked libraries.
 	 * 
 	 * @param commandline
 	 * @return
@@ -25,7 +27,8 @@ public class Tools {
 	static private Process exec(String commandline) throws IOException {
 		initializeSearchPath();
 		String command = resolve(commandline);
-		return Runtime.getRuntime().exec(command, environment);
+		File dir = new File(command).getParentFile();
+		return Runtime.getRuntime().exec(command, environment, dir);
 	}
 	
 	static private String resolve(String commandline) throws IOException {
