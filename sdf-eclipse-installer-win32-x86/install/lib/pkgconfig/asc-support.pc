@@ -1,0 +1,12 @@
+prefix=/tmp/sisyphus-builds/install/asc-support/25524/59543
+Maintainers=jurgenv@cwi.nl
+
+Name: asc-support
+Version: 2.4
+Description:
+Requires: asf-support,aterm,error-support,pt-support,sglr,tide-support,toolbuslib,c-library,config-support,ptable-support,rstore-support
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lasc-support-me
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/asc-support/lib -lasc-support-me
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/asc-support/lib
+PkgConfigPath=/tmp/sisyphus-builds/install/rstore-support/25297/59541/lib/pkgconfig:/tmp/sisyphus-builds/install/tide-support/25410/59540/lib/pkgconfig:/tmp/sisyphus-builds/install/c-library/23709/59536/lib/pkgconfig:/tmp/sisyphus-builds/install/config-support/25684/59537/lib/pkgconfig:/tmp/sisyphus-builds/install/ptable-support/23639/59538/lib/pkgconfig:/tmp/sisyphus-builds/install/sglr/25585/59539/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:/tmp/sisyphus-builds/install/error-support/25691/59532/lib/pkgconfig:/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/pt-support/25048/59533/lib/pkgconfig:/tmp/sisyphus-builds/install/asf-support/25043/59535/lib/pkgconfig:

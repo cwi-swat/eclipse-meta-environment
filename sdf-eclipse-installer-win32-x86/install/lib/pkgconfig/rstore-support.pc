@@ -1,0 +1,13 @@
+prefix=/tmp/sisyphus-builds/install/rstore-support/25297/59541
+Maintainers=jurgenv@cwi.nl
+
+Name: rstore-support
+Version: 0.1.1
+Description: API's for Rstores.
+Requires: aterm,toolbuslib
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lRStoreAPI
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/rstore-support/lib -lRStoreAPI
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/rstore-support/lib
+ToolBusFlags=-I${prefix}/share/rstore-support
+PkgConfigPath=/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

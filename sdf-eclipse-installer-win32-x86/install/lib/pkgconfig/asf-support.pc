@@ -1,0 +1,12 @@
+prefix=/tmp/sisyphus-builds/install/asf-support/25043/59535
+Maintainers=jurgenv@cwi.nl
+
+Name: asf-support
+Version: 1.6
+Description:
+Requires: aterm,error-support,pt-support
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lASFME
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/asf-support/lib -lASFME
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/asf-support/lib
+PkgConfigPath=/tmp/sisyphus-builds/install/pt-support/25048/59533/lib/pkgconfig:/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/error-support/25691/59532/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

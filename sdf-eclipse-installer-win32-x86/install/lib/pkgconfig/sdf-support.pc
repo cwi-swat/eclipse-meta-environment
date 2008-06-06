@@ -1,0 +1,13 @@
+prefix=/tmp/sisyphus-builds/install/sdf-support/25046/59546
+Maintainers=economop@cwi.nl,jurgenv@cwi.nl
+Name: sdf-support
+Version: 2.3.1
+Description:
+Requires: aterm,error-support,pt-support,toolbuslib
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lSDFME -lSDF2PT -lPT2SDF
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/sdf-support/lib -lSDFME -lSDF2PT -lPT2SDF
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/sdf-support/lib
+ToolBusFlags=-I${prefix}/share/sdf-support
+
+PkgConfigPath=/tmp/sisyphus-builds/install/pt-support/25048/59533/lib/pkgconfig:/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/error-support/25691/59532/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

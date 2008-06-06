@@ -1,0 +1,8 @@
+prefix=/tmp/sisyphus-builds/install/sdf/25674/59585
+Maintainers=economop@cwi.nl,jurgenv@cwi.nl
+Name: sdf
+Version: 2.6.1
+Description:
+Requires: pgen,sglr,pandora
+ToolBusFlags=
+PkgConfigPath=/tmp/sisyphus-builds/install/pandora/25700/59575/lib/pkgconfig:/tmp/sisyphus-builds/install/asc-support/25524/59543/lib/pkgconfig:/tmp/sisyphus-builds/install/rstore-support/25297/59541/lib/pkgconfig:/tmp/sisyphus-builds/install/tide-support/25410/59540/lib/pkgconfig:/tmp/sisyphus-builds/install/c-library/23709/59536/lib/pkgconfig:/tmp/sisyphus-builds/install/config-support/25684/59537/lib/pkgconfig:/tmp/sisyphus-builds/install/ptable-support/23639/59538/lib/pkgconfig:/tmp/sisyphus-builds/install/sglr/25585/59539/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:/tmp/sisyphus-builds/install/error-support/25691/59532/lib/pkgconfig:/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/pt-support/25048/59533/lib/pkgconfig:/tmp/sisyphus-builds/install/asf-support/25043/59535/lib/pkgconfig:/tmp/sisyphus-builds/install/sdf-support/25046/59546/lib/pkgconfig:/tmp/sisyphus-builds/install/pgen/24679/59584/lib/pkgconfig:

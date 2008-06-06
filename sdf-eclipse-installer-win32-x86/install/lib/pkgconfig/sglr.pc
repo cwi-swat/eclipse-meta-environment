@@ -1,0 +1,13 @@
+prefix=/tmp/sisyphus-builds/install/sglr/25585/59539
+Maintainers=jurgenv@cwi.nl,economop@cwi.nl
+Name: sglr
+Version: 4.5.1
+Description:
+Requires: aterm,c-library,config-support,error-support,ptable-support,pt-support,toolbuslib
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lsglr
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/sglr/src -lsglr
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/sglr/src -I/tmp/sisyphus-builds/build/sglr/src/parser -I/tmp/sisyphus-builds/build/sglr/src/parseForest
+ToolBusFlags=-I${prefix}/share/sglr
+
+PkgConfigPath=/tmp/sisyphus-builds/install/pt-support/25048/59533/lib/pkgconfig:/tmp/sisyphus-builds/install/ptable-support/23639/59538/lib/pkgconfig:/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/error-support/25691/59532/lib/pkgconfig:/tmp/sisyphus-builds/install/config-support/25684/59537/lib/pkgconfig:/tmp/sisyphus-builds/install/c-library/23709/59536/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

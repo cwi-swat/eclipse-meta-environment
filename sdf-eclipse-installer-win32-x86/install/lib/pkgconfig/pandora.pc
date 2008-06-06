@@ -1,0 +1,9 @@
+prefix=/tmp/sisyphus-builds/install/pandora/25700/59575
+Maintainers=lankamp@cwi.nl
+Name: pandora
+Version: 1.4.1
+Description:
+Requires: asc-support,aterm,pt-support,toolbuslib
+ToolBusFlags=-I${prefix}/share/pandora
+
+PkgConfigPath=/tmp/sisyphus-builds/install/asf-support/25043/59535/lib/pkgconfig:/tmp/sisyphus-builds/install/pt-support/25048/59533/lib/pkgconfig:/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/error-support/25691/59532/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:/tmp/sisyphus-builds/install/sglr/25585/59539/lib/pkgconfig:/tmp/sisyphus-builds/install/ptable-support/23639/59538/lib/pkgconfig:/tmp/sisyphus-builds/install/config-support/25684/59537/lib/pkgconfig:/tmp/sisyphus-builds/install/c-library/23709/59536/lib/pkgconfig:/tmp/sisyphus-builds/install/tide-support/25410/59540/lib/pkgconfig:/tmp/sisyphus-builds/install/rstore-support/25297/59541/lib/pkgconfig:/tmp/sisyphus-builds/install/asc-support/25524/59543/lib/pkgconfig:
