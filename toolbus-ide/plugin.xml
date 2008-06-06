@@ -20,7 +20,7 @@
    <extension
          point="org.eclipse.imp.runtime.tokenColorer">
       <tokenColorer
-            class="toolbus_ide.editor.TscriptTokenColorer"
+            class="toolbus_ide.editor.TokenColorer"
             language="tscript">
       </tokenColorer>
    </extension>
