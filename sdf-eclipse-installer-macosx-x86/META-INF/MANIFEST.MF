@@ -6,3 +6,4 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: jurgenv@cwi.nl
 Fragment-Host: sdf_eclipse_installer;bundle-version="1.0.6"
 Bundle-Localization: plugin
+Eclipse-PlatformFilter: (& (osgi.os=macosx) (osgi.arch=x86))
