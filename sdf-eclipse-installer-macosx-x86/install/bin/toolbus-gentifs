@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export CLASSPATH="/Users/tvdstorm/Desktop/GLT/install/share/toolbus-ng.jar:/Users/tvdstorm/Desktop/GLT/install/share/junit.jar:/Users/tvdstorm/Desktop/GLT/install/share/java-cup-11a.jar::/Users/tvdstorm/Desktop/GLT/install/share/aterm-java.jar:/Users/tvdstorm/Desktop/GLT/install/share/shared-objects.jar:/Users/tvdstorm/Desktop/GLT/install/share/jjtraveler.jar:$CLASSPATH"
+
+java toolbus.gentifs.GenTifsNG $@

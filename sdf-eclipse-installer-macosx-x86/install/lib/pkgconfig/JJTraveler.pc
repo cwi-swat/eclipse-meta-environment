@@ -1,0 +1,12 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=A.vanDeursen@ewi.tudelft.nl,jurgenv@cwi.nl,Joost.Visser@di.uminho.pt
+Name: JJTraveler
+Description: A visitor combinator framework for Java
+Version: 0.5
+JarFile=jjtraveler.jar
+Jars=${prefix}/share/${JarFile}
+#uninstalled UninstalledJars=/Users/tvdstorm/Desktop/GLT/build/JJTraveler/${JarFile}
+Packages=jjtraveler,jjtraveler.graph,jjtraveler.reflective
+LocalJars=jars/junit.jar
+TestClass=TestAll
+PkgConfigPath=

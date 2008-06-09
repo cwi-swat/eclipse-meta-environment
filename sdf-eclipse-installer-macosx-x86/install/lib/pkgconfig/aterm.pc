@@ -1,0 +1,11 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=e.t.j.scheffers@TUE.nl,jurgenv@cwi.nl
+
+Name: aterm
+Description: Abstract data type for exchanging tree-like data structures
+Version: 2.7
+Libs: -L${prefix}/lib -lATerm
+Cflags: -I${prefix}/include
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/aterm/aterm -lATerm
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/aterm/aterm
+PkgConfigPath=

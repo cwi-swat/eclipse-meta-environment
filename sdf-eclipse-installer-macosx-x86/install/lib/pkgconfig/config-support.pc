@@ -1,0 +1,12 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=lankamp@cwi.nl
+Name: config-support
+Version: 1.2
+Description:
+Requires: aterm
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lConfigAPI
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/config-support/lib -lConfigAPI
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/config-support/lib
+Jars=${prefix}/share/configapi.jar
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:
