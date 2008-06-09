@@ -20,6 +20,9 @@ public class Activator extends PluginBase implements IStartup {
 	
 	private static class SingletonLanguageActionTools{
 		private final static LanguageActionsTool languageActionsTool = new LanguageActionsTool();
+		static{
+			languageActionsTool.connect();
+		}
 	}
 	
 	private static class InstanceKeeper{
@@ -31,9 +34,13 @@ public class Activator extends PluginBase implements IStartup {
 	}
 
 	public void earlyStartup() {
-		new ErrorViewer();
-		new Resources();
-		new EditorTool();
+		ErrorViewer errorViewer = new ErrorViewer();
+		errorViewer.connect();
+		Resources resources = new Resources();
+		resources.connect();
+		resources.identifyAllResources();
+		EditorTool editorTool = new EditorTool();
+		editorTool.connect();
 	}
 
 	public String getID() {

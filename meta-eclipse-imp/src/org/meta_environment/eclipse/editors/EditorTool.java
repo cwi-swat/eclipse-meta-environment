@@ -11,7 +11,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.meta_environment.eclipse.Tool;
-//import org.meta_environment.eclipse.sdf.Activator;
 
 
 public class EditorTool extends Tool {

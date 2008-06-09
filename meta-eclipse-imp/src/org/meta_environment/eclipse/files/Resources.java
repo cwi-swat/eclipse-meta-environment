@@ -19,10 +19,9 @@ public class Resources extends Tool implements IResourceChangeListener {
 	public Resources() {
 		super("resources");
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		identifyAllResources();
 	}
 
-	private void identifyAllResources() {
+	public void identifyAllResources() {
 		try {
 			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 

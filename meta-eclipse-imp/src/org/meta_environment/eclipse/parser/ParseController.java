@@ -48,7 +48,7 @@ public class ParseController extends Tool implements IParseController,
 
 	public ParseController() {
 		super("parse-controller");
-		this.eFactory = Factory.getInstance(factory);
+		eFactory = Factory.getInstance(factory);
 	}
 
 	public IAnnotationTypeInfo getAnnotationTypeInfo() {
@@ -84,11 +84,12 @@ public class ParseController extends Tool implements IParseController,
 		return null;
 	}
 
-	public void initialize(IPath filePath, ISourceProject project,
-			IMessageHandler handler) {
+	public void initialize(IPath filePath, ISourceProject project, IMessageHandler handler) {
 		this.filePath = filePath;
 		this.project = project;
 		this.handler = handler;
+		
+		connect(); // NOTE: This may only be called once.
 
 		// try to make path absolute
 		IFile file = project.getRawProject().getFile(filePath);

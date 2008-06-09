@@ -28,17 +28,18 @@ public class Tool extends AbstractJavaTool{
 
 	public Tool(String name){
 		this.name = name;
-		
-		// TODO Do not call connect in the constructor!
-		// It starts threads, so this is not a good idea.
+	}
+	
+	public void connect(){
 		try{
-			connect(new String[0]);
+			//connect(new String[0]);
+			connectDirectly();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
-	public void connectDirectly() throws Exception{
+	private void connectDirectly() throws Exception{
 		connectDirectly(ToolBusEclipsePlugin.getToolBus(), Thread.currentThread().getContextClassLoader(), name, -1);
 	}
 	

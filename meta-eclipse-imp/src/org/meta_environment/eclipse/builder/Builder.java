@@ -12,7 +12,8 @@ public class Builder extends BuilderBase {
 	private BuilderTool tool;
 
 	public Builder() {
-		this.tool = new BuilderTool();
+		tool = new BuilderTool();
+		tool.connect();
 	}
 	
 	protected void collectDependencies(IFile file) {
