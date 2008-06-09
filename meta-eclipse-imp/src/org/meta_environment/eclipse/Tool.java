@@ -54,7 +54,7 @@ public class Tool extends AbstractJavaTool{
 	}
 
 	public void receiveTerminate(ATerm aTerm){
-		toolBridge.terminate();
+		// Intentionally left empty.
 	}
 	
 	public void receiveAckEvent(ATerm aTerm){
