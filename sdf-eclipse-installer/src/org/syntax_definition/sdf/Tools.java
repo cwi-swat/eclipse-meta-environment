@@ -3,10 +3,13 @@ package org.syntax_definition.sdf;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FilePermission;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
+import org.eclipse.core.runtime.Platform;
 
 public class Tools {
 	private static Activator a = Activator.getInstance();
@@ -27,10 +30,19 @@ public class Tools {
 	static private Process exec(String commandline) throws IOException {
 		initializeSearchPath();
 		String command = resolve(commandline);
+		makeExecutable(command);
 		File dir = new File(command).getParentFile();
 		return Runtime.getRuntime().exec(command, environment, dir);
 	}
 	
+	private static void makeExecutable(String command) throws IOException {
+		String os = Platform.getOS();
+		if (os.equals(Platform.OS_LINUX)
+				|| os.equals(Platform.OS_MACOSX)) {
+			Runtime.getRuntime().exec("chmod +x " + command);
+		}
+	}
+
 	static private String resolve(String commandline) throws IOException {
 		int beyondCommand = commandline.indexOf(' ');
 		
