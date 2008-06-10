@@ -17,38 +17,36 @@ import toolbus.ToolBus;
 import toolbus.parsercup.parser.SyntaxErrorException;
 
 public class ParseController implements IParseController {
-
 	private IMessageHandler handler;
 	private IPath filePath;
 	private ISourceProject project;
 	private String absPath;
-	private ToolBus toolbus;
 
 	public IAnnotationTypeInfo getAnnotationTypeInfo() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-    public Iterator getTokenIterator(IRegion region) {
-//    	toolbus.getTokenIterator(region);
-    	return new Iterator() {
+    public Iterator getTokenIterator(IRegion region){
+    	return new Iterator(){
 
-			public boolean hasNext() {
+			public boolean hasNext(){
 				return false;
 			}
 
-			public Object next() {
+			public Object next(){
 				return null;
 			}
 
-			public void remove() {
+			public void remove(){
 			}
     		
     	};
     }
 
 	public Object getCurrentAst() {
-		return toolbus;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public ISourcePositionLocator getNodeLocator() {
@@ -76,30 +74,28 @@ public class ParseController implements IParseController {
 		this.filePath = filePath;
 		this.project = project;
 		
-//		 try to make path absolute
+		// Try to make the path absolute
 		IFile file = project.getRawProject().getFile(filePath);
 		
-		if (file.exists()) {
+		if(file.exists()){
 			absPath = file.getLocation().toOSString();
-		} else {
+		}else{
 			absPath = filePath.toOSString();
 		}
 	}
 
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
-		toolbus = new ToolBus(new String[] {"-S" + absPath, "-I."});
-		try {
-		  toolbus.parsecup();
-		  return toolbus;
-	    }
-	    catch (SyntaxErrorException e) { // parser
-		  System.err.print(e);	
-		}
-	    catch (Error e) { // scanner
-	       System.err.print(e);	
+		ToolBus toolbus = new ToolBus(new String[] {"-S"+absPath, "-I."});
+		try{
+			toolbus.parsecup();
+	    }catch(SyntaxErrorException see){ // Parser.
+	    	handler.handleSimpleMessage(see.getMessage(), see.position, see.position, see.column, see.column, see.line, see.line);
+		}catch(Error e){ // Scanner.
+			e.printStackTrace();	
+	    }catch(Exception ex){ // Something else.
+	    	ex.printStackTrace();
 	    }
 		
-		
-		return toolbus;
+		return null;
 	}
 }
