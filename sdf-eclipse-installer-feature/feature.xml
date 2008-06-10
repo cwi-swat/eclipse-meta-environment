@@ -69,6 +69,8 @@
 
    <plugin
          id="sdf_eclipse_installer_macosx_x86"
+         os="macosx"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="1.0.7"
