@@ -48,6 +48,7 @@ public class Activator extends AbstractUIPlugin {
 
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		this.context = context;
 	}
 
 	private File getFile(Bundle bundle, String resourcePath) throws IOException {

@@ -3,7 +3,6 @@ package org.syntax_definition.sdf;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FilePermission;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,8 +30,7 @@ public class Tools {
 		initializeSearchPath();
 		String command = resolve(commandline);
 		makeExecutable(command);
-		File dir = new File(command).getParentFile();
-		return Runtime.getRuntime().exec(command, environment, dir);
+		return Runtime.getRuntime().exec(command, environment, a.getBinaryPrefix());
 	}
 	
 	private static void makeExecutable(String command) throws IOException {
@@ -55,7 +53,7 @@ public class Tools {
 			return a.getBinaryPrefix() + File.separator + command + a.getBinaryPostfix() + " " + args;
 		}
 	}
-
+	
 	/**
 	 * Convert a string to an input stream for writing to a process
 	 * 
@@ -147,7 +145,7 @@ public class Tools {
 			procs[i].waitFor();
 			if (procs[i].exitValue() != 0) {
 				// TODO: throw a different exception, collect all exit codes
-				throw new IOException("Command failed (" + procs[i].exitValue() + "):" + commands[i]);
+				throw new IOException("Command failed (" + procs[i].exitValue() + ")" + resolve(commands[i]));
 			}
 		}
 		
