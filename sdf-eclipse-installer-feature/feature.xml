@@ -2,7 +2,7 @@
 <feature
       id="sdf_eclipse_installer_feature"
       label="SDF and BOX tools"
-      version="1.0.7"
+      version="1.0.8"
       provider-name="jurgen@vinju.org">
 
    <description url="http://www.meta-environment.org">
@@ -47,7 +47,7 @@
          id="sdf_eclipse_installer"
          download-size="0"
          install-size="0"
-         version="1.0.7"/>
+         version="1.0.8"/>
 
    <plugin
          id="sdf_eclipse_installer_win32_x86"
@@ -55,7 +55,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.7"
+         version="1.0.8"
          fragment="true"/>
 
    <plugin
@@ -64,7 +64,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.7"
+         version="1.0.8"
          fragment="true"/>
 
    <plugin
@@ -73,7 +73,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.7"
+         version="1.0.8"
          fragment="true"/>
 
 </feature>
