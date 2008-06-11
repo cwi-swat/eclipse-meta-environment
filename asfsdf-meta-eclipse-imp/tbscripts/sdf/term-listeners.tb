@@ -38,6 +38,16 @@ in
     else
       printf("Could not set language of %s to %s\n", Filename, Language)
     fi
+  +
+    rec-msg(tlr-get-language(Filename?))
+    . MM-GetModuleIdByAttribute(TERM_NAMESPACE, "path", path(Filename), ModuleId?)
+    . 
+    if not-equal(ModuleId, UNDEFINED) then
+      MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
+      . snd-msg(tlr-language(Filename, Language))
+    else
+      snd-msg(tlr-language(Filename, "Main"))
+    fi
   ) * delta
 endlet
 

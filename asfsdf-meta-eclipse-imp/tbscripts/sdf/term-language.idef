@@ -16,6 +16,11 @@ in
     . GetAllSdfModuleNames(Modules?)
     . snd-response(T, get-languages(Modules))
   +
+    rec-request(T, get-language(Filename?))
+    . snd-msg(tlr-get-language(Filename))
+    . rec-msg(tlr-language(Filename, Language?))
+    . snd-response(T, get-language(Language))
+  +
     rec-event(T, set-language(Filename?, Language?))
     . snd-note(tlr-set-language(Filename, Language))
     . snd-ack-event(T, set-language(Filename, Language))
