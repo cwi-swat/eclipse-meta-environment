@@ -11,21 +11,19 @@ import org.eclipse.imp.editor.UniversalEditor;
 import org.eclipse.imp.language.Language;
 import org.eclipse.imp.model.ISourceProject;
 import org.eclipse.imp.parser.IParseController;
-import org.eclipse.imp.services.ILanguageActionsContributor;
+import org.eclipse.imp.services.base.DefaultLanguageActionsContributor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.meta_environment.eclipse.Activator;
 
-public class LanguageActions implements ILanguageActionsContributor {
+public class LanguageActions extends DefaultLanguageActionsContributor {
 
-	public IAction[] getEditorActions(UniversalEditor editor) {
+	private final String extensionPointId = "org.meta_environment.eclipse.actions.EditorMenus";
 
-		List<Action> actions = new ArrayList<Action>();
+	public void contributeToEditorMenu(UniversalEditor editor, IMenuManager menu) {
 		// TODO: Bugzilla: Request getter for UniversalEditor.fLanguage
 		final Language language = editor.fLanguage;
-		// TODO: Move extensionPointId to a sensible place
-		final String extensionPointId = "org.meta_environment.eclipse.actions.EditorMenus";
-
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
 				.getExtensionPoint(extensionPointId);
 
@@ -34,74 +32,66 @@ public class LanguageActions implements ILanguageActionsContributor {
 					extensionPoint, language);
 			if (extensions.size() != 0) {
 				for (IConfigurationElement ext : extensions) {
-					actions.addAll(createActionsForEditorMenu(ext, editor));
+					createActionsForEditorMenu(ext, editor, menu);
 				}
 			}
 		}
-
-		return actions.toArray(new Action[0]);
 	}
 
 	private List<Action> createActionsForEditorMenu(
-			IConfigurationElement editorMenu, final UniversalEditor editor) {
+			IConfigurationElement editorMenu, final UniversalEditor editor, IMenuManager menu) {
 		List<Action> actions = new ArrayList<Action>();
 
 		IConfigurationElement[] children = editorMenu.getChildren();
 
 		for (IConfigurationElement child : children) {
-			actions.addAll(createActionsForEditorMenuItem(child, "", editor));
+			actions.addAll(createActionsForEditorMenuItem(child, editor, menu));
 		}
 
 		return actions;
 	}
 
 	private List<Action> createActionsForEditorMenuItem(
-			IConfigurationElement editorMenuItem, String menuPath,
-			final UniversalEditor editor) {
+			IConfigurationElement editorMenuItem, 
+			final UniversalEditor editor, IMenuManager menu) {
 
 		List<Action> actions = new ArrayList<Action>();
 		String name = editorMenuItem.getAttribute("name");
 
-		if (!menuPath.equals("")) {
-			menuPath += "->" + name;
-		}
-		else {
-			menuPath += name;
-		}
-
 		if (editorMenuItem.getName().equals("EditorSubmenu")) {
 			IConfigurationElement[] children = editorMenuItem.getChildren();
-
+			IMenuManager subMenu = new MenuManager(name);
+			
 			for (IConfigurationElement child : children) {
-				actions.addAll(createActionsForEditorMenuItem(child, menuPath,
-						editor));
+				actions.addAll(createActionsForEditorMenuItem(child, editor, subMenu));
 			}
+			
+			menu.add(subMenu);
 		}
 
 		else if (editorMenuItem.getName().equals("EditorMenuAction")) {
-			actions.add(createActionForEditorMenuAction(editorMenuItem,
-					menuPath, editor));
+			addActionForEditorMenuAction(editorMenuItem, name, editor, menu);
 		}
 
 		return actions;
 	}
 
-	private Action createActionForEditorMenuAction(
-			IConfigurationElement editorMenuAction, final String menuPath,
-			final UniversalEditor editor) {
+	private void addActionForEditorMenuAction(
+			IConfigurationElement editorMenuAction, String name,
+			final UniversalEditor editor, IMenuManager menu) {
 		final String toolbus_action = editorMenuAction
 				.getAttribute("toolbus_action");
 		final String language = editor.fLanguage.getName();
 
-		Action action = new Action(menuPath) {
+		Action action = new Action(name) {
 			public void run() {
-				Activator.getInstance().getTheLanguageActionsTool()
+				LanguageActionsTool.getInstance()
 						.PerformAction(toolbus_action, language, getFileName(editor));
 			}
 		};
 		action.setToolTipText(editorMenuAction.getAttribute("description"));
 
-		return action;
+		menu.add(action);
 	}
 
 	public static String getFileName(UniversalEditor editor) {

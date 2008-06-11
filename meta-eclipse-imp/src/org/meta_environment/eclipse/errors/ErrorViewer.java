@@ -24,11 +24,19 @@ public class ErrorViewer extends Tool {
 	
 	private Factory eFactory;
 	
+	private static ErrorViewer sInstance;
 	
-	public ErrorViewer() {
+	private ErrorViewer() {
 		super(TOOL_NAME);
 		eFactory = Factory.getInstance(factory);
 		
+	}
+	
+	public static ErrorViewer getInstance() {
+		if (sInstance == null) {
+			sInstance = new ErrorViewer();
+		}
+		return sInstance;
 	}
 
 	public String getName() {

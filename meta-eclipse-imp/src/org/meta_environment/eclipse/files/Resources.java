@@ -16,9 +16,19 @@ import org.eclipse.imp.language.LanguageRegistry;
 import org.meta_environment.eclipse.Tool;
 
 public class Resources extends Tool implements IResourceChangeListener {
-	public Resources() {
+	private static Resources sInstance;
+	
+	
+	private Resources() {
 		super("resources");
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+	}
+	
+	static public Resources getInstance() {
+		if (sInstance == null) {
+			sInstance = new Resources();
+		}
+		return sInstance;
 	}
 
 	public void identifyAllResources() {
@@ -90,7 +100,8 @@ public class Resources extends Tool implements IResourceChangeListener {
 	}
 
 	private void fileCreated(Language l, IResource resource) {
-		if (l != null) {
+		
+		if (l != null && !resource.isDerived() && resource.isAccessible()) {
 			sendEvent(factory.make("create-module(<str>,<str>)", l.getName(),
 					resource.getLocation().toOSString()));
 		}

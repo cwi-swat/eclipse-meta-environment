@@ -14,8 +14,16 @@ import org.meta_environment.eclipse.Tool;
 
 
 public class EditorTool extends Tool {
+	private static EditorTool sInstance;
+	
+	public static EditorTool getInstance() {
+		if (sInstance == null) {
+			sInstance = new EditorTool();
+		}
+		return sInstance;
+	}
 
-	public EditorTool(){
+	private EditorTool(){
 		super("editor-tool");
 	}
 	

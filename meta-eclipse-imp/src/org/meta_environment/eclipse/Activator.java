@@ -10,19 +10,8 @@ import org.meta_environment.eclipse.files.Resources;
 public class Activator extends PluginBase implements IStartup {
 	public static final String PLUGIN_ID = "org.meta_environment";
 	
-	public final LanguageActionsTool languageActionsTool;
-
 	public Activator(){
 		super();
-		
-		languageActionsTool = SingletonLanguageActionTools.languageActionsTool;
-	}
-	
-	private static class SingletonLanguageActionTools{
-		private final static LanguageActionsTool languageActionsTool = new LanguageActionsTool();
-		static{
-			languageActionsTool.connect();
-		}
 	}
 	
 	private static class InstanceKeeper{
@@ -34,20 +23,13 @@ public class Activator extends PluginBase implements IStartup {
 	}
 
 	public void earlyStartup() {
-		ErrorViewer errorViewer = new ErrorViewer();
-		errorViewer.connect();
-		Resources resources = new Resources();
-		resources.connect();
-		resources.identifyAllResources();
-		EditorTool editorTool = new EditorTool();
-		editorTool.connect();
+		ErrorViewer.getInstance().connect();
+		Resources.getInstance().connect();
+		EditorTool.getInstance().connect();
+		LanguageActionsTool.getInstance().connect();
 	}
 
 	public String getID() {
 		return PLUGIN_ID;
-	}
-
-	public LanguageActionsTool getTheLanguageActionsTool(){
-		return languageActionsTool;
 	}
 }
