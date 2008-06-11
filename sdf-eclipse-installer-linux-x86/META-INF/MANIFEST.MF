@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Sdf_eclipse_installer_linux_x86 Fragment
 Bundle-SymbolicName: sdf_eclipse_installer_linux_x86
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
 Bundle-Vendor: jurgen@vinju.org
-Fragment-Host: sdf_eclipse_installer;bundle-version="1.0.8"
+Fragment-Host: sdf_eclipse_installer;bundle-version="1.0.9"
 Bundle-Localization: plugin
 Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86))
