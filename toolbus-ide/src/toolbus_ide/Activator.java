@@ -23,23 +23,8 @@ public class Activator extends PluginBase {
 
 	public static final String kLanguageName = "tscript";
 
-	/**
-	 * The unique instance of this plugin class
-	 */
-	protected static Activator sPlugin;
-
-	public static Activator getInstance() {
-		// SMS 11 Jul 2007
-		// Added conditional call to constructor in case the plugin
-		// class has not been auto-started
-		if (sPlugin == null)
-			new Activator();
-		return sPlugin;
-	}
-
 	public Activator() {
 		super();
-		sPlugin = this;
 	}
 
 	public void start(BundleContext context) throws Exception {
@@ -55,13 +40,12 @@ public class Activator extends PluginBase {
 
 	public static PreferencesService getPreferencesService() {
 		if (preferencesService == null) {
-			preferencesService = new PreferencesService(ResourcesPlugin
-					.getWorkspace().getRoot().getProject());
+			preferencesService = new PreferencesService(ResourcesPlugin.getWorkspace().getRoot().getProject());
 			preferencesService.setLanguageName(kLanguageName);
 			// To trigger the invocation of the preferences initializer:
-			try {
+			try{
 				new DefaultScope().getNode(kPluginID);
-			} catch (Exception e) {
+			}catch(Exception e){
 				// If this ever happens, it will probably be because the preferences
 				// and their initializer haven't been defined yet.  In that situation
 				// there's not really anything to do--you can't initialize preferences

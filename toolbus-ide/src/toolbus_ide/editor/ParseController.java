@@ -18,7 +18,6 @@ import toolbus.parsercup.parser.SyntaxErrorException;
 
 public class ParseController implements IParseController {
 	private IMessageHandler handler;
-	private IPath filePath;
 	private ISourceProject project;
 	private String absPath;
 
@@ -71,7 +70,6 @@ public class ParseController implements IParseController {
 
 	public void initialize(IPath filePath, ISourceProject project, IMessageHandler handler) {
 		this.handler = handler;
-		this.filePath = filePath;
 		this.project = project;
 		
 		// Try to make the path absolute
