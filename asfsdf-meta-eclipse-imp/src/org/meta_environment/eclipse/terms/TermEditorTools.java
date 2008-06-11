@@ -16,6 +16,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.meta_environment.eclipse.Tool;
 import org.meta_environment.eclipse.sdf.Activator;
 
+import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermList;
 
@@ -42,6 +43,11 @@ public class TermEditorTools extends Tool {
 		}
 		
 		return list;
+	}
+	
+	public String getLanguage(String filename) {
+		ATerm language = sendRequest(factory.make("get-language(<str>)", filename));
+		return ((ATermAppl) language).getName();
 	}
 	
 	public void setLanguage(String filename, String language) {
