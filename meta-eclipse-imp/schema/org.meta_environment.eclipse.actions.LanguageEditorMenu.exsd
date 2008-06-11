@@ -12,7 +12,7 @@
 
    <element name="extension">
       <complexType>
-         <sequence>
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="EditorMenu"/>
          </sequence>
          <attribute name="point" type="string" use="required">
@@ -44,7 +44,7 @@
 
    <element name="EditorMenu">
       <complexType>
-         <sequence>
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <choice>
                <element ref="EditorMenuAction"/>
                <element ref="EditorSubmenu"/>
@@ -109,7 +109,7 @@
 
    <element name="EditorSubmenu">
       <complexType>
-         <sequence>
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <choice>
                <element ref="EditorMenuAction"/>
                <element ref="EditorSubmenu"/>
