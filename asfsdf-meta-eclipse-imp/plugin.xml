@@ -5,7 +5,7 @@
          id="test-config"
          name="test-config"
          point="toolbus.config">
-          <toolbus config="/tbscripts/asfsdf-meta.props"/>
+          <toolbus config="tbscripts/asfsdf-meta.props"/>
    </extension>
    <extension
          point="org.eclipse.imp.runtime.languageDescription">
