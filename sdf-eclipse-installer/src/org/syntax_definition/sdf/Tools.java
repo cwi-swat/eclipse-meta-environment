@@ -37,10 +37,30 @@ public class Tools {
 		String os = Platform.getOS();
 		if (os.equals(Platform.OS_LINUX)
 				|| os.equals(Platform.OS_MACOSX)) {
-			Runtime.getRuntime().exec("chmod +x " + command);
+			try {
+				Process p = Runtime.getRuntime().exec("/bin/chmod +x " + binary(command));
+				p.waitFor();
+				if (p.exitValue() != 0) {
+					System.err.println("chmod failed: " + p.exitValue());
+//					 TODO don't know what to do here	
+				}
+			} catch (InterruptedException e) {
+			    // TODO don't know what to do here	
+			}
 		}
 	}
 
+	static private String binary(String commandline) {
+	  int beyondCommand = commandline.indexOf(' ');
+	  
+	  if (beyondCommand != -1) {
+	    return commandline.substring(0, beyondCommand);
+	  }
+	  else {
+		  return commandline;
+	  }
+	}
+	
 	static private String resolve(String commandline) throws IOException {
 		int beyondCommand = commandline.indexOf(' ');
 		
