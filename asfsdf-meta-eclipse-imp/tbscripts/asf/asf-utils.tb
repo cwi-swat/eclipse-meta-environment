@@ -15,6 +15,12 @@
 #define ASF_TREE_CACHE "asf-annotated-tree"
 #define ASF_NORMALIZED_TREE_CACHE "asf-normalized-tree"
 
+process AsfPath2SdfPath(AsfPath : str, SdfPath : str?) is
+  ReplaceExtension(AsfPath, SDF_EXTENSION, SdfPath?)
+  
+process SdfPath2AsfPath(SdfPath : str, AsfPath : str?) is
+  ReplaceExtension(SdfPath, ASF_EXTENSION, AsfPath?)
+  
 /* RegisterASFModule forges the link between an ASF and an SDF module.
  * It reuses the same module Id, and constructs an ASF path from
  * a SDF path.
@@ -28,14 +34,9 @@ let
 in
   GetModulePath(ModuleId, ASF_NAMESPACE, AsfPath?)
   . printf("Asf path: %t\n", AsfPath)
-  . ReplaceExtension(AsfPath, SDF_EXTENSION, SdfPath?)
+  . AsfPath2SdfPath(AsfPath, SdfPath?)
   . printf("Sdf path: %t\n", SdfPath)
-  .
-  (
-    tau delay(sec(1))
-    . MM-GetModuleIdByAttribute(SDF_NAMESPACE, "path", path(SdfPath), SdfModuleId?) 
-    . printf("SdfModuleId: %t\n", SdfModuleId)
-  ) * if not-equal(SdfModuleId, UNDEFINED) then tau fi
+  . GetOrCreateModule(SDF_NAMESPACE, SdfPath, SdfModuleId?)
   . MM-SetAttribute(SdfModuleId, ASF_NAMESPACE, "path", path(AsfPath))
   . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "path", path(AsfPath))
   . MM-GetAttribute(SdfModuleId, SDF_NAMESPACE, "name", Modulename?)
@@ -46,6 +47,7 @@ in
   . MM-SetAttribute(SdfModuleId, ASF_NAMESPACE, "status", dirty)
   . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "status", linked)
 endlet
+
 
 
 process Asf2SdfId(AsfModuleId: module-id, SdfModuleId: module-id?) is
