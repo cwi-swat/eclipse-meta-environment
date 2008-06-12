@@ -16,8 +16,10 @@ import org.eclipse.imp.language.LanguageRegistry;
 import org.meta_environment.eclipse.Tool;
 
 public class Resources extends Tool implements IResourceChangeListener {
-	private static Resources sInstance;
 	
+	private static class InstanceKeeper{
+		private static Resources sInstance = new Resources();
+	}
 	
 	private Resources() {
 		super("resources");
@@ -25,10 +27,7 @@ public class Resources extends Tool implements IResourceChangeListener {
 	}
 	
 	static public Resources getInstance() {
-		if (sInstance == null) {
-			sInstance = new Resources();
-		}
-		return sInstance;
+		return InstanceKeeper.sInstance;
 	}
 
 	public void identifyAllResources() {

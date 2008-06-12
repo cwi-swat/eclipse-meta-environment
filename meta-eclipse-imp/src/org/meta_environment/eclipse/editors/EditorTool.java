@@ -14,13 +14,13 @@ import org.meta_environment.eclipse.Tool;
 
 
 public class EditorTool extends Tool {
-	private static EditorTool sInstance;
+	
+	private static class InstanceKeeper{
+		private static EditorTool sInstance = new EditorTool();
+	}
 	
 	public static EditorTool getInstance() {
-		if (sInstance == null) {
-			sInstance = new EditorTool();
-		}
-		return sInstance;
+		return InstanceKeeper.sInstance;
 	}
 
 	private EditorTool(){

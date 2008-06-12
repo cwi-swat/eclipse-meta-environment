@@ -3,17 +3,17 @@ package org.meta_environment.eclipse.actions;
 import org.meta_environment.eclipse.Tool;
 
 public class LanguageActionsTool extends Tool {
-	private static LanguageActionsTool sInstance;
+	
+	private static class InstanceKeeper{
+		private static LanguageActionsTool sInstance = new LanguageActionsTool();
+	}
 	
 	private LanguageActionsTool() {
 		super("language-actions");
 	}
 	
-	public static LanguageActionsTool getInstance() {
-		if (sInstance == null) {
-			sInstance = new LanguageActionsTool();
-		}
-		return sInstance;
+	public static LanguageActionsTool getInstance(){
+		return InstanceKeeper.sInstance;
 	}
 	
 	public void PerformAction (String Action, String language, String Filename) {

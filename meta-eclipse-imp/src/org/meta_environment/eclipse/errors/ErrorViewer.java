@@ -24,7 +24,9 @@ public class ErrorViewer extends Tool {
 	
 	private Factory eFactory;
 	
-	private static ErrorViewer sInstance;
+	private static class InstanceKeeper{
+		private static ErrorViewer sInstance = new ErrorViewer();
+	}
 	
 	private ErrorViewer() {
 		super(TOOL_NAME);
@@ -33,10 +35,7 @@ public class ErrorViewer extends Tool {
 	}
 	
 	public static ErrorViewer getInstance() {
-		if (sInstance == null) {
-			sInstance = new ErrorViewer();
-		}
-		return sInstance;
+		return InstanceKeeper.sInstance;
 	}
 
 	public String getName() {
