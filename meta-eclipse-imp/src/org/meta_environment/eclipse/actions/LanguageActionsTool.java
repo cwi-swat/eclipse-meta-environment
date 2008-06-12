@@ -6,6 +6,9 @@ public class LanguageActionsTool extends Tool {
 	
 	private static class InstanceKeeper{
 		private static LanguageActionsTool sInstance = new LanguageActionsTool();
+		static{
+			sInstance.connect();
+		}
 	}
 	
 	private LanguageActionsTool() {

@@ -23,10 +23,10 @@ public class Activator extends PluginBase implements IStartup {
 	}
 
 	public void earlyStartup() {
-		ErrorViewer.getInstance().connect();
-		Resources.getInstance().connect();
-		EditorTool.getInstance().connect();
-		LanguageActionsTool.getInstance().connect();
+		ErrorViewer.getInstance();
+		Resources.getInstance();
+		EditorTool.getInstance();
+		LanguageActionsTool.getInstance();
 	}
 
 	public String getID() {

@@ -19,6 +19,9 @@ public class Resources extends Tool implements IResourceChangeListener {
 	
 	private static class InstanceKeeper{
 		private static Resources sInstance = new Resources();
+		static{
+			sInstance.connect();
+		}
 	}
 	
 	private Resources() {

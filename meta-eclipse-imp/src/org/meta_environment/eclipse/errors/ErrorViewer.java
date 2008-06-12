@@ -26,6 +26,9 @@ public class ErrorViewer extends Tool {
 	
 	private static class InstanceKeeper{
 		private static ErrorViewer sInstance = new ErrorViewer();
+		static{
+			sInstance.connect();
+		}
 	}
 	
 	private ErrorViewer() {
