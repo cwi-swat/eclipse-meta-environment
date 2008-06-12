@@ -21,16 +21,17 @@ import aterm.ATermAppl;
 import aterm.ATermList;
 
 public class TermEditorTools extends Tool {
-	private final static TermEditorTools sInstance = new TermEditorTools();
-	static{
-		sInstance.connect();
-	}
+	private static TermEditorTools sInstance;
 	
 	private TermEditorTools(){
 		super("term-language-registrar");
 	}
 	
 	public static TermEditorTools getInstance() {
+		if (sInstance == null) {
+			sInstance = new TermEditorTools();
+			sInstance.connect();
+		}
 		return sInstance;
 	}
 

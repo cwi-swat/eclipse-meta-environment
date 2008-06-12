@@ -167,6 +167,7 @@ in
     . GetModules(ModuleIds, Modules?)
     . 
     if equal(Modules, []) then
+      printf("Can not produce syntax definition because the set of modules empty: %t\n", ModuleId).
       Syntax := UNDEFINED
     else
       snd-msg(sm-make-sdf-definition(Modules))
@@ -179,6 +180,7 @@ in
       )
     fi
   else
+    printf("Can not produce syntax definition because status is incomplete: %t (%s)\n", ModuleId, Status) .
     Syntax := UNDEFINED
   fi
 endlet

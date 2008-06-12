@@ -3,6 +3,7 @@
 
 #include <asf-namespace.h>
 #include <asf-utils.tb>
+#include <module-utils.tb>
 
 process ASFModuleRegistrar is
 let

@@ -3,6 +3,7 @@ package org.meta_environment.eclipse.sdf;
 import org.eclipse.imp.preferences.PreferencesService;
 import org.eclipse.imp.runtime.PluginBase;
 import org.eclipse.ui.IStartup;
+import org.meta_environment.eclipse.terms.TermEditorTools;
 
 public class Activator extends PluginBase implements IStartup {
 	public static final String kPluginID = "sdf_meta_eclipse";

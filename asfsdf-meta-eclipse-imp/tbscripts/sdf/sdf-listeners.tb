@@ -7,6 +7,7 @@
 #include <graph-namespace.h>
 #include <extract-sdf.idef>
 #include <term-listeners.tb>
+#include <module-utils.tb>
 
 #define BG_ERROR_COLOR rgb(224,64,60)
 #define BG_CHILD_ERROR_COLOR rgb(255,128,114)
@@ -307,12 +308,14 @@ let
   Tree : term,
   ErrorSummary : term,
   ParseResult : term,
-  Annotated : term
+  Annotated : term,
+  ModuleId : module-id
 in
   (
     rec-msg(pc-parse-event(sdf, Filename?, Contents?))
     . printf("received pc-parse-event for sdf\n")
-    . GetParseTable(module-id(0), sdf, Table?)
+    . GetOrCreateModule(SDF_NAMESPACE, Filename, ModuleId?)
+    . GetParseTable(ModuleId, sdf, Table?)
     .
     if not-equal(Table, UNDEFINED) then
       snd-msg(sglr-parse(Contents, Table, "", off))

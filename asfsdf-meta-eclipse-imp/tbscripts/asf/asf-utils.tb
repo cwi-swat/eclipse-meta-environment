@@ -52,7 +52,7 @@ process Asf2SdfId(AsfModuleId: module-id, SdfModuleId: module-id?) is
   MM-GetAttribute(AsfModuleId, ASF_NAMESPACE, "sdf-id", SdfModuleId?)
   
 process GetASFModuleId(Filename : str, ModuleId : module-id?) is
-  MM-GetModuleIdByAttribute(ASF_NAMESPACE, "path", path(Filename), ModuleId?)
+  GetOrCreateModule(ASF_NAMESPACE, Filename, ModuleId?)
 
 process OpenASFModule(ModuleId: module-id) is
 let
