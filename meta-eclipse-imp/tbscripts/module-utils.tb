@@ -1,10 +1,83 @@
 #ifndef __MODULE_UTILS__
 #define __MODULE_UTILS__
+#include <module-manager.tb>
 
-/* This file extends the generic module concept with a path for each module */
+/* This file extends the generic module concept:
+     - with a path for each module 
+     - binds the concept of 'language' to 'namespace'
+     - listens for external resource update notes to update the state of the module manager
+*/
 
 #define EMPTY_PATH ""
 
+process ResourcesService is
+let
+  Language : str,
+  Path : str,
+  ModuleId : module-id
+in
+  subscribe(res-create-module(<str>,<str>))
+  . subscribe(res-create-module(<str>,<str>))
+  . subscribe(res-module-changed(<str>,<str>))
+  .
+  (
+    rec-note(res-create-module(Language?, Path?)) 
+    . CreateModule(Language, Path, ModuleId?)
+    . snd-msg(res-module-created(Language, Path, ModuleId))
+  + 
+    rec-note(res-delete-module(Language?, Path?))
+    . DeleteModule(Language, Path)
+  + 
+    rec-note(res-module-changed(Language?, Path?))
+    . ChangedModule(Language, Path)  
+  )
+  * delta
+
+endlet
+
+toolbus(ResourcesService)
+
+process CreateModule(Language : str, Path : str, ModuleId : module-id?) is
+   printf("Create module: %t, %t, ", Language, Path)
+   . MM-CreateModule(ModuleId?)
+   . printf(" %t.\n", ModuleId)
+   . MM-SetAttribute(ModuleId, Language, "path", path(Path))
+   . MM-SetAttribute(ModuleId, Language, "status", created)
+   
+process GetOrCreateModule(Language : str, Path : str, ModuleId : module-id?) is
+   MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+   .
+   if equal(ModuleId, UNDEFINED) then
+     CreateModule(Language, Path, ModuleId?)
+   else
+     tau
+   fi
+   
+process DeleteModule(Language : str, Path : str) is
+let
+  ModuleId : module-id
+in
+   MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+   . 
+   if not-equal(ModuleId, UNDEFINED) then
+     MM-DeleteModule(ModuleId)
+   else
+     printf("Can not delete non-existing module %s\n", Path)
+   fi
+endlet
+
+process ChangedModule(Language : str, Path : str) is
+let
+  ModuleId : module-id
+in
+  MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+  . if not-equal(ModuleId, UNDEFINED) then
+    MM-SetAttribute(ModuleId, Language, "status", dirty)
+  else
+    printf("Unknown module changed %s\n", Path)
+  fi
+endlet
+ 
 process GetModulePath(ModuleId: module-id, Namespace: term, Path: str?) is
 let
   Term: path,

@@ -58,9 +58,11 @@ in
 	  PutCachedValue(TableName, ModuleId, Table)
 	  . snd-msg(parsetable(ModuleId, Type, Table))
 	else
+	  printf("generation of parse table failed\n") .
 	  snd-msg(no-parsetable(ModuleId, Type))
 	fi
       else
+      printf("collection of syntax definition failed\n") .
 	snd-msg(no-parsetable(ModuleId, Type))
       fi
       . JobDone("Generating parser")
