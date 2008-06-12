@@ -14,8 +14,7 @@ import org.meta_environment.eclipse.Tool;
 
 
 public class EditorTool extends Tool {
-	
-	private static class InstanceKeeper{
+	private static class InstanceKeeper {
 		private static EditorTool sInstance = new EditorTool();
 		static{
 			sInstance.connect();

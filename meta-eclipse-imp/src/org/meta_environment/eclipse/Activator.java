@@ -24,7 +24,7 @@ public class Activator extends PluginBase implements IStartup {
 
 	public void earlyStartup() {
 		ErrorViewer.getInstance();
-		Resources.getInstance();
+		Resources.getInstance().identifyAllResources();
 		EditorTool.getInstance();
 		LanguageActionsTool.getInstance();
 	}

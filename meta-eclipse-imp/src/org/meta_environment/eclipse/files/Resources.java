@@ -16,8 +16,7 @@ import org.eclipse.imp.language.LanguageRegistry;
 import org.meta_environment.eclipse.Tool;
 
 public class Resources extends Tool implements IResourceChangeListener {
-	
-	private static class InstanceKeeper{
+	private static class InstanceKeeper {
 		private static Resources sInstance = new Resources();
 		static{
 			sInstance.connect();
@@ -41,7 +40,7 @@ public class Resources extends Tool implements IResourceChangeListener {
 				public boolean visit(IResource resource) throws CoreException {
 					if (resource instanceof IFile) {
 						Language l = LanguageRegistry.findLanguage(resource
-								.getLocation(), (IFile) resource);
+								.getLocation(), null);
 						if (l != null) {
 							fileCreated(l, resource);
 						}
@@ -69,7 +68,7 @@ public class Resources extends Tool implements IResourceChangeListener {
 							IPath path = resource.getLocation();
 							
 							Language l = LanguageRegistry.findLanguage(path,
-									(IFile) resource);
+									null);
 
 							if (l != null) {
 								switch (delta.getKind()) {
