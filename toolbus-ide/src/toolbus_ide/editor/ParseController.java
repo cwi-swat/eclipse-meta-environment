@@ -1,5 +1,7 @@
 package toolbus_ide.editor;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
@@ -14,12 +16,16 @@ import org.eclipse.imp.services.ILanguageSyntaxProperties;
 import org.eclipse.jface.text.IRegion;
 
 import toolbus.ToolBus;
+import toolbus.parsercup.Lexer;
 import toolbus.parsercup.parser.SyntaxErrorException;
+import toolbus.parsercup.parser.UndeclaredVariableException;
 
 public class ParseController implements IParseController {
-	private IMessageHandler handler;
-	private ISourceProject project;
-	private String absPath;
+	private volatile IMessageHandler handler;
+	private volatile ISourceProject project;
+	private volatile String absPath;
+	
+	private volatile Lexer lexer;
 
 	public IAnnotationTypeInfo getAnnotationTypeInfo() {
 		// TODO Auto-generated method stub
@@ -28,18 +34,38 @@ public class ParseController implements IParseController {
 	
     public Iterator getTokenIterator(IRegion region){
     	return new Iterator(){
+    		private Object nextToken = null;
 
 			public boolean hasNext(){
-				return false;
+				if(nextToken == null){
+					try{
+						nextToken = lexer.next_token();
+					}catch(IOException ioex){
+						// Ignore this, since it can't happen.
+					}
+				}
+				
+				return !nextToken.toString().equals("#0"); // TODO: Fix this.
 			}
 
 			public Object next(){
-				return null;
+				if(nextToken == null){
+					try{
+						nextToken = lexer.next_token();
+					}catch(IOException ioex){
+						// Ignore this, since it can't happen.
+					}
+				}
+				
+				Object token = nextToken;
+				nextToken = null;
+				
+				return token;
 			}
 
 			public void remove(){
+				throw new UnsupportedOperationException("Removing is not supported by this iterator.");
 			}
-    		
     	};
     }
 
@@ -49,8 +75,7 @@ public class ParseController implements IParseController {
 	}
 
 	public ISourcePositionLocator getNodeLocator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TokenLocator();
 	}
 
 	public IPath getPath() {
@@ -83,11 +108,15 @@ public class ParseController implements IParseController {
 	}
 
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
+		lexer = new Lexer(new StringReader(input));
+		
 		ToolBus toolbus = new ToolBus(new String[] {"-S"+absPath, "-I."});
 		try{
 			toolbus.parsecup();
 	    }catch(SyntaxErrorException see){ // Parser.
 	    	handler.handleSimpleMessage(see.getMessage(), see.position, see.position, see.column, see.column, see.line, see.line);
+		}catch(UndeclaredVariableException uvex){ // Parser.
+			handler.handleSimpleMessage(uvex.getMessage(), uvex.position, uvex.position, uvex.column, uvex.column, uvex.line, uvex.line);
 		}catch(Error e){ // Scanner.
 			e.printStackTrace();	
 	    }catch(Exception ex){ // Something else.
