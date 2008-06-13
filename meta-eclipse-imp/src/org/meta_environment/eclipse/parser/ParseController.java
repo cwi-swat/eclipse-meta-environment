@@ -102,9 +102,9 @@ public class ParseController extends Tool implements IParseController,
 	}
 
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
-		ATerm l = factory.parse(LanguageRegistry.findLanguage(filePath, null).getName());
+		String l = LanguageRegistry.findLanguage(filePath, null).getName();
 
-		ATerm res = sendRequest(factory.make("parse(<term>,<str>,<str>)", l, absPath, input));
+		ATerm res = sendRequest(factory.make("parse(<str>,<str>,<str>)", l, absPath, input));
 
 		if (res.getType() == ATerm.APPL) {
 			ATermAppl appl = (ATermAppl) res;

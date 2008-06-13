@@ -76,7 +76,7 @@ public class EditorTool extends Tool {
 	}
 
 	public void editTerm(final String filename, String language, ATerm content) {
-		System.err.println("ET: file: " + filename + " language: " + language);
+		System.err.println("ET: file: " + filename + " language: " + language + " content: " + content);
 
 		IFile file = ResourcesPlugin.getWorkspace().getRoot()
 				.getFileForLocation(new Path(filename));
@@ -87,6 +87,7 @@ public class EditorTool extends Tool {
 				file.create(new ByteArrayInputStream(new byte[0]), true,
 						new NullProgressMonitor());
 			}
+
 			file.setContents(new ByteArrayInputStream(content.toString()
 					.getBytes()), IFile.FORCE, new NullProgressMonitor());
 		} catch (CoreException e) {

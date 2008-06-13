@@ -7,6 +7,7 @@
 #include <error-support.idef>
 #include <restorebrackets.idef>
 #include <ambiguity-reporter.idef>
+#include <term-namespace.h>
 
 process AnnotateTree(Tree: term, File: str, AnnotatedTree: term?) is
   AddJob("Adding position information")
@@ -131,7 +132,7 @@ process RestoreTermBrackets(ModuleId: module-id, Tree: term, Result: term?) is
 let
   Table: term
 in
-  GetParseTable(ModuleId, trm, Table?)
+  GetParseTable(ModuleId, TERM_NAMESPACE, Table?)
   . 
   if not-equal(Table, UNDEFINED) then
     snd-msg(restore-brackets(Tree, Table))
@@ -145,7 +146,7 @@ process AddTermBrackets(ModuleId: module-id, Tree: term, Result: term?) is
 let
   Table: term
 in
-  GetParseTable(ModuleId, trm, Table?)
+  GetParseTable(ModuleId, TERM_NAMESPACE, Table?)
   . 
   if not-equal(Table, UNDEFINED) then
     snd-msg(add-brackets(Tree, Table))
