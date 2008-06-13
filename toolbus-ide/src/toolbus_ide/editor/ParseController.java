@@ -37,51 +37,58 @@ public class ParseController implements IParseController {
 	
 	public static class SymbolHolder{
 		public final Symbol symbol;
-		public final int offset;
+		public final int startOffset;
+		public final int endOffset;
 		
-		public SymbolHolder(Symbol symbol, int offset){
+		public SymbolHolder(Symbol symbol, int startOffset, int endOffset){
 			this.symbol = symbol;
-			this.offset = offset;
+			this.startOffset = startOffset;
+			this.endOffset = endOffset;
 		}
 	}
 	
-    public Iterator getTokenIterator(IRegion region){
-    	return new Iterator(){
-    		private SymbolHolder nextToken = null;
+    public Iterator<?> getTokenIterator(IRegion region){
+    	class TokenIterator implements Iterator<SymbolHolder>{
+    		private int currentOffset;
+    		private Symbol nextSymbol;
+    		
+    		public TokenIterator(){
+    			super();
+    			prepareNext();
+    		}
+    		
+    		public void prepareNext(){
+    			try{
+    				nextSymbol = lexer.next_token();
+    				currentOffset = lexer.getPosition();
+				}catch(IOException ioex){
+					// Ignore this, since it can't happen.
+				}
+    		}
 
 			public boolean hasNext(){
-				if(nextToken == null){
-					try{
-						nextToken = new SymbolHolder(lexer.next_token(), lexer.getPosition());
-					}catch(IOException ioex){
-						// Ignore this, since it can't happen.
-					}
-				}
-				
-				return nextToken.symbol.sym != sym.EOF;
+				return nextSymbol.sym != sym.EOF;
 			}
 
-			public Object next(){
-				if(nextToken == null){
-					try{
-						nextToken = new SymbolHolder(lexer.next_token(), lexer.getPosition());
-					}catch(IOException ioex){
-						// Ignore this, since it can't happen.
-					}
-				}
+			public SymbolHolder next(){
+				if(!hasNext()) return null;
 				
-				SymbolHolder token = nextToken;
-				nextToken = null;
+				int offset = currentOffset;
+				Symbol symbol = nextSymbol;
+
+				prepareNext();
 				
-				System.out.println(token.offset+"\t"+token.symbol.sym+"\t"+token.symbol.value);
+				System.out.println(offset+"\t"+currentOffset+"\t"+symbol.sym+"\t"+symbol.value);
 				
-				return token;
+				return new SymbolHolder(symbol, offset, currentOffset);
 			}
 
 			public void remove(){
 				throw new UnsupportedOperationException("Removing is not supported by this iterator.");
 			}
-    	};
+    	}
+    	
+    	return new TokenIterator();
     }
 
 	public Object getCurrentAst() {

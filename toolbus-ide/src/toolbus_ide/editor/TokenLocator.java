@@ -1,7 +1,5 @@
 package toolbus_ide.editor;
 
-import java_cup.runtime.Symbol;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.imp.language.ILanguageService;
 import org.eclipse.imp.parser.ISourcePositionLocator;
@@ -18,33 +16,27 @@ public class TokenLocator implements ISourcePositionLocator, ILanguageService{
 		return null;
 	}
 
+	public int getStartOffset(Object node){
+		if(node instanceof SymbolHolder){
+			SymbolHolder sh = (SymbolHolder) node;
+			return sh.startOffset;
+		}
+		return 0;
+	}
+
 	public int getEndOffset(Object node){
 		if(node instanceof SymbolHolder){
 			SymbolHolder sh = (SymbolHolder) node;
-			return sh.offset;
+			return sh.endOffset - 1;
 		}
-		
 		return 0;
 	}
 
 	public int getLength(Object node){
-		if(node instanceof SymbolHolder){
-			SymbolHolder sh = (SymbolHolder) node;
-			Object value = sh.symbol.value;
-			
-			if(value == null) return 0;
-			
-			return value.toString().length();
-		}
-		
-		return 0;
+		return (getEndOffset(node) - getStartOffset(node));
 	}
 
 	public IPath getPath(Object node){
 		return null;
-	}
-
-	public int getStartOffset(Object node){
-		return getEndOffset(node) - getLength(node);
 	}
 }
