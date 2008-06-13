@@ -8,57 +8,67 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
-public class TokenColorer extends TokenColorerBase implements ITokenColorer {
+import toolbus.parsercup.sym;
+import toolbus_ide.editor.ParseController.SymbolHolder;
 
-	TextAttribute commentAttribute, keywordAttribute, stringAttribute,
-			numberAttribute, doubleAttribute, identifierAttribute;
-
-	public TextAttribute getColoring(IParseController controller, Object o) {
-		/* IToken token = (IToken) o;
-				if (token.getKind() == TK_EOF_TOKEN)
-			return null;
-
-		switch (token.getKind()) {
-		// START_HERE
-		case TK_IDENTIFIER:
-			return identifierAttribute;
-		case TK_NUMBER:
-			return numberAttribute;
-		case TK_DoubleLiteral:
-			return doubleAttribute;
-			//          case TK_StringLiteral:
-			//               return stringAttribute;
-		default:
-			if (((TscriptParseController) controller)
-					.isKeyword(token.getKind()))
-				return keywordAttribute;
-			return super.getColoring(controller, token);
-		}
-*/
-		return keywordAttribute;
-	}
-
-	public TokenColorer() {
+public class TokenColorer extends TokenColorerBase implements ITokenColorer{
+	private final TextAttribute defaultAttribute;
+	private final TextAttribute commentAttribute;
+	private final TextAttribute keywordAttribute;
+	private final TextAttribute stringAttribute;
+	private final TextAttribute numberAttribute;
+	private final TextAttribute doubleAttribute;
+	private final TextAttribute identifierAttribute;
+	
+	public TokenColorer(){
 		super();
-		// TODO:  Define text attributes for the various
-		// token types that will have their text colored
+		
 		Display display = Display.getDefault();
-		commentAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_RED), null, SWT.ITALIC);
-		stringAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_BLUE), null, SWT.BOLD);
-		identifierAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_BLACK), null, SWT.NORMAL);
-		doubleAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_GREEN), null, SWT.BOLD);
-		numberAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD);
-		keywordAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_MAGENTA), null, SWT.BOLD);
-	}
 
-	public IRegion calculateDamageExtent(IRegion seed) {
+		defaultAttribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLACK), null, SWT.NONE);
+		
+		commentAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_RED), null, SWT.ITALIC);
+		stringAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_BLUE), null, SWT.BOLD);
+		identifierAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_BLACK), null, SWT.NORMAL);
+		doubleAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_GREEN), null, SWT.BOLD);
+		numberAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD);
+		keywordAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_MAGENTA), null, SWT.BOLD);
+		
+	}
+	
+	public TextAttribute getColoring(IParseController controller, Object o){
+		System.out.println(o.getClass());
+		if(o instanceof SymbolHolder){
+			SymbolHolder sh = (SymbolHolder) o;
+			switch(sh.symbol.sym){
+				case sym.IDENT:
+					return identifierAttribute;
+				case sym.STRING:
+					return stringAttribute;
+				case sym.INT:
+					return numberAttribute;
+				case sym.REAL:
+					return doubleAttribute;
+				case sym.PROCESS:
+				case sym.IS:
+				case sym.IF:
+				case sym.THEN:
+				case sym.ELSE:
+				case sym.FI:
+				case sym.LET:
+				case sym.IN:
+				case sym.ENDLET:
+				case sym.TAU:
+				case sym.DELTA:
+					return keywordAttribute;
+				default:
+					return defaultAttribute;
+			}
+		}
+		return defaultAttribute;
+	}
+	
+	public IRegion calculateDamageExtent(IRegion seed){
 		return seed;
 	}
-
 }
