@@ -63,11 +63,13 @@ public class ParseController implements IParseController {
     				currentOffset = lexer.getPosition();
 				}catch(IOException ioex){
 					// Ignore this, since it can't happen.
+				}catch(Error e){
+					// This doesn't matter. it'll just generate error symbols.
 				}
     		}
 
 			public boolean hasNext(){
-				return nextSymbol.sym != sym.EOF;
+				return !(nextSymbol.sym == sym.EOF || nextSymbol.sym == sym.error);
 			}
 
 			public SymbolHolder next(){
@@ -77,6 +79,8 @@ public class ParseController implements IParseController {
 				Symbol symbol = nextSymbol;
 
 				prepareNext();
+				
+				System.out.println(offset+"\t"+currentOffset+"\t"+symbol.sym+"\t"+symbol.value);
 				
 				return new SymbolHolder(symbol, offset, currentOffset);
 			}
