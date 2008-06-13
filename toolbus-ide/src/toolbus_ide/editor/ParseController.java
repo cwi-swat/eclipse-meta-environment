@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
 
+import java_cup.runtime.Symbol;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,6 +19,7 @@ import org.eclipse.jface.text.IRegion;
 
 import toolbus.ToolBus;
 import toolbus.parsercup.Lexer;
+import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.SyntaxErrorException;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 
@@ -32,33 +35,45 @@ public class ParseController implements IParseController {
 		return null;
 	}
 	
+	public static class SymbolHolder{
+		public final Symbol symbol;
+		public final int offset;
+		
+		public SymbolHolder(Symbol symbol, int offset){
+			this.symbol = symbol;
+			this.offset = offset;
+		}
+	}
+	
     public Iterator getTokenIterator(IRegion region){
     	return new Iterator(){
-    		private Object nextToken = null;
+    		private SymbolHolder nextToken = null;
 
 			public boolean hasNext(){
 				if(nextToken == null){
 					try{
-						nextToken = lexer.next_token();
+						nextToken = new SymbolHolder(lexer.next_token(), lexer.getPosition());
 					}catch(IOException ioex){
 						// Ignore this, since it can't happen.
 					}
 				}
 				
-				return !nextToken.toString().equals("#0"); // TODO: Fix this.
+				return nextToken.symbol.sym != sym.EOF;
 			}
 
 			public Object next(){
 				if(nextToken == null){
 					try{
-						nextToken = lexer.next_token();
+						nextToken = new SymbolHolder(lexer.next_token(), lexer.getPosition());
 					}catch(IOException ioex){
 						// Ignore this, since it can't happen.
 					}
 				}
 				
-				Object token = nextToken;
+				SymbolHolder token = nextToken;
 				nextToken = null;
+				
+				System.out.println(token.offset+"\t"+token.symbol.sym+"\t"+token.symbol.value);
 				
 				return token;
 			}
