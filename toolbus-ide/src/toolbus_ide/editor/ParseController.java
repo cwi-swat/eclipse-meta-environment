@@ -132,7 +132,7 @@ public class ParseController implements IParseController {
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
 		lexer = new Lexer(new StringReader(input));
 		
-		ToolBus toolbus = new ToolBus(new String[] {"-S"+absPath, "-I."});
+		ToolBus toolbus = new ToolBus(new String[] {"-I."});
 		try{
 			toolbus.parsecupString(absPath, input);
 	    }catch(SyntaxErrorException see){ // Parser.
