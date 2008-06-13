@@ -3,6 +3,7 @@
 
 #include <sdf-namespace.h>
 #include <asf-namespace.h>
+#include <term-namespace.h>
 #include <module-manager.tb>
 #include <module-utils.tb>
 #include <asf-editor-utils.tb>
@@ -11,8 +12,8 @@ process EditorEditEquationsAction(Filename: str, Language: str) is
 let 
   ModuleId : module-id
 in
-  MM-GetModuleIdByAttribute(SDF_NAMESPACE, "path", path(Filename), ModuleId?) .
-  EditEquationsAction(ModuleId)
+  GetOrCreateModule(SDF_NAMESPACE, Filename, ModuleId?)
+  . EditEquationsAction(ModuleId)
 endlet
 
 process EditEquationsAction(ModuleId : module-id) is
@@ -20,6 +21,15 @@ let
   Pid: int
 in
   create(EditEquations(ModuleId), Pid?)
+endlet
+
+
+process ReduceAction(Filename: str, Language: str) is
+let 
+  ModuleId : module-id
+in
+  GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
+  . ReduceTerm(ModuleId, Filename, false)
 endlet
 
 

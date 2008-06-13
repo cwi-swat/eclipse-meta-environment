@@ -3,6 +3,7 @@
 
 #include <asf-namespace.h>
 #include <module-utils.tb>
+#include <asf-utils.tb>
 
 process EditEquations(ModuleId: module-id) is
 let
@@ -14,6 +15,19 @@ in
   . SdfPath2AsfPath(Path?, AsfPath?)
   . GetOrCreateModule(ASF_NAMESPACE, AsfPath, AsfModuleId?)
   . snd-msg(et-open-editor(AsfPath, ASF_NAMESPACE))
+endlet
+
+
+process ReduceTerm(ModuleId: module-id, Filename: str, Debugging: term) is
+let
+  Result: term,
+  TermModuleId : module-id,
+  TermPath : str
+in
+  Reduce(ModuleId, Filename, Debugging, Result?)
+  . TermPath := concat(Filename, "-reduct")
+  . GetOrCreateModule(TERM_NAMESPACE, TermPath, TermModuleId?)
+  . snd-msg(et-open-editor(TermPath, TERM_NAMESPACE))
 endlet
 
 #endif /* __ASF_EDITOR_UTILS__ */
