@@ -74,6 +74,13 @@
           point="org.eclipse.imp.runtime.editorActionContributions">
        <editorActionContributor
              class="org.meta_environment.eclipse.actions.LanguageActions"
+             language="trm">
+       </editorActionContributor>
+    </extension>
+    <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.actions.LanguageActions"
              language="asf"/>
     </extension>
      <extension
