@@ -10,13 +10,18 @@ let
   Filename : str,
   Modules : list,
   Events : list,
-  Event : term
+  Event : term,
+  Content : term
 in
   rec-connect(T?) .
   (
     rec-msg(et-open-editor(Filename?, Language?))
     . snd-do(T, open(Filename, Language))
-  ) * delta
+  +
+      rec-msg(et-edit-term(Filename?, Language?, Content?))
+    . snd-do(T, edit-term(Filename, Language, Content))
+  )
+  * delta
 endlet
 
 toolbus(EditorToolProcess)
