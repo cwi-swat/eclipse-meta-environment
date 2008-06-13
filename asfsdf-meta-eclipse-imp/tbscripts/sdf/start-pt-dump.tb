@@ -8,6 +8,7 @@ process TODO(Msg : str) is printf("TODO: %s\n", Msg)
 #include <error-output.tb>
 #include <transaction-management.tb>
 #include <text-utils.tb>
+#include <term-namespace.h>
 
 /* sdf-meta */
 #include <sdf-listeners.tb>
@@ -36,7 +37,7 @@ in
   if or(equal(Value, error), equal(Value, unavailable)) then
     printf("Error occurred loading %t\n", MODULENAME)
   else
-    DumpParseTable(ModuleId, SDF_NAMESPACE, OUTPUTFILE, trm)
+    DumpParseTable(ModuleId, SDF_NAMESPACE, OUTPUTFILE, TERM_NAMESPACE)
   fi
   . shutdown("")
 endlet

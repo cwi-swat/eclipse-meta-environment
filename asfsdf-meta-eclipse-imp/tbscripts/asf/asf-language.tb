@@ -11,7 +11,7 @@ process AddEqsSyntax(Modulename: str, Syntax: term, NewSyntax: term?) is
   . rec-msg(extended-syntax(NewSyntax?))
 
 /* note that we provide the SDF_NAMESPACE on purpose */
-toolbus(BuildParsetable("equations-parsetable", SDF_NAMESPACE, asf, "AddEqsSyntax"))
+toolbus(BuildParsetable("equations-parsetable", SDF_NAMESPACE, ASF_NAMESPACE, "AddEqsSyntax"))
 
 
 #endif /* __ASF_LANGUAGE__ */

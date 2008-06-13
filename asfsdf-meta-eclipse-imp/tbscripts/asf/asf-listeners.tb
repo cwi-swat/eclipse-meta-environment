@@ -140,11 +140,11 @@ let
   SdfModuleId : module-id
 in
   (
-    rec-msg(pc-parse-event(asf, Filename?, Contents?))
+    rec-msg(pc-parse-event(ASF_NAMESPACE, Filename?, Contents?))
     . GetASFModuleId(Filename, ModuleId?)
     . Asf2SdfId(ModuleId, SdfModuleId?)
     . printf("received pc-parse-event for asf\n")
-    . GetParseTable(SdfModuleId, asf, Table?)
+    . GetParseTable(SdfModuleId, ASF_NAMESPACE, Table?)
     .
     if not-equal(Table, UNDEFINED) then
       snd-msg(sglr-parse(Contents, Table, ASF_TOPSORT, on))
@@ -152,13 +152,13 @@ in
       (
         rec-msg(sglr-parse-tree(ParseResult?, ErrorSummary?))
         . AnnotateTree(ParseResult, Filename, Annotated?)
-        . snd-msg(pc-parse-result(asf, Filename, ParseResult, ErrorSummary))
+        . snd-msg(pc-parse-result(ASF_NAMESPACE, Filename, ParseResult, ErrorSummary))
       +
         rec-msg(sglr-parse-error(ErrorSummary?))
-        . snd-msg(pc-parse-error(asf, Filename, ErrorSummary))
+        . snd-msg(pc-parse-error(ASF_NAMESPACE, Filename, ErrorSummary))
       )
     else
-       snd-msg(pc-parse-error(asf, Filename, summary("sdf-parser",Filename,[])))
+       snd-msg(pc-parse-error(ASF_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
     fi
   ) * delta
 endlet

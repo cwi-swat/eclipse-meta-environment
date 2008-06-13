@@ -2,8 +2,10 @@
 #define __ASF_EDITOR_UTILS__
 
 #include <asf-namespace.h>
+#include <module-manager.tb>
 #include <module-utils.tb>
 #include <asf-utils.tb>
+#include <undefined.h>
 
 process EditEquations(ModuleId: module-id) is
 let
@@ -18,16 +20,22 @@ in
 endlet
 
 
-process ReduceTerm(ModuleId: module-id, Filename: str, Debugging: term) is
+process ReduceMyTerm(ModuleId: module-id, Filename: str, Debugging: term) is
 let
   Result: term,
   TermModuleId : module-id,
-  TermPath : str
+  TermPath : str,
+  Language : str,
+  SdfModuleId : module-id
 in
-  Reduce(ModuleId, Filename, Debugging, Result?)
-  . TermPath := concat(Filename, "-reduct")
-  . GetOrCreateModule(TERM_NAMESPACE, TermPath, TermModuleId?)
-  . snd-msg(et-open-editor(TermPath, TERM_NAMESPACE))
+  MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
+  . if not-equal(Language, UNDEFINED) then
+      MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
+      . Reduce(SdfModuleId, Filename, Debugging, Result?)
+      . TermPath := concat(Filename, "-reduct.trm")
+      . GetOrCreateModule(TERM_NAMESPACE, TermPath, TermModuleId?)
+      . snd-msg(et-edit-term(TermPath, TERM_NAMESPACE, Result))
+    fi
 endlet
 
 #endif /* __ASF_EDITOR_UTILS__ */

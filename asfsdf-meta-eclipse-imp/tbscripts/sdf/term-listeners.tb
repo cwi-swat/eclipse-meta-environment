@@ -57,10 +57,10 @@ let
   SdfModuleId : module-id,
   ModuleId : module-id
 in
-  printf("listening for pc-parse-event(trm, Filename?, Contents?)\n") .
+  printf("listening for pc-parse-event(TERM_NAMESPACE, Filename?, Contents?)\n") .
   (
-    rec-msg(pc-parse-event(trm, Filename?, Contents?))
-    . printf("received pc-parse-event for trm\n")
+    rec-msg(pc-parse-event(TERM_NAMESPACE, Filename?, Contents?))
+    . printf("received pc-parse-event for TERM_NAMESPACE\n")
     . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
     . MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
     . if not-equal(Language, UNDEFINED) then
@@ -73,16 +73,16 @@ in
         (
           rec-msg(sglr-parse-tree(ParseResult?, ErrorSummary?))
           . AnnotateTree(ParseResult, Filename, Annotated?)
-          . snd-msg(pc-parse-result(trm, Filename, ParseResult, ErrorSummary))
+          . snd-msg(pc-parse-result(TERM_NAMESPACE, Filename, ParseResult, ErrorSummary))
         +
           rec-msg(sglr-parse-error(ErrorSummary?))
-          . snd-msg(pc-parse-error(trm, Filename, ErrorSummary))
+          . snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, ErrorSummary))
         )
       else
-        snd-msg(pc-parse-error(trm, Filename, summary("sdf-parser",Filename,[])))
+        snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
       fi
     else
-      snd-msg(pc-parse-error(trm, Filename, summary("sdf-parser",Filename,[])))
+      snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
     fi
   ) * delta 
 endlet

@@ -1,7 +1,9 @@
 #ifndef __ASF_UTILS__
 #define __ASF_UTILS__
 
+#include <asf-namespace.h>
 #include <sdf-namespace.h>
+#include <term-namespace.h>
 #include <error-support.idef>
 #include <sdf-renaming.idef>
 #include <asfoperations.idef>
@@ -137,34 +139,36 @@ process GetASFParseTree(ModuleId: module-id, Result: term?) is
 let
   AmbPid: int,
   ParseTable: term,
-  Path: str,
+  SdfPath: str,
+  AsfPath: str,
   Pid: int,
   Text: str,
-  Type: term,
+  Type: str,
   Tree: term
 in
   snd-msg(tm-request-transaction(asf-parsing))
   . GetCachedValue(ASF_TREE_CACHE, ModuleId, Tree?)
   .
   if equal(Tree, UNDEFINED) then
-    Type := asf
-    . GetModulePath(ModuleId, ASF_NAMESPACE, Path?)
-    . ReadText(Path, Text?)
+    Type := ASF_NAMESPACE
+    . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
+    . SdfPath2AsfPath(SdfPath, AsfPath?)
+    . ReadText(AsfPath, Text?)
     .
     if not-equal(Text, "") then
       printf("Getting parse table %t %t\n", ModuleId, Type)
       . GetParseTable(ModuleId, Type, ParseTable?)
       .
       if not-equal(ParseTable, UNDEFINED) then
-        create(ParseTreeHandler(ModuleId, Path), Pid?)
-	    . RemoveAmbiguitySummary(Path)
+        create(ParseTreeHandler(ModuleId, AsfPath), Pid?)
+	    . RemoveAmbiguitySummary(AsfPath)
 	    . printf("ParseText for ASF equations: %s\n", Text)
         . ParseText(Pid, Text, ParseTable, ASF_TOPSORT, on)
         .
         (
           rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
-	      . create(AmbiguityHandler(Tree, Path), AmbPid?)
-          . AnnotateTree(Tree, Path, Result?) 
+	      . create(AmbiguityHandler(Tree, AsfPath), AmbPid?)
+          . AnnotateTree(Tree, AsfPath, Result?) 
           . PutCachedValue(ASF_TREE_CACHE, ModuleId, Result)
         +
           rec-msg(parse-handler-done(Pid))
@@ -214,7 +218,7 @@ in
    .
    if not-equal(Specification, UNDEFINED) then
      GetSpecificationEquations(Specification, Equations?)
-     . GetParseTable(ModuleId, trm, Table?)
+     . GetParseTable(ModuleId, TERM_NAMESPACE, Table?)
      .
      if not-equal(Table, UNDEFINED) then
        MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
@@ -366,7 +370,7 @@ in
      * proposal: merge the renaming and normalization tools,
      * possibly including the get-imports tool. 
      */
-      MM-GetAttribute(CurModule, ASF_NAMESPACE, "name", Modulename?)
+      MM-GetAttribute(CurModule, SDF_NAMESPACE, "name", Modulename?)
       . NormalizeEquations(CurModule, Equations, NormalizedEquations?)
       . RenameEquations(Modulename, Imports, NormalizedEquations, RenamedEquations?)
       . Specification := join(Specification, RenamedEquations)
@@ -465,33 +469,34 @@ let
 in
   Id := process-id
   . GetSpecification(ModuleId, Specification?)
+  . printf("obtained specification for %t:\n%t\n", ModuleId, Specification)
   .
   if not-equal(Specification, UNDEFINED) then
     GetSpecificationEquations(Specification, Equations?)
     . GetTermParseTable(ModuleId, ParseTable?)
-    . AddJob("Rewriting...")
+//    . AddJob("Rewriting...")
     . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
     . snd-msg(asfe-rewrite(Modulename, Equations, ParseTable, Tree, Debugging))
     .
     (
       rec-msg(asfe-rewrite-result(NormalFormWithoutBrackets?))
       . RestoreTermBrackets(ModuleId, NormalFormWithoutBrackets, NormalForm?)
-      . RemoveSummary("asfe", "all")
+//      . RemoveSummary("asfe", "all")
     +
       rec-msg(asfe-rewrite-result-with-errors(NormalFormWithoutBrackets?,Errors?))
-      . RemoveSummary("asfe", "all")
-      . snd-msg(es-make-summary("asfe", "all", Errors)) 
-      . rec-msg(es-summary(Summary?)) 
-      . DisplaySummary(Summary)
+//      . RemoveSummary("asfe", "all")
+//      . snd-msg(es-make-summary("asfe", "all", Errors)) 
+//      . rec-msg(es-summary(Summary?)) 
+//      . DisplaySummary(Summary)
       . RestoreTermBrackets(ModuleId, NormalFormWithoutBrackets, NormalForm?)
     +
       rec-msg(asfe-rewrite-errors(Errors?))
-      . RemoveSummary("asfe", "all")
-      . snd-msg(es-make-summary("asfe", "all", Errors)) 
-      . rec-msg(es-summary(Summary?)) 
-      . DisplaySummary(Summary)
+//      . RemoveSummary("asfe", "all")
+//      . snd-msg(es-make-summary("asfe", "all", Errors)) 
+//      . rec-msg(es-summary(Summary?)) 
+//      . DisplaySummary(Summary)
     )
-    . JobDone("Rewriting...")
+//    . JobDone("Rewriting...")
   else
     NormalForm := UNDEFINED
   fi
@@ -699,7 +704,7 @@ in
   TODO("split asf and sdf")
   . DeleteSessions(Modulename)
   . GetDependingModules(Modulename, Depending?)
-  . MDB-InvalidateModules(Depending, sdf)
+  . MDB-InvalidateModules(Depending, SDF_NAMESPACE)
   . AddImportInDB(Modulename, Import)
   . SaveAsfSdfModule(Modulename, Status?)
 endlet
@@ -712,7 +717,7 @@ in
   TODO("split asf and sdf")
   .DeleteSessions(Modulename)
   . GetDependingModules(Modulename, Depending?)
-  . MDB-InvalidateModules(Depending, sdf)
+  . MDB-InvalidateModules(Depending, SDF_NAMESPACE)
   . RemoveImportInDB(Modulename, Import)
   . SaveAsfSdfModule(Modulename, Status?)
 endlet

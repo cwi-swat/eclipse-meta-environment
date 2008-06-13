@@ -312,10 +312,10 @@ let
   ModuleId : module-id
 in
   (
-    rec-msg(pc-parse-event(sdf, Filename?, Contents?))
+    rec-msg(pc-parse-event(SDF_NAMESPACE, Filename?, Contents?))
     . printf("received pc-parse-event for sdf\n")
     . GetOrCreateModule(SDF_NAMESPACE, Filename, ModuleId?)
-    . GetParseTable(ModuleId, sdf, Table?)
+    . GetParseTable(ModuleId, SDF_NAMESPACE, Table?)
     .
     if not-equal(Table, UNDEFINED) then
       snd-msg(sglr-parse(Contents, Table, "", off))
@@ -323,15 +323,15 @@ in
       (
         rec-msg(sglr-parse-tree(ParseResult?, ErrorSummary?))
         . AnnotateTree(ParseResult, Filename, Annotated?)
-        . snd-msg(pc-parse-result(sdf, Filename, ParseResult, ErrorSummary))
-        . printf("sent sdf parse result\n")
+        . snd-msg(pc-parse-result(SDF_NAMESPACE, Filename, ParseResult, ErrorSummary))
+        . printf("sent SDF_NAMESPACE parse result\n")
       +
         rec-msg(sglr-parse-error(ErrorSummary?))
-        . snd-msg(pc-parse-error(sdf, Filename, ErrorSummary))
+        . snd-msg(pc-parse-error(SDF_NAMESPACE, Filename, ErrorSummary))
         . printf("sent sdf parse error\n")
       )
     else
-       snd-msg(pc-parse-error(sdf, Filename, summary("sdf-parser",Filename,[])))
+       snd-msg(pc-parse-error(SDF_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
        . printf("sent sdf parse error\n")
     fi
   ) * delta

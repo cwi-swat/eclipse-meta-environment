@@ -2,6 +2,7 @@
 #define __SDF_UTILS__
 
 #include <sdf-modules.idef>
+#include <sdf-namespace.h>
 #include <parse-utils.tb>
 #include <error-utils.tb>
 #include <io-utils.tb>
@@ -348,7 +349,7 @@ in
   .
   if not-equal(Runner, []) then
     Module := first(Runner)
-    . snd-msg(save-module(Module, sdf))
+    . snd-msg(save-module(Module, SDF_NAMESPACE))
     . rec-msg(saved-module(Module, Status?))
     . Runner := next(Runner)
   fi
@@ -393,7 +394,7 @@ in
   . snd-msg(sm-add-import-to-module(Tree, NewImport))
   . rec-msg(sm-import-added-to-module(Tree?))
   /* . MDB-StoreModuleTree(Modulename, Tree) dead */
-  . snd-msg(save-module(Modulename, sdf))
+  . snd-msg(save-module(Modulename, SDF_NAMESPACE))
   . rec-msg(saved-module(Modulename, Status?))
 endlet
 
@@ -471,14 +472,14 @@ let
   Path: str,
   Pid: int,
   Text: str,
-  Type: term,
+  Type: str,
   Tree: term
 in
   snd-msg(tm-request-transaction(sdf-parsing))
   . GetCachedValue(SDF_TREE_CACHE, ModuleId, Tree?)
   .
   if equal(Tree, UNDEFINED) then
-    Type := sdf
+    Type := SDF_NAMESPACE
     . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
     . ReadText(Path, Text?)
     . printf("GetSDF: %s\n", Text)

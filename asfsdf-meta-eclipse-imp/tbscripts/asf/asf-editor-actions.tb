@@ -29,7 +29,7 @@ let
   ModuleId : module-id
 in
   GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
-  . ReduceTerm(ModuleId, Filename, false)
+  . ReduceMyTerm(ModuleId, Filename, false)
 endlet
 
 
