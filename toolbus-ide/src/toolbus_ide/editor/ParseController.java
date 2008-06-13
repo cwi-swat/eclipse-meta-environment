@@ -78,8 +78,6 @@ public class ParseController implements IParseController {
 
 				prepareNext();
 				
-				System.out.println(offset+"\t"+currentOffset+"\t"+symbol.sym+"\t"+symbol.value);
-				
 				return new SymbolHolder(symbol, offset, currentOffset);
 			}
 

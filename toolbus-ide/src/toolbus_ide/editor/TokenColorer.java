@@ -37,7 +37,6 @@ public class TokenColorer extends TokenColorerBase implements ITokenColorer{
 	}
 	
 	public TextAttribute getColoring(IParseController controller, Object o){
-		System.out.println(o.getClass());
 		if(o instanceof SymbolHolder){
 			SymbolHolder sh = (SymbolHolder) o;
 			switch(sh.symbol.sym){
