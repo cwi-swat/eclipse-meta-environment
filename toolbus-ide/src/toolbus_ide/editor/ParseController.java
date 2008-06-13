@@ -77,10 +77,8 @@ public class ParseController implements IParseController {
 				
 				int offset = currentOffset;
 				Symbol symbol = nextSymbol;
-
-				prepareNext();
 				
-				System.out.println(offset+"\t"+currentOffset+"\t"+symbol.sym+"\t"+symbol.value);
+				prepareNext();
 				
 				return new SymbolHolder(symbol, offset, currentOffset);
 			}
@@ -136,7 +134,7 @@ public class ParseController implements IParseController {
 		
 		ToolBus toolbus = new ToolBus(new String[] {"-S"+absPath, "-I."});
 		try{
-			toolbus.parsecup();
+			toolbus.parsecupString(absPath, input);
 	    }catch(SyntaxErrorException see){ // Parser.
 	    	handler.handleSimpleMessage(see.getMessage(), see.position, see.position, see.column, see.column, see.line, see.line);
 		}catch(UndeclaredVariableException uvex){ // Parser.
