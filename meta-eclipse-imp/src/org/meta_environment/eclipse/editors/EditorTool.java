@@ -1,7 +1,6 @@
 package org.meta_environment.eclipse.editors;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -18,23 +17,24 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.meta_environment.eclipse.Activator;
 import org.meta_environment.eclipse.Tool;
 
+import aterm.ATerm;
 
 public class EditorTool extends Tool {
 	private static class InstanceKeeper {
 		private static EditorTool sInstance = new EditorTool();
-		static{
+		static {
 			sInstance.connect();
 		}
 	}
-	
+
 	public static EditorTool getInstance() {
 		return InstanceKeeper.sInstance;
 	}
 
-	private EditorTool(){
+	private EditorTool() {
 		super("editor-tool");
 	}
-	
+
 	public void open(final String filename, String language) {
 		System.err.println("ET: file: " + filename + " language: " + language);
 
@@ -52,7 +52,8 @@ public class EditorTool extends Tool {
 
 						try {
 							if (!file.exists()) {
-								file.create(new ByteArrayInputStream(new byte[0]), true,
+								file.create(new ByteArrayInputStream(
+										new byte[0]), true,
 										new NullProgressMonitor());
 							}
 							page.openEditor(new FileEditorInput(file),
@@ -64,13 +65,35 @@ public class EditorTool extends Tool {
 													+ filename, e);
 						} catch (CoreException e) {
 							Activator.getInstance()
-							.logException(
-									"Could not open editor for: "
-											+ filename, e);
+									.logException(
+											"Could not open editor for: "
+													+ filename, e);
 						}
 					}
 				}
 			}
 		});
+	}
+
+	public void editTerm(final String filename, String language, ATerm content) {
+		System.err.println("ET: file: " + filename + " language: " + language);
+
+		IFile file = ResourcesPlugin.getWorkspace().getRoot()
+				.getFileForLocation(new Path(filename));
+
+		try {
+			if (!file.exists()) {
+
+				file.create(new ByteArrayInputStream(new byte[0]), true,
+						new NullProgressMonitor());
+			}
+			file.setContents(new ByteArrayInputStream(content.toString()
+					.getBytes()), IFile.FORCE, new NullProgressMonitor());
+		} catch (CoreException e) {
+			Activator.getInstance().logException(
+					"Could not open editor for: " + filename, e);
+		}
+
+		open(filename, language);
 	}
 }
