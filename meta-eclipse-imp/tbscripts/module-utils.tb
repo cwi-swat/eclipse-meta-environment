@@ -17,7 +17,7 @@ let
   ModuleId : module-id
 in
   subscribe(res-create-module(<str>,<str>))
-  . subscribe(res-create-module(<str>,<str>))
+  . subscribe(res-delete-module(<str>,<str>))
   . subscribe(res-module-changed(<str>,<str>))
   .
   (
