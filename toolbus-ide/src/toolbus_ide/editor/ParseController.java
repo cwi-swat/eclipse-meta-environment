@@ -1,12 +1,19 @@
 package toolbus_ide.editor;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import java_cup.runtime.Symbol;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.imp.model.ISourceProject;
@@ -128,11 +135,42 @@ public class ParseController implements IParseController {
 			absPath = filePath.toOSString();
 		}
 	}
+	
+	private String[] buildIncludePath(){
+		List<String> includes = new ArrayList<String>();
+		
+		IProject[] projects = project.getRawProject().getWorkspace().getRoot().getProjects();
+		for(int i = projects.length - 1; i >= 0; i--){
+			IProject project = projects[i];
+			try{
+				IResource[] resources = project.members();
+				for(int j = resources.length -1; j >= 0; j--){
+					IResource resource = resources[j];
+					if(resource instanceof IFolder){
+						IFolder folder = (IFolder) resource;
+						IPath path = folder.getLocation();
+						File file = path.toFile();
+						includes.add(" -I"+file.getAbsolutePath());
+					}
+				}
+			}catch(CoreException cex){
+				// Ignore; we don't want to know about this atm.
+			}
+			
+			IPath path = project.getLocation();
+			File file = path.toFile();
+			includes.add("-I"+file.getAbsolutePath());
+		}
+		
+		return includes.toArray(new String[includes.size()]);
+	}
 
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
 		lexer = new Lexer(new StringReader(input));
 		
-		ToolBus toolbus = new ToolBus(new String[] {"-I."});
+		String[] includePath = buildIncludePath();
+		
+		ToolBus toolbus = new ToolBus(includePath);
 		try{
 			toolbus.parsecupString(absPath, input);
 	    }catch(SyntaxErrorException see){ // Parser.
