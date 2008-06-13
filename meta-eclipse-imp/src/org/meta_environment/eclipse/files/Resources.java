@@ -32,28 +32,6 @@ public class Resources extends Tool implements IResourceChangeListener {
 		return InstanceKeeper.sInstance;
 	}
 
-	public void identifyAllResources() {
-		try {
-			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-
-			root.accept(new IResourceVisitor() {
-				public boolean visit(IResource resource) throws CoreException {
-					if (resource instanceof IFile) {
-						Language l = LanguageRegistry.findLanguage(resource
-								.getLocation(), null);
-						if (l != null) {
-							fileCreated(l, resource);
-						}
-					}
-					return true;
-				}
-
-			});
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta[] deltas = event.getDelta().getAffectedChildren();
 
