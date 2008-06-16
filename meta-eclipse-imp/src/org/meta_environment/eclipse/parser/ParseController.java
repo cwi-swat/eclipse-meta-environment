@@ -6,6 +6,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.imp.language.ILanguageService;
+import org.eclipse.imp.language.Language;
 import org.eclipse.imp.language.LanguageRegistry;
 import org.eclipse.imp.model.ISourceProject;
 import org.eclipse.imp.parser.ILexer;
@@ -102,7 +103,7 @@ public class ParseController extends Tool implements IParseController,
 	}
 
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
-		String l = LanguageRegistry.findLanguage(filePath, null).getName();
+		String l = this.getLanguage().getName();
 
 		ATerm res = sendRequest(factory.make("parse(<str>,<str>,<str>)", l, absPath, input));
 
@@ -162,5 +163,9 @@ public class ParseController extends Tool implements IParseController,
 		}
 
 		return new TokenIterator(eFactory, factory.makeList());
+	}
+
+	public Language getLanguage() {
+		return LanguageRegistry.findLanguage(filePath, null);
 	}
 }
