@@ -75,7 +75,7 @@ public class EditorTool extends Tool {
 		});
 	}
 
-	public void editTerm(final String filename, String language, ATerm content) {
+	public void editTerm(final String filename, String language, String content) {
 		System.err.println("ET: file: " + filename + " language: " + language + " content: " + content);
 
 		IFile file = ResourcesPlugin.getWorkspace().getRoot()
