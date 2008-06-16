@@ -6,10 +6,10 @@ process Open-Sdf2-Language is
 let 
   Error: term,
   Table: term,
-  Type: term,
+  Type: str,
   ModuleId: term
 in
-  Type := sdf
+  Type := "sdf"
   . Table := UNDEFINED
   .
   (

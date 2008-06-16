@@ -53,7 +53,7 @@ in
 endlet
 
 /*
-process DumpParseTable(ModuleId : module-id, Namespace: term, Filename : str, Type : term) is
+process DumpParseTable(ModuleId : module-id, Namespace: str, Filename : str, Type : str) is
 let
   Directory: str,
   Error: term,
