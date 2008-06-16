@@ -24,7 +24,7 @@ endlet
 /* BuildParseTable is started somewhere else, such that a specific
  * PreprocessSyntaxHandler can be bound for specific types of languages
  */
-process BuildParsetable(TableName: str, Namespace: term, Type: str, PreprocessSyntaxHandler: str) is
+process BuildParsetable(TableName: str, Namespace: str, Type: str, PreprocessSyntaxHandler: str) is
 let
   ModuleId: module-id,
   Syntax: term,
@@ -83,7 +83,7 @@ process GenerateParsetable(Modulename: str, Syntax: term, Table: term?) is
     . Table := UNDEFINED
   )
 
-process DumpParseTable(ModuleId : module-id, Namespace: term, Filename : str, Type : term) is
+process DumpParseTable(ModuleId : module-id, Namespace: str, Filename : str, Type : str) is
 let
   Directory: str,
   Error: term,

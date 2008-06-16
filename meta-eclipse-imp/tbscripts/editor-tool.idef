@@ -11,7 +11,7 @@ let
   Modules : list,
   Events : list,
   Event : term,
-  Content : term
+  Content : str
 in
   rec-connect(T?) .
   (

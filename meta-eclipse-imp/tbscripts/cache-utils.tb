@@ -5,7 +5,7 @@
 
 /* sort of generic caching processes */
 process ClearCacheHandler(TableName: str, 
-                          Namespace: term, 
+                          Namespace: str, 
                           AttributeName: term, 
                           OldValue: term,
                           NewValue: term) is

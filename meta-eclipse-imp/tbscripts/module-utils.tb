@@ -78,7 +78,7 @@ in
   fi
 endlet
  
-process GetModulePath(ModuleId: module-id, Namespace: term, Path: str?) is
+process GetModulePath(ModuleId: module-id, Namespace: str, Path: str?) is
 let
   Term: path,
   HasAttribute: bool
@@ -93,7 +93,7 @@ in
   fi
 endlet
 
-process SetModulePath(ModuleId: module-id, Namespace: term, Path: str) is
+process SetModulePath(ModuleId: module-id, Namespace: str, Path: str) is
 let
   Term: path
 in

@@ -7,13 +7,13 @@
 #include <undefined.h>
 #include <graph-namespace.h>
 
-process MM-RegisterAttributeUpdateRule(Namespace: term, Key: term, Rule: term, Value: term) is
+process MM-RegisterAttributeUpdateRule(Namespace: str, Key: term, Rule: term, Value: term) is
   snd-msg(mm-register-attribute-update-rule(Namespace, Key, Rule, Value))
 
 process MM-NotifyAboutChangedAttributes is
 let
   Event: attribute-changed-event,
-  Namespace: term,
+  Namespace: str,
   Key: term,
   OldValue: term,
   NewValue: term,
@@ -36,7 +36,7 @@ process MM-CreateModule(ModuleId: module-id?) is
   . rec-msg(mm-module-created(ModuleId?))
   . snd-note(mm-module-created(ModuleId))
 
-process MM-GetModuleIdByAttribute(Namespace: term, Key: term, Value: term, ModuleId: term?) is
+process MM-GetModuleIdByAttribute(Namespace: str, Key: term, Value: term, ModuleId: term?) is
   snd-msg(mm-get-module-id-by-attribute(Namespace, Key, Value))
   .
   (
@@ -54,10 +54,10 @@ process MM-DeleteModule(ModuleId: module-id) is
   snd-msg(mm-delete-module(ModuleId))
   . snd-note(mm-module-deleted(ModuleId))
 
-process MM-SetAttribute(ModuleId: module-id, Namespace: term, Key: term, Value: term) is
+process MM-SetAttribute(ModuleId: module-id, Namespace: str, Key: term, Value: term) is
   snd-msg(mm-add-attribute(ModuleId, Namespace, Key, Value))
 
-process MM-HasAttribute(ModuleId: module-id, Namespace: term, Key: term, HasAttribute: bool?) is
+process MM-HasAttribute(ModuleId: module-id, Namespace: str, Key: term, HasAttribute: bool?) is
 let
   Value: term
 in
@@ -75,7 +75,7 @@ in
   )
 endlet
 
-process MM-GetAttribute(ModuleId: module-id, Namespace: term, Key: term, Value: term?) is
+process MM-GetAttribute(ModuleId: module-id, Namespace: str, Key: term, Value: term?) is
   snd-msg(mm-get-attribute(ModuleId, Namespace, Key))
   .
   (
@@ -168,11 +168,11 @@ in
   . snd-note(mm-dependencies-changed(Event))
 endlet
 
-process MM-GetModuleGraph(Namespace: term, Graph: term?) is
+process MM-GetModuleGraph(Namespace: str, Graph: term?) is
   snd-msg(mm-get-module-graph(Namespace))
   . rec-msg(mm-module-graph(Namespace, Graph?))
 
-process MM-Subscribe-Attribute-Changed(ModuleId: module-id, Namespace: term, Key: term, OldValue: term, NewValue: term) is
+process MM-Subscribe-Attribute-Changed(ModuleId: module-id, Namespace: str, Key: term, OldValue: term, NewValue: term) is
   subscribe(mm-attribute-changed(attribute-changed-event(ModuleId, Namespace, Key, OldValue, NewValue)))
 
 process MM-Subscribe-Dependencies-Changed(ModuleId: module-id) is
