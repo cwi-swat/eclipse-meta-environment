@@ -175,8 +175,6 @@ public class ParseController implements IParseController {
 		try{
 			toolbus.parsecupString(absPath, input);
 			return toolbus;
-		}catch(ToolBusException tex) {
-			handler.handleSimpleMessage(tex.getMessage(), 0, 0, 0, 0, 1, 1);
 	    }catch(SyntaxErrorException see){ // Parser.
 	    	System.err.println("parse error");
 	    	// TODO assuming the input is the whole file, this fix is correct.
