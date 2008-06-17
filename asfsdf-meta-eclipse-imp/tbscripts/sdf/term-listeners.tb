@@ -62,10 +62,12 @@ in
     rec-msg(pc-parse-event(TERM_NAMESPACE, Filename?, Contents?))
     . printf("received pc-parse-event for TERM_NAMESPACE\n")
     . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
-    . MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
-    . if not-equal(Language, UNDEFINED) then
-      MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
-      . GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
+    . TermToSdfModuleId (ModuleId, SdfModuleId?)
+    . printf("sdfmoduleid: %t for moduleid %t\n", SdfModuleId, ModuleId)
+    .
+    if not-equal(SdfModuleId, UNDEFINED) then
+      GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
+      . printf("parsing term with sdfmoduleid: %t\n", SdfModuleId)
       .
       if not-equal(Table, UNDEFINED) then
         snd-msg(sglr-parse(Contents, Table, "", off))

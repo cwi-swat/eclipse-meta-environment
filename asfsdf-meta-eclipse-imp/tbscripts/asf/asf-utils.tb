@@ -469,7 +469,6 @@ let
 in
   Id := process-id
   . GetSpecification(ModuleId, Specification?)
-  . printf("obtained specification for %t:\n%t\n", ModuleId, Specification)
   .
   if not-equal(Specification, UNDEFINED) then
     GetSpecificationEquations(Specification, Equations?)
@@ -510,7 +509,7 @@ in
   GetTermParsetree(ModuleId, Path, Parsetree?)
   . Tree := UNDEFINED
   .
-  if not-equal(Parsetree, UNDEFINED) then
+  if not-equal(Parsetree, UNDEFINED) then 
     ReduceTerm(Parsetree, ModuleId, Debugging, ResultTree?)
     .
     if not-equal(ResultTree, UNDEFINED) then

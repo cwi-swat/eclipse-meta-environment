@@ -30,7 +30,8 @@ let
   Modules : list,
   Result : list,
   ModuleId : module-id,
-  Modulename : str
+  Modulename : str,
+  IsSdfModule : bool
 in
    MM-GetAllModules(Modules?)
    . Result := []
@@ -38,10 +39,16 @@ in
    if not-equal(Modules, []) then
      ModuleId := first(Modules)
      . Modules := next(Modules)
-     . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+     . MM-HasAttribute(ModuleId, SDF_NAMESPACE, "name", IsSdfModule?)
      .
-     if not-equal(Modulename, UNDEFINED) then
-       Result := join(Modulename, Result)
+     if equal(true, IsSdfModule) then
+       MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+       .
+       if not-equal(Modulename, UNDEFINED) then
+         Result := join(Modulename, Result)
+       else
+         tau
+       fi
      else
        tau
      fi

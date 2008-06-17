@@ -23,6 +23,7 @@ endlet
 process ReduceMyTerm(ModuleId: module-id, Filename: str, Debugging: term) is
 let
   Result: term,
+  ResultText: str,
   TermModuleId : module-id,
   TermPath : str,
   Language : str,
@@ -32,9 +33,13 @@ in
   . if not-equal(Language, UNDEFINED) then
       MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
       . Reduce(SdfModuleId, Filename, Debugging, Result?)
+      . snd-msg(unparse(Result))
+      . rec-msg(unparsed-text(ResultText?))
+      . printf("Reduced term to %s\n", ResultText)
       . TermPath := concat(Filename, "-reduct.trm")
       . GetOrCreateModule(TERM_NAMESPACE, TermPath, TermModuleId?)
-      . snd-msg(et-edit-term(TermPath, TERM_NAMESPACE, Result))
+      . MM-SetAttribute(TermModuleId, TERM_NAMESPACE, "language", Language)
+      . snd-msg(et-edit-term(TermPath, TERM_NAMESPACE, ResultText))
     fi
 endlet
 

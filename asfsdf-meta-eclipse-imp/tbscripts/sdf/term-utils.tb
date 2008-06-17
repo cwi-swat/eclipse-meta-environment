@@ -6,8 +6,8 @@
 #define NO_NONTERMINAL ""
 #define TERM_TREE_CACHE "term-annotated-tree"
 
-process GetTermParseTable(ModuleId: module-id, Table: term?) is
-  GetParseTable(ModuleId, TERM_NAMESPACE, Table?)
+process GetTermParseTable(SdfModuleId: module-id, Table: term?) is
+    GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
 
 toolbus(InitCache(TERM_TREE_CACHE))
 toolbus(ClearCacheHandler(TERM_TREE_CACHE, SDF_NAMESPACE, "status", <term>, edited))
@@ -40,7 +40,7 @@ let
   Tree: term
 in
   snd-msg(tm-request-transaction(term-parsing))
-  . GetCachedValue(TERM_TREE_CACHE, Path, Tree?)
+//  . GetCachedValue(TERM_TREE_CACHE, Path, Tree?)
   .
   if equal(Tree, UNDEFINED) then
     Type := TERM_NAMESPACE
@@ -58,7 +58,7 @@ in
           rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
 	  . create(AmbiguityHandler(Tree, Path), AmbPid?)
           . AnnotateTree(Tree, Path, Result?)
-	  . PutCachedValue(TERM_TREE_CACHE, Path, Result)
+//	  . PutCachedValue(TERM_TREE_CACHE, Path, Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED
@@ -74,5 +74,19 @@ in
   fi
   . snd-msg(tm-end-transaction(term-parsing))
 endlet
+
+process TermToSdfModuleId (ModuleId : module-id, SdfModuleId : module-id?) is
+let
+  Language : str
+in
+  MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
+  . 
+  if not-equal(Language, UNDEFINED) then
+    MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
+  else
+    SdfModuleId := UNDEFINED
+  fi
+endlet
+
 
 #endif /* __TERM__UTILS__ */
