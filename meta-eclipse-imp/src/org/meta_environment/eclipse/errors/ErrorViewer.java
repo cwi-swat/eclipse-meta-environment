@@ -21,22 +21,22 @@ public class ErrorViewer extends Tool {
 	private static final String TOOL_NAME = "error-viewer";
 	private static final String PRODUCER = TOOL_NAME + ".producer";
 	private static final String ERROR_ID = TOOL_NAME + ".errorid";
-	
+
 	private Factory eFactory;
-	
-	private static class InstanceKeeper{
+
+	private static class InstanceKeeper {
 		private static ErrorViewer sInstance = new ErrorViewer();
-		static{
+		static {
 			sInstance.connect();
 		}
 	}
-	
+
 	private ErrorViewer() {
 		super(TOOL_NAME);
 		eFactory = Factory.getInstance(factory);
-		
+
 	}
-	
+
 	public static ErrorViewer getInstance() {
 		return InstanceKeeper.sInstance;
 	}
@@ -62,54 +62,55 @@ public class ErrorViewer extends Tool {
 	private int getSeverity(Error error) {
 		if (error.isInfo()) {
 			return IMarker.SEVERITY_INFO;
-		}
-		else if (error.isWarning()) {
+		} else if (error.isWarning()) {
 			return IMarker.SEVERITY_WARNING;
-		}
-		else if (error.isError()) {
+		} else if (error.isError()) {
+			return IMarker.SEVERITY_ERROR;
+		} else if (error.isFatal()) {
 			return IMarker.SEVERITY_ERROR;
 		}
-		else if (error.isFatal()) {
-			return IMarker.SEVERITY_ERROR;		
-		}
-		
+
 		return IMarker.SEVERITY_INFO;
 	}
-	
-	private void showError(Summary summary, Error error, int severity) throws CoreException {
+
+	private void showError(Summary summary, Error error, int severity)
+			throws CoreException {
 		String desc = error.getDescription();
 		SubjectList subjects = error.getList();
-		
+
 		for (; !subjects.isEmpty(); subjects = subjects.getTail()) {
-		  Subject subject = subjects.getHead();
-		  showSubject(summary, desc, subject, severity);
+			Subject subject = subjects.getHead();
+			showSubject(summary, desc, subject, severity);
 		}
 	}
 
-	private void showSubject(Summary summary, String desc, Subject subject, int severity) throws CoreException {
+	private void showSubject(Summary summary, String desc, Subject subject,
+			int severity) throws CoreException {
 		String msg = subject.getDescription();
 		Location loc = subject.getLocation();
 		Area area = loc.getArea();
 		String filename = loc.getFilename();
 
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
-		
-		IMarker m = file.createMarker(IMarker.PROBLEM);
-		
-		m.setAttribute(PRODUCER, summary.getProducer());
-		m.setAttribute(ERROR_ID, summary.getId());
-		
-		m.setAttribute(IMarker.TRANSIENT, true);
-		m.setAttribute(IMarker.CHAR_START, area.getOffset());
-		m.setAttribute(IMarker.CHAR_END, area.getOffset()
-				+ area.getLength());
-		m.setAttribute(IMarker.MESSAGE, desc + ": " + msg);
-		m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-		m.setAttribute(IMarker.SEVERITY, severity);
-		m.setAttribute(IMarker.LOCATION, "line: " + area.getBeginLine() + ", column: " + area.getBeginColumn());
+		IFile file = ResourcesPlugin.getWorkspace().getRoot()
+				.getFileForLocation(new Path(filename));
+
+		if (file != null) {
+			IMarker m = file.createMarker(IMarker.PROBLEM);
+
+			m.setAttribute(PRODUCER, summary.getProducer());
+			m.setAttribute(ERROR_ID, summary.getId());
+
+			m.setAttribute(IMarker.TRANSIENT, true);
+			m.setAttribute(IMarker.CHAR_START, area.getOffset());
+			m.setAttribute(IMarker.CHAR_END, area.getOffset()
+					+ area.getLength());
+			m.setAttribute(IMarker.MESSAGE, desc + ": " + msg);
+			m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			m.setAttribute(IMarker.SEVERITY, severity);
+			m.setAttribute(IMarker.LOCATION, "line: " + area.getBeginLine()
+					+ ", column: " + area.getBeginColumn());
+		}
 	}
-
-
 
 	public void refreshFeedbackSummary(String panelId, ATerm summaryTerm) {
 		Summary summary = eFactory.SummaryFromTerm(summaryTerm);
@@ -120,9 +121,10 @@ public class ErrorViewer extends Tool {
 	public void removeFeedbackSummary(String panelId, String producer, String id) {
 		removeFeedbackSummary(id);
 	}
-		
+
 	public void removeFeedbackSummary(final String theId) {
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(theId));
+		IFile file = ResourcesPlugin.getWorkspace().getRoot()
+				.getFileForLocation(new Path(theId));
 
 		// TODO: this oversimplifies the identification of summaries, and
 		// assumes all summaries are identified with a file path
@@ -137,6 +139,6 @@ public class ErrorViewer extends Tool {
 	}
 
 	public void removeFeedbackSummary(String panelId, String path) {
-	  removeFeedbackSummary(path);
+		removeFeedbackSummary(path);
 	}
 }
