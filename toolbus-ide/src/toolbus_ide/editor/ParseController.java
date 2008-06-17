@@ -25,6 +25,7 @@ import org.eclipse.imp.services.ILanguageSyntaxProperties;
 import org.eclipse.jface.text.IRegion;
 
 import toolbus.ToolBus;
+import toolbus.exceptions.ToolBusException;
 import toolbus.parsercup.Lexer;
 import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.SyntaxErrorException;
@@ -173,11 +174,20 @@ public class ParseController implements IParseController {
 		ToolBus toolbus = new ToolBus(includePath);
 		try{
 			toolbus.parsecupString(absPath, input);
+			return toolbus;
+		}catch(ToolBusException tex) {
+			handler.handleSimpleMessage(tex.getMessage(), 0, 0, 0, 0, 1, 1);
 	    }catch(SyntaxErrorException see){ // Parser.
-	    	handler.handleSimpleMessage(see.getMessage(), see.position, see.position, see.column, see.column, see.line, see.line);
+	    	System.err.println("parse error");
+	    	// TODO assuming the input is the whole file, this fix is correct.
+	    	// needs to be fixed in IMP
+	    	int pos = (see.position >= input.length()) ? input.length() - 1 : see.position;
+	    	handler.handleSimpleMessage(see.getMessage(), pos, pos, see.column, see.column, see.line , see.line);
 		}catch(UndeclaredVariableException uvex){ // Parser.
-			handler.handleSimpleMessage(uvex.getMessage(), uvex.position, uvex.position, uvex.column, uvex.column, uvex.line, uvex.line);
+			int pos = (uvex.position >= input.length()) ? input.length() - 1 : uvex.position;
+			handler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
 		}catch(Error e){ // Scanner.
+			System.err.println("hiero!");
 			e.printStackTrace();	
 	    }catch(Exception ex){ // Something else.
 	    	ex.printStackTrace();
