@@ -25,7 +25,6 @@ import org.eclipse.imp.services.ILanguageSyntaxProperties;
 import org.eclipse.jface.text.IRegion;
 
 import toolbus.ToolBus;
-import toolbus.exceptions.ToolBusException;
 import toolbus.parsercup.Lexer;
 import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.SyntaxErrorException;
