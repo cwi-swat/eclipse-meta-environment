@@ -25,13 +25,13 @@ import org.eclipse.imp.services.IAnnotationTypeInfo;
 import org.eclipse.imp.services.ILanguageSyntaxProperties;
 import org.eclipse.jface.text.IRegion;
 
-import com.sun.jndi.ldap.DefaultResponseControlFactory;
-
 import toolbus.ToolBus;
 import toolbus.exceptions.ToolBusException;
+import toolbus.exceptions.ToolBusExecutionException;
 import toolbus.parsercup.Lexer;
+import toolbus.parsercup.PositionInformation;
 import toolbus.parsercup.sym;
-import toolbus.parsercup.parser.SyntaxErrorException;
+import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 
 public class ParseController implements IParseController {
@@ -40,6 +40,7 @@ public class ParseController implements IParseController {
 	private volatile String absPath;
 
 	private volatile Lexer lexer;
+	private String[] includePath;
 
 	public IAnnotationTypeInfo getAnnotationTypeInfo() {
 		// TODO Auto-generated method stub
@@ -141,6 +142,8 @@ public class ParseController implements IParseController {
 		} else {
 			absPath = filePath.toOSString();
 		}
+		
+		includePath = buildIncludePath();
 	}
 
 	private String[] buildIncludePath() {
@@ -178,8 +181,6 @@ public class ParseController implements IParseController {
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
 		lexer = new Lexer(new StringReader(input));
 
-		String[] includePath = buildIncludePath();
-
 		ToolBus toolbus = new ToolBus(includePath);
 		try {
 			toolbus.parsecupString(absPath, input);
@@ -196,14 +197,16 @@ public class ParseController implements IParseController {
 					: uvex.position;
 			handler.handleSimpleMessage(uvex.getMessage(), pos, pos,
 					uvex.column, uvex.column, uvex.line, uvex.line);
+		} catch (ToolBusExecutionException e) {
+			PositionInformation p = e.getPositionInformation();
+			handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0,0,1,1);
 		} catch (ToolBusException e) {
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
 			e.printStackTrace();
 		} catch (Error e) { // Scanner.
-			e.printStackTrace();
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
 		} catch (Exception ex) { // Something else.
-			ex.printStackTrace();
+			handler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
 		}
 
 		return null;
