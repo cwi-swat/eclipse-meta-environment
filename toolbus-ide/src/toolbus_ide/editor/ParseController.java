@@ -13,7 +13,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,14 +37,18 @@ import toolbus.parsercup.sym;
 import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 
-public class ParseController implements IParseController {
+public class ParseController implements IParseController, IResourceChangeListener {
 	private volatile IMessageHandler handler;
-	private volatile ISourceProject project;
 	private volatile String absPath;
 
 	private volatile Lexer lexer;
-	private String[] includePath;
+	private static String[] includePath = buildIncludePath();
+	
 
+	public ParseController() {
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+	}
+	
 	public IAnnotationTypeInfo getAnnotationTypeInfo() {
 		// TODO Auto-generated method stub
 		return null;
@@ -132,7 +139,6 @@ public class ParseController implements IParseController {
 	public void initialize(IPath filePath, ISourceProject project,
 			IMessageHandler handler) {
 		this.handler = handler;
-		this.project = project;
 
 		// Try to make the path absolute
 		IFile file = project.getRawProject().getFile(filePath);
@@ -142,15 +148,13 @@ public class ParseController implements IParseController {
 		} else {
 			absPath = filePath.toOSString();
 		}
-		
-		includePath = buildIncludePath();
 	}
 
-	private String[] buildIncludePath() {
+	private static String[] buildIncludePath() {
 		final List<String> includes = new ArrayList<String>();
 
 		try {
-			project.getRawProject().getWorkspace().getRoot().accept(
+			ResourcesPlugin.getWorkspace().getRoot().accept(
 					new IResourceVisitor() {
 
 						public boolean visit(IResource resource) {
@@ -210,5 +214,17 @@ public class ParseController implements IParseController {
 		}
 
 		return null;
+	}
+
+	/**
+	 * updates the include path as soon as somebody changes folders
+	 */
+	public void resourceChanged(IResourceChangeEvent event) {
+		IResource resource = event.getResource();
+		
+		if (resource instanceof IProject ||
+				resource instanceof IFolder) {
+			includePath = buildIncludePath();
+		}
 	}
 }
