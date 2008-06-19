@@ -41,7 +41,7 @@ in
          . printf("Feature %s identified!\n", FeatureModulename)
          . ComputeCanonicalLanguagename(Modulename, Languagename?)
          . Tip := concat(Info, concat(" using the equations of ", FeatureModulename))
-         . snd-msg(dla-register-language-action(Languagename, Feature, Tip, Action))
+         . snd-msg(tlr-register-language-action(Languagename, Feature, Tip, Action))
          . create(LanguageFeatureRemoveListener(ModuleId, Languagename, Feature), Pid?)
       else
         tau
@@ -68,7 +68,7 @@ process LanguageFeatureRemoveListener(ModuleId: module-id, Language : str, Label
   .
   (
     rec-note(mm-module-deleted(ModuleId))
-    . snd-msg(dla-unregister-action(Language, Label))
+    . snd-msg(tlr-unregister-action(Language, Label))
   )
   *
   delta

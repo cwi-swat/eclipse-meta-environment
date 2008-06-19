@@ -7,7 +7,10 @@ let
   Filename : str,
   Modules : list,
   Events : list,
-  Event : term
+  Event : term,
+  Action : str,
+  Tip : str,
+  Label : str
 in
   rec-connect(T?)
   .
@@ -27,6 +30,17 @@ in
   + 
     rec-msg(tlr-open-editor(Filename?))
     . snd-do(T, open(Filename))
+  +
+    rec-event(T, perform-action(Action?, Language?, Filename?))
+    . snd-ack-event (T, perform-action)
+    . snd-note(handle-action(Action, Language, Filename))
+  +
+    rec-msg(tlr-register-language-action(Language?, Label?, Tip?, Action?))
+    . printf("registering action: %t\n", Action)
+    . snd-do(T, register-action(Language, Label, Tip, Action))
+  +
+    rec-msg(tlr-unregister-language-action(Language?, Label?))
+    . snd-do(T, unregister-action(Language, Label))
   ) * delta
 endlet
 

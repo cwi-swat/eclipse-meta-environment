@@ -7,7 +7,9 @@ import org.eclipse.imp.editor.UniversalEditor;
 import org.eclipse.imp.model.ISourceProject;
 import org.eclipse.imp.parser.IParseController;
 import org.eclipse.imp.services.base.DefaultLanguageActionsContributor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ControlContribution;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,6 +21,18 @@ import org.eclipse.swt.widgets.Control;
 public class EditorActionContributor extends DefaultLanguageActionsContributor {
 	public static final String TERM_LANGUAGE_SELECTOR = "term-language-selector";
 
+	@Override
+	public void contributeToEditorMenu(UniversalEditor editor,
+			IMenuManager menuManager) {
+		String file = getFilename(editor);
+		String language = TermEditorTools.getInstance().getLanguage(file);
+		List<Action> actions = TermEditorTools.getInstance().getDynamicActions(language, file);
+		
+		for (Action action : actions) {
+			menuManager.add(action);
+		}
+	}
+	
 	@Override
 	public void contributeToStatusLine(final UniversalEditor editor, IStatusLineManager statusLineManager) {
 		contributeLanguageSelector(statusLineManager, editor);

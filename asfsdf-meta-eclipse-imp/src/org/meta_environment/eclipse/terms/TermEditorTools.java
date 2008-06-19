@@ -1,12 +1,15 @@
 package org.meta_environment.eclipse.terms;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.editor.UniversalEditor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -22,6 +25,8 @@ import aterm.ATermList;
 
 public class TermEditorTools extends Tool {
 	private static TermEditorTools sInstance;
+	
+	private Map<String, Map<String, String>> actions = new HashMap<String, Map<String, String>>();
 	
 	private TermEditorTools(){
 		super("term-language-registrar");
@@ -71,5 +76,58 @@ public class TermEditorTools extends Tool {
 			}
 		  }
 		}
+	}
+	
+	public void registerAction(String language, String label, String tooltip, String action) {
+		System.err.println("registering " + language + " " + label + " " + action);	
+		Map<String, String> map = getActionMap(language);
+		map.put(label, action);
+	}
+
+	private String canonical(String label) {
+		int i = label.lastIndexOf('/');
+		if (i != -1) {
+			return label.substring(i+1);
+		}
+		else {
+			return label;
+		}
+	}
+
+	private Map<String, String> getActionMap(String language) {
+		Map<String, String> map = actions.get(canonical(language));
+		
+		if (map == null) {
+			map = new HashMap<String,String>();
+			actions.put(canonical(language), map);
+		}
+		
+		return map;
+	}
+	
+	public List<Action> getDynamicActions(final String language, final String filename) {
+	  Map<String, String> map = getActionMap(language);
+	  List<Action> result = new LinkedList<Action>();
+	  
+	  for (String label : map.keySet()) {
+		  final String action = map.get(label);
+		  result.add(new Action(label) {
+			public void run() {
+				  performAction(action, language, filename);
+			}
+		  });
+	  }
+	  
+	  return result;
+	}
+	
+	public void unregisterAction(String language, String label) {
+		System.err.println("unregister " + language + " " + label);
+		Map<String, String> map = getActionMap(language);
+		map.remove(label);
+	}
+	
+	private void performAction (String Action, String language, String Filename) {
+		this.sendEvent(factory.make("perform-action(<str>,<str>,<str>)", Action, language, Filename));
 	}
 }
