@@ -7,6 +7,7 @@
 #include <module-manager.tb>
 #include <module-utils.tb>
 #include <asf-editor-utils.tb>
+#include <error-viewer.idef>
 
 process EditorEditEquationsAction(Filename: str, Language: str) is
 let 
@@ -30,6 +31,35 @@ let
 in
   GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
   . ReduceMyTerm(ModuleId, Filename, false)
+endlet
+
+process CheckAction(Filename: str, Language : str) is
+let
+  TermModuleId : module-id,
+  SdfModuleId : module-id,
+  RunModuleId : module-id,
+  ResultTree: term,
+  Summary: summary
+in
+  GetOrCreateModule(TERM_NAMESPACE, Filename, TermModuleId?)
+  . TermToSdfModuleId(TermModuleId, SdfModuleId?)
+  . LookupFeatureModuleId(SdfModuleId,  "check", RunModuleId?)
+  .
+  if not-equal(RunModuleId, UNDEFINED) then
+    AddJob("Checking")
+    . Reduce(RunModuleId, Filename, off, ResultTree?)
+    . 
+    if not-equal(ResultTree, UNDEFINED) then
+      snd-msg(convert-feedback(ResultTree))
+      . rec-msg(converted-feedback(Summary?))
+      . RefreshSummary(Summary)
+    else
+      tau
+    fi
+    . JobDone("Checking")
+  else
+    tau
+  fi
 endlet
 
 

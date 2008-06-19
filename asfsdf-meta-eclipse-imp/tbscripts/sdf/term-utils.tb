@@ -3,6 +3,11 @@
 
 #include <undefined.h>
 #include <term-namespace.h>
+#include <sdf-namespace.h>
+#include <cache-utils.tb>
+#include <attribute-changed-event.tb>
+#include <module-utils.tb>
+
 #define NO_NONTERMINAL ""
 #define TERM_TREE_CACHE "term-annotated-tree"
 
