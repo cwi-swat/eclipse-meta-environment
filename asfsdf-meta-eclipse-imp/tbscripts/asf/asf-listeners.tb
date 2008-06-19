@@ -106,6 +106,7 @@ in
   MM-Subscribe-Attribute-Changed(<module-id>,ASF_NAMESPACE,"status",<term>, dirty)
   .
   (
+  
     rec-note(mm-attribute-changed(Event?))
     . ACE-GetModuleId(Event, ModuleId?)
     . printf("parsing ASF file\n")
