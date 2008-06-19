@@ -8,6 +8,7 @@
 #include <module-utils.tb>
 #include <asf-editor-utils.tb>
 #include <error-viewer.idef>
+#include <asf-pretty-print.tb>
 
 process EditorEditEquationsAction(Filename: str, Language: str) is
 let 
@@ -33,7 +34,7 @@ in
   . ReduceMyTerm(ModuleId, Filename, false)
 endlet
 
-process CheckAction(Filename: str, Language : str) is
+process CheckAction(Path: str, Language : str) is
 let
   TermModuleId : module-id,
   SdfModuleId : module-id,
@@ -41,13 +42,13 @@ let
   ResultTree: term,
   Summary: summary
 in
-  GetOrCreateModule(TERM_NAMESPACE, Filename, TermModuleId?)
+  GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
   . TermToSdfModuleId(TermModuleId, SdfModuleId?)
   . LookupFeatureModuleId(SdfModuleId,  "check", RunModuleId?)
   .
   if not-equal(RunModuleId, UNDEFINED) then
     AddJob("Checking")
-    . Reduce(RunModuleId, Filename, off, ResultTree?)
+    . Reduce(RunModuleId, Path, off, ResultTree?)
     . 
     if not-equal(ResultTree, UNDEFINED) then
       snd-msg(convert-feedback(ResultTree))
@@ -59,6 +60,129 @@ in
     . JobDone("Checking")
   else
     tau
+  fi
+endlet
+
+process RunAction(Path: str, Language : str) is
+let
+  TermModuleId : module-id,
+  SdfModuleId : module-id,
+  RunModuleId : module-id,
+  ResultTree: term,
+  Sid: session-id,
+  Pid: int,
+  File: str,
+  Text : str
+in
+  GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+  . TermToSdfModuleId(TermModuleId, SdfModuleId?)
+  . LookupFeatureModuleId(SdfModuleId,  "run", RunModuleId?)
+  .
+  if not-equal(RunModuleId, UNDEFINED) then
+    File := concat(Path, "-run.trm")
+    . AddJob("Running")
+    . Reduce(RunModuleId, Path, off, ResultTree?)
+    . 
+    if not-equal(ResultTree, UNDEFINED) then
+      snd-msg(unparse(ResultTree))
+      . rec-msg(unparsed-text(Text?))
+      . snd-msg(et-edit-term(File, TERM_NAMESPACE, Text))
+    else
+      tau
+    fi
+    . JobDone("Running")
+  else
+    tau
+  fi
+endlet
+
+process ExtractAction(Path: str, Language : str) is
+let
+  TermModuleId : module-id,
+  SdfModuleId : module-id,
+  ExtractModuleId : module-id,
+  ResultTree: term,
+  Pid: int,
+  Language: str,
+  ModuleName: str,
+  RSId: int
+in
+  GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+  . TermToSdfModuleId(TermModuleId, SdfModuleId?)
+  . LookupFeatureModuleId(SdfModuleId, "extract", ExtractModuleId?)
+  .
+  if not-equal(ExtractModuleId, UNDEFINED) then
+    MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", ModuleName?)
+    . ComputeCanonicalLanguagename(ModuleName, Language?)
+    . AddJob("Extracting")
+    . Reduce(ExtractModuleId, Path, off, ResultTree?)
+    . 
+    if not-equal(ResultTree, UNDEFINED) then
+      snd-msg(rs-lower-rstore(ResultTree))
+      . rec-msg(rs-lowered-rstore(ResultTree?))
+      . snd-msg(rc-load-rstore(Path, ResultTree))
+    else
+      snd-note(extract-rstore-failed(Language, Path))
+    fi
+    . JobDone("Extracting")
+  else
+    tau
+  fi
+endlet
+
+process TestAction(Path: str, Language : str) is
+let
+  TermModuleId : module-id,
+  SdfModuleId : module-id,
+  RunModuleId : module-id,
+  ResultTree: term,
+  Summary: summary
+in
+  GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+  . TermToSdfModuleId(TermModuleId, SdfModuleId?)
+  . LookupFeatureModuleId(SdfModuleId,  "test", RunModuleId?)
+  .
+  if not-equal(RunModuleId, UNDEFINED) then
+    AddJob("Testing")
+    . Reduce(RunModuleId, Path, off, ResultTree?)
+    . 
+    if not-equal(ResultTree, UNDEFINED) then
+      snd-msg(convert-feedback(ResultTree))
+      . rec-msg(converted-feedback(Summary?))
+      . RefreshSummary(Summary)
+    else
+      tau
+    fi
+    . JobDone("Testing")
+  else
+    tau
+  fi
+endlet
+
+process PrettyPrintTermAction(Path: str, Language : str) is
+let
+  Tree : term,
+  RTree : term,
+  SdfModuleId: module-id,
+  TermModuleId : module-id,
+  Path: str,
+  Text : str
+in
+  GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+  . TermToSdfModuleId(TermModuleId, SdfModuleId?)
+  . GetTermParsetree(SdfModuleId, Path, Tree?)
+  .
+  if not-equal(Tree, UNDEFINED) then
+    BoxAndPrettyPrint(SdfModuleId, Path, Tree, RTree?)
+    . 
+    if not-equal(RTree, UNDEFINED) then
+      snd-msg(unparse(RTree))
+      . rec-msg(unparsed-text(Text?))
+      . snd-msg(et-edit-term(Path, TERM_NAMESPACE, Text))
+    else 
+      tau
+    fi
+  else tau
   fi
 endlet
 

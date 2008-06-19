@@ -53,7 +53,7 @@ in
   delta
 endlet
 
-toolbus(LanguageFeatureMenuListener("format", "PrettyPrintAction","Format this term"))
+toolbus(LanguageFeatureMenuListener("format", "PrettyPrintTermAction","Format this term"))
 toolbus(LanguageFeatureMenuListener("run", "RunAction","Reduce this term"))
 toolbus(LanguageFeatureMenuListener("debug", "DebugAction","Debug this term"))
 toolbus(LanguageFeatureMenuListener("check", "CheckAction","Check this term"))

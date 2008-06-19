@@ -476,29 +476,29 @@ in
   if not-equal(Specification, UNDEFINED) then
     GetSpecificationEquations(Specification, Equations?)
     . GetTermParseTable(ModuleId, ParseTable?)
-//    . AddJob("Rewriting...")
+    . AddJob("Rewriting...")
     . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
     . snd-msg(asfe-rewrite(Modulename, Equations, ParseTable, Tree, Debugging))
     .
     (
       rec-msg(asfe-rewrite-result(NormalFormWithoutBrackets?))
       . RestoreTermBrackets(ModuleId, NormalFormWithoutBrackets, NormalForm?)
-//      . RemoveSummary("asfe", "all")
+      . RemoveSummary("asfe", "all")
     +
       rec-msg(asfe-rewrite-result-with-errors(NormalFormWithoutBrackets?,Errors?))
-//      . RemoveSummary("asfe", "all")
-//      . snd-msg(es-make-summary("asfe", "all", Errors)) 
-//      . rec-msg(es-summary(Summary?)) 
-//      . DisplaySummary(Summary)
+      . RemoveSummary("asfe", "all")
+      . snd-msg(es-make-summary("asfe", "all", Errors)) 
+      . rec-msg(es-summary(Summary?)) 
+      . DisplaySummary(Summary)
       . RestoreTermBrackets(ModuleId, NormalFormWithoutBrackets, NormalForm?)
     +
       rec-msg(asfe-rewrite-errors(Errors?))
-//      . RemoveSummary("asfe", "all")
-//      . snd-msg(es-make-summary("asfe", "all", Errors)) 
-//      . rec-msg(es-summary(Summary?)) 
-//      . DisplaySummary(Summary)
+      . RemoveSummary("asfe", "all")
+      . snd-msg(es-make-summary("asfe", "all", Errors)) 
+      . rec-msg(es-summary(Summary?)) 
+      . DisplaySummary(Summary)
     )
-//    . JobDone("Rewriting...")
+    . JobDone("Rewriting...")
   else
     NormalForm := UNDEFINED
   fi
@@ -526,298 +526,6 @@ in
     tau
   fi
 endlet
-
-/*****
- BELOW HERE IS ALL DOUBTFUL
- TODO fix!
- */
-
-process GenerateASFSDFApi(ModuleId: module-id, Path: str) is
-let
-  /* TODO: split up this process into smaller pieces if possible */
-  Directory : str,
-  ErrorMessage : str,
-  Feedback : term,
-  Filename : str,
-  FullPath : str,
-  NewEquationsText : str ,
-  NewEquationsTree : term,
-  NewModuleId: module-id,
-  NewSyntaxText : str,
-  NewSyntaxTree : term,
-  Rewriter : str,
-  SearchPaths : list,
-  SyntaxTree : term,
-  WarningBanner : str
-in
-  TODO("This is broken!\n")
-/*
-  WarningBanner := "%% WARNING: DO NOT EDIT, THIS MODULE IS GENERATED\n\n" .
-  Rewriter := "ASFSDFApigen" .
-  snd-msg(io-get-path-filename(Path)) .
-  rec-msg(io-filename(Path, Filename?)) .
-  snd-msg(io-get-path-directory(Path)) .
-  rec-msg(io-directory(Path, Directory?)) .
-  snd-msg(get-module-paths) .
-  rec-msg(module-paths(SearchPaths?)) .
-  snd-msg(sm-get-new-module-name(SearchPaths, Directory, Filename)) .
-  (
-    rec-msg(sm-new-module-name(Directory?, Filename?)) .
-    snd-msg(get-syntax-tree(ModuleId)) .
-    (
-        rec-msg(syntax(SyntaxTree?)) .
-	snd-msg(apply-rewrite(Rewriter, "generate-syntax", "Module", 
-			      [SyntaxTree, Filename])) .
-	rec-msg(normalform(Rewriter, NewSyntaxTree?)) .
-	snd-msg(pretty-print(NewSyntaxTree)) .
-	(
-	  rec-msg(pretty-print-result(NewSyntaxTree?)) 
-        +
-	  rec-msg(pretty-print-error(Feedback?))
-        ) .
-	snd-msg(unparse(NewSyntaxTree)) .
-	rec-msg(unparsed-text(NewSyntaxText?)) .
-	snd-msg(io-get-filename(Directory, Filename, SDF_EXTENSION)) .
-	rec-msg(io-filename(FullPath?)) .
-	snd-msg(io-write-text-list(FullPath, [WarningBanner,NewSyntaxText])) .
-	(
-	  rec-msg(io-file-written) .
-	  snd-msg(apply-rewrite(Rewriter, "generate-equations", "Skeleton", 
-				[SyntaxTree])) .
-	  rec-msg(normalform(Rewriter, NewEquationsTree?)) .
-	  snd-msg(pretty-print(NewEquationsTree)) .
-	  (
-	    rec-msg(pretty-print-result(NewEquationsTree?)) 
-	  +
-	    rec-msg(pretty-print-error(Feedback?))
-	  ) .
-	  snd-msg(unparse(NewEquationsTree)) .
-	  rec-msg(unparsed-text(NewEquationsText?)) .
-	  snd-msg(io-get-filename(Directory, Filename, ASF_EXTENSION)) .
-	  rec-msg(io-filename(FullPath?)) .
-	  snd-msg(io-write-text-list(FullPath, [NewEquationsText])) .
-	  (
-	    rec-msg(io-file-written)  .
-	    OpenModule(Filename, NewModuleId?)
-	  +
-	    rec-msg(io-file-not-written(ErrorMessage?)) .
-	    snd-note(ui-status(errorf("Generating module failed: %s",[ErrorMessage])))
-	  )
-	+
-	  rec-msg(io-file-not-written(ErrorMessage?)) .
-	  snd-note(ui-status(errorf("Generating module failed: %s",[ErrorMessage])))
-	)
-      +
-	rec-msg(unavailable) .
-	snd-note(ui-status(error("Generating module failed.")))
-      ) 
-    +
-      rec-msg(sm-new-module-name-inconsistent) .
-        snd-note(ui-status(errorf(
-            "Module %s in %s is inconsistent with search paths",
-	            [Filename, Directory])))
-    ) .
-    snd-msg(asfsdfapigen-done)
-  ) * delta */
-endlet
-
-#ifdef DEAD 
-process DeleteModule(Modulename: str) is
-let
-  Changed: list,
-  Id: int,
-  Path: str,
-  Status: term
-in
-  TODO("split into ASF and SDF responsabilities")
-  . Id := process-id
-  . snd-note(ui-status(statf(Id, "Deleting %s", [Modulename])))
-  . snd-msg(get-path-from-db(Modulename))
-  .
-  (
-    rec-msg(path(Path?))
-    . RemoveModuleFromDisk(Path, Modulename)
-  +
-    rec-msg(no-path)
-  )
-  . DeleteSessions(Modulename)
-  . snd-msg(delete-module-from-db(Modulename))
-  . rec-msg(changed-modules(Changed?))
-  . SaveSdfModules(Changed, Status?)
-  . snd-note(ui-status(endstat(Id)))
-endlet
-
-process RenameModule(Modulename: str, Directory: str, Filename: str) is
-let
-  Id: int,
-  NewModule: str,
-  Path: str
-in
-  TODO("split into ASF and SDF responsabilities")
-  . Id := process-id
-  . snd-note(ui-status(statf(Id, "Renaming %s", [Modulename])))
-  . CopySdfModule(Modulename, Directory, Filename)
-  . CopyAsfModule(Modulename, Directory, Filename)
-  . BuildPath(Directory, Filename, SDF_EXTENSION, Path?)
-  /*. GetModuleForPath(Path, NewModule?)*/
-  . RenameImports(Modulename, NewModule)
-  . DeleteModule(Modulename)
-  . snd-note(ui-status(endstat(Id)))
-endlet
-
-process CopyAsfModule(SrcModulename: str, Directory: str, Filename: str) is
-let
-  DestPath: str,
-  Error: str,
-  SrcPath: str
-in
-  LocateFile(SrcModulename, ASF_EXTENSION, SrcPath?)
-  . snd-msg(io-exists-file(SrcPath))
-  .
-  (
-    rec-msg(io-file-exists)
-    . BuildPath(Directory, Filename, ASF_EXTENSION, DestPath?)
-    . snd-msg(io-exists-file(DestPath))
-    .
-    (
-      rec-msg(io-file-exists)
-      . printf("warning: refusing to overwrite existing file: %s", DestPath)
-    +
-      rec-msg(io-file-not-exists)
-      . snd-msg(io-copy-file(SrcPath, DestPath))
-      .
-      (
-        rec-msg(io-file-copied(SrcPath, DestPath))
-      +
-        rec-msg(io-file-not-copied(SrcPath, DestPath, Error?))
-        . printf("error: Unable to copy %s to %s: %s", SrcPath, DestPath, Error)
-      )
-    )
-  +
-    rec-msg(io-file-not-exists)
-  )
-endlet
-
-process AddImport(Modulename: str, Import: str) is
-let
-  Depending: list,
-  Status: term
-in
-  TODO("split asf and sdf")
-  . DeleteSessions(Modulename)
-  . GetDependingModules(Modulename, Depending?)
-  . MDB-InvalidateModules(Depending, SDF_NAMESPACE)
-  . AddImportInDB(Modulename, Import)
-  . SaveAsfSdfModule(Modulename, Status?)
-endlet
-
-process RemoveImport(Modulename: str, Import: str) is
-let
-  Depending: list,
-  Status: term
-in
-  TODO("split asf and sdf")
-  .DeleteSessions(Modulename)
-  . GetDependingModules(Modulename, Depending?)
-  . MDB-InvalidateModules(Depending, SDF_NAMESPACE)
-  . RemoveImportInDB(Modulename, Import)
-  . SaveAsfSdfModule(Modulename, Status?)
-endlet
-#endif
-
-process SaveAsfSdfModule(Modulename: str, Status: term?) is
-  snd-msg(save-module(Modulename, asfsdf))
-  . rec-msg(saved-module(Modulename, Status?))
-
-process RemoveModuleFromDisk(Directory: str, Modulename: str) is
-let
-  Path: str
-in
-  BuildPath(Directory, Modulename, SDF_EXTENSION, Path?)
-  . RemoveFile(Path)
-  . BuildPath(Directory, Modulename, ASF_EXTENSION, Path?)
-  . snd-msg(io-exists-file(Path))
-  .
-  (
-    rec-msg(io-file-exists)
-    . RemoveFile(Path)
-  +
-    rec-msg(io-file-not-exists)
-  )
-endlet
-
-process WriteTreeToFile(Tree : term, Filename : str) is
-let
-  Text : str,
-  Error : term
-in
-    snd-msg(unparse(Tree))
-    . rec-msg(unparsed-text(Text?))
-    . snd-msg(io-write-text-list(Filename, [Text]))
-    .
-    (
-      rec-msg(io-file-written)
-    +
-      rec-msg(io-file-not-written(Error?))
-      . printf("error: %s not written, %t\n", Filename, Error)
-    )
-endlet
-
-process CheckEquationConsistency(Modulename: str, Path: str) is
-let
-  Filename: str,
-  FileText: str,
-  RepositoryText: str,
-  Error : term
-in
-  snd-msg(io-get-filename(Path, Modulename, ASF_EXTENSION))
-  . rec-msg(io-filename(Filename?))
-  . snd-msg(io-exists-file(Filename))
-  .
-  (
-    rec-msg(io-file-exists)
-    . snd-msg(io-read-file(Filename))
-    .
-    (
-      rec-msg(io-file-contents(FileText?))
-      . snd-msg(update-eqs-text-in-db(Modulename, FileText))
-      . rec-msg(eqs-text-updated(Modulename))
-    +
-      rec-msg(io-error-reading(Error?))
-      . printf("TODO: fix this error %t\n", Error)
-    )
-  +
-    rec-msg(io-file-not-exists)
-    . snd-msg(get-eqs-text(Modulename))
-    .
-    (
-      rec-msg(eqs-text(Modulename, RepositoryText?))
-      . snd-msg(remove-eqs-from-db(Modulename))
-      . rec-msg(eqs-removed-from-db)
-    +
-      rec-msg(no-eqs-text(Modulename))
-    )
-  )
-endlet
-
-process PrintModule is
-let
-  Id: term,
-  SdfText: str,
-  AsfText: str,
-  AsfTree: term,
-  ModuleId: module-id,
-  Modulename: str,
-  Path: str,
-  Filename: str,
-  ErrMsg: str
-in
-  TODO("reimplement")
-/*
-    rec-msg(print-module(ModuleId?, Filename?))
-        . snd-msg(io-write-text-list(Filename, [SdfText, "\n", AsfText])) */
-endlet
-
 
 #endif /* __ASF_UTILS__ */
 
