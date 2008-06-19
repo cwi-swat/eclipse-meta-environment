@@ -1,3 +1,6 @@
+#ifndef __ERROR_VIEWER__
+#define __ERROR_VIEWER__
+
 tool error-viewer is {  }
 
 process ErrorViewer is
@@ -49,7 +52,7 @@ process ConsoleMessage(Message: str) is
 
 process Error(Message: str) is
   printf("error: %s\n", Message)
-
+  
 process Warning(Message: str) is
   printf("warning: %s\n", Message)
 
@@ -64,3 +67,6 @@ process RemoveSummaryFor(SummaryId: str) is
   
 process RemoveSummary(Producer: str, SummaryId: str) is
   snd-msg(ui-remove-feedback-summary("Issues", Producer, SummaryId))
+  
+#endif
+

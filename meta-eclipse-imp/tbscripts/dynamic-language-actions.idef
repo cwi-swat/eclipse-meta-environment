@@ -1,0 +1,34 @@
+#ifndef DYN_LANGUAGE_ACTIONS
+#define DYN_LANGUAGE_ACTIONS
+
+tool dynamic-language-actions is { }
+
+process DynamicLanguageActions is
+let
+  T : dynamic-language-actions,
+  Action : str,
+  Filename : str,
+  Language : str,
+  Menu : list,
+  ActionDef : term
+in
+  rec-connect(T?) 
+  .
+  ( 
+    rec-event(T, perform-action(Action?, Language?, Filename?))
+    . snd-ack-event (T, perform-action)
+    . snd-note(handle-action(Action, Language, Filename))
+  +
+    rec-msg(dla-register-language-action(Language?, ActionDef?))
+    . printf("registering action: %t\n", ActionDef)
+    . snd-do(T, register-action(Language, ActionDef))
+  +
+    rec-msg(dla-unregister-language-action(Language?, ActionDef?))
+    . snd-do(T, unregister-action(Language, ActionDef))
+  ) *
+  rec-disconnect(T)
+endlet
+
+toolbus(DynamicLanguageActions)
+
+#endif
