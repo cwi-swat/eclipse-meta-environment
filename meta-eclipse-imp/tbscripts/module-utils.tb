@@ -43,9 +43,14 @@ process CreateModule(Language : str, Path : str, ModuleId : module-id?) is
    . printf(" %t.\n", ModuleId)
    . MM-SetAttribute(ModuleId, Language, "path", path(Path))
    . MM-SetAttribute(ModuleId, Language, "status", created)
+
+
+process GetModule(Language : str, Path : str, ModuleId : module-id?) is
+   MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+
    
 process GetOrCreateModule(Language : str, Path : str, ModuleId : module-id?) is
-   MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+   GetModule(Language, Path, ModuleId?)
    .
    if equal(ModuleId, UNDEFINED) then
      CreateModule(Language, Path, ModuleId?)
