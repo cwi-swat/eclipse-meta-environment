@@ -41,8 +41,8 @@ in
          . printf("Feature %s identified!\n", FeatureModulename)
          . ComputeCanonicalLanguagename(Modulename, Languagename?)
          . Tip := concat(Info, concat(" using the equations of ", FeatureModulename))
-         . snd-msg(dla-register-language-action(Languagename, action(Feature,Tip,Action)))
-         . create(LanguageFeatureRemoveListener(ModuleId, Languagename, action(Feature, Tip, Action)), Pid?)
+         . snd-msg(dla-register-language-action(Languagename, Feature, Tip, Action))
+         . create(LanguageFeatureRemoveListener(ModuleId, Languagename, Feature), Pid?)
       else
         tau
       fi	 
@@ -63,12 +63,12 @@ toolbus(LanguageFeatureMenuListener("draw", "DrawAction","Display using Scalable
 toolbus(LanguageFeatureMenuListener("test", "TestAction","Run unit tests"))
 toolbus(LanguageFeatureMenuListener("display", "DisplayAction","Display a Swing GUI"))
 
-process LanguageFeatureRemoveListener(ModuleId: module-id, Language : str, ActionDef: term) is
+process LanguageFeatureRemoveListener(ModuleId: module-id, Language : str, Label: str) is
   subscribe(mm-module-deleted(ModuleId))
   .
   (
     rec-note(mm-module-deleted(ModuleId))
-    . snd-msg(dla-unregister-action(Language, ActionDef))
+    . snd-msg(dla-unregister-action(Language, Label))
   )
   *
   delta
