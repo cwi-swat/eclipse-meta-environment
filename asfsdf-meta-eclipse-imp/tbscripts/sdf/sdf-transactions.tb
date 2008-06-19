@@ -1,6 +1,8 @@
 #ifndef __SDF_TRANSACTIONS__
 #define __SDF_TRANSACTIONS__
 
+#include <transaction-management.tb>
+
 toolbus(TransactionManager(module-manager))
 toolbus(TransactionManager(syntax-definition))
 toolbus(TransactionManager(sdf-parsing))

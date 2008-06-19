@@ -7,9 +7,29 @@
 #include <error-utils.tb>
 #include <io-utils.tb>
 #include <config-utils.tb>
+#include <undefined.h>
+#include <cache-utils.tb>
+#include <module-utils.tb>
 
 #define SDF_TREE_CACHE "sdf-annotated-tree"
 
+/**
+ * This process safely/lazily retrieves a module name 
+ */
+process SDFGetModulename(ModuleId : module-id, Modulename : str?) is
+let
+  HasName : bool,
+  Status : term
+in
+  MM-HasAttribute(ModuleId, SDF_NAMESPACE, "name", HasName?)
+  .
+  if equal(HasName, true) then
+    MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+  else
+    Modulename := UNDEFINED
+  fi
+endlet 
+    
 process NewModuleContentHandler is
 let
   ModuleId: str,
@@ -429,7 +449,7 @@ in
   fi
 endlet
 
-process CreateModule(Modulename: str, ModuleId: module-id?) is
+process SDFCreateModule(Modulename: str, ModuleId: module-id?) is
   MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Modulename, ModuleId?)
   .
   if equal(ModuleId, UNDEFINED) then
@@ -446,7 +466,7 @@ let
   LibraryModule: bool,
   Path: str
 in
-  CreateModule(Modulename, ModuleId?)
+  SDFCreateModule(Modulename, ModuleId?)
   . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
   .
   if equal(Path, EMPTY_PATH) then

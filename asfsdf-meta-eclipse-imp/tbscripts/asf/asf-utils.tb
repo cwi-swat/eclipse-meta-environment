@@ -13,6 +13,9 @@
 #include <term-utils.tb>
 #include <sdf-utils.tb>
 #include <asfsdfchecker.idef>
+#include <cache-utils.tb>
+#include <attribute-changed-event.tb>
+#include <module-utils.tb>
 
 #define ASF_TREE_CACHE "asf-annotated-tree"
 #define ASF_NORMALIZED_TREE_CACHE "asf-normalized-tree"

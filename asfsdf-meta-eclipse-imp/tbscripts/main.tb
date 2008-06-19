@@ -34,6 +34,7 @@
 #include <asf-initialize.tb>
 #include <asf-transactions.tb>
 #include <asf-editor-actions.tb>
+#include <asf-gui-listeners.tb>
 
 /* meta-kernel */
 #include <language-actions.tb> // this should always be the last include, to make all available action visible for it.

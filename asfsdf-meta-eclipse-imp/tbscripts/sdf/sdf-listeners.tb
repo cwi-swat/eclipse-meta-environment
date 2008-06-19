@@ -8,6 +8,9 @@
 #include <extract-sdf.idef>
 #include <term-listeners.tb>
 #include <module-utils.tb>
+#include <sdf-utils.tb>
+#include <error-viewer.idef>
+#include <parsetable-utils.tb>
 
 #define BG_ERROR_COLOR rgb(224,64,60)
 #define BG_CHILD_ERROR_COLOR rgb(255,128,114)

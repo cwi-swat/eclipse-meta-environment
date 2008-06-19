@@ -412,4 +412,11 @@
 </EditorSubmenu>
 </EditorMenu> 
     </extension>
+    <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.actions.DynamicLanguageActions"
+             language="trm">
+       </editorActionContributor>
+    </extension>
     </plugin>
