@@ -8,6 +8,7 @@
 #include <restorebrackets.idef>
 #include <ambiguity-reporter.idef>
 #include <term-namespace.h>
+#include <undefined.h>
 
 process AnnotateTree(Tree: term, File: str, AnnotatedTree: term?) is
   AddJob("Adding position information")
