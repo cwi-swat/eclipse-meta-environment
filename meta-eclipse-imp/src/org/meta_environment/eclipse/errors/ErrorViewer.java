@@ -1,10 +1,19 @@
 package org.meta_environment.eclipse.errors;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.imp.runtime.RuntimePlugin;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.meta_environment.eclipse.Tool;
 
 import aterm.ATerm;
@@ -140,5 +149,37 @@ public class ErrorViewer extends Tool {
 
 	public void removeFeedbackSummary(String panelId, String path) {
 		removeFeedbackSummary(path);
+	}
+	
+	private Map<String, ToolBusJob> jobs = new HashMap<String,ToolBusJob>();
+	
+	public void startJob(String message) {
+		ToolBusJob job = new ToolBusJob(message);	
+		job.schedule();
+		jobs.put(message, job);
+	}
+	
+	public void endJob(String message) {
+		ToolBusJob job = jobs.get(message);
+		if (job != null) {
+			job.done(Status.OK_STATUS);
+			jobs.remove(message);
+		}
+	}
+	
+	private class ToolBusJob extends Job {
+		public ToolBusJob(String name) {
+			super(name);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			return ASYNC_FINISH;
+		}
+		
+		@Override
+		protected void canceling() {
+			done(Status.CANCEL_STATUS);
+		}
 	}
 }

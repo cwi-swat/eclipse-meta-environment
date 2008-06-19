@@ -23,7 +23,6 @@ in
   (
     rec-note(res-create-module(Language?, Path?)) 
     . CreateModule(Language, Path, ModuleId?)
-    . snd-msg(res-module-created(Language, Path, ModuleId))
   + 
     rec-note(res-delete-module(Language?, Path?))
     . DeleteModule(Language, Path)
