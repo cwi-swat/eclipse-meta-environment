@@ -13,6 +13,7 @@
 #include <asf-editor-utils.tb>
 #include <error-viewer.idef>
 #include <asf-pretty-print.tb>
+#include <jobs-manager.idef>
 
 process EditorEditEquationsAction(Filename: str, Language: str) is
 let 

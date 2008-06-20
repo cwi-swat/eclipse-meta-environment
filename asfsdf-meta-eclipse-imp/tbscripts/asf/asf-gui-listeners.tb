@@ -8,6 +8,7 @@
 #include <sdf-utils.tb>
 #include <cache-utils.tb>
 #include <error-viewer.idef>
+#include <jobs-manager.idef>
 
 process LanguageFeatureMenuListener(Feature : str, Action : str, Info : str) is
 let

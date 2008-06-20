@@ -4,6 +4,7 @@
 #include <parse-controller.idef>
 #include <builder.idef>
 #include <error-viewer.idef>
+#include <jobs-manager.idef>
 #include <resources.idef>
 #include <editor-tool.idef>
 #include <language-actions.idef>

@@ -12,6 +12,7 @@
 #include <module-utils.tb>
 #include <asf-editor-utils.tb>
 #include <error-viewer.idef>
+#include <jobs-manager.idef>
 #include <asf-pretty-print.tb>
 
 process ReduceAction(Filename: str, Language: str) is
