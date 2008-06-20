@@ -32,20 +32,24 @@ public class Jobs extends Tool {
 	public String getName() {
 		return TOOL_NAME;
 	}
-
-	
 	
 	public void startJob(String message) {
-		ToolBusJob job = new ToolBusJob(message);	
-		job.schedule();
-		jobs.put(message, job);
+		ToolBusJob job = jobs.get(message);
+		
+		if (job == null) {
+		  job = new ToolBusJob(message);	
+		  job.schedule();
+		  jobs.put(message, job);
+		}
+		else {
+			job.schedule();
+		}
 	}
 	
 	public void endJob(String message) {
 		ToolBusJob job = jobs.get(message);
 		if (job != null) {
 			job.done(Status.OK_STATUS);
-			jobs.remove(message);
 		}
 	}
 	

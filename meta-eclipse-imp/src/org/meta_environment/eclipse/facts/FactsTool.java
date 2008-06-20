@@ -59,8 +59,6 @@ public class FactsTool extends Tool {
 	
 	private static Factory factory;
 
-	private IValue[] tmpArray;
-
 	private static class InstanceKeeper {
 		private static FactsTool sInstance = new FactsTool();
 		static {
@@ -141,21 +139,15 @@ public class FactsTool extends Tool {
 
 	private IValue convertTuple(Tuple value, RType type) {
 		RElemElements elems = value.getElements();
-		RTypeColumnTypes columnTypes = type.getElementType().getColumnTypes();
+		RTypeColumnTypes columnTypes = type.getColumnTypes();
+		int size = elems.getLength();
+		IValue[] tmpArray = new IValue[size];
 		
-		resizeTmpArray(elems.getLength());
-		
-		for (int i = 0; !elems.isEmpty(); elems = elems.getTail()) {
+		for (int i = 0; !elems.isEmpty(); elems = elems.getTail(), i++) {
 			tmpArray[i] = convertValue(elems.getHead(), columnTypes.getRTypeAt(i));
 		}
 		
-		return values.tuple(tmpArray, elems.getLength());
-	}
-
-	private void resizeTmpArray(int length) {
-		if (tmpArray.length < length) {
-			tmpArray = new IValue[length * 2];
-		}
+		return values.tuple(tmpArray, size);
 	}
 
 	private IValue convertLocation(Loc value) {
@@ -267,7 +259,7 @@ public class FactsTool extends Tool {
 			return types.stringType();
 		}
 		else if (rtype.isTuple()) {
-			return types.tupleTypeOf(convertTupleTypes(rtype.getColumnTypes()));
+			return convertTupleTypes(rtype.getColumnTypes());
 		}
 		else if (rtype.isUserDefined()) {
 			return types.namedType(rtype.getTypeName().getString(), types.valueType());
