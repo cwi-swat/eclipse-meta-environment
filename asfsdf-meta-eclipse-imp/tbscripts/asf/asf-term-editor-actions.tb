@@ -14,6 +14,8 @@
 #include <error-viewer.idef>
 #include <jobs-manager.idef>
 #include <asf-pretty-print.tb>
+#include <lower-rstore.idef>
+#include <facts.idef>
 
 process ReduceAction(Filename: str, Language: str) is
 let 
@@ -101,7 +103,7 @@ in
   . LookupFeatureModuleId(SdfModuleId, "extract", ExtractModuleId?)
   .
   if not-equal(ExtractModuleId, UNDEFINED) then
-    MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", ModuleName?)
+    MM-GetAttribute(SdfModuleId, SDF_NAMESPACE, "name", ModuleName?)
     . ComputeCanonicalLanguagename(ModuleName, Language?)
     . AddJob("Extracting")
     . Reduce(ExtractModuleId, Path, off, ResultTree?)
@@ -109,7 +111,7 @@ in
     if not-equal(ResultTree, UNDEFINED) then
       snd-msg(rs-lower-rstore(ResultTree))
       . rec-msg(rs-lowered-rstore(ResultTree?))
-      . snd-msg(rc-load-rstore(Path, ResultTree))
+      . snd-msg(facts-load-rstore(Path, ResultTree))
     else
       snd-note(extract-rstore-failed(Language, Path))
     fi
