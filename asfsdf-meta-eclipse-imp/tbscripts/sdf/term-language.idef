@@ -33,6 +33,7 @@ in
   +
     rec-event(T, perform-action(Action?, Language?, Filename?))
     . snd-ack-event (T, perform-action)
+    . printf("Sending action note: %t for language %t on file %t\n", Action, Language, Filename)
     . snd-note(handle-action(Action, Language, Filename))
   +
     rec-msg(tlr-register-language-action(Language?, Label?, Tip?, Action?))

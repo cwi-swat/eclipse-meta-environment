@@ -1,6 +1,7 @@
 #ifndef __ASF_UTILS__
 #define __ASF_UTILS__
 
+#include <parsetable-utils.tb>
 #include <asf-namespace.h>
 #include <sdf-namespace.h>
 #include <term-namespace.h>

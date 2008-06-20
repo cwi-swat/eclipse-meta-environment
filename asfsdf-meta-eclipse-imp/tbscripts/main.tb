@@ -36,6 +36,7 @@
 #include <asf-initialize.tb>
 #include <asf-transactions.tb>
 #include <asf-editor-actions.tb>
+#include <asf-term-editor-actions.tb>
 #include <asf-gui-listeners.tb>
 
 /* meta-kernel */

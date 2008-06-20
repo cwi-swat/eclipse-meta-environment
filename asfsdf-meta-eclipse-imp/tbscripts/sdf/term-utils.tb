@@ -35,7 +35,7 @@ process ClearTermParsetreeCache(Path : str) is
 
 toolbus(ClearTermParsetreeCacheListener)
 
-process GetTermParsetree(ModuleId: module-id, Path: str, Result: term?) is
+process GetTermParsetree(SdfModuleId: module-id, Path: str, Result: term?) is
 let
   AmbPid: int,
   ParseTable: term,
@@ -49,18 +49,18 @@ in
   .
   if equal(Tree, UNDEFINED) then
     Type := TERM_NAMESPACE
-    . GetTermParseTable(ModuleId, ParseTable?)
+    . GetTermParseTable(SdfModuleId, ParseTable?)
     .
     if not-equal(ParseTable, UNDEFINED) then
       ReadText(Path, Text?)
       .
       if not-equal(Text, "") then
-        create(ParseTreeHandler(ModuleId, Path), Pid?)
+        create(ParseTreeHandler(SdfModuleId, Path), Pid?)
 	. RemoveAmbiguitySummary(Path)
         . ParseText(Pid, Text, ParseTable, NO_NONTERMINAL, off)
         .
         (
-          rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
+          rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
 	  . create(AmbiguityHandler(Tree, Path), AmbPid?)
           . AnnotateTree(Tree, Path, Result?)
 //	  . PutCachedValue(TERM_TREE_CACHE, Path, Result)

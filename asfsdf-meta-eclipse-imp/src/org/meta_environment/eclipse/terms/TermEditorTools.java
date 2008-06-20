@@ -115,6 +115,7 @@ public class TermEditorTools extends Tool {
 		  final String action = map.get(label);
 		  result.add(new Action(label) {
 			public void run() {
+				System.err.println("dynamic term action triggered: " + action + " for language " + language + " on file " + filename);
 				  performAction(action, language, filename);
 			}
 		  });
