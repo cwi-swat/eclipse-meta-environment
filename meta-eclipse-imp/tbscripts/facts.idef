@@ -1,0 +1,31 @@
+#ifndef __FACTS__
+#define __FACTS__
+
+tool facts is {}
+
+process Facts is
+let Facts: facts,
+    Path: str,
+    RStore: term,
+    RStoreId: int,
+    RStoreFacts: list,
+    FactId: int,
+    UpdatedRStoreId: int,
+    UpdatedFactId: int,
+    FactData: term,
+    Store: term
+in
+  rec-connect(Facts?)
+  . printf("Facts tool connected!")
+  .
+  (   
+    rec-msg(facts-load-rstore(Path?, Store?))
+    . snd-do(Facts, load-rstore(Path, Store))
+  ) 
+  * 
+  delta
+endlet
+
+toolbus(Facts)
+
+#endif /* __FACTS__ */

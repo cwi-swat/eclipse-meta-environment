@@ -5,6 +5,7 @@ import org.eclipse.ui.IStartup;
 import org.meta_environment.eclipse.actions.LanguageActionsTool;
 import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.errors.ErrorViewer;
+import org.meta_environment.eclipse.facts.FactsTool;
 import org.meta_environment.eclipse.files.Resources;
 import org.meta_environment.eclipse.jobs.Jobs;
 
@@ -29,6 +30,7 @@ public class Activator extends PluginBase implements IStartup {
 		EditorTool.getInstance();
 		LanguageActionsTool.getInstance();
 		Jobs.getInstance();
+		FactsTool.getInstance();
 	}
 
 	public String getID() {
