@@ -34,12 +34,6 @@ in
     rec-event(T, location-selected(Location?))
     . snd-msg(ui-location-selected(Location))
     . snd-ack-event(T, location-selected(Location))
-  +
-    rec-msg(ui-start-job(Job?))
-    . snd-do(T, start-job(Job))
-  +
-    rec-msg(ui-end-job(Job?))
-    . snd-do(T, end-job(Job))
   )
   *
   rec-disconnect(T)
@@ -47,12 +41,6 @@ endlet
 
 
 toolbus(ErrorViewer)
-
-process AddJob(Message: str) is
-  snd-msg(ui-start-job(Message))
-
-process JobDone(Message: str) is
-  snd-msg(ui-end-job(Message))
 
 process ConsoleMessage(Message: str) is
   printf("%s\n", Message)

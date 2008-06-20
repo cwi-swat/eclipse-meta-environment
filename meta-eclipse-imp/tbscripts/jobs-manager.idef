@@ -1,0 +1,40 @@
+#ifndef __JOBS_MANAGER__
+#define __JOBS_MANAGER__
+
+tool jobs-manager is {  }
+
+process JobsManager is
+let
+  T : jobs-manager,
+  Job : str
+in
+  rec-connect(T?)
+  . 
+  (
+    rec-msg(ui-start-job(Job?))
+    . snd-do(T, start-job(Job))
+  +
+    rec-msg(ui-end-job(Job?))
+    . snd-do(T, end-job(Job))
+  )
+  *
+  rec-disconnect(T)
+endlet
+
+
+toolbus(JobsManager)
+
+process StartJob(Message: str) is
+  AddJob(Message)
+
+process EndJob(Message: str) is
+  JobDone(Message)
+  
+process AddJob(Message: str) is
+  snd-msg(ui-start-job(Message))
+
+process JobDone(Message: str) is
+  snd-msg(ui-end-job(Message))
+
+#endif
+

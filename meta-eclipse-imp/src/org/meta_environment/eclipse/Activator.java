@@ -6,6 +6,7 @@ import org.meta_environment.eclipse.actions.LanguageActionsTool;
 import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.errors.ErrorViewer;
 import org.meta_environment.eclipse.files.Resources;
+import org.meta_environment.eclipse.jobs.Jobs;
 
 public class Activator extends PluginBase implements IStartup {
 	public static final String PLUGIN_ID = "org.meta_environment";
@@ -24,9 +25,10 @@ public class Activator extends PluginBase implements IStartup {
 
 	public void earlyStartup() {
 		ErrorViewer.getInstance();
-		Resources.getInstance(); // .identifyAllResources();
+		Resources.getInstance(); 
 		EditorTool.getInstance();
 		LanguageActionsTool.getInstance();
+		Jobs.getInstance();
 	}
 
 	public String getID() {

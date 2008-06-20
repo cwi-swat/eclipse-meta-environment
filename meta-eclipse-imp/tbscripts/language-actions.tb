@@ -11,8 +11,9 @@ in
   printf("LanguageActionDispatcher started.\n") .
   subscribe(handle-action(<str>, <str>, <str>)) .
   (
-    rec-note(handle-action(Action?, Language?, Filename?)) .
-    create(LaunchLanguageAction(Action, Language, Filename), Pid?)
+    rec-note(handle-action(Action?, Language?, Filename?)) 
+    . printf("launching %s for %s on %s\n", Action, Language, Filename)
+    . create(LaunchLanguageAction(Action, Language, Filename), Pid?)
   ) * delta
 endlet
 
