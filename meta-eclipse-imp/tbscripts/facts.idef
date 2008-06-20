@@ -6,13 +6,6 @@ tool facts is {}
 process Facts is
 let Facts: facts,
     Path: str,
-    RStore: term,
-    RStoreId: int,
-    RStoreFacts: list,
-    FactId: int,
-    UpdatedRStoreId: int,
-    UpdatedFactId: int,
-    FactData: term,
     Store: term
 in
   rec-connect(Facts?)
