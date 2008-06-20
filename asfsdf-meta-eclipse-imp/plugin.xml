@@ -312,6 +312,11 @@
   name="Format"
   toolbus_action="PrettyPrintSdfAction"/>
 </EditorSubmenu>
+<EditorMenuAction
+      description="Extract information from this SDF definition"
+      name="Analyze"
+      toolbus_action="ExtractSDFAction">
+</EditorMenuAction>
 </EditorMenu> 
 <EditorMenu 
   language="studio-menubar"

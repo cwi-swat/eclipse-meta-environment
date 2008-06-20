@@ -7,7 +7,7 @@
 #include <sdf-pretty.tb>
 #include <parse-utils.tb>
 #include <pretty-print-utils.tb>
-
+#include <extract-sdf.idef>
 
 process PrettyPrintSdfAction(Filename: str, Language: str) is
 let
@@ -24,5 +24,12 @@ in
   . snd-msg(et-edit-term(Filename, SDF_NAMESPACE, PrettyText))
 endlet
 
+process ExtractSDFAction(Filename: str, Language : str) is
+let
+  ModuleId : module-id
+in
+  GetModule(SDF_NAMESPACE, Filename, ModuleId?) 
+  . SDFExtraction(ModuleId)
+endlet
 
 #endif /* __SDF_EDITOR_ACTIONS__ */

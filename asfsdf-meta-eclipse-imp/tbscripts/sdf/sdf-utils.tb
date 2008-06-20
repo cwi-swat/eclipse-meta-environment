@@ -10,6 +10,7 @@
 #include <undefined.h>
 #include <cache-utils.tb>
 #include <module-utils.tb>
+#include <jobs-manager.idef>
 
 #define SDF_TREE_CACHE "sdf-annotated-tree"
 
@@ -595,11 +596,13 @@ let
 in
   GetSyntaxDefinition(ModuleId, Syntax?)
   . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+  . StartJob("Extracting information from SDF definition")
   . snd-msg(es-extract-sdf(Syntax))
   . rec-msg(es-sdf-store(Store?))
   . snd-msg(rs-lower-rstore(Store))
   . rec-msg(rs-lowered-rstore(RStore?))
-  . snd-msg(rc-load-rstore(Modulename, RStore))
+  . EndJob("Extracting information from SDF definition")
+  . snd-msg(facts-load-rstore(Modulename, RStore))
 endlet
 
 #endif /* __SDF_UTILS__ */
