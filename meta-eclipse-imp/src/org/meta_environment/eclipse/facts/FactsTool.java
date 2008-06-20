@@ -43,9 +43,6 @@ import org.meta_environment.eclipse.Tool;
 import aterm.ATerm;
 
 public class FactsTool extends Tool {
-
-	private static final IFactContext FOREIGN_CONTEXT = new IFactContext() { };
-
 	private static final TypeFactory types = TypeFactory.getInstance();
 	private static final ValueFactory values = ValueFactory.getInstance();
 
@@ -66,6 +63,27 @@ public class FactsTool extends Tool {
 			factory = Factory.getInstance(getFactory());
 		}
 	}
+	
+	private class StringContext implements IFactContext {
+		private String id;
+		
+		public StringContext(String id) {
+			this.id = id;
+		}
+		
+		@Override
+		public String toString() {
+			return id;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof StringContext) {
+				return id.equals(((StringContext) obj).id);
+			}
+			return false;
+		}
+	}
 
 	private FactsTool() {
 		super(TOOL_NAME);
@@ -77,33 +95,34 @@ public class FactsTool extends Tool {
 	
 	public void loadRstore(String path, ATerm astore) {
 		RStore store = factory.RStoreFromTerm(astore);
+		IFactContext context = new StringContext(path);
 		
 		try {
-		  loadRStore(store);
+		  loadRStore(context, store);
 		}
 		catch (Exception ex) {
 			RuntimePlugin.getInstance().logException("An error occurred while loading an RStore", ex);
 		}
 	}
 
-	private void loadRStore(RStore store) {
+	private void loadRStore(IFactContext context, RStore store) {
 		RTupleRtuples tuples = store.getRtuples();
 		
 		for ( ; !tuples.isEmpty(); tuples = tuples.getTail()) {
-			loadRTuple(tuples.getHead());
+			loadRTuple(context, tuples.getHead());
 		}
 	}
 
-	private void loadRTuple(RTuple head) {
+	private void loadRTuple(IFactContext context, RTuple head) {
 		Type type = convertType(head.getRtype());
 		IValue value = convertValue(head.getValue(), head.getRtype());
-		IFactKey key = convertVariable(head.getVariable(), type);
+		IFactKey key = convertVariable(head.getVariable(), type, context);
 	
 		base.defineFact(key, value);
 	}
 
-	private IFactKey convertVariable(IdCon variable, Type type) {
-		return new FactKey(types.namedType(variable.getString(), type), FOREIGN_CONTEXT);
+	private IFactKey convertVariable(IdCon variable, Type type, IFactContext context) {
+		return new FactKey(types.namedType(variable.getString(), type), context);
 	}
 
 	private IValue convertValue(RElem value, RType type) {
