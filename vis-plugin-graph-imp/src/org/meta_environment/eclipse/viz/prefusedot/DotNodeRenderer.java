@@ -1,4 +1,4 @@
-package org.eclipse.imp.pdb.viz.prefusedot;
+package org.meta_environment.eclipse.viz.prefusedot;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;

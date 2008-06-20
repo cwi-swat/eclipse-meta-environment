@@ -1,11 +1,11 @@
-package org.eclipse.imp.pdb.viz.graph;
+package org.meta_environment.eclipse.vis.graph;
 
 import java.awt.event.MouseEvent;
 
-import org.eclipse.imp.pdb.viz.prefusedot.DotEdgeRenderer;
-import org.eclipse.imp.pdb.viz.prefusedot.DotLabelLayout;
-import org.eclipse.imp.pdb.viz.prefusedot.DotNodeLayout;
-import org.eclipse.imp.pdb.viz.prefusedot.DotNodeRenderer;
+import org.meta_environment.eclipse.viz.prefusedot.DotEdgeRenderer;
+import org.meta_environment.eclipse.viz.prefusedot.DotLabelLayout;
+import org.meta_environment.eclipse.viz.prefusedot.DotNodeLayout;
+import org.meta_environment.eclipse.viz.prefusedot.DotNodeRenderer;
 
 import prefuse.Constants;
 import prefuse.Display;

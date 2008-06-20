@@ -1,4 +1,4 @@
-package org.eclipse.imp.pdb.viz.graph;
+package org.meta_environment.eclipse.vis.graph;
 
 import java.util.List;
 

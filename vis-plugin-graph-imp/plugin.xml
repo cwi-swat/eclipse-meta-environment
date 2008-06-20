@@ -7,7 +7,7 @@
             id="org.eclipse.imp.pdb.viz.graph.view"
             targetID="org.eclipse.imp.pdb.factBrowser">
          <action
-               class="org.eclipse.imp.pdb.viz.graph.ShowGraphAction"
+               class="org.meta_environment.eclipse.vis.graph.ShowGraphAction"
                id="org.eclipse.imp.pdb.viz.graph.view"
                label="View Graph"
                style="push"
@@ -17,7 +17,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="org.eclipse.imp.pdb.viz.graph.GraphView"
+            class="org.meta_environment.eclipse.vis.graph.GraphView"
             id="org.eclipse.imp.pdb.viz.graph.view"
             name="IMP Graph View"/>
    </extension>

@@ -1,11 +1,11 @@
-package org.eclipse.imp.pdb.viz.graph;
+package org.meta_environment.eclipse.vis.graph;
 
 import java.util.HashMap;
 
 import org.eclipse.imp.pdb.facts.IRelation;
 import org.eclipse.imp.pdb.facts.ITuple;
 import org.eclipse.imp.pdb.facts.IValue;
-import org.eclipse.imp.pdb.viz.prefusedot.DotAdapter;
+import org.meta_environment.eclipse.viz.prefusedot.DotAdapter;
 
 import prefuse.data.Graph;
 import prefuse.data.Node;
