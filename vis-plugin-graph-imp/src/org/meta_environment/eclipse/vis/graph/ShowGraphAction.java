@@ -30,7 +30,7 @@ public class ShowGraphAction implements IViewActionDelegate {
 			if (!selected.isEmpty()) {
 				IFactKey first = selected.get(0);
 
-				graphView = (GraphView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.imp.pdb.viz.graph.view");
+				graphView = (GraphView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.meta_environment.eclipse.viz.graph.view");
 				graphView.showRelation(FactBase.getInstance().getFact(first));
 			}
 		} catch (PartInitException e) {

@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.imp.pdb.viz.graph";
+	public static final String PLUGIN_ID = "org.meta_environment.eclipse.viz.graph";
 
 	// The shared instance
 	private static Activator plugin;
