@@ -4,11 +4,11 @@
    <extension
          point="org.eclipse.ui.viewActions">
       <viewContribution
-            id="org.eclipse.imp.pdb.viz.graph.view"
+            id="org.meta_environment.eclipse.imp.viz.graph.view"
             targetID="org.eclipse.imp.pdb.factBrowser">
          <action
                class="org.meta_environment.eclipse.vis.graph.ShowGraphAction"
-               id="org.eclipse.imp.pdb.viz.graph.view"
+               id="org.meta_environment.eclipse.viz.graph.view"
                label="View Graph"
                style="push"
                toolbarPath="factBrowserActions"/>
@@ -18,8 +18,8 @@
          point="org.eclipse.ui.views">
       <view
             class="org.meta_environment.eclipse.vis.graph.GraphView"
-            id="org.eclipse.imp.pdb.viz.graph.view"
-            name="IMP Graph View"/>
+            id="org.meta_environment.eclipse.viz.graph.view"
+            name="Meta-Environment Graph View"/>
    </extension>
 
 </plugin>
