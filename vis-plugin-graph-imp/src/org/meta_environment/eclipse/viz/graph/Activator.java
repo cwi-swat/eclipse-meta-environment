@@ -1,4 +1,4 @@
-package org.meta_environment.eclipse.vis.graph;
+package org.meta_environment.eclipse.viz.graph;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

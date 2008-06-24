@@ -1,4 +1,4 @@
-package org.meta_environment.eclipse.vis.graph;
+package org.meta_environment.eclipse.viz.graph;
 
 import java.awt.event.MouseEvent;
 
