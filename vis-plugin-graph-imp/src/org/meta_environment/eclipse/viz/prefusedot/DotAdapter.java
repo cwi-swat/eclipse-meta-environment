@@ -50,6 +50,8 @@ public class DotAdapter extends Graph {
     public static final String DOT_ID = "id";
 
     public static final String DOT_SHAPE = "shape";
+    
+    public static final String DOT_LINK = "link";
 
     private double scale;
 
@@ -65,6 +67,7 @@ public class DotAdapter extends Graph {
         addColumn(DOT_WIDTH, int.class);
         addColumn(DOT_HEIGHT, int.class);
         addColumn(DOT_SHAPE, String.class);
+        addColumn(DOT_LINK, String.class);
     }
 
     /**

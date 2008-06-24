@@ -3,15 +3,22 @@ package org.meta_environment.eclipse.viz.graph;
 import java.util.HashMap;
 
 import org.eclipse.imp.pdb.facts.IRelation;
+import org.eclipse.imp.pdb.facts.ISourceLocation;
+import org.eclipse.imp.pdb.facts.IString;
 import org.eclipse.imp.pdb.facts.ITuple;
 import org.eclipse.imp.pdb.facts.IValue;
+import org.eclipse.imp.pdb.facts.type.TupleType;
+import org.eclipse.imp.pdb.facts.type.Type;
+import org.eclipse.imp.pdb.facts.type.TypeFactory;
 import org.meta_environment.eclipse.viz.prefusedot.DotAdapter;
 
 import prefuse.data.Graph;
 import prefuse.data.Node;
 
 public class GraphBuilder {
-    private HashMap<String, Node> fNodeCache = new HashMap<String, Node>();
+    private static final TypeFactory types = org.eclipse.imp.pdb.facts.type.TypeFactory.getInstance();
+	private HashMap<String, Node> fNodeCache = new HashMap<String, Node>();
+	private static final Type locatedNodeType = types.tupleTypeOf(types.stringType(), types.sourceLocationType());
 
     public Graph computeGraph(IValue fact) {
         if (fact.getBaseType().isRelationType()) {
@@ -28,14 +35,11 @@ public class GraphBuilder {
         DotAdapter graph = new DotAdapter();
 
         for (ITuple tuple : rel) {
-            String nameId = tuple.get(0).toString();
-            String nameLabel = tuple.get(1).toString();
+            Node from = getOrCreateNode(graph, tuple.get(0));
+            Node to = getOrCreateNode(graph, tuple.get(1));
 
-            Node nodeId = getOrCreateNode(graph, nameId);
-            Node nodeLabel = getOrCreateNode(graph, nameLabel);
-
-            if (nodeLabel != null) {
-                graph.addEdge(nodeId, nodeLabel);
+            if (from != null && to != null) {
+                graph.addEdge(from, to);
             }
         }
 
@@ -43,7 +47,8 @@ public class GraphBuilder {
         return graph;
     }
 
-    private Node getOrCreateNode(Graph graph, String nodeName) {
+    private Node getOrCreateNode(Graph graph, IValue value) {
+    	String nodeName = getNodeName(value);
         Node node;
 
         if (nodeName.length() == 0) {
@@ -56,9 +61,34 @@ public class GraphBuilder {
             node = graph.addNode();
             node.setString(DotAdapter.DOT_ID, nodeName);
             node.setString(DotAdapter.DOT_LABEL, nodeName);
+            
+            String link = getNodeLink(value);
+            if (link != null) {
+              node.setString(DotAdapter.DOT_LINK, link);
+            }
             fNodeCache.put(nodeName, node);
         }
 
         return node;
     }
+
+	private String getNodeName(IValue value) {
+		Type type = value.getBaseType();
+		
+		if (type == locatedNodeType) {
+		    return ((IString) ((ITuple) value).get(0)).getValue();	
+		}
+		
+		return value.toString();
+	}
+	
+	private String getNodeLink(IValue value) {
+		Type type = value.getBaseType();
+		
+		if (type == locatedNodeType) {
+			return ((ISourceLocation) ((ITuple) value).get(1)).getPath();
+		}
+		
+		return null;
+	}
 }

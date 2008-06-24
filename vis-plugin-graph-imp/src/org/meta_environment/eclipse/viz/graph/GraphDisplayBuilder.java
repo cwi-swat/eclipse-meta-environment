@@ -2,6 +2,7 @@ package org.meta_environment.eclipse.viz.graph;
 
 import java.awt.event.MouseEvent;
 
+import org.meta_environment.eclipse.viz.prefusedot.DotAdapter;
 import org.meta_environment.eclipse.viz.prefusedot.DotEdgeRenderer;
 import org.meta_environment.eclipse.viz.prefusedot.DotLabelLayout;
 import org.meta_environment.eclipse.viz.prefusedot.DotNodeLayout;
@@ -15,6 +16,7 @@ import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.FontAction;
 import prefuse.action.layout.Layout;
+import prefuse.controls.ControlAdapter;
 import prefuse.controls.DragControl;
 import prefuse.controls.FocusControl;
 import prefuse.controls.PanControl;
@@ -89,6 +91,19 @@ public class GraphDisplayBuilder {
         vis.run(GraphConstants.COLOR);
         vis.run(GraphConstants.LAYOUT);
 
+        display.addControlListener(new ControlAdapter() {
+			public void itemPressed(VisualItem item, MouseEvent e) {
+				String link = item.getString(DotAdapter.DOT_LINK);
+
+				if (link != null) {
+					System.err.println("go to " + link);
+				}
+			}
+
+			public void itemReleased(VisualItem item, MouseEvent e) {
+			}
+		});
+        
         return display;
     }
 
