@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Meta-Environment Graph Visualization Plug-in
-Bundle-SymbolicName: vis-plugin-graph-imp;singleton:=true
+Bundle-Name: vis-plugin-graph-imp
+Bundle-SymbolicName: vis_plugin_graph_imp;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.meta_environment.eclipse.viz.graph.Activator
 Bundle-Vendor: jurgen@vinju.org
@@ -11,5 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.imp.pdb,
  org.eclipse.imp.pdb.ui
 Eclipse-LazyStart: true
+Export-Package: org.meta_environment.eclipse.viz.graph,
+ org.meta_environment.eclipse.viz.prefusedot
 Bundle-ClassPath: .,
  lib/prefuse.jar

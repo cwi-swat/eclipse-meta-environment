@@ -7,7 +7,7 @@
             id="org.meta_environment.eclipse.imp.viz.graph"
             targetID="org.eclipse.imp.pdb.factBrowser">
          <action
-               class=" org.meta_environment.eclipse.viz.graph.ShowGraphAction"
+               class="org.meta_environment.eclipse.viz.graph.ShowGraphAction"
                id="org.meta_environment.eclipse.viz.graph"
                label="View Graph"
                style="push"
