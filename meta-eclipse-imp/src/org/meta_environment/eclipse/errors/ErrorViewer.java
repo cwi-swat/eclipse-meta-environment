@@ -150,36 +150,4 @@ public class ErrorViewer extends Tool {
 	public void removeFeedbackSummary(String panelId, String path) {
 		removeFeedbackSummary(path);
 	}
-	
-	private Map<String, ToolBusJob> jobs = new HashMap<String,ToolBusJob>();
-	
-	public void startJob(String message) {
-		ToolBusJob job = new ToolBusJob(message);	
-		job.schedule();
-		jobs.put(message, job);
-	}
-	
-	public void endJob(String message) {
-		ToolBusJob job = jobs.get(message);
-		if (job != null) {
-			job.done(Status.OK_STATUS);
-			jobs.remove(message);
-		}
-	}
-	
-	private class ToolBusJob extends Job {
-		public ToolBusJob(String name) {
-			super(name);
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			return ASYNC_FINISH;
-		}
-		
-		@Override
-		protected void canceling() {
-			done(Status.CANCEL_STATUS);
-		}
-	}
 }

@@ -2,12 +2,17 @@ package org.meta_environment.eclipse;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 import toolbus.ToolBusEclipsePlugin;
 import toolbus.adapter.java.AbstractJavaTool;
 import toolbus.adapter.java.JavaToolBridge;
 import aterm.ATerm;
+import aterm.ATermAppl;
+import aterm.ATermBlob;
+import aterm.ATermList;
 import aterm.pure.PureFactory;
+import aterm.pure.binary.BinaryReader;
 
 public class Tool extends AbstractJavaTool{
 	protected static final String TIME_OUT = "time-out";
@@ -37,6 +42,30 @@ public class Tool extends AbstractJavaTool{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	protected ATerm decode(ATerm encoded) {
+		if (encoded.getType() == ATerm.APPL) {
+			ATermAppl tmp = (ATermAppl) encoded;
+			ATermList chunkList = (ATermList) tmp.getArgument(0);
+			int nrOfChunks = chunkList.getLength();
+			BinaryReader reader = new BinaryReader((PureFactory) encoded.getFactory());
+			 
+		    do {
+		        ATermBlob chunk = (ATermBlob) chunkList.elementAt(--nrOfChunks);
+		        byte[] data = chunk.getBlobData();
+		        
+		        ByteBuffer buffer = ByteBuffer.allocate(data.length);
+				buffer.put(data);
+				buffer.flip();
+				
+		        reader.deserialize(buffer);
+		      } while(nrOfChunks > 0);
+
+		      return reader.getRoot();
+		}
+		
+		return encoded;
 	}
 	
 	private void connectDirectly() throws Exception{

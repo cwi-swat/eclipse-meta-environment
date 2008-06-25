@@ -9,10 +9,9 @@ let
   T : resources,
   Language : str,
   Path : str,
-  ModuleId : term,
-  Contents : str,
-  Summary : term,
-  Contents2 : term
+  Ext : str,
+  Content : str,
+  TermContent : term
 in
   rec-connect(T?) 
   . printf("Resources tool connected!\n")
@@ -29,6 +28,14 @@ in
     rec-event(T, build-module(Language?, Path?))
     . snd-note(res-module-changed(Language, Path))
     . snd-ack-event(T, build-module(Language, Path))
+  + 
+    rec-msg(res-save-build(Path?, Ext?, Content?))
+    . snd-do(T, save-build(Path, Ext, Content))
+    . Content := ""
+  +
+    rec-msg(res-save-build(Path?, Ext?, TermContent?))
+    . snd-do(T, save-build(Path, Ext, TermContent))
+    . TermContent := undefined
   ) * delta
   
 endlet

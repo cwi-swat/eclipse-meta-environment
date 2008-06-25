@@ -2,6 +2,7 @@
 #define __CACHE_UTILS__
 
 #include <term-store.idef>
+#include <undefined.h>
 
 /* sort of generic caching processes */
 process ClearCacheHandler(TableName: str, 
@@ -37,8 +38,9 @@ process GetCachedValue(TableName: str, Key: term, Value: term?) is
     . Value := UNDEFINED
   )
 
-process PutCachedValue(TableName: str, Key: term, Value: term) is
+process PutCachedValue(TableName: str, Key: term, Path: str, Ext : str, Value: term) is
   snd-msg(ts-put-term-value(TableName, Key, Value))
+  . snd-msg(res-save-build(Path, Ext, Value))
 
 process ClearCachedValue(TableName: str, Key: term) is
   snd-msg(ts-remove-value(TableName, Key))
