@@ -63,7 +63,7 @@ in
           rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
 	  . create(AmbiguityHandler(Tree, Path), AmbPid?)
           . AnnotateTree(Tree, Path, Result?)
-//	  . PutCachedValue(TERM_TREE_CACHE, Path, Result)
+//	  . PutCachedValue(TERM_TREE_CACHE, Path, Path, ".pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED

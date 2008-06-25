@@ -522,7 +522,7 @@ in
         (
           rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
           . AnnotateTree(Tree, Path, Result?)
-          . PutCachedValue(SDF_TREE_CACHE, ModuleId, Result)
+          . PutCachedValue(SDF_TREE_CACHE, ModuleId, Path, ".pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED
