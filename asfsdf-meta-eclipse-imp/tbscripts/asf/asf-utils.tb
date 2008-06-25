@@ -173,7 +173,7 @@ in
           rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
 	      . create(AmbiguityHandler(Tree, AsfPath), AmbPid?)
           . AnnotateTree(Tree, AsfPath, Result?) 
-          . PutCachedValue(ASF_TREE_CACHE, ModuleId, AsfPath, ".pt", Result)
+          . PutCachedValue(ASF_TREE_CACHE, ModuleId, AsfPath, ".asf.pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED
@@ -221,7 +221,7 @@ in
    . GetSpecification(ModuleId, Specification?)
    .
    if not-equal(Specification, UNDEFINED) then
-     GetSpecificationEquations(Specification, Equations?)
+     GetSpecificationEquations(ModuleId, Specification, Equations?)
      . GetParseTable(ModuleId, TERM_NAMESPACE, Table?)
      .
      if not-equal(Table, UNDEFINED) then
@@ -290,7 +290,7 @@ in
   . GetSpecification(ModuleId, Specification?)
   .
   if not-equal(Specification, UNDEFINED) then
-    GetSpecificationEquations(Specification, Equations?)
+    GetSpecificationEquations(ModuleId, Specification, Equations?)
     . snd-msg(io-unpack-and-write-term-in-baf(Path, Equations))
     .
     (
@@ -313,7 +313,7 @@ toolbus(ClearCacheHandler(ASF_NORMALIZED_TREE_CACHE, SDF_NAMESPACE, "status", <t
 process NormalizeEquations(ModuleId : term, Equations: term, Result : term?) is
 let
   Tree : term,
-  AsfPath : str
+  SdfPath : str
 in
   Tree := UNDEFINED
   . GetCachedValue(ASF_NORMALIZED_TREE_CACHE, ModuleId, Tree?)
@@ -324,8 +324,8 @@ in
     AddJob("Normalizing ...")
     . snd-msg(ao-normalize-module(Equations)) 
     . rec-msg(ao-normalize-module-result(Tree?))
-    . GetModulePath(ModuleId, ASF_NAMESPACE, AsfPath?)
-    . PutCachedValue(ASF_NORMALIZED_TREE_CACHE, ModuleId, AsfPath, ".nrm", Tree)
+    . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
+    . PutCachedValue(ASF_NORMALIZED_TREE_CACHE, ModuleId, SdfPath, ".asf.nrm", Tree)
     . Result := Tree
     . JobDone("Normalizing ...")
   fi 
@@ -399,10 +399,15 @@ in
   . JobDone("Collecting and normalizing specification")
 endlet
 
-process GetSpecificationEquations(Specification: term, Equations: term?) is
+process GetSpecificationEquations(ModuleId : module-id, Specification: term, Equations: term?) is
+let
+  AsfPath : str
+in
   snd-msg(ao-extract-equations(Specification))
   . rec-msg(ao-extract-equations-result(Equations?))
-
+  . GetModulePath(ModuleId, SDF_NAMESPACE, AsfPath?)
+  . snd-msg(res-save-build(AsfPath, ".eqs", Equations))
+endlet
 
 process GetSpecificationTests(Specification: term, Tests: term?) is
   snd-msg(ao-extract-tests(Specification))
@@ -425,7 +430,7 @@ in
   . GetSpecification(ModuleId, Specification?)
   .
   if not-equal(Specification, UNDEFINED) then
-    GetSpecificationEquations(Specification, Equations?) 
+    GetSpecificationEquations(ModuleId, Specification, Equations?) 
     . GetSpecificationTests(Specification, Tests?) 
     . GetTermParseTable(ModuleId, ParseTable?)
     . snd-note(ui-status(endstat(Id))) 
@@ -478,7 +483,7 @@ in
   . GetSpecification(ModuleId, Specification?)
   .
   if not-equal(Specification, UNDEFINED) then
-    GetSpecificationEquations(Specification, Equations?)
+    GetSpecificationEquations(ModuleId, Specification, Equations?)
     . GetTermParseTable(ModuleId, ParseTable?)
     . AddJob("Rewriting...")
     . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
