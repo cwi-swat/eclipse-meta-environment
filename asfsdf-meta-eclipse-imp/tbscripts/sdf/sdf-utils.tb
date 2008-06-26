@@ -492,7 +492,7 @@ in
 endlet
 
 toolbus(InitCache(SDF_TREE_CACHE))
-toolbus(ClearCacheHandler(SDF_TREE_CACHE, SDF_NAMESPACE, "status", <term>, dirty))
+toolbus(ClearCacheHandler(SDF_TREE_CACHE, SDF_NAMESPACE, ".sdf.pt", "status", <term>, dirty))
 
 process GetSDFParsetree(ModuleId: module-id, Result: term?) is
 let
@@ -522,7 +522,7 @@ in
         (
           rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
           . AnnotateTree(Tree, Path, Result?)
-          . PutCachedValue(SDF_TREE_CACHE, ModuleId, Path, ".pt", Result)
+          . PutCachedValue(SDF_TREE_CACHE, ModuleId, Path, ".sdf.pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED

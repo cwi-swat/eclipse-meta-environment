@@ -15,7 +15,7 @@ process GetTermParseTable(SdfModuleId: module-id, Table: term?) is
     GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
 
 toolbus(InitCache(TERM_TREE_CACHE))
-toolbus(ClearCacheHandler(TERM_TREE_CACHE, SDF_NAMESPACE, "status", <term>, edited))
+toolbus(ClearCacheHandler(TERM_TREE_CACHE, SDF_NAMESPACE, ".trm.pt", "status", <term>, edited))
 
 process ClearTermParsetreeCacheListener is
 let

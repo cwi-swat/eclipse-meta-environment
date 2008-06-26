@@ -74,28 +74,6 @@ endlet
 
 toolbus(ASFModuleChecker)
 
-/* 
-process ASFModuleShapeChanger is
-let
-  Event: attribute-changed-event,
-  ModuleId: module-id,
-  NewPath: term,
-  Tree: term
-in
-  MM-Subscribe-Attribute-Changed(<module-id>,ASF_NAMESPACE,"status",<term>,dirty)  
-  .
-  (
-    rec-note(mm-attribute-changed(Event?))
-    . ACE-GetModuleId(Event, ModuleId?)
-    . MM-SetModuleGraphAttribute(ModuleId, "shape", shape(ellipse))
-  )
-  *
-  delta
-endlet
-
-toolbus(ASFModuleShapeChanger)
-*/
-
 process ASFModuleParser is
 let
   Event: attribute-changed-event,
@@ -109,8 +87,9 @@ in
   
     rec-note(mm-attribute-changed(Event?))
     . ACE-GetModuleId(Event, ModuleId?)
-    . printf("parsing ASF file\n")
-    . GetASFParseTree(ModuleId, Tree?)
+    . Asf2SdfId(ModuleId, SdfModuleId?)
+    . printf("listener: parsing ASF file for module id %t (sdf: %t)\n", ModuleId, SdfModuleId)
+    . GetASFParseTree(SdfModuleId, Tree?)
     .
     if not-equal(Tree, UNDEFINED) then
        printf("ASF parsed\n") .
@@ -123,8 +102,6 @@ in
   *
   delta
 endlet 
-
-/* TODO: add syntax checker */
 
 toolbus(ASFModuleParser)
 

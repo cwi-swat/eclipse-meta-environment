@@ -57,7 +57,20 @@ endlet
 
 
 process Asf2SdfId(AsfModuleId: module-id, SdfModuleId: module-id?) is
+let
+  AsfPath : str,
+  SdfPath : str
+in
   MM-GetAttribute(AsfModuleId, ASF_NAMESPACE, "sdf-id", SdfModuleId?)
+  .
+  if equal(SdfModuleId, UNDEFINED) then
+     GetModulePath(AsfModuleId, ASF_NAMESPACE, AsfPath?)
+     . AsfPath2SdfPath(AsfPath, SdfPath?)
+     . GetOrCreateModule(SDF_NAMESPACE, SdfPath, SdfModuleId?)
+  else
+    tau
+  fi
+endlet
   
 process GetASFModuleId(Filename : str, ModuleId : module-id?) is
   GetOrCreateModule(ASF_NAMESPACE, Filename, ModuleId?)
@@ -117,14 +130,16 @@ let
   Summary : summary,
   Errors: list,
   Modulename: str,
-  Tree: term
+  Tree: term,
+  SdfModuleId : module-id
 in
-  GetASFParseTree(ModuleId, Tree?)
+  Asf2SdfId(ModuleId, SdfModuleId?)
+  . GetASFParseTree(SdfModuleId, Tree?)
   .
   if not-equal(Tree, UNDEFINED) then
     snd-msg(check-asf(Tree))
     . rec-msg(messages(Errors?))
-    . MM-GetAttribute(ModuleId, ASF_NAMESPACE, "name", Modulename?) 
+    . MM-GetAttribute(SdfModuleId, SDF_NAMESPACE, "name", Modulename?) 
     . RemoveSummary("asf-checker", Modulename)
     . snd-msg(es-make-summary("asf-checker", Modulename, Errors))
     . rec-msg(es-summary(Summary?))
@@ -136,10 +151,10 @@ endlet
 
 /* TODO: ensure cache is initialized before first call */
 toolbus(InitCache(ASF_TREE_CACHE))
-toolbus(ClearCacheHandler(ASF_TREE_CACHE, ASF_NAMESPACE, "status", <term>,dirty))
-toolbus(ClearCacheHandler(ASF_TREE_CACHE, SDF_NAMESPACE, "status", <term>,complete))
+toolbus(ClearCacheHandler(ASF_TREE_CACHE, ASF_NAMESPACE, ".asf.pt", "status", <term>,dirty))
+toolbus(ClearCacheHandler(ASF_TREE_CACHE, SDF_NAMESPACE, ".asf.pt", "status", <term>,complete))
 
-process GetASFParseTree(ModuleId: module-id, Result: term?) is
+process GetASFParseTree(SdfModuleId: module-id, Result: term?) is
 let
   AmbPid: int,
   ParseTable: term,
@@ -151,29 +166,29 @@ let
   Tree: term
 in
   snd-msg(tm-request-transaction(asf-parsing))
-  . GetCachedValue(ASF_TREE_CACHE, ModuleId, Tree?)
+  . GetCachedValue(ASF_TREE_CACHE, SdfModuleId, Tree?)
   .
   if equal(Tree, UNDEFINED) then
     Type := ASF_NAMESPACE
-    . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
+    . GetModulePath(SdfModuleId, SDF_NAMESPACE, SdfPath?)
     . SdfPath2AsfPath(SdfPath, AsfPath?)
     . ReadText(AsfPath, Text?)
     .
     if not-equal(Text, "") then
-      printf("Getting parse table %t %t\n", ModuleId, Type)
-      . GetParseTable(ModuleId, Type, ParseTable?)
+      printf("Getting parse table %t %t\n", SdfModuleId, Type)
+      . GetParseTable(SdfModuleId, Type, ParseTable?)
       .
       if not-equal(ParseTable, UNDEFINED) then
-        create(ParseTreeHandler(ModuleId, AsfPath), Pid?)
+        create(ParseTreeHandler(SdfModuleId, AsfPath), Pid?)
 	    . RemoveAmbiguitySummary(AsfPath)
 	    . printf("ParseText for ASF equations: %s\n", Text)
         . ParseText(Pid, Text, ParseTable, ASF_TOPSORT, on)
         .
         (
-          rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
+          rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
 	      . create(AmbiguityHandler(Tree, AsfPath), AmbPid?)
           . AnnotateTree(Tree, AsfPath, Result?) 
-          . PutCachedValue(ASF_TREE_CACHE, ModuleId, AsfPath, ".asf.pt", Result)
+          . PutCachedValue(ASF_TREE_CACHE, SdfModuleId, AsfPath, ".asf.pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED
@@ -237,78 +252,9 @@ in
    . JobDone("Compiling")
 endlet
 
-process DumpEquations(ModuleId: module-id) is
-let
-  SdfPath: str,
-  Path : str
-in
-  GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
-  . ReplaceExtension(SdfPath, ".eqs", Path?)
-  . DumpEquationsGivenFile(ModuleId, Path)
-endlet
-
-process DumpTestEquationsGivenFile(ModuleId : module-id, Path: str) is
-let
-  Equations: term,
-  Error: term,
-  Filename: str,
-  Id: int,
-  Pid: int,
-  Specification: term
-in
-  AddJob("Dumping tests...")
-  . GetSpecification(ModuleId, Specification?)
-  .
-  if not-equal(Specification, UNDEFINED) then
-    GetSpecificationTests(Specification, Equations?)
-    . snd-msg(io-unpack-and-write-term-in-baf(Path, Equations))
-    .
-    (
-      rec-msg(io-file-written)
-    +
-      rec-msg(io-file-not-written(Error?))
-      . snd-note(ui-status(errorf("%s: %t", [Path, Error])))
-    )
-  else   
-     snd-note(ui-status(statf(Id, "Specification could not be dumped")))
-  fi
-  . snd-note(ui-status(stop(Id)))
-  . JobDone("Dumping tests...")
-endlet
-
-
-process DumpEquationsGivenFile(ModuleId : module-id, Path: str) is
-let
-  Equations: term,
-  Error: term,
-  Filename: str,
-  Id: int,
-  Pid: int,
-  Specification: term
-in
-  AddJob("Dumping equations...")
-  . GetSpecification(ModuleId, Specification?)
-  .
-  if not-equal(Specification, UNDEFINED) then
-    GetSpecificationEquations(ModuleId, Specification, Equations?)
-    . snd-msg(io-unpack-and-write-term-in-baf(Path, Equations))
-    .
-    (
-      rec-msg(io-file-written)
-    +
-      rec-msg(io-file-not-written(Error?))
-      . snd-note(ui-status(errorf("%s: %t", [Path, Error])))
-    )
-  else   
-     snd-note(ui-status(statf(Id, "Specification could not be dumped")))
-  fi
-  . snd-note(ui-status(stop(Id)))
-  . JobDone("Dumping equations...")
-endlet
-
 toolbus(InitCache(ASF_NORMALIZED_TREE_CACHE))
-toolbus(ClearCacheHandler(ASF_NORMALIZED_TREE_CACHE, ASF_NAMESPACE, "status", <term>,available))
-toolbus(ClearCacheHandler(ASF_NORMALIZED_TREE_CACHE, SDF_NAMESPACE, "status", <term>,complete))
+toolbus(ClearCacheHandler(ASF_NORMALIZED_TREE_CACHE, ASF_NAMESPACE, ".asf.nrm", "status", <term>,dirty))
+toolbus(ClearCacheHandler(ASF_NORMALIZED_TREE_CACHE, SDF_NAMESPACE, ".asf.nrm", "status", <term>,complete))
 
 process NormalizeEquations(ModuleId : term, Equations: term, Result : term?) is
 let
