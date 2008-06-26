@@ -6,13 +6,22 @@ tool jobs-manager is {  }
 process JobsManager is
 let
   T : jobs-manager,
-  Job : str
+  Job : str,
+  Aborter : term
 in
   rec-connect(T?)
   . 
   (
+    rec-event(T, abort-job(Aborter?))
+    . snd-ack-event (T, abort-job)
+    . printf("Received abort-job with %t\n", Aborter)
+    . snd-note(Aborter)
+  +
     rec-msg(ui-start-job(Job?))
-    . snd-do(T, start-job(Job))
+    . snd-do(T, start-job(Job, no-aborter))
+  +
+    rec-msg(ui-start-job(Job?, Aborter?))
+    . snd-do(T, start-job(Job, Aborter))
   +
     rec-msg(ui-end-job(Job?))
     . snd-do(T, end-job(Job))
@@ -32,6 +41,9 @@ process EndJob(Message: str) is
   
 process AddJob(Message: str) is
   snd-msg(ui-start-job(Message))
+
+process AddJobWithAborter(Message: str, Aborter : term) is
+  snd-msg(ui-start-job(Message, Aborter))
 
 process JobDone(Message: str) is
   snd-msg(ui-end-job(Message))
