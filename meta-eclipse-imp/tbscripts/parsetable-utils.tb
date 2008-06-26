@@ -38,7 +38,8 @@ let
 in
   InitCache(TableName)
   . printf("init cache for %s\n", TableName)
-  . create(ClearCacheHandler(TableName, Namespace, "status", <term>, complete), Pid?)
+  . Ext := concat(".", concat(Namespace, ".tbl"))
+  . create(ClearCacheHandler(TableName, Namespace, Ext, "status", <term>, complete), Pid?)
   . printf("waiting for get-parsetable(ModuleId?, %t)\n", Type)
   .
   (

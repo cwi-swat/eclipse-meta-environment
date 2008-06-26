@@ -74,12 +74,9 @@ process ChangedModule(Language : str, Path : str) is
 let
   ModuleId : module-id
 in
-  MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
-  . if not-equal(ModuleId, UNDEFINED) then
-    MM-SetAttribute(ModuleId, Language, "status", dirty)
-  else
-    printf("Unknown module changed %s\n", Path)
-  fi
+  printf("Changed module %t language %t\n", Path, Language)
+  . GetOrCreateModule(Language, Path, ModuleId?)
+  . MM-SetAttribute(ModuleId, Language, "status", dirty)
 endlet
  
 process GetModulePath(ModuleId: module-id, Namespace: str, Path: str?) is

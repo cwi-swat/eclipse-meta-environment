@@ -34,8 +34,12 @@ in
     . Content := ""
   +
     rec-msg(res-save-build(Path?, Ext?, TermContent?))
+    . printf("resource tool saving content for %s with ext %s\n", Path, Ext)
     . snd-do(T, save-build(Path, Ext, TermContent))
     . TermContent := undefined
+  +
+    rec-msg(res-clean-build(Path?, Ext?))
+    . snd-do(T, clean-build(Path, Ext))
   ) * delta
   
 endlet

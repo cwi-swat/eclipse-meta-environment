@@ -2,11 +2,10 @@ package org.meta_environment.eclipse.files;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -26,6 +25,9 @@ import aterm.ATerm;
 import aterm.pure.binary.BinaryWriter;
 
 public class Resources extends Tool implements IResourceChangeListener {
+	private static final String BIN_FOLDER = "bin";
+	private static final String EXTENSION_SEPARATOR = ".";
+
 	private static class InstanceKeeper {
 		private static Resources sInstance = new Resources();
 		static{
@@ -158,19 +160,45 @@ public class Resources extends Tool implements IResourceChangeListener {
 			RuntimePlugin.getInstance().logException("could not save build for " + sourcePathStr, e);
 		}
     }
+    
+    public void cleanBuild(String sourcePathStr, String targetExt) {
+    
+    	try {
+			IFile targetFile = getTargetFile(sourcePathStr, targetExt);
+			
+			if (targetFile != null && targetFile.exists()) {
+				targetFile.delete(true, false, new NullProgressMonitor());
+				System.err.println("Resources: cleaned " + targetFile);
+			}
+		} catch (CoreException e) {
+			RuntimePlugin.getInstance().logException("could not clean build for " + sourcePathStr, e);
+		}
+    }
 
 	private IFile getTargetFile(String sourcePathStr, String targetExt)
 			throws CoreException {
 		IFile sourceFile = getFile(sourcePathStr);
 		
-		while (targetExt.startsWith(".")) {
+		while (targetExt.startsWith(EXTENSION_SEPARATOR)) {
 			targetExt = targetExt.substring(1);
 		}
 
 		if (sourceFile != null) {
+			IProject project = sourceFile.getProject();
 			IPath sourcePath = sourceFile.getProjectRelativePath();
-			IPath targetPath = sourcePath.removeFileExtension()
-					.addFileExtension(targetExt);
+			IFolder binFolder = project.getFolder(BIN_FOLDER);
+			IPath targetPath = binFolder.getProjectRelativePath().append(sourcePath.removeFileExtension()
+					.addFileExtension(targetExt));
+			
+			IPath current = Path.ROOT;
+			for (String segment : targetPath.removeLastSegments(1).segments()) {
+				current = current.append(segment);
+			    IFolder path = project.getFolder(current);
+			    if (!path.exists()) {
+			    	path.create(true, true, null);
+			    }
+			}
+			
 			IFile targetFile = sourceFile.getProject().getFile(targetPath);
 
 			return targetFile;

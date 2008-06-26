@@ -6,21 +6,26 @@
 
 /* sort of generic caching processes */
 process ClearCacheHandler(TableName: str, 
-                          Namespace: str, 
+                          Namespace: str,
+                          TargetExt: str, 
                           AttributeName: term, 
                           OldValue: term,
                           NewValue: term) is
 let
   AttributeEvent: attribute-changed-event,
   ModuleId: module-id,
-  Value: term
+  Value: term,
+  Path: str
 in
   MM-Subscribe-Attribute-Changed(<module-id>,Namespace,AttributeName,OldValue,NewValue)
   .
   (
     rec-note(mm-attribute-changed(AttributeEvent?))
     . ACE-GetModuleId(AttributeEvent, ModuleId?)
+    . printf("CLEAN CACHE %t %t %t %t %t\n", ModuleId, TableName, Namespace, TargetExt, AttributeName)
     . snd-msg(ts-remove-value(TableName, ModuleId))
+    . GetModulePath(ModuleId, Namespace, Path?)
+    . snd-msg(res-clean-build(Path, TargetExt))
   )
   * delta
 endlet
@@ -40,6 +45,7 @@ process GetCachedValue(TableName: str, Key: term, Value: term?) is
 
 process PutCachedValue(TableName: str, Key: term, Path: str, Ext : str, Value: term) is
   snd-msg(ts-put-term-value(TableName, Key, Value))
+  . printf("PUT CACHE: %t %t %t %t\n", Key, TableName, Path, Ext)
   . snd-msg(res-save-build(Path, Ext, Value))
 
 process ClearCachedValue(TableName: str, Key: term) is
