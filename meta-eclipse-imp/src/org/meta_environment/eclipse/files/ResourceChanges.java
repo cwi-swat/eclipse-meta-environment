@@ -24,23 +24,23 @@ import org.meta_environment.eclipse.Tool;
 import aterm.ATerm;
 import aterm.pure.binary.BinaryWriter;
 
-public class Resources extends Tool implements IResourceChangeListener {
+public class ResourceChanges extends Tool implements IResourceChangeListener {
 	private static final String BIN_FOLDER = "bin";
 	private static final String EXTENSION_SEPARATOR = ".";
 
 	private static class InstanceKeeper {
-		private static Resources sInstance = new Resources();
+		private static ResourceChanges sInstance = new ResourceChanges();
 		static{
 			sInstance.connect();
 		}
 	}
 	
-	private Resources() {
+	private ResourceChanges() {
 		super("resources");
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 	
-	static public Resources getInstance() {
+	static public ResourceChanges getInstance() {
 		return InstanceKeeper.sInstance;
 	}
 

@@ -1,0 +1,34 @@
+#ifndef __RESOURCE_CHANGES__
+#define __RESOURCE_CHANGES__
+
+
+tool resource-changes is { }
+
+process ResourceChanges is
+let
+  T : resource-changes,
+  Language : str,
+  Path : str
+in
+  rec-connect(T?) 
+  . printf("Resource changes tool connected!\n")
+  .
+  (
+    rec-event(T, create-module(Language?, Path?))
+    . snd-note(res-create-module(Language, Path))
+    . snd-ack-event(T, create-module(Language, Path))
+  +
+    rec-event(T, delete-module(Language?, Path?))
+    . snd-note(res-delete-module(Language, Path))
+    . snd-ack-event(T, delete-module(Language, Path))
+  +
+    rec-event(T, build-module(Language?, Path?))
+    . snd-note(res-module-changed(Language, Path))
+    . snd-ack-event(T, build-module(Language, Path))
+  ) * delta
+  
+endlet
+
+toolbus(ResourceChanges)
+
+#endif
