@@ -5,7 +5,8 @@
 #include <builder.idef>
 #include <error-viewer.idef>
 #include <jobs-manager.idef>
-#include <resources.idef>
+#include <resource-changes.idef>
+#include <build-results.idef>
 #include <editor-tool.idef>
 #include <language-actions.idef>
 #include <editor-tool.idef>
