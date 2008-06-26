@@ -36,7 +36,7 @@ public class ResourceChanges extends Tool implements IResourceChangeListener {
 	}
 	
 	private ResourceChanges() {
-		super("resources");
+		super("resource-changes");
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 	

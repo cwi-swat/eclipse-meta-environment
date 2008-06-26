@@ -31,7 +31,7 @@ public class BuildResults extends Tool {
 	}
 
 	private BuildResults() {
-		super("builds");
+		super("build-results");
 	}
 
 	static public BuildResults getInstance() {
