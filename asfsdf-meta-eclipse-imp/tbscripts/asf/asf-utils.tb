@@ -431,7 +431,7 @@ in
   if not-equal(Specification, UNDEFINED) then
     GetSpecificationEquations(ModuleId, Specification, Equations?)
     . GetTermParseTable(ModuleId, ParseTable?)
-    . AddJob("Rewriting...")
+    . AddJobWithAborter("Rewriting...", asfe-abort)
     . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
     . snd-msg(asfe-rewrite(Modulename, Equations, ParseTable, Tree, Debugging))
     .
