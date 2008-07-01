@@ -361,4 +361,15 @@
 </EditorSubmenu>
 </EditorMenu> 
     </extension>
+    <extension
+          point="org.eclipse.ui.perspectives">
+       <perspective
+             class="org.meta_environment.eclipse.sdf.Perspective"
+             id="asfsdf-meta-eclipse-imp.perspective"
+             name="ASF+SDF">
+          <description>
+             The ASF+SDF perspective loads the views that are apropriate for editing and testing ASF+SDF programs.
+          </description>
+       </perspective>
+    </extension>
     </plugin>
