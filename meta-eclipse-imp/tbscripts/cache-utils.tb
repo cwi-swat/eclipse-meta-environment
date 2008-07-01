@@ -30,6 +30,44 @@ in
   * delta
 endlet
 
+process MClearCacheHandler(Namespace : term,
+                           Tablenames : list,  
+                           Targetexts : list) is
+let
+  WTablenames : list, 
+  WTargetexts : list, 
+  ModuleId : module-id,
+  Tablename : str,
+  TargetExt : str,
+  Path : str,
+  AttributeEvent : attribute-changed-event
+in
+  MM-Subscribe-Attribute-Changed(<module-id>, Namespace, "status", <term>, dirty)
+  .
+  (
+    rec-note(mm-attribute-changed(AttributeEvent?))
+    . ACE-GetModuleId(AttributeEvent, ModuleId?)
+    . GetModulePath(ModuleId, Namespace, Path?)
+    . WTablenames := Tablenames
+    . WTargetexts := Targetexts
+    .
+    if not-equal(WTablenames, []) then
+      Tablename := first(WTablenames)
+      . TargetExt := first(WTargetexts)
+      . WTablenames := next(WTablenames)
+      . WTargetexts := next(WTargetexts)
+      . printf("MCleaning cache: %t %t %t %t\n", ModuleId, Path, Tablename, TargetExt)
+      . snd-msg(ts-remove-value(Tablename, ModuleId))
+      . snd-msg(res-clean-build(Path, TargetExt))
+    fi
+    *
+    if equal(WTablenames, []) then
+      MM-SetAttribute(ModuleId, Namespace, "status", clean)
+    fi
+  ) * delta
+endlet
+
+
 process InitCache(TableName: str) is
   snd-msg(ts-add-table(TableName, "term"))
 
@@ -42,13 +80,15 @@ process GetCachedValue(TableName: str, Key: term, Value: term?) is
     rec-msg(ts-no-value(TableName, Key))
     . Value := UNDEFINED
   )
+  
+process MGetCachedValue(Ext: str, SourcePath: str, Value: term?) is
+  printf("MGet: %t %t\n", SourcePath, Ext)
+  . snd-msg(res-load-build(SourcePath, Ext))
+  . rec-msg(res-build(SourcePath, Ext, Value?))
 
 process PutCachedValue(TableName: str, Key: term, Path: str, Ext : str, Value: term) is
   snd-msg(ts-put-term-value(TableName, Key, Value))
   . printf("PUT CACHE: %t %t %t %t\n", Key, TableName, Path, Ext)
   . snd-msg(res-save-build(Path, Ext, Value))
-
-process ClearCachedValue(TableName: str, Key: term) is
-  snd-msg(ts-remove-value(TableName, Key))
 
 #endif /* __CACHE_UTILS__ */

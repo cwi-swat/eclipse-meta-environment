@@ -117,7 +117,7 @@ public class BuildResults extends Tool {
 					"could not get build for " + sourcePathStr, e);
 		}
 		
-		return getFactory().make("build(build-not-found)");
+		return getFactory().make("build(undefined)");
 	}
 
 	public ATerm loadStrBuild(String sourcePathStr, String targetExt) {

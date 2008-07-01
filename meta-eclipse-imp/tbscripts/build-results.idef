@@ -1,0 +1,52 @@
+#ifndef __BUILD_RESULTS__
+#define __BUILD_RESULTS__
+
+
+tool build-results is { }
+
+process BuildResults is
+let
+  T : build-results,
+  Path : str,
+  Ext : str,
+  Content : str,
+  TermContent : term
+in
+  rec-connect(T?) 
+  . printf("Build results tool connected!\n")
+  .
+  ( printf("Build tool ready to communicate\n")
+  .
+  (
+    rec-msg(res-save-str-build(Path?, Ext?, Content?))
+    . snd-do(T, save-build(Path, Ext, Content))
+    . Content := ""
+  +
+    rec-msg(res-save-build(Path?, Ext?, TermContent?))
+    . snd-do(T, save-build(Path, Ext, TermContent))
+    . TermContent := undefined
+  +
+    rec-msg(res-clean-build(Path?, Ext?))
+    . snd-do(T, clean-build(Path, Ext))
+  +
+    rec-msg(res-load-build(Path?, Ext?))
+    . printf("Trying to load build result from project: %t %t\n", Path, Ext)
+    . snd-eval(T, load-build(Path, Ext))
+    . rec-value(T, build(TermContent?))
+    . printf("Retrieved build result from project: %t", TermContent)
+    . snd-msg(res-build(Path, Ext, TermContent))
+    . printf("Send build result back\n")
+    . TermContent := undefined
+  +
+    rec-msg(res-load-str-build(Path?, Ext?))
+    . snd-eval(T, load-str-build(Path, Ext))
+    . rec-value(T, build(Content?))
+    . snd-msg(res-str-build(Path, Ext, Content))
+    . Content := ""
+  )) * delta
+  
+endlet
+
+toolbus(BuildResults)
+
+#endif

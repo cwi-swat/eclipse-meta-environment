@@ -38,14 +38,15 @@ let
 in
   InitCache(TableName)
   . printf("init cache for %s\n", TableName)
-  . Ext := concat(".", concat(Namespace, ".tbl"))
+  . Ext := concat(".", concat(Type, ".tbl"))
+  . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
   . create(ClearCacheHandler(TableName, Namespace, Ext, "status", <term>, complete), Pid?)
   . printf("waiting for get-parsetable(ModuleId?, %t)\n", Type)
   .
   (
     rec-msg(get-parsetable(ModuleId?, Type))
     . printf("rec-msg(get-parsetable(%s, %s))\n", ModuleId,Type)
-    . GetCachedValue(TableName, ModuleId, Table?)
+    . MGetCachedValue(Ext, SdfPath, Table?)
     .
     if equal(Table, UNDEFINED) then
       AddJob("Generating parser")
@@ -59,9 +60,7 @@ in
 	. GenerateParsetable(Modulename, NewSyntax, Table?)
 	.
 	if not-equal(Table, UNDEFINED) then
-	  GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
-	  . Ext := concat(".", concat(Namespace, ".tbl"))
-	  . PutCachedValue(TableName, ModuleId, SdfPath, Ext, Table)
+	  PutCachedValue(TableName, ModuleId, SdfPath, Ext, Table)
 	  . snd-msg(parsetable(ModuleId, Type, Table))
 	else
 	  printf("generation of parse table failed\n") .
@@ -88,42 +87,5 @@ process GenerateParsetable(Modulename: str, Syntax: term, Table: term?) is
     rec-msg(no-parsetable)
     . Table := UNDEFINED
   )
-
-process DumpParseTable(ModuleId : module-id, Namespace: str, Filename : str, Type : str) is
-let
-  Directory: str,
-  Error: term,
-  Extension: str,
-  Id: term,
-  NewFilename: str,
-  NewPath: str,
-  Path: str,
-  Table: term
-in
-  AddJob(Filename)
-  . Id := process-id
-  . snd-msg(get-parsetable(ModuleId, Type))
-  .
-  (
-    rec-msg(parsetable(ModuleId, Type, Table?))
-    . GetModulePath(ModuleId, Namespace, Path?)
-    .
-    if equal(Filename, "") then
-      TODO("DumpParseTable got empty filename")
-    else
-      NewFilename := Filename
-    fi
-    . snd-msg(io-unpack-and-write-term-in-baf(NewFilename, Table))
-    .
-    (
-      rec-msg(io-file-written)
-    +
-      rec-msg(io-file-not-written(Error?))
-    )
-  +
-    rec-msg(no-parsetable(ModuleId))
-  )
-  . JobDone(Filename)
-endlet
 
 #endif /* __PARSETABLE_UTILS__ */

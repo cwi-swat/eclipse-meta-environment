@@ -96,6 +96,8 @@ public class ErrorViewer extends Tool {
 	private void showSubject(Summary summary, String desc, Subject subject,
 			int severity) throws CoreException {
 		String msg = subject.getDescription();
+		
+		if (subject.hasLocation()) {
 		Location loc = subject.getLocation();
 		Area area = loc.getArea();
 		String filename = loc.getFilename();
@@ -118,6 +120,7 @@ public class ErrorViewer extends Tool {
 			m.setAttribute(IMarker.SEVERITY, severity);
 			m.setAttribute(IMarker.LOCATION, "line: " + area.getBeginLine()
 					+ ", column: " + area.getBeginColumn());
+		}
 		}
 	}
 
