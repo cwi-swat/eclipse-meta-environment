@@ -12,16 +12,13 @@ public class Activator extends PluginBase {
 
 	public static final String kLanguageName = "tscript";
 
-	public Activator() {
+	public Activator(){
 		super();
 	}
 
-	private static Activator sInstance;
+	private static Activator sInstance = new Activator();
 
-	public static Activator getInstance() {
-		if (sInstance == null) {
-			sInstance = new Activator();
-		}
+	public static Activator getInstance(){
 		return sInstance;
 	}
 

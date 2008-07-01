@@ -137,8 +137,7 @@ public class ParseController implements IParseController, IResourceChangeListene
 		return null;
 	}
 
-	public void initialize(IPath filePath, ISourceProject project,
-			IMessageHandler handler) {
+	public void initialize(IPath filePath, ISourceProject project, IMessageHandler handler) {
 		this.handler = handler;
 
 		// Try to make the path absolute
@@ -151,7 +150,7 @@ public class ParseController implements IParseController, IResourceChangeListene
 		}
 	}
 
-	private static String[] buildIncludePath() {
+	public static String[] buildIncludePath() {
 		final List<String> includes = new ArrayList<String>();
 
 		try {
@@ -203,7 +202,7 @@ public class ParseController implements IParseController, IResourceChangeListene
 			handler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
 		}catch(ToolBusExecutionException e){
 			PositionInformation p = e.getPositionInformation();
-			handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0,0,1,1);
+			handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0, 0, 1, 1);
 		}catch(ToolBusException e){
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
 			e.printStackTrace();
