@@ -20,6 +20,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.imp.language.Language;
 import org.eclipse.imp.model.ISourceProject;
 import org.eclipse.imp.parser.IMessageHandler;
 import org.eclipse.imp.parser.IParseController;
@@ -37,7 +38,7 @@ import toolbus.parsercup.sym;
 import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 
-public class ParseController implements IParseController, IResourceChangeListener {
+public class ParseController implements IParseController, IResourceChangeListener{
 	private volatile IMessageHandler handler;
 	private volatile String absPath;
 
@@ -226,5 +227,10 @@ public class ParseController implements IParseController, IResourceChangeListene
 				resource instanceof IFolder) {
 			includePath = buildIncludePath();
 		}
+	}
+	
+	public Language getLanguage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
