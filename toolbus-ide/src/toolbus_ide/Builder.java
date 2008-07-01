@@ -7,6 +7,7 @@ import java.util.HashSet;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.imp.builder.BuilderBase;
@@ -14,21 +15,19 @@ import org.eclipse.imp.language.Language;
 import org.eclipse.imp.language.LanguageRegistry;
 import org.eclipse.imp.runtime.PluginBase;
 
-import aterm.ATerm;
-
 import toolbus.ToolBus;
 import toolbus.exceptions.ToolBusException;
 import toolbus.exceptions.ToolBusExecutionException;
+import toolbus.parsercup.PositionInformation;
 import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 import toolbus_ide.editor.ParseController;
+import aterm.ATerm;
 
 public class Builder extends BuilderBase {
-    public static final String BUILDER_ID = Activator.kPluginID
-            + ".builder";
-    public static final String PROBLEM_MARKER_ID = Activator.kPluginID
-            + ".builder.problem";
+    public static final String BUILDER_ID = Activator.kPluginID + ".builder";
+    public static final String PROBLEM_MARKER_ID = Activator.kPluginID + ".builder.problem";
 
     public static final String LANGUAGE_NAME = Activator.kLanguageName;
 
@@ -66,41 +65,44 @@ public class Builder extends BuilderBase {
     protected boolean isOutputFolder(IResource resource){
         return resource.getFullPath().lastSegment().equals("bin");
     }
+    
+    public void addMarker(IFile file, int charOffset, int line, int column, String message){
+    	try{
+	    	IMarker m = file.createMarker(IMarker.PROBLEM);
+	
+			m.setAttribute(IMarker.TRANSIENT, true);
+			m.setAttribute(IMarker.CHAR_START, charOffset);
+			m.setAttribute(IMarker.CHAR_END, charOffset);
+			m.setAttribute(IMarker.MESSAGE, message);
+			m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+			m.setAttribute(IMarker.LOCATION, "line: " + line + ", column: " + column);
+    	}catch(CoreException ce){
+    		// I don't care what happened, just ignore this.
+    	}
+    }
 
     protected void compile(final IFile file, IProgressMonitor monitor){
-        try{
-        	IMarker marker = file.createMarker(PROBLEM_MARKER_ID);
-        	// TODO see ErrorViewer.java on how to create error markers
-        	marker.setAttribute(IMarker.MESSAGE, "there is no implementation of a builder yet");
-        	
-        	String filename = file.getName();
-        	String[] includePath = ParseController.buildIncludePath();
-        	ToolBus toolbus = new ToolBus(includePath);
-    		try{
-    			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
-    			parser_obj.parse();
-    		}catch(SyntaxErrorException see){ // Parser.
-    			// TODO assuming the input is the whole file, this fix is correct.
-    			// needs to be fixed in IMP
-    			//int pos = (see.position >= input.length()) ? input.length() - 1 : see.position;
-    			//handler.handleSimpleMessage(see.getMessage(), pos, pos, see.column, see.column, see.line, see.line);
-    		}catch(UndeclaredVariableException uvex){ // Parser.
-    			//int pos = (uvex.position >= input.length()) ? input.length() - 1 : uvex.position;
-    			//handler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
-    		}catch(ToolBusExecutionException e){
-    			//PositionInformation p = e.getPositionInformation();
-    			//handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0, 0, 1, 1);
-    		}catch(ToolBusException e){
-    			//handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
-    			e.printStackTrace();
-    		}catch(Error e){ // Scanner.
-    			//handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
-    		}catch(Exception ex){ // Something else.
-    			//handler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
-    		}
-        }catch(Exception e){
-            getPlugin().logException(e.getMessage(), e);
-        }
+    	String filename = file.getName();
+    	String[] includePath = ParseController.buildIncludePath();
+    	ToolBus toolbus = new ToolBus(includePath);
+		try{
+			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
+			parser_obj.parse();
+		}catch(SyntaxErrorException see){ // Parser.
+			addMarker(file, see.position, see.line, see.column, "Syntax error.");
+		}catch(UndeclaredVariableException uvex){ // Parser.
+			addMarker(file, uvex.position, uvex.line, uvex.column, "Undeclared variable.");
+		}catch(ToolBusExecutionException e){
+			PositionInformation p = e.getPositionInformation();
+			addMarker(file, p.getOffset(), 0, 0, e.getMessage());
+		}catch(ToolBusException e){
+			addMarker(file, 0, 0, 0, e.getMessage());
+		}catch(Error e){ // Scanner.
+			addMarker(file, 0, 0, 0, e.getMessage());
+		}catch(Exception ex){ // Something else.
+			addMarker(file, 0, 0, 0, ex.getMessage());
+		}
     }
     
 	protected PluginBase getPlugin(){
