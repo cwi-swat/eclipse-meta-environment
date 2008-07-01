@@ -6,17 +6,6 @@ import org.eclipse.imp.preferences.PreferencesService;
 import org.eclipse.imp.runtime.PluginBase;
 import org.osgi.framework.BundleContext;
 
-/*
- * SMS 27 Mar 2007:  Deleted creation of preferences cache (now obsolete)
- * SMS 28 Mar 2007:
- * 	- Plugin class name now totally parameterized
- *  - Plugin package made a separate parameter
- * SMS 19 Jun 2007:
- * 	- Added kLanguageName (may be used by later updates to the template)
- * 	- Added field and method related to new preferences service; deleted
- *	  code for initializing preference store from start(..) method
- */
-
 public class Activator extends PluginBase {
 
 	public static final String kPluginID = "toolbus_ide";
@@ -27,9 +16,17 @@ public class Activator extends PluginBase {
 		super();
 	}
 
+	private static Activator sInstance;
+
+	public static Activator getInstance() {
+		if (sInstance == null) {
+			sInstance = new Activator();
+		}
+		return sInstance;
+	}
+
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-
 	}
 
 	public String getID() {

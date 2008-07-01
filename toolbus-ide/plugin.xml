@@ -24,5 +24,40 @@
             language="tscript">
       </tokenColorer>
    </extension>
+   <extension
+         id="toolbus_ide.builder"
+         name="ToolBus builder"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="toolbus_ide.Builder">
+            <parameter
+                  name="foo"
+                  value="bar">
+            </parameter>
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="toolbus_ide.nature"
+         name="ToolBus Nature"
+         point="org.eclipse.core.resources.natures">
+      <builder
+            id="toolbus_ide.builder">
+      </builder>
+      <runtime>
+         <run
+               class="toolbus_ide.Builder">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         id="toolbus_ide.builder.problem"
+         name="tscript Error"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+   </extension>
 
 </plugin>
