@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Control;
 public class EditorActionContributor extends DefaultLanguageActionsContributor {
 	public static final String TERM_LANGUAGE_SELECTOR = "term-language-selector";
 
-	@Override
 	public void contributeToEditorMenu(UniversalEditor editor,
 			IMenuManager menuManager) {
 		String file = getFilename(editor);
@@ -33,14 +32,12 @@ public class EditorActionContributor extends DefaultLanguageActionsContributor {
 		}
 	}
 	
-	@Override
 	public void contributeToStatusLine(final UniversalEditor editor, IStatusLineManager statusLineManager) {
 		contributeLanguageSelector(statusLineManager, editor);
 	}
 
 	private void contributeLanguageSelector(IStatusLineManager statusLineManager, final UniversalEditor ed) {
 		statusLineManager.add(new ControlContribution(TERM_LANGUAGE_SELECTOR) {
-				@Override
 				protected Control createControl(Composite parent) {
 					List<String> languages = TermEditorTools.getInstance().getLanguages();
 					final Combo combo = new Combo(parent, SWT.NONE);
