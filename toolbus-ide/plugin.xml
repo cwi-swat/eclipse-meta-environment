@@ -28,13 +28,10 @@
          id="toolbus_ide.builder"
          name="ToolBus builder"
          point="org.eclipse.core.resources.builders">
-      <builder>
+      <builder
+            hasNature="true">
          <run
                class="toolbus_ide.Builder">
-            <parameter
-                  name="foo"
-                  value="bar">
-            </parameter>
          </run>
       </builder>
    </extension>
@@ -47,13 +44,13 @@
       </builder>
       <runtime>
          <run
-               class="toolbus_ide.Builder">
+               class="toolbus_ide.ToolBusNature">
          </run>
       </runtime>
    </extension>
    <extension
          id="toolbus_ide.builder.problem"
-         name="tscript Error"
+         name="ToolBus Error"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">
