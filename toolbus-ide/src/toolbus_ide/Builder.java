@@ -1,6 +1,7 @@
 package toolbus_ide;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -59,6 +60,11 @@ public class Builder extends BuilderBase {
     protected void compile(final IFile file, IProgressMonitor monitor) {
         try {
         	System.err.println("Implement something that builds the file here");
+        	
+        	IMarker marker = file.createMarker(PROBLEM_MARKER_ID);
+        	// TODO see ErrorViewer.java on how to create error markers
+        	marker.setAttribute(IMarker.MESSAGE, "there is no implementation of a builder yet");
+        	
         } catch (Exception e) {
             getPlugin().logException(e.getMessage(), e);
         }
