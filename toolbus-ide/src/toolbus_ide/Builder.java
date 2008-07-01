@@ -33,6 +33,10 @@ public class Builder extends BuilderBase {
 
     public static final Language LANGUAGE = LanguageRegistry.findLanguage(LANGUAGE_NAME);
 
+    public Builder() {
+    	System.err.println("cons Builder");
+	}
+    
     protected String getErrorMarkerID(){
         return PROBLEM_MARKER_ID;
     }
