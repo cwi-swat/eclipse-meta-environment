@@ -56,5 +56,19 @@
             type="org.eclipse.core.resources.problemmarker">
       </super>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="toolbus_ide.enablenature"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="toolbus_ide.EnableBuilder"
+               id="toolbus_ide.enableBuilderAction"
+               label="Enable ToolBus builder">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>
