@@ -20,7 +20,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.imp.language.Language;
 import org.eclipse.imp.model.ISourceProject;
 import org.eclipse.imp.parser.IMessageHandler;
 import org.eclipse.imp.parser.IParseController;
@@ -34,8 +33,9 @@ import toolbus.exceptions.ToolBusException;
 import toolbus.exceptions.ToolBusExecutionException;
 import toolbus.parsercup.Lexer;
 import toolbus.parsercup.PositionInformation;
-import toolbus.parsercup.sym;
 import toolbus.parsercup.SyntaxErrorException;
+import toolbus.parsercup.parser;
+import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 
 public class ParseController implements IParseController, IResourceChangeListener{
@@ -187,30 +187,29 @@ public class ParseController implements IParseController, IResourceChangeListene
 		lexer = new Lexer(new StringReader(input));
 
 		ToolBus toolbus = new ToolBus(includePath);
-		try {
-			toolbus.parsecupString(absPath, input);
+		try{
+			parser parser_obj = new parser(toolbus, absPath, new StringReader(input));
+			parser_obj.parseIncludes(false);
+			parser_obj.parse();
+			
 			return toolbus;
-		} catch (SyntaxErrorException see) { // Parser.
+		}catch(SyntaxErrorException see){ // Parser.
 			// TODO assuming the input is the whole file, this fix is correct.
 			// needs to be fixed in IMP
-			int pos = (see.position >= input.length()) ? input.length() - 1
-					: see.position;
-			handler.handleSimpleMessage(see.getMessage(), pos, pos, see.column,
-					see.column, see.line, see.line);
-		} catch (UndeclaredVariableException uvex) { // Parser.
-			int pos = (uvex.position >= input.length()) ? input.length() - 1
-					: uvex.position;
-			handler.handleSimpleMessage(uvex.getMessage(), pos, pos,
-					uvex.column, uvex.column, uvex.line, uvex.line);
-		} catch (ToolBusExecutionException e) {
+			int pos = (see.position >= input.length()) ? input.length() - 1 : see.position;
+			handler.handleSimpleMessage(see.getMessage(), pos, pos, see.column, see.column, see.line, see.line);
+		}catch(UndeclaredVariableException uvex){ // Parser.
+			int pos = (uvex.position >= input.length()) ? input.length() - 1 : uvex.position;
+			handler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
+		}catch(ToolBusExecutionException e){
 			PositionInformation p = e.getPositionInformation();
 			handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0,0,1,1);
-		} catch (ToolBusException e) {
+		}catch(ToolBusException e){
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
 			e.printStackTrace();
-		} catch (Error e) { // Scanner.
+		}catch(Error e){ // Scanner.
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
-		} catch (Exception ex) { // Something else.
+		}catch(Exception ex){ // Something else.
 			handler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
 		}
 
@@ -227,10 +226,5 @@ public class ParseController implements IParseController, IResourceChangeListene
 				resource instanceof IFolder) {
 			includePath = buildIncludePath();
 		}
-	}
-	
-	public Language getLanguage() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
