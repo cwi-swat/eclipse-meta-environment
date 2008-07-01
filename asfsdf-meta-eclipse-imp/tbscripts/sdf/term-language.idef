@@ -16,6 +16,7 @@ in
   .
   (
     rec-request(T, get-languages)
+    /* TODO: add indirection to avoid direct call to utility process */
     . GetAllSdfModuleNames(Modules?)
     . snd-response(T, get-languages(Modules))
   +

@@ -14,27 +14,6 @@
 process GetTermParseTable(SdfModuleId: module-id, Table: term?) is
     GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
 
-toolbus(InitCache(TERM_TREE_CACHE))
-toolbus(ClearCacheHandler(TERM_TREE_CACHE, SDF_NAMESPACE, ".trm.pt", "status", <term>, edited))
-
-process ClearTermParsetreeCacheListener is
-let
-  Path: str
-in
-  subscribe(term-modified(<str>))
-  .
-  (
-    rec-note(term-modified(Path?))
-    . snd-msg(ts-remove-value(TERM_TREE_CACHE, Path))
-  )
-  * delta
-endlet
-
-process ClearTermParsetreeCache(Path : str) is
-    snd-msg(ts-remove-value(TERM_TREE_CACHE, Path))
-
-toolbus(ClearTermParsetreeCacheListener)
-
 process GetTermParsetree(SdfModuleId: module-id, Path: str, Result: term?) is
 let
   AmbPid: int,
@@ -45,9 +24,7 @@ let
   Tree: term
 in
   snd-msg(tm-request-transaction(term-parsing))
-//  . GetCachedValue(TERM_TREE_CACHE, Path, Tree?)
   .
-  if equal(Tree, UNDEFINED) then
     Type := TERM_NAMESPACE
     . GetTermParseTable(SdfModuleId, ParseTable?)
     .
@@ -63,7 +40,6 @@ in
           rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
 	  . create(AmbiguityHandler(Tree, Path), AmbPid?)
           . AnnotateTree(Tree, Path, Result?)
-//	  . PutCachedValue(TERM_TREE_CACHE, Path, Path, ".pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED
@@ -74,9 +50,6 @@ in
     else
       Result := UNDEFINED
     fi
-  else
-    Result := Tree
-  fi
   . snd-msg(tm-end-transaction(term-parsing))
 endlet
 

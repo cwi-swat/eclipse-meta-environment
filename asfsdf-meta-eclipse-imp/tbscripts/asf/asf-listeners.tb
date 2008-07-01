@@ -5,6 +5,27 @@
 #include <asf-utils.tb>
 #include <module-utils.tb>
 
+process CleanASFForNewSDFListener is
+let
+  Event: attribute-changed-event,
+  ModuleId: module-id,
+  Tree: term,
+  Result: term,
+  Parents: list
+in
+  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,complete)
+  .
+  (
+    rec-note(mm-attribute-changed(Event?))
+    . ACE-GetModuleId(Event, ModuleId?)
+    . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", dirty)
+  )
+  *
+  delta
+endlet
+
+toolbus(CleanASFForNewSDFListener)
+
 process ASFModuleRegistrar is
 let
   Event: attribute-changed-event,
@@ -74,22 +95,21 @@ endlet
 
 toolbus(ASFModuleChecker)
 
-process ASFModuleParser is
+process ASFAutoBuild is
 let
   Event: attribute-changed-event,
   ModuleId: module-id,
   SdfModuleId : module-id,
   Tree: term
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,ASF_NAMESPACE,"status",<term>, dirty)
+  MM-Subscribe-Attribute-Changed(<module-id>,ASF_NAMESPACE,"status",<term>, clean)
   .
   (
   
     rec-note(mm-attribute-changed(Event?))
     . ACE-GetModuleId(Event, ModuleId?)
-    . Asf2SdfId(ModuleId, SdfModuleId?)
-    . printf("listener: parsing ASF file for module id %t (sdf: %t)\n", ModuleId, SdfModuleId)
-    . GetASFParseTree(SdfModuleId, Tree?)
+    . printf("listener: parsing ASF file for module id %t \n", ModuleId)
+    . GetASFParseTree(ModuleId, Tree?)
     .
     if not-equal(Tree, UNDEFINED) then
        printf("ASF parsed\n") .
@@ -103,7 +123,7 @@ in
   delta
 endlet 
 
-toolbus(ASFModuleParser)
+toolbus(ASFAutoBuild)
 
 process ASFEditorParser is
 let

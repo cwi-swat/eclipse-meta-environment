@@ -20,6 +20,17 @@
 
 #define ASF_TREE_CACHE "asf-annotated-tree"
 #define ASF_NORMALIZED_TREE_CACHE "asf-normalized-tree"
+#define ASF_EQS_CACHE "eqs-cache"
+#define ASF_TABLE_CACHE "equations-parsetable"
+
+toolbus(InitCache(ASF_NORMALIZED_TREE_CACHE))
+toolbus(InitCache(ASF_EQS_CACHE))
+toolbus(InitCache(ASF_TREE_CACHE))
+
+toolbus(MClearCacheHandler(ASF_NAMESPACE, 
+                           [ASF_NORMALIZED_TREE_CACHE, ASF_TREE_CACHE, ASF_EQS_CACHE, ASF_TABLE_CACHE],
+                           [".asf.nrm", ".asf.pt", ".eqs", ".asf.tbl"]))
+                           
 
 process AsfPath2SdfPath(AsfPath : str, SdfPath : str?) is
   ReplaceExtension(AsfPath, SDF_EXTENSION, SdfPath?)
@@ -67,6 +78,22 @@ in
      GetModulePath(AsfModuleId, ASF_NAMESPACE, AsfPath?)
      . AsfPath2SdfPath(AsfPath, SdfPath?)
      . GetOrCreateModule(SDF_NAMESPACE, SdfPath, SdfModuleId?)
+  else
+    tau
+  fi
+endlet
+
+process Sdf2AsfId(SdfModuleId: module-id, AsfModuleId: module-id?) is
+let
+  AsfPath : str,
+  SdfPath : str
+in
+  MM-GetAttribute(SdfModuleId, ASF_NAMESPACE, "asf-id", AsfModuleId?)
+  .
+  if equal(AsfModuleId, UNDEFINED) then
+     GetModulePath(SdfModuleId, SDF_NAMESPACE, SdfPath?)
+     . SdfPath2AsfPath(SdfPath, AsfPath?)
+     . GetOrCreateModule(ASF_NAMESPACE, AsfPath, AsfModuleId?)
   else
     tau
   fi
@@ -125,23 +152,23 @@ in
   . JobDone("Checking syntax definition") 
 endlet
 
-process CheckASFModule(ModuleId: module-id) is
+process CheckASFModule(AsfModuleId: module-id) is
 let
   Summary : summary,
   Errors: list,
   Modulename: str,
   Tree: term,
-  SdfModuleId : module-id
+  SdfModuleId : module-id,
+  Path : str
 in
-  Asf2SdfId(ModuleId, SdfModuleId?)
-  . GetASFParseTree(SdfModuleId, Tree?)
+  GetASFParseTree(AsfModuleId, Tree?)
   .
   if not-equal(Tree, UNDEFINED) then
     snd-msg(check-asf(Tree))
     . rec-msg(messages(Errors?))
-    . MM-GetAttribute(SdfModuleId, SDF_NAMESPACE, "name", Modulename?) 
-    . RemoveSummary("asf-checker", Modulename)
-    . snd-msg(es-make-summary("asf-checker", Modulename, Errors))
+    . GetModulePath(AsfModuleId, ASF_NAMESPACE, Path?)
+    . RemoveSummary("asf-checker", Path)
+    . snd-msg(es-make-summary("asf-checker", Path, Errors))
     . rec-msg(es-summary(Summary?))
     . DisplaySummary(Summary)
   else
@@ -149,34 +176,31 @@ in
   fi
 endlet
 
-/* TODO: ensure cache is initialized before first call */
-toolbus(InitCache(ASF_TREE_CACHE))
-toolbus(ClearCacheHandler(ASF_TREE_CACHE, ASF_NAMESPACE, ".asf.pt", "status", <term>,dirty))
-toolbus(ClearCacheHandler(ASF_TREE_CACHE, SDF_NAMESPACE, ".asf.pt", "status", <term>,complete))
-
-process GetASFParseTree(SdfModuleId: module-id, Result: term?) is
+process GetASFParseTree(AsfModuleId: module-id, Result: term?) is
 let
   AmbPid: int,
   ParseTable: term,
   SdfPath: str,
   AsfPath: str,
+  SdfModuleId : module-id,
   Pid: int,
   Text: str,
   Type: str,
   Tree: term
 in
-  snd-msg(tm-request-transaction(asf-parsing))
-  . GetCachedValue(ASF_TREE_CACHE, SdfModuleId, Tree?)
+  printf("GetASFParseTree: %t\n", AsfModuleId)
+  . snd-msg(tm-request-transaction(asf-parsing))
+  . GetModulePath(AsfModuleId, ASF_NAMESPACE, AsfPath?)
+  . MGetCachedValue(".asf.pt", AsfPath, Tree?)
   .
   if equal(Tree, UNDEFINED) then
-    Type := ASF_NAMESPACE
-    . GetModulePath(SdfModuleId, SDF_NAMESPACE, SdfPath?)
-    . SdfPath2AsfPath(SdfPath, AsfPath?)
+    printf("GetASFParseTree: not cached\n")
     . ReadText(AsfPath, Text?)
     .
     if not-equal(Text, "") then
       printf("Getting parse table %t %t\n", SdfModuleId, Type)
-      . GetParseTable(SdfModuleId, Type, ParseTable?)
+      . Asf2SdfId(AsfModuleId, SdfModuleId?)
+      . GetParseTable(SdfModuleId, ASF_NAMESPACE, ParseTable?)
       .
       if not-equal(ParseTable, UNDEFINED) then
         create(ParseTreeHandler(SdfModuleId, AsfPath), Pid?)
@@ -188,7 +212,7 @@ in
           rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
 	      . create(AmbiguityHandler(Tree, AsfPath), AmbPid?)
           . AnnotateTree(Tree, AsfPath, Result?) 
-          . PutCachedValue(ASF_TREE_CACHE, SdfModuleId, AsfPath, ".asf.pt", Result)
+          . PutCachedValue(ASF_TREE_CACHE, AsfModuleId, AsfPath, ".asf.pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED
@@ -200,7 +224,8 @@ in
       Result := UNDEFINED
     fi
   else
-    Result := Tree
+    printf("GetASFParseTree: retrieved from cache\n")
+    . Result := Tree
   fi 
   . snd-msg(tm-end-transaction(asf-parsing))
 endlet
@@ -252,9 +277,7 @@ in
    . JobDone("Compiling")
 endlet
 
-toolbus(InitCache(ASF_NORMALIZED_TREE_CACHE))
-toolbus(ClearCacheHandler(ASF_NORMALIZED_TREE_CACHE, ASF_NAMESPACE, ".asf.nrm", "status", <term>,dirty))
-toolbus(ClearCacheHandler(ASF_NORMALIZED_TREE_CACHE, SDF_NAMESPACE, ".asf.nrm", "status", <term>,complete))
+
 
 process NormalizeEquations(ModuleId : term, Equations: term, Result : term?) is
 let
@@ -262,7 +285,8 @@ let
   SdfPath : str
 in
   Tree := UNDEFINED
-  . GetCachedValue(ASF_NORMALIZED_TREE_CACHE, ModuleId, Tree?)
+  . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
+  . MGetCachedValue(".asf.nrm", SdfPath, Tree?)
   .
   if not-equal(Tree, UNDEFINED) then
     Result := Tree
@@ -270,7 +294,6 @@ in
     AddJob("Normalizing ...")
     . snd-msg(ao-normalize-module(Equations)) 
     . rec-msg(ao-normalize-module-result(Tree?))
-    . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
     . PutCachedValue(ASF_NORMALIZED_TREE_CACHE, ModuleId, SdfPath, ".asf.nrm", Tree)
     . Result := Tree
     . JobDone("Normalizing ...")
@@ -300,7 +323,8 @@ let
   Specification: term,
   Id : int,
   Count : int,
-  Done : int
+  Done : int,
+  AsfModuleId : module-id
 in
   Id := process-id
   . snd-note(ui-status(start(Id, "Get Specification")))
@@ -313,7 +337,8 @@ in
   . 
   if and(not-equal(Modules, []), equal(Error, undefined)) then
     CurModule := first(Modules)
-    . GetASFParseTree(CurModule, Equations?)
+    . Sdf2AsfId(CurModule?,AsfModuleId?) 
+    . GetASFParseTree(AsfModuleId, Equations?)
     .
     if equal(Equations, UNDEFINED) then
       tau

@@ -14,6 +14,11 @@
 
 #define SDF_TREE_CACHE "sdf-annotated-tree"
 
+toolbus(InitCache(SDF_TREE_CACHE))
+toolbus(MClearCacheHandler(SDF_NAMESPACE, 
+                           [SDF_TREE_CACHE, "term-parsetable"],
+                           [".sdf.pt", "trm.tbl"]))
+
 /**
  * This process safely/lazily retrieves a module name 
  */
@@ -491,8 +496,7 @@ in
   fi
 endlet
 
-toolbus(InitCache(SDF_TREE_CACHE))
-toolbus(ClearCacheHandler(SDF_TREE_CACHE, SDF_NAMESPACE, ".sdf.pt", "status", <term>, dirty))
+
 
 process GetSDFParsetree(ModuleId: module-id, Result: term?) is
 let
@@ -504,11 +508,11 @@ let
   Tree: term
 in
   snd-msg(tm-request-transaction(sdf-parsing))
-  . GetCachedValue(SDF_TREE_CACHE, ModuleId, Tree?)
+  . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
+  . MGetCachedValue(".sdf.pt", Path, Tree?)
   .
   if equal(Tree, UNDEFINED) then
     Type := SDF_NAMESPACE
-    . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
     . ReadText(Path, Text?)
     . printf("GetSDF: %s\n", Text)
     .

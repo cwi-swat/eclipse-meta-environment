@@ -6,7 +6,7 @@ process GetSdfToBoxEqs(Eqs : term?) is
 let
   Error: term
 in
-  snd-msg(io-read-and-pack-term("/ufs/jurgenv/glt/installed/asfsdf-meta20/share/sdf-pretty/Sdf2-pretty.eqs"))
+  snd-msg(io-read-and-pack-term("/ufs/jurgenv/glt/installed-split/sdf-pretty/share/sdf-pretty/Sdf2-pretty.eqs"))
   . 
   (
     rec-msg(io-packed-term(Eqs?))
