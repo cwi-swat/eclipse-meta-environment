@@ -14,6 +14,8 @@ import org.eclipse.imp.language.Language;
 import org.eclipse.imp.language.LanguageRegistry;
 import org.eclipse.imp.runtime.PluginBase;
 
+import aterm.ATerm;
+
 import toolbus.ToolBus;
 import toolbus.exceptions.ToolBusException;
 import toolbus.exceptions.ToolBusExecutionException;
@@ -21,14 +23,14 @@ import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 import toolbus_ide.editor.ParseController;
-import aterm.ATerm;
 
-public class Builder extends BuilderBase{
-    public static final String BUILDER_ID = Activator.kPluginID + ".toolbus_ide.builder";
+public class Builder extends BuilderBase {
+    public static final String BUILDER_ID = Activator.kPluginID
+            + ".builder";
+    public static final String PROBLEM_MARKER_ID = Activator.kPluginID
+            + ".builder.problem";
 
-    public static final String PROBLEM_MARKER_ID = Activator.kPluginID + ".toolbus_ide.builder.problem";
-
-    public static final String LANGUAGE_NAME = "tscript";
+    public static final String LANGUAGE_NAME = Activator.kLanguageName;
 
     public static final Language LANGUAGE = LanguageRegistry.findLanguage(LANGUAGE_NAME);
 
