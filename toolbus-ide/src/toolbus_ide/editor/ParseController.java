@@ -181,6 +181,8 @@ public class ParseController implements IParseController, IResourceChangeListene
 		
 		lexer = new Lexer(new StringReader(input));
 
+		ErrorHandler.clearMarkers(file);
+		
 		ToolBus toolbus = new ToolBus(includePath);
 		try{
 			parser parser_obj = new parser(toolbus, absPath, new StringReader(input));

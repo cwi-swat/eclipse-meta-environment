@@ -2,6 +2,7 @@ package toolbus_ide;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 public class ErrorHandler{
@@ -25,4 +26,12 @@ public class ErrorHandler{
     		// I don't care what happened, just ignore this.
     	}
     }
+
+	public static void clearMarkers(IFile file) {
+		try{
+    		file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+	    }catch(CoreException ce){
+			// I don't care what happened, just ignore this.
+		}
+	}
 }

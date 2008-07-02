@@ -12,6 +12,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  toolbus_ng,
  aterm_java,
- org.eclipse.platform.source,
- org.eclipse.imp.smapifier
+ org.eclipse.platform.source
 Eclipse-LazyStart: true

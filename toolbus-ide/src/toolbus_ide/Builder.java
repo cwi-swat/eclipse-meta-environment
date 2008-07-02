@@ -27,7 +27,6 @@ import aterm.ATerm;
 
 public class Builder extends BuilderBase {
     public static final String BUILDER_ID = Activator.kPluginID + ".builder";
-    public static final String PROBLEM_MARKER_ID = Activator.kPluginID + ".builder.problem";
 
     public static final String LANGUAGE_NAME = Activator.kLanguageName;
 
@@ -38,15 +37,15 @@ public class Builder extends BuilderBase {
 	}
     
     protected String getErrorMarkerID(){
-        return PROBLEM_MARKER_ID;
+        return IMarker.PROBLEM;
     }
 
     protected String getWarningMarkerID(){
-        return PROBLEM_MARKER_ID;
+        return IMarker.PROBLEM;
     }
 
     protected String getInfoMarkerID(){
-        return PROBLEM_MARKER_ID;
+        return IMarker.PROBLEM;
     }
 
     protected boolean isSourceFile(IFile file){
@@ -72,15 +71,12 @@ public class Builder extends BuilderBase {
     
     protected void compile(final IFile file, IProgressMonitor monitor){
     	// Clear the old markers for this file.
-    	try{
-    		file.deleteMarkers(IMarker.PROBLEM, true, Integer.MAX_VALUE);
-	    }catch(CoreException ce){
-			// I don't care what happened, just ignore this.
-		}
+    	ErrorHandler.clearMarkers(file);
 	    
     	String filename = file.getLocation().toOSString();
     	String[] includePath = ParseController.buildIncludePath();
     	ToolBus toolbus = new ToolBus(includePath);
+    	
 		try{
 			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
 			parser_obj.parse();
