@@ -16,7 +16,7 @@ public class Activator extends PluginBase {
 		super();
 	}
 
-	private static Activator sInstance = new Activator();
+	private final static Activator sInstance = new Activator();
 
 	public static Activator getInstance(){
 		return sInstance;
