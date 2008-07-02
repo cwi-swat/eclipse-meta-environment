@@ -84,7 +84,7 @@ public class ParseController implements IParseController, IResourceChangeListene
 					currentOffset = lexer.getPosition();
 				} catch (IOException ioex) {
 					// Ignore this, since it can't happen.
-				} catch (Error e) {
+				} catch (Throwable e) {
 					// This doesn't matter. it'll just generate error symbols.
 				}
 			}
