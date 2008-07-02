@@ -8,7 +8,7 @@ public class ToolBusNature extends ProjectNatureBase {
 	public static final String k_natureID = Activator.kPluginID + ".nature";
 
 	public ToolBusNature() {
-		System.err.println("cons nature");
+		super();
 	}
 	
 	public String getNatureID() {
