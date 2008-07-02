@@ -7,29 +7,27 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-public class EnableBuilder implements IWorkbenchWindowActionDelegate {
+public class EnableBuilder implements IWorkbenchWindowActionDelegate{
 	private IProject fProject;
 
-	public EnableBuilder() {
+	public EnableBuilder(){
+		super();
 	}
 
-	public void dispose() {
-	}
+	public void dispose(){}
 
-	public void init(IWorkbenchWindow window) {
+	public void init(IWorkbenchWindow window){}
 
-	}
-
-	public void run(IAction action) {
+	public void run(IAction action){
 		new ToolBusNature().addToProject(fProject);
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
+	public void selectionChanged(IAction action, ISelection selection){
+		if(selection instanceof IStructuredSelection){
 			IStructuredSelection ss = (IStructuredSelection) selection;
 			Object first = ss.getFirstElement();
 
-			if (first instanceof IProject) {
+			if(first instanceof IProject){
 				fProject = (IProject) first;
 			}
 		}
