@@ -70,23 +70,8 @@ public class Builder extends BuilderBase {
         return resource.getFullPath().lastSegment().equals("bin");
     }
     
-    public static void addMarker(IFile file, int charOffset, int line, int column, String message){
-    	try{
-	    	IMarker m = file.createMarker(IMarker.PROBLEM);
-	
-			m.setAttribute(IMarker.TRANSIENT, true);
-			m.setAttribute(IMarker.CHAR_START, charOffset);
-			m.setAttribute(IMarker.CHAR_END, charOffset);
-			m.setAttribute(IMarker.MESSAGE, message);
-			m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-			m.setAttribute(IMarker.LOCATION, "line: " + line + ", column: " + column);
-    	}catch(CoreException ce){
-    		// I don't care what happened, just ignore this.
-    	}
-    }
-
     protected void compile(final IFile file, IProgressMonitor monitor){
+    	// Clear the old markers for this file.
     	try{
     		file.deleteMarkers(IMarker.PROBLEM, true, Integer.MAX_VALUE);
 	    }catch(CoreException ce){
@@ -100,18 +85,18 @@ public class Builder extends BuilderBase {
 			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
 			parser_obj.parse();
 		}catch(SyntaxErrorException see){ // Parser.
-			addMarker(file, see.position, see.line, see.column, "Syntax error");
+			ErrorHandler.addMarker(file, see.position, see.line, see.column, "Syntax error");
 		}catch(UndeclaredVariableException uvex){ // Parser.
-			addMarker(file, uvex.position, uvex.line, uvex.column, "Undeclared variable");
+			ErrorHandler.addMarker(file, uvex.position, uvex.line, uvex.column, "Undeclared variable");
 		}catch(ToolBusExecutionException e){
 			PositionInformation p = e.getPositionInformation();
-			addMarker(file, p.getOffset(), 0, 0, e.getMessage());
+			ErrorHandler.addMarker(file, p.getOffset(), 0, 0, e.getMessage());
 		}catch(ToolBusException e){
-			addMarker(file, 0, 0, 0, e.getMessage());
+			ErrorHandler.addMarker(file, 0, 0, 0, e.getMessage());
 		}catch(Error e){ // Scanner.
-			addMarker(file, 0, 0, 0, e.getMessage());
+			ErrorHandler.addMarker(file, 0, 0, 0, e.getMessage());
 		}catch(Exception ex){ // Something else.
-			addMarker(file, 0, 0, 0, ex.getMessage());
+			ErrorHandler.addMarker(file, 0, 0, 0, ex.getMessage());
 		}
     }
     

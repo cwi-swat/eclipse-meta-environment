@@ -37,10 +37,11 @@ import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser;
 import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.UndeclaredVariableException;
+import toolbus_ide.ErrorHandler;
 
 public class ParseController implements IParseController, IResourceChangeListener{
 	private volatile IMessageHandler handler;
-	private volatile String absPath;
+	private volatile IFile file;
 
 	private volatile Lexer lexer;
 	private static String[] includePath = buildIncludePath();
@@ -139,15 +140,8 @@ public class ParseController implements IParseController, IResourceChangeListene
 
 	public void initialize(IPath filePath, ISourceProject project, IMessageHandler handler) {
 		this.handler = handler;
-
-		// Try to make the path absolute
-		IFile file = project.getRawProject().getFile(filePath);
-
-		if (file.exists()) {
-			absPath = file.getLocation().toOSString();
-		} else {
-			absPath = filePath.toOSString();
-		}
+		
+		file = project.getRawProject().getFile(filePath);
 	}
 
 	public static String[] buildIncludePath() {
@@ -181,6 +175,10 @@ public class ParseController implements IParseController, IResourceChangeListene
 	}
 
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
+		if(!file.exists()) return null;
+		
+		String absPath = file.getLocation().toOSString();
+		
 		lexer = new Lexer(new StringReader(input));
 
 		ToolBus toolbus = new ToolBus(includePath);
@@ -191,25 +189,29 @@ public class ParseController implements IParseController, IResourceChangeListene
 			
 			return toolbus;
 		}catch(SyntaxErrorException see){ // Parser.
-			// TODO assuming the input is the whole file, this fix is correct.
-			// needs to be fixed in IMP
 			int pos = (see.position >= input.length()) ? input.length() - 1 : see.position;
 			handler.handleSimpleMessage(see.getMessage(), pos, pos, see.column, see.column, see.line, see.line);
+			ErrorHandler.addMarker(file, pos, see.line, see.column, see.getMessage());
 		}catch(UndeclaredVariableException uvex){ // Parser.
 			int pos = (uvex.position >= input.length()) ? input.length() - 1 : uvex.position;
 			handler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
+			ErrorHandler.addMarker(file, pos, uvex.line, uvex.column, uvex.getMessage());
 		}catch(ToolBusExecutionException e){
 			PositionInformation p = e.getPositionInformation();
 			handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0, 0, 1, 1);
+			ErrorHandler.addMarker(file, p.getOffset(), 0, 0, e.getMessage());
 		}catch(ToolBusException e){
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
+			ErrorHandler.addMarker(file, 0, 0, 0, e.getMessage());
 			e.printStackTrace();
 		}catch(Error e){ // Scanner.
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
+			ErrorHandler.addMarker(file, 0, 0, 0, e.getMessage());
 		}catch(Exception ex){ // Something else.
 			handler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
+			ErrorHandler.addMarker(file, 0, 0, 0, ex.getMessage());
 		}
-
+		
 		return null;
 	}
 
@@ -219,8 +221,7 @@ public class ParseController implements IParseController, IResourceChangeListene
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResource resource = event.getResource();
 		
-		if (resource instanceof IProject ||
-				resource instanceof IFolder) {
+		if (resource instanceof IProject || resource instanceof IFolder) {
 			includePath = buildIncludePath();
 		}
 	}
