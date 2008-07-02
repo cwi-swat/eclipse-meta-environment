@@ -54,7 +54,7 @@ public class Builder extends BuilderBase {
         if (path == null) return false;
 
         String pathString = path.toString();
-        if (pathString.indexOf("/bin/") != -1) return false;
+        if(pathString.indexOf("/bin/") != -1) return false;
 
         return LANGUAGE.hasExtension(path.getFileExtension());
     }
@@ -70,7 +70,7 @@ public class Builder extends BuilderBase {
         return resource.getFullPath().lastSegment().equals("bin");
     }
     
-    public void addMarker(IFile file, int charOffset, int line, int column, String message){
+    public static void addMarker(IFile file, int charOffset, int line, int column, String message){
     	try{
 	    	IMarker m = file.createMarker(IMarker.PROBLEM);
 	
@@ -100,9 +100,9 @@ public class Builder extends BuilderBase {
 			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
 			parser_obj.parse();
 		}catch(SyntaxErrorException see){ // Parser.
-			addMarker(file, see.position, see.line, see.column, "Syntax error.");
+			addMarker(file, see.position, see.line, see.column, "Syntax error");
 		}catch(UndeclaredVariableException uvex){ // Parser.
-			addMarker(file, uvex.position, uvex.line, uvex.column, "Undeclared variable.");
+			addMarker(file, uvex.position, uvex.line, uvex.column, "Undeclared variable");
 		}catch(ToolBusExecutionException e){
 			PositionInformation p = e.getPositionInformation();
 			addMarker(file, p.getOffset(), 0, 0, e.getMessage());

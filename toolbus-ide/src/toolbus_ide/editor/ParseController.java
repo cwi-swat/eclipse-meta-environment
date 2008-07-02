@@ -153,28 +153,26 @@ public class ParseController implements IParseController, IResourceChangeListene
 	public static String[] buildIncludePath() {
 		final List<String> includes = new ArrayList<String>();
 
-		try {
+		try{
 			ResourcesPlugin.getWorkspace().getRoot().accept(
-					new IResourceVisitor() {
-
-						public boolean visit(IResource resource) {
-							if (resource instanceof IFolder) {
-								IFolder folder = (IFolder) resource;
-								IPath path = folder.getLocation();
-								File file = path.toFile();
-								includes.add("-I" + file.getAbsolutePath());
-							}
-							else if (resource instanceof IProject) {
-								IProject project = (IProject) resource;
-								IPath path = project.getLocation();
-								File file = path.toFile();
-								includes.add("-I" + file.getAbsolutePath());
-							}
-							return true;
+				new IResourceVisitor(){
+					public boolean visit(IResource resource) {
+						if (resource instanceof IFolder) {
+							IFolder folder = (IFolder) resource;
+							IPath path = folder.getLocation();
+							File file = path.toFile();
+							includes.add("-I" + file.getAbsolutePath());
+						}else if (resource instanceof IProject) {
+							IProject project = (IProject) resource;
+							IPath path = project.getLocation();
+							File file = path.toFile();
+							includes.add("-I" + file.getAbsolutePath());
 						}
+						return true;
+					}
 
-					});
-		} catch (CoreException e) {
+				});
+		}catch(CoreException e){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

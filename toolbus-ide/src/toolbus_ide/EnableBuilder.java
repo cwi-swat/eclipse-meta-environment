@@ -8,7 +8,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class EnableBuilder implements IWorkbenchWindowActionDelegate{
-	private IProject fProject;
+	private IProject fProject = null;
 
 	public EnableBuilder(){
 		super();
@@ -19,10 +19,12 @@ public class EnableBuilder implements IWorkbenchWindowActionDelegate{
 	public void init(IWorkbenchWindow window){}
 
 	public void run(IAction action){
-		new ToolBusNature().addToProject(fProject);
+		if(fProject != null) new ToolBusNature().addToProject(fProject);
 	}
 
 	public void selectionChanged(IAction action, ISelection selection){
+		fProject = null;
+		
 		if(selection instanceof IStructuredSelection){
 			IStructuredSelection ss = (IStructuredSelection) selection;
 			Object first = ss.getFirstElement();
