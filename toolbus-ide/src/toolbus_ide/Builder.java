@@ -87,7 +87,13 @@ public class Builder extends BuilderBase {
     }
 
     protected void compile(final IFile file, IProgressMonitor monitor){
-    	String filename = file.getName();
+    	try{
+    		file.deleteMarkers(IMarker.PROBLEM, true, Integer.MAX_VALUE);
+	    }catch(CoreException ce){
+			// I don't care what happened, just ignore this.
+		}
+	    
+    	String filename = file.getLocation().toOSString();
     	String[] includePath = ParseController.buildIncludePath();
     	ToolBus toolbus = new ToolBus(includePath);
 		try{
