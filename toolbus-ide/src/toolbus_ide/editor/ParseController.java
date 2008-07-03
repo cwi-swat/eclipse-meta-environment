@@ -29,11 +29,11 @@ import org.eclipse.imp.services.ILanguageSyntaxProperties;
 import org.eclipse.jface.text.IRegion;
 
 import toolbus.ToolBus;
+import toolbus.exceptions.SyntaxErrorException;
 import toolbus.exceptions.ToolBusException;
 import toolbus.exceptions.ToolBusExecutionException;
 import toolbus.parsercup.Lexer;
 import toolbus.parsercup.PositionInformation;
-import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser;
 import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.UndeclaredVariableException;

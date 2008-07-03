@@ -16,10 +16,10 @@ import org.eclipse.imp.language.LanguageRegistry;
 import org.eclipse.imp.runtime.PluginBase;
 
 import toolbus.ToolBus;
+import toolbus.exceptions.SyntaxErrorException;
 import toolbus.exceptions.ToolBusException;
 import toolbus.exceptions.ToolBusExecutionException;
 import toolbus.parsercup.PositionInformation;
-import toolbus.parsercup.SyntaxErrorException;
 import toolbus.parsercup.parser;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 import toolbus_ide.editor.ParseController;
