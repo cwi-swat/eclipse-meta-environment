@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -21,6 +20,7 @@ import org.eclipse.imp.language.LanguageRegistry;
 import org.eclipse.imp.runtime.PluginBase;
 
 import toolbus.AtomSet;
+import toolbus.TBTermFactory;
 import toolbus.ToolBus;
 import toolbus.atom.Atom;
 import toolbus.atom.msg.RecMsg;
@@ -34,10 +34,12 @@ import toolbus.matching.MatchStore;
 import toolbus.parsercup.PositionInformation;
 import toolbus.parsercup.parser;
 import toolbus.parsercup.parser.UndeclaredVariableException;
+import toolbus.process.ProcessCall;
 import toolbus.process.ProcessDefinition;
 import toolbus.process.ProcessExpression;
 import toolbus_ide.editor.ParseController;
 import aterm.ATerm;
+import aterm.ATermList;
 
 public class Builder extends BuilderBase {
     public static final String BUILDER_ID = Activator.kPluginID + ".builder";
@@ -95,7 +97,9 @@ public class Builder extends BuilderBase {
 			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
 			parser_obj.parse();
 			
-			findDeadCommunicationAtoms(file.getProject(), toolbus);
+			compileProcessDefinitions(toolbus);
+			
+			findDeadCommunicationAtoms(toolbus);
 		}catch(SyntaxErrorException see){ // Parser.
 			ErrorHandler.addProblemMarker(file, see.position, see.line, see.column, "Syntax error");
 		}catch(UndeclaredVariableException uvex){ // Parser.
@@ -112,8 +116,34 @@ public class Builder extends BuilderBase {
 		}
     }
     
-    protected void findDeadCommunicationAtoms(IProject project, ToolBus toolbus){
-    	final List<Atom> atomSignature = new ArrayList<Atom>();
+    protected void compileProcessDefinitions(ToolBus toolbus){
+    	IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+    	
+    	List<ProcessDefinition> processDefinitions = toolbus.getProcessDefinitions();
+    	Iterator<ProcessDefinition> processDefinitionsIterator = processDefinitions.iterator();
+    	while(processDefinitionsIterator.hasNext()){
+    		ProcessDefinition processDefinition = processDefinitionsIterator.next();
+    		int numberOfFormals = processDefinition.getNumberOfFormals();
+    		TBTermFactory tbTermFactory = toolbus.getTBTermFactory();
+    		ATermList empty = tbTermFactory.makeList();
+    		ATermList dummyActuals = empty;
+    		while(--numberOfFormals >= 0){
+    			dummyActuals = tbTermFactory.makeList(empty, dummyActuals);
+    		}
+    		
+    		try{
+    			toolbus.addProcess(new ProcessCall(processDefinition.getName(), dummyActuals, tbTermFactory, null));
+    		}catch(ToolBusException tex){
+    			PositionInformation posInfo = processDefinition.getOriginalProcessExpression().getPosInfo();
+    			IPath location = new Path(posInfo.getFileName());
+    			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
+    			ErrorHandler.addProblemMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), "Process compilation error.");
+    		}
+    	}
+    }
+    
+    protected void findDeadCommunicationAtoms(ToolBus toolbus){
+    	List<Atom> atomSignature = new ArrayList<Atom>();
 		List<ProcessDefinition> processDefinitions = toolbus.getProcessDefinitions();
 		Iterator<ProcessDefinition> processDefinitionsIterator = processDefinitions.iterator();
 		while(processDefinitionsIterator.hasNext()){
