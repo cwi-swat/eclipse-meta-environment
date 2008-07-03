@@ -38,7 +38,6 @@ import toolbus.parsercup.PositionInformation;
 import toolbus.parsercup.parser;
 import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.UndeclaredVariableException;
-import toolbus_ide.ErrorHandler;
 
 public class ParseController implements IParseController{
 	private volatile IMessageHandler handler;
@@ -98,35 +97,34 @@ public class ParseController implements IParseController{
 		}
 	}
 
-	public Iterator<?> getTokenIterator(IRegion region) {
-		class TokenIterator implements Iterator<SymbolHolder> {
+	public Iterator<?> getTokenIterator(IRegion region){
+		class TokenIterator implements Iterator<SymbolHolder>{
 			private int currentOffset;
 			private Symbol nextSymbol;
 
-			public TokenIterator() {
+			public TokenIterator(){
 				super();
 				
 				prepareNext();
 			}
 
-			public void prepareNext() {
-				try {
+			public void prepareNext(){
+				try{
 					nextSymbol = lexer.next_token();
 					currentOffset = lexer.getPosition();
-				} catch (IOException ioex) {
+				}catch(IOException ioex){
 					// Ignore this, since it can't happen.
-				} catch (Throwable e) {
-					// This doesn't matter. it'll just generate error symbols.
+				}catch(Throwable e){
+					// This doesn't matter; it'll just generate error symbols.
 				}
 			}
 
-			public boolean hasNext() {
+			public boolean hasNext(){
 				return !(nextSymbol.sym == sym.EOF || nextSymbol.sym == sym.error);
 			}
 
-			public SymbolHolder next() {
-				if (!hasNext())
-					return null;
+			public SymbolHolder next(){
+				if(!hasNext()) return null;
 
 				int offset = currentOffset;
 				Symbol symbol = nextSymbol;
@@ -136,7 +134,7 @@ public class ParseController implements IParseController{
 				return new SymbolHolder(symbol, offset, currentOffset);
 			}
 
-			public void remove() {
+			public void remove(){
 				throw new UnsupportedOperationException("Removing is not supported by this iterator.");
 			}
 		}
@@ -144,37 +142,37 @@ public class ParseController implements IParseController{
 		return new TokenIterator();
 	}
 
-	public Object getCurrentAst() {
+	public Object getCurrentAst(){
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ISourcePositionLocator getNodeLocator() {
+	public ISourcePositionLocator getNodeLocator(){
 		return new TokenLocator();
 	}
 
-	public IPath getPath() {
+	public IPath getPath(){
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ISourceProject getProject() {
+	public ISourceProject getProject(){
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ILanguageSyntaxProperties getSyntaxProperties() {
+	public ILanguageSyntaxProperties getSyntaxProperties(){
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void initialize(IPath filePath, ISourceProject project, IMessageHandler handler) {
+	public void initialize(IPath filePath, ISourceProject project, IMessageHandler handler){
 		this.handler = handler;
 		
 		file = project.getRawProject().getFile(filePath);
 	}
 
-	public static String[] buildIncludePath() {
+	public static String[] buildIncludePath(){
 		final List<String> includes = new ArrayList<String>();
 
 		try{
@@ -204,14 +202,12 @@ public class ParseController implements IParseController{
 		return includes.toArray(new String[includes.size()]);
 	}
 
-	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
+	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor){
 		if(!file.exists()) return null;
 		
 		String absPath = file.getLocation().toOSString();
 		
 		lexer = new Lexer(new StringReader(input));
-
-		ErrorHandler.clearMarkers(file);
 		
 		ToolBus toolbus = new ToolBus(includePath);
 		try{
@@ -223,25 +219,19 @@ public class ParseController implements IParseController{
 		}catch(SyntaxErrorException see){ // Parser.
 			int pos = (see.position >= input.length()) ? input.length() - 1 : see.position;
 			handler.handleSimpleMessage(see.getMessage(), pos, pos, see.column, see.column, see.line, see.line);
-			ErrorHandler.addMarker(file, pos, see.line, see.column, see.getMessage());
 		}catch(UndeclaredVariableException uvex){ // Parser.
 			int pos = (uvex.position >= input.length()) ? input.length() - 1 : uvex.position;
 			handler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
-			ErrorHandler.addMarker(file, pos, uvex.line, uvex.column, uvex.getMessage());
 		}catch(ToolBusExecutionException e){
 			PositionInformation p = e.getPositionInformation();
 			handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0, 0, 1, 1);
-			ErrorHandler.addMarker(file, p.getOffset(), 0, 0, e.getMessage());
 		}catch(ToolBusException e){
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
-			ErrorHandler.addMarker(file, 0, 0, 0, e.getMessage());
 			e.printStackTrace();
 		}catch(Error e){ // Scanner.
 			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
-			ErrorHandler.addMarker(file, 0, 0, 0, e.getMessage());
 		}catch(Exception ex){ // Something else.
 			handler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
-			ErrorHandler.addMarker(file, 0, 0, 0, ex.getMessage());
 		}
 		
 		return null;
