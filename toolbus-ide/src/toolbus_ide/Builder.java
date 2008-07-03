@@ -8,9 +8,13 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.builder.BuilderBase;
 import org.eclipse.imp.language.Language;
 import org.eclipse.imp.language.LanguageRegistry;
@@ -91,7 +95,7 @@ public class Builder extends BuilderBase {
 			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
 			parser_obj.parse();
 			
-			//findDeadCommunicationAtoms(file, toolbus);
+			findDeadCommunicationAtoms(file.getProject(), toolbus);
 		}catch(SyntaxErrorException see){ // Parser.
 			ErrorHandler.addProblemMarker(file, see.position, see.line, see.column, "Syntax error");
 		}catch(UndeclaredVariableException uvex){ // Parser.
@@ -108,7 +112,7 @@ public class Builder extends BuilderBase {
 		}
     }
     
-    protected void findDeadCommunicationAtoms(IFile file, ToolBus toolbus){
+    protected void findDeadCommunicationAtoms(IProject project, ToolBus toolbus){
     	final List<Atom> atomSignature = new ArrayList<Atom>();
 		List<ProcessDefinition> processDefinitions = toolbus.getProcessDefinitions();
 		Iterator<ProcessDefinition> processDefinitionsIterator = processDefinitions.iterator();
@@ -124,6 +128,8 @@ public class Builder extends BuilderBase {
 			}
 		}
 		
+		IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		
 		MatchStore matchStore = new MatchStore(toolbus.getTBTermFactory());
 		matchStore.initialize(atomSignature);
 		
@@ -132,6 +138,9 @@ public class Builder extends BuilderBase {
 		while(partnerlessReceiveMessagesIterator.hasNext()){
 			RecMsg recMsg = partnerlessReceiveMessagesIterator.next();
 			PositionInformation posInfo = recMsg.getPosInfo();
+			
+			IPath location = new Path(posInfo.getFileName());
+			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
 			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
 		
@@ -140,6 +149,9 @@ public class Builder extends BuilderBase {
 		while(partnerlessSendMessagesIterator.hasNext()){
 			SndMsg sndMsg = partnerlessSendMessagesIterator.next();
 			PositionInformation posInfo = sndMsg.getPosInfo();
+			
+			IPath location = new Path(posInfo.getFileName());
+			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
 			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
 		
@@ -148,6 +160,9 @@ public class Builder extends BuilderBase {
 		while(partnerlessSendNotesIterator.hasNext()){
 			SndNote sndNote = partnerlessSendNotesIterator.next();
 			PositionInformation posInfo = sndNote.getPosInfo();
+			
+			IPath location = new Path(posInfo.getFileName());
+			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
 			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
 		
@@ -156,6 +171,9 @@ public class Builder extends BuilderBase {
 		while(partnerlessSubscribesIterator.hasNext()){
 			Subscribe subscribe = partnerlessSubscribesIterator.next();
 			PositionInformation posInfo = subscribe.getPosInfo();
+			
+			IPath location = new Path(posInfo.getFileName());
+			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
 			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
     }
