@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -39,16 +40,45 @@ import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 import toolbus_ide.ErrorHandler;
 
-public class ParseController implements IParseController, IResourceChangeListener{
+public class ParseController implements IParseController{
 	private volatile IMessageHandler handler;
 	private volatile IFile file;
 
 	private volatile Lexer lexer;
 	private static String[] includePath = buildIncludePath();
+	static{
+		new ResourceListener();
+	}
+	
+	private static class ResourceListener implements IResourceChangeListener{
+		
+		public ResourceListener(){
+			super();
+			
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		}
+		
+		private boolean didAnyThingHappenWeWantToKnowAbout(IResourceDelta delta){
+			IResourceDelta[] rda = delta.getAffectedChildren();
+			for(int i = 0; i < rda.length; i++){
+				IResourceDelta rd = rda[i];
+				if((rd.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) != 0) return true;
+				
+				if(didAnyThingHappenWeWantToKnowAbout(rd)) return true;
+			}
+			return false;
+		}
+		
+		public void resourceChanged(IResourceChangeEvent event){
+			if(didAnyThingHappenWeWantToKnowAbout(event.getDelta())){
+				includePath = buildIncludePath();
+			}
+		}
+	}
 	
 
-	public ParseController() {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+	public ParseController(){
+		super();
 	}
 	
 	public IAnnotationTypeInfo getAnnotationTypeInfo() {
@@ -75,6 +105,7 @@ public class ParseController implements IParseController, IResourceChangeListene
 
 			public TokenIterator() {
 				super();
+				
 				prepareNext();
 			}
 
@@ -106,8 +137,7 @@ public class ParseController implements IParseController, IResourceChangeListene
 			}
 
 			public void remove() {
-				throw new UnsupportedOperationException(
-						"Removing is not supported by this iterator.");
+				throw new UnsupportedOperationException("Removing is not supported by this iterator.");
 			}
 		}
 
@@ -215,16 +245,5 @@ public class ParseController implements IParseController, IResourceChangeListene
 		}
 		
 		return null;
-	}
-
-	/**
-	 * updates the include path as soon as somebody changes folders
-	 */
-	public void resourceChanged(IResourceChangeEvent event) {
-		IResource resource = event.getResource();
-		
-		if (resource instanceof IProject || resource instanceof IFolder) {
-			includePath = buildIncludePath();
-		}
 	}
 }
