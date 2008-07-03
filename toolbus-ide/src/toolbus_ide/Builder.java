@@ -91,7 +91,7 @@ public class Builder extends BuilderBase {
 			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
 			parser_obj.parse();
 			
-			findDeadCommunicationAtoms(file, toolbus);
+			//findDeadCommunicationAtoms(file, toolbus);
 		}catch(SyntaxErrorException see){ // Parser.
 			ErrorHandler.addProblemMarker(file, see.position, see.line, see.column, "Syntax error");
 		}catch(UndeclaredVariableException uvex){ // Parser.
@@ -108,7 +108,7 @@ public class Builder extends BuilderBase {
 		}
     }
     
-    private void findDeadCommunicationAtoms(IFile file, ToolBus toolbus){
+    protected void findDeadCommunicationAtoms(IFile file, ToolBus toolbus){
     	final List<Atom> atomSignature = new ArrayList<Atom>();
 		List<ProcessDefinition> processDefinitions = toolbus.getProcessDefinitions();
 		Iterator<ProcessDefinition> processDefinitionsIterator = processDefinitions.iterator();
