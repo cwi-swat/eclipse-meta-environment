@@ -11,7 +11,7 @@ import errorapi.types.Area;
 import errorapi.types.AreaAreas;
 import errorapi.types.Slice;
 
-public class TokenIterator implements Iterator {
+public class TokenIterator implements Iterator<Token> {
 	private ATermList slices;
 	private AreaAreas areas;
 	private String category;
@@ -27,7 +27,7 @@ public class TokenIterator implements Iterator {
 		return !slices.isEmpty() || !areas.isEmpty();
 	}
 
-	public Object next() {
+	public Token next() {
 		if (areas.isEmpty() && !slices.isEmpty()) {
 		  Slice slice = eFactory.SliceFromTerm(slices.getFirst());
 		  slices = slices.getNext();

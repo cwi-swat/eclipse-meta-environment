@@ -17,8 +17,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.meta_environment.eclipse.Activator;
 import org.meta_environment.eclipse.Tool;
 
-import aterm.ATerm;
-
 public class EditorTool extends Tool {
 	private static class InstanceKeeper {
 		private static EditorTool sInstance = new EditorTool();

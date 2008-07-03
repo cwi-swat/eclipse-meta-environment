@@ -151,7 +151,7 @@ public class ParseController extends Tool implements IParseController,
 		}
 	}
 
-	public Iterator getTokenIterator(IRegion region) {
+	public Iterator<?> getTokenIterator(IRegion region) {
 		if (result != null) {
 			ATerm ack = sendRequest(factory.make("highlight(<term>)", result));
 

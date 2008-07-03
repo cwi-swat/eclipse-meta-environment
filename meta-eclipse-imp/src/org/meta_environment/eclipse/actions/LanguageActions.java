@@ -15,7 +15,6 @@ import org.eclipse.imp.services.base.DefaultLanguageActionsContributor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.meta_environment.eclipse.Activator;
 
 public class LanguageActions extends DefaultLanguageActionsContributor {
 
