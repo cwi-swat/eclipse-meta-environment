@@ -141,7 +141,7 @@ public class Builder extends BuilderBase {
 			
 			IPath location = new Path(posInfo.getFileName());
 			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
-			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
+			ErrorHandler.addWarningMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
 		
 		List<SndMsg> partnerlessSendMessages = matchStore.findPartnerlessSendMessageAtoms();
@@ -152,7 +152,7 @@ public class Builder extends BuilderBase {
 			
 			IPath location = new Path(posInfo.getFileName());
 			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
-			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
+			ErrorHandler.addWarningMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
 		
 		List<SndNote> partnerlessSendNotes = matchStore.findPartnerlessSendNoteAtoms();
@@ -163,7 +163,7 @@ public class Builder extends BuilderBase {
 			
 			IPath location = new Path(posInfo.getFileName());
 			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
-			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
+			ErrorHandler.addWarningMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
 		
 		List<Subscribe> partnerlessSubscribes = matchStore.findPartnerlessSubscribeAtoms();
@@ -174,7 +174,7 @@ public class Builder extends BuilderBase {
 			
 			IPath location = new Path(posInfo.getFileName());
 			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
-			ErrorHandler.addWarningMarker(file, 0, posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
+			ErrorHandler.addWarningMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), "Potentially partnerless communication atom");
 		}
     }
     
