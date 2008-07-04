@@ -89,6 +89,8 @@ public class Builder extends BuilderBase {
     protected void compile(final IFile file, IProgressMonitor monitor){
     	// Clear the old markers for this file.
     	ErrorHandler.clearMarkers(file);
+    	
+    	IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 	    
     	String filename = file.getLocation().toOSString();
     	String[] includePath = ParseController.buildIncludePath();
@@ -102,14 +104,20 @@ public class Builder extends BuilderBase {
 			
 			//findDeadCommunicationAtoms(toolbus);
 		}catch(SyntaxErrorException see){ // Parser.
-			ErrorHandler.addProblemMarker(file, see.position, see.line, see.column, "Syntax error");
+			IPath location = new Path(see.filename);
+			IFile errorFile = workSpaceRoot.findFilesForLocation(location)[0];
+			
+			ErrorHandler.addProblemMarker(errorFile, see.position, see.line, see.column, "Syntax error");
 		}catch(UndeclaredVariableException uvex){ // Parser.
-			ErrorHandler.addProblemMarker(file, uvex.position, uvex.line, uvex.column, "Undeclared variable");
-		}catch(ToolBusExecutionException e){
-			PositionInformation p = e.getPositionInformation();
-			ErrorHandler.addProblemMarker(file, p.getOffset(), 0, 0, e.getMessage());
-		}catch(ToolBusException e){
-			ErrorHandler.addProblemMarker(file, 0, 0, 0, e.getMessage());
+			IPath location = new Path(uvex.filename);
+			IFile errorFile = workSpaceRoot.findFilesForLocation(location)[0];
+			
+			ErrorHandler.addProblemMarker(errorFile, uvex.position, uvex.line, uvex.column, "Undeclared variable");
+		}catch(ToolBusExecutionException tbeex){
+			PositionInformation p = tbeex.getPositionInformation();
+			ErrorHandler.addProblemMarker(file, p.getOffset(), p.getBeginLine(), p.getBeginColumn(), tbeex.getMessage());
+		}catch(ToolBusException tbex){
+			ErrorHandler.addProblemMarker(file, 0, 0, 0, tbex.getMessage());
 		}catch(Error e){ // Scanner.
 			ErrorHandler.addProblemMarker(file, 0, 0, 0, e.getMessage());
 		}catch(Exception ex){ // Something else.
