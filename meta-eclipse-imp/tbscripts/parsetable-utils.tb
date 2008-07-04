@@ -37,12 +37,12 @@ let
   Ext : str
 in
   Ext := concat(".", concat(Type, ".tbl"))
-  . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
   . printf("waiting for get-parsetable(ModuleId?, %t)\n", Type)
   .
   (
     rec-msg(get-parsetable(ModuleId?, Type))
     . printf("rec-msg(get-parsetable(%s, %s))\n", ModuleId,Type)
+    . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
     . GetCachedValue(Ext, SdfPath, Table?)
     .
     if equal(Table, UNDEFINED) then
