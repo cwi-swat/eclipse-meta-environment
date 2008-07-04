@@ -99,7 +99,7 @@ public class Builder extends BuilderBase {
 			
 			compileProcessDefinitions(toolbus);
 			
-			findDeadCommunicationAtoms(toolbus);
+			//findDeadCommunicationAtoms(toolbus);
 		}catch(SyntaxErrorException see){ // Parser.
 			ErrorHandler.addProblemMarker(file, see.position, see.line, see.column, "Syntax error");
 		}catch(UndeclaredVariableException uvex){ // Parser.

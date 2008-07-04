@@ -20,7 +20,7 @@ public class ErrorHandler{
 	}
 	
 	public static void addProblemMarker(IFile file, int charOffset, int line, int column, String message){
-    	try{
+		try{
 	    	IMarker m = file.createMarker(IMarker.PROBLEM);
 	
 			m.setAttribute(IMarker.TRANSIENT, true);
