@@ -105,8 +105,9 @@ public class BuildResults extends Tool {
 			IFile targetFile = getTargetFile(sourcePathStr, targetExt);
 
 			if (targetFile != null && targetFile.exists()) {
-				ATerm build = getFactory().readFromFile(targetFile.getLocation().toOSString());
-				
+				ATerm build = getFactory().readFromFile(
+						targetFile.getLocation().toOSString());
+
 				return getFactory().make("build(<term>)", build);
 			}
 		} catch (CoreException e) {
@@ -116,7 +117,7 @@ public class BuildResults extends Tool {
 			RuntimePlugin.getInstance().logException(
 					"could not get build for " + sourcePathStr, e);
 		}
-		
+
 		return getFactory().make("build(undefined)");
 	}
 
@@ -125,15 +126,16 @@ public class BuildResults extends Tool {
 			IFile targetFile = getTargetFile(sourcePathStr, targetExt);
 
 			if (targetFile != null && targetFile.exists()) {
-				String content = StreamUtils.readStreamContents(targetFile.getContents());
+				String content = StreamUtils.readStreamContents(targetFile
+						.getContents());
 				return getFactory().make("build(<str>)", content);
 			}
 		} catch (CoreException e) {
 			RuntimePlugin.getInstance().logException(
 					"could not get build for " + sourcePathStr, e);
 		}
-		
-		return getFactory().make("build(\"***build-not-found***\")");	
+
+		return getFactory().make("build(\"***build-not-found***\")");
 	}
 
 	private IFile getTargetFile(String sourcePathStr, String targetExt)
@@ -143,30 +145,79 @@ public class BuildResults extends Tool {
 		while (targetExt.startsWith(EXTENSION_SEPARATOR)) {
 			targetExt = targetExt.substring(1);
 		}
-
+		
 		if (sourceFile != null) {
-			IProject project = sourceFile.getProject();
-			IPath sourcePath = sourceFile.getProjectRelativePath();
-			IFolder binFolder = project.getFolder(BIN_FOLDER);
-			IPath targetPath = binFolder.getProjectRelativePath().append(
-					sourcePath.removeFileExtension()
-							.addFileExtension(targetExt));
+		    return createTargetFile(targetExt, sourceFile);
+		}
+		else {
+			return createLibraryTargetFile(sourcePathStr, targetExt);
+		}
+	}
 
-			IPath current = Path.ROOT;
-			for (String segment : targetPath.removeLastSegments(1).segments()) {
-				current = current.append(segment);
-				IFolder path = project.getFolder(current);
-				if (!path.exists()) {
-					path.create(true, true, null);
-				}
+	private IFile createTargetFile(String targetExt, IFile sourceFile)
+			throws CoreException {
+		IProject project;
+		IPath targetPath;
+		project = sourceFile.getProject();
+		IFolder binFolder = project.getFolder(BIN_FOLDER);
+		
+		IPath sourcePath = sourceFile.getProjectRelativePath();
+		targetPath = binFolder.getProjectRelativePath().append(
+				sourcePath.removeFileExtension().addFileExtension(targetExt));
+		
+		return createFile(project, targetPath);
+	}
+
+	/**
+	 * Workaround for not having a feature for libraries. As a heuristic,
+	 * we recognize libraries if they are in a "library" subdir and store
+	 * the build results in "tmp" project.
+	 * 
+	 * TODO remove this code and have an implementation of a search path with jars
+	 */
+	private IFile createLibraryTargetFile(String sourcePathStr, String targetExt)
+			throws CoreException {
+		IProject project;
+		IPath targetPath;
+		
+		project = ResourcesPlugin.getWorkspace().getRoot().getProject("tmp");
+		if (!project.exists()) {
+			project.create(null);
+		}
+		else if (!project.isOpen()) {
+			project.open(null);
+		}
+		
+		IFolder binFolder = project.getFolder(BIN_FOLDER);
+
+		int libIndex = sourcePathStr.indexOf(File.separator + "library");
+		if (libIndex != -1) {
+			sourcePathStr = sourcePathStr.substring(libIndex
+					+ "library".length() + 1);
+
+			targetPath = binFolder.getProjectRelativePath().append(
+					sourcePathStr).removeFileExtension().addFileExtension(
+					targetExt);
+
+			return createFile(project, targetPath);
+		} else {
+			return null;
+		}
+	}
+
+	private IFile createFile(IProject project, IPath targetPath)
+			throws CoreException {
+		IPath current = Path.ROOT;
+		for (String segment : targetPath.removeLastSegments(1).segments()) {
+			current = current.append(segment);
+			IFolder path = project.getFolder(current);
+			if (!path.exists()) {
+				path.create(true, true, null);
 			}
-
-			IFile targetFile = sourceFile.getProject().getFile(targetPath);
-
-			return targetFile;
 		}
 
-		return null;
+		IFile targetFile = project.getFile(targetPath);
+		return targetFile;
 	}
 
 	private IFile getFile(String source) {

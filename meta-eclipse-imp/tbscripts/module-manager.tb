@@ -2,7 +2,7 @@
 #define __MODULE_MANAGER__
 
 #include <module-manager.idef>
-#include <attribute-changed-event.tb>
+#include <attribute-changed-event.tb> 
 #include <dependencies-changed-event.tb>
 #include <undefined.h>
 #include <graph-namespace.h>

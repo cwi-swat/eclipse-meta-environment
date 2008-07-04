@@ -36,17 +36,14 @@ let
   SdfPath: str,
   Ext : str
 in
-  InitCache(TableName)
-  . printf("init cache for %s\n", TableName)
-  . Ext := concat(".", concat(Type, ".tbl"))
+  Ext := concat(".", concat(Type, ".tbl"))
   . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
-  . create(ClearCacheHandler(TableName, Namespace, Ext, "status", <term>, complete), Pid?)
   . printf("waiting for get-parsetable(ModuleId?, %t)\n", Type)
   .
   (
     rec-msg(get-parsetable(ModuleId?, Type))
     . printf("rec-msg(get-parsetable(%s, %s))\n", ModuleId,Type)
-    . MGetCachedValue(Ext, SdfPath, Table?)
+    . GetCachedValue(Ext, SdfPath, Table?)
     .
     if equal(Table, UNDEFINED) then
       AddJob("Generating parser")
@@ -60,7 +57,7 @@ in
 	. GenerateParsetable(Modulename, NewSyntax, Table?)
 	.
 	if not-equal(Table, UNDEFINED) then
-	  PutCachedValue(TableName, ModuleId, SdfPath, Ext, Table)
+	  PutCachedValue(SdfPath, Ext, Table)
 	  . snd-msg(parsetable(ModuleId, Type, Table))
 	else
 	  printf("generation of parse table failed\n") .
