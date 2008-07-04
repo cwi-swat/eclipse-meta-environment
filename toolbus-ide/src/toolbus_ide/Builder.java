@@ -27,6 +27,7 @@ import toolbus.atom.msg.RecMsg;
 import toolbus.atom.msg.SndMsg;
 import toolbus.atom.note.SndNote;
 import toolbus.atom.note.Subscribe;
+import toolbus.exceptions.NoSuchProcessDefinitionException;
 import toolbus.exceptions.SyntaxErrorException;
 import toolbus.exceptions.ToolBusException;
 import toolbus.exceptions.ToolBusExecutionException;
@@ -133,6 +134,11 @@ public class Builder extends BuilderBase {
     		
     		try{
     			toolbus.addProcess(new ProcessCall(processDefinition.getName(), dummyActuals, tbTermFactory, null));
+    		}catch(NoSuchProcessDefinitionException nspdex){
+    			PositionInformation posInfo = processDefinition.getOriginalProcessExpression().getPosInfo();
+    			IPath location = new Path(posInfo.getFileName());
+    			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
+    			ErrorHandler.addProblemMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), "No such process definition: "+nspdex.getProcessName());
     		}catch(ToolBusException tex){
     			PositionInformation posInfo = processDefinition.getOriginalProcessExpression().getPosInfo();
     			IPath location = new Path(posInfo.getFileName());
