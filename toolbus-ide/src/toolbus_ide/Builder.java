@@ -137,7 +137,7 @@ public class Builder extends BuilderBase {
     			PositionInformation posInfo = processDefinition.getOriginalProcessExpression().getPosInfo();
     			IPath location = new Path(posInfo.getFileName());
     			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
-    			ErrorHandler.addProblemMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), "Process compilation error.");
+    			ErrorHandler.addProblemMarker(file, posInfo.getOffset(), posInfo.getBeginLine(), posInfo.getBeginColumn(), tex.getMessage());
     		}
     	}
     }
