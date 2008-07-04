@@ -42,14 +42,14 @@ import toolbus_ide.editor.ParseController;
 import aterm.ATerm;
 import aterm.ATermList;
 
-public class Builder extends BuilderBase {
+public class Builder extends BuilderBase{
     public static final String BUILDER_ID = Activator.kPluginID + ".builder";
 
     public static final String LANGUAGE_NAME = Activator.kLanguageName;
 
     public static final Language LANGUAGE = LanguageRegistry.findLanguage(LANGUAGE_NAME);
 
-    public Builder() {
+    public Builder(){
     	super();
 	}
     
@@ -97,12 +97,14 @@ public class Builder extends BuilderBase {
     	ToolBus toolbus = new ToolBus(includePath);
     	
 		try{
-			parser parser_obj = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
-			parser_obj.parse();
+			parser parser = new parser(new HashSet<String>(), new ArrayList<ATerm>(), filename, new FileReader(filename), toolbus);
+			parser.parse();
+			
+			ErrorHandler.clearMarkersForFiles(parser.scriptsNames());
 			
 			compileProcessDefinitions(toolbus);
 			
-			//findDeadCommunicationAtoms(toolbus);
+			findDeadCommunicationAtoms(toolbus);
 		}catch(SyntaxErrorException see){ // Parser.
 			IPath location = new Path(see.filename);
 			IFile errorFile = workSpaceRoot.findFilesForLocation(location)[0];

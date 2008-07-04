@@ -3,15 +3,30 @@ package toolbus_ide;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 public class ErrorHandler{
 	
 	private ErrorHandler(){
 		super();
 	}
+	
+	public static void clearMarkersForFiles(String[] filenames){
+		IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		
+		for(int i = filenames.length -1; i >= 0; i--){
+			IPath location = new Path(filenames[i]);
+			IFile file = workSpaceRoot.findFilesForLocation(location)[0];
+			
+			clearMarkers(file);
+		}
+	}
 
-	public static void clearMarkers(IFile file) {
+	public static void clearMarkers(IFile file){
 		try{
     		file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 	    }catch(CoreException ce){
