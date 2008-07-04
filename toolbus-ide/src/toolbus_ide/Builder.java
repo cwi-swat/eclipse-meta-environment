@@ -125,10 +125,10 @@ public class Builder extends BuilderBase {
     		ProcessDefinition processDefinition = processDefinitionsIterator.next();
     		int numberOfFormals = processDefinition.getNumberOfFormals();
     		TBTermFactory tbTermFactory = toolbus.getTBTermFactory();
-    		ATermList empty = tbTermFactory.makeList();
-    		ATermList dummyActuals = empty;
+    		ATerm undefined = tbTermFactory.Undefined;
+    		ATermList dummyActuals = tbTermFactory.makeList();
     		while(--numberOfFormals >= 0){
-    			dummyActuals = tbTermFactory.makeList(empty, dummyActuals);
+    			dummyActuals = tbTermFactory.makeList(undefined, dummyActuals);
     		}
     		
     		try{
