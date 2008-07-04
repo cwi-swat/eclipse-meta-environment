@@ -12,12 +12,8 @@
 #include <module-utils.tb>
 #include <jobs-manager.idef>
 
-#define SDF_TREE_CACHE "sdf-annotated-tree"
-
-toolbus(InitCache(SDF_TREE_CACHE))
-toolbus(MClearCacheHandler(SDF_NAMESPACE, 
-                           [SDF_TREE_CACHE, "term-parsetable"],
-                           [".sdf.pt", "trm.tbl"]))
+toolbus(ClearCacheHandler(SDF_NAMESPACE, 
+                           [".sdf.pt", "trm.tbl", ".asf.tbl"]))
 
 /**
  * This process safely/lazily retrieves a module name 
@@ -509,7 +505,7 @@ let
 in
   snd-msg(tm-request-transaction(sdf-parsing))
   . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
-  . MGetCachedValue(".sdf.pt", Path, Tree?)
+  . GetCachedValue(".sdf.pt", Path, Tree?)
   .
   if equal(Tree, UNDEFINED) then
     Type := SDF_NAMESPACE
@@ -526,7 +522,7 @@ in
         (
           rec-msg(parse-handler-done(Pid, ModuleId, Tree?))
           . AnnotateTree(Tree, Path, Result?)
-          . PutCachedValue(SDF_TREE_CACHE, ModuleId, Path, ".sdf.pt", Result)
+          . PutCachedValue(Path, ".sdf.pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED

@@ -12,24 +12,14 @@
 #include <asfc.idef>
 #include <asfchecker.idef>
 #include <term-utils.tb>
-#include <sdf-utils.tb>
+#include <sdf-utils.tb>  
 #include <asfsdfchecker.idef>
 #include <cache-utils.tb>
 #include <attribute-changed-event.tb>
 #include <module-utils.tb>
 
-#define ASF_TREE_CACHE "asf-annotated-tree"
-#define ASF_NORMALIZED_TREE_CACHE "asf-normalized-tree"
-#define ASF_EQS_CACHE "eqs-cache"
-#define ASF_TABLE_CACHE "equations-parsetable"
-
-toolbus(InitCache(ASF_NORMALIZED_TREE_CACHE))
-toolbus(InitCache(ASF_EQS_CACHE))
-toolbus(InitCache(ASF_TREE_CACHE))
-
-toolbus(MClearCacheHandler(ASF_NAMESPACE, 
-                           [ASF_NORMALIZED_TREE_CACHE, ASF_TREE_CACHE, ASF_EQS_CACHE, ASF_TABLE_CACHE],
-                           [".asf.nrm", ".asf.pt", ".eqs", ".asf.tbl"]))
+toolbus(ClearCacheHandler(ASF_NAMESPACE, 
+                           [".asf.nrm", ".asf.pt", ".eqs"]))
                            
 
 process AsfPath2SdfPath(AsfPath : str, SdfPath : str?) is
@@ -191,7 +181,7 @@ in
   printf("GetASFParseTree: %t\n", AsfModuleId)
   . snd-msg(tm-request-transaction(asf-parsing))
   . GetModulePath(AsfModuleId, ASF_NAMESPACE, AsfPath?)
-  . MGetCachedValue(".asf.pt", AsfPath, Tree?)
+  . GetCachedValue(".asf.pt", AsfPath, Tree?)
   .
   if equal(Tree, UNDEFINED) then
     printf("GetASFParseTree: not cached\n")
@@ -212,7 +202,7 @@ in
           rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
 	      . create(AmbiguityHandler(Tree, AsfPath), AmbPid?)
           . AnnotateTree(Tree, AsfPath, Result?) 
-          . PutCachedValue(ASF_TREE_CACHE, AsfModuleId, AsfPath, ".asf.pt", Result)
+          . PutCachedValue(AsfPath, ".asf.pt", Result)
         +
           rec-msg(parse-handler-done(Pid))
           . Result := UNDEFINED
@@ -286,7 +276,7 @@ let
 in
   Tree := UNDEFINED
   . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
-  . MGetCachedValue(".asf.nrm", SdfPath, Tree?)
+  . GetCachedValue(".asf.nrm", SdfPath, Tree?)
   .
   if not-equal(Tree, UNDEFINED) then
     Result := Tree
@@ -294,7 +284,7 @@ in
     AddJob("Normalizing ...")
     . snd-msg(ao-normalize-module(Equations)) 
     . rec-msg(ao-normalize-module-result(Tree?))
-    . PutCachedValue(ASF_NORMALIZED_TREE_CACHE, ModuleId, SdfPath, ".asf.nrm", Tree)
+    . PutCachedValue(SdfPath, ".asf.nrm", Tree)
     . Result := Tree
     . JobDone("Normalizing ...")
   fi 

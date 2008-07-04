@@ -90,12 +90,6 @@
              language="sdf"/>
     </extension>
     <extension
-          point="org.eclipse.imp.runtime.hoverHelper">
-       <hoverhelper
-             class="org.meta_environment.eclipse.terms.HoverHelper"
-             language="trm"/>
-    </extension>
-    <extension
           point="org.meta_environment.eclipse.actions.EditorMenus">
 <EditorMenu 
   language="trm"
