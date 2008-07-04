@@ -61,7 +61,8 @@ public class ParseController implements IParseController{
 			IResourceDelta[] rda = delta.getAffectedChildren();
 			for(int i = 0; i < rda.length; i++){
 				IResourceDelta rd = rda[i];
-				if((rd.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) != 0) return true;
+				IResource r = rd.getResource();
+				if((rd.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) != 0 && (r instanceof IFolder || r instanceof IProject)) return true;
 				
 				if(didAnyThingHappenWeWantToKnowAbout(rd)) return true;
 			}
