@@ -3,7 +3,6 @@ package org.meta_environment.eclipse.parser;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.imp.language.ILanguageService;
@@ -18,7 +17,6 @@ import org.eclipse.imp.parser.ISourcePositionLocator;
 import org.eclipse.imp.services.IAnnotationTypeInfo;
 import org.eclipse.imp.services.ILanguageSyntaxProperties;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.ui.internal.UIPlugin;
 import org.meta_environment.eclipse.Activator;
 import org.meta_environment.eclipse.Tool;
 import org.meta_environment.eclipse.tokens.TokenIterator;
