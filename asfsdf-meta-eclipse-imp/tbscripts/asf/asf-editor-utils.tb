@@ -19,6 +19,18 @@ in
   . snd-msg(et-open-editor(AsfPath, ASF_NAMESPACE))
 endlet
 
+process EditSyntax(ModuleId: module-id) is
+let
+  Path: str,
+  SdfPath: str,
+  SdfModuleId : module-id
+in
+  GetModulePath(ModuleId, ASF_NAMESPACE, Path?)
+  . AsfPath2SdfPath(Path, SdfPath?)
+  . GetOrCreateModule(SDF_NAMESPACE, SdfPath, SdfModuleId?)
+  . snd-msg(et-open-editor(SdfPath, SDF_NAMESPACE))
+endlet
+
 
 process ReduceMyTerm(ModuleId: module-id, Filename: str, Debugging: term) is
 let

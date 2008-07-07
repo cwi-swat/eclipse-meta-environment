@@ -30,5 +30,20 @@ in
   create(EditEquations(ModuleId), Pid?)
 endlet
 
+process EditorEditSyntaxAction(Filename: str, Language: str) is
+let 
+  ModuleId : module-id
+in
+  GetOrCreateModule(ASF_NAMESPACE, Filename, ModuleId?) 
+  . EditSyntaxAction(ModuleId)
+endlet
+
+process EditSyntaxAction(ModuleId : module-id) is
+let
+  Pid: int
+in
+  create(EditSyntax(ModuleId), Pid?)
+endlet
+
 
 #endif /* __ASF_EDITOR_ACTIONS__ */
