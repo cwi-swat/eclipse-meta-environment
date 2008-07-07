@@ -22,7 +22,7 @@ public class Perspective implements IPerspectiveFactory {
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
 		outputfolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 		outputfolder.addView(NewSearchUI.SEARCH_VIEW_ID);
-		outputfolder.addView(FactBrowserView.ID);
+//		outputfolder.addView(FactBrowserView.ID);
 		
 		IFolderLayout outlineFolder = layout.createFolder("outline", IPageLayout.RIGHT, (float)0.75, editorArea); //$NON-NLS-1$
 		outlineFolder.addView(IPageLayout.ID_OUTLINE);
