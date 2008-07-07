@@ -38,7 +38,7 @@ public class Jobs extends Tool {
 	public void startJob(String message, ATerm aborter) {
 		ToolBusJob job = jobs.get(message);
 
-		if (true || job == null) {
+		if (job == null) {
 			job = new ToolBusJob(message, aborter);
 			job.schedule();
 			jobs.put(message, job);
