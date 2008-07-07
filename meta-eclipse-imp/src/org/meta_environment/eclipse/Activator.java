@@ -8,9 +8,10 @@ import org.meta_environment.eclipse.errors.ErrorViewer;
 import org.meta_environment.eclipse.facts.FactsTool;
 import org.meta_environment.eclipse.files.BuildResults;
 import org.meta_environment.eclipse.files.ResourceChanges;
+import org.meta_environment.eclipse.focus.SelectionTracker;
 import org.meta_environment.eclipse.jobs.Jobs;
 
-public class Activator extends PluginBase implements IStartup {
+public class Activator extends PluginBase implements IStartup{
 	public static final String PLUGIN_ID = "org.meta_environment";
 	
 	public Activator(){
@@ -33,6 +34,7 @@ public class Activator extends PluginBase implements IStartup {
 		LanguageActionsTool.getInstance();
 		Jobs.getInstance();
 		FactsTool.getInstance();
+		SelectionTracker.getInstance();
 	}
 
 	public String getID() {
