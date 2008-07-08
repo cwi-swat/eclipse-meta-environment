@@ -1,0 +1,20 @@
+tool selection-tracker is {}
+
+process SelectionTracker is
+let
+  SelectionToolId: selection-tracker,
+  BeginLine: int,
+  EndLine: int,
+  Offset: int,
+  Length: int
+in
+  rec-connect(SelectionToolId?) .
+  (
+    rec-event(SelectionToolId, selected(BeginLine?, EndLine?, Offset?, Length?)) .
+    snd-ack-event(SelectionToolId, selected) .
+    snd-note(selected(BeginLine, EndLine, Offset, Length)) .
+    printf("Selected: %t %t %t %t\n", BeginLine, EndLine, Offset, Length)
+  ) * rec-disconnect(SelectionToolId)
+endlet
+
+toolbus(SelectionTracker)
