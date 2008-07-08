@@ -131,8 +131,7 @@ public class ParseController extends Tool implements IParseController,
 				return result;
 			} else if (name.equals("error")) {
 				result = null;
-				errors = eFactory.SummaryFromTerm(appl.getArgument(0))
-						.getList();
+				errors = eFactory.SummaryFromTerm(appl.getArgument(0)).getList();
 				handleErrors(errors);
 				return null;
 			}
