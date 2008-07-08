@@ -1,6 +1,5 @@
 package org.meta_environment.eclipse.sdf;
 
-import org.eclipse.imp.pdb.browser.FactBrowserView;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
