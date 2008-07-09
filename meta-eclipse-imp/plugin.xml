@@ -44,4 +44,28 @@
           point="org.eclipse.ui.startup">
        <startup class="org.meta_environment.eclipse.Activator"/>
     </extension>
+    <extension
+          point="org.eclipse.ui.editors.markerAnnotationSpecification">
+       <specification
+             annotationType="org.meta_environment.focus-annotation"
+             colorPreferenceKey="FocusColorPreferenceKey"
+             colorPreferenceValue="250,250,210"
+             contributesToHeader="false"
+             highlightPreferenceKey="HighLightPreferenceKey"
+             highlightPreferenceValue="true"
+             includeOnPreferencePage="false"
+             isGoToNextNavigationTarget="false"
+             isGoToPreviousNavigationTarget="false"
+             overviewRulerPreferenceKey="FocusOverViewPreferenceKey"
+             overviewRulerPreferenceValue="true"
+             presentationLayer="4"
+             showInNextPrevDropdownToolbarAction="false"
+             textPreferenceKey="TextPreferenceKey"
+             textPreferenceValue="true"
+             textStylePreferenceKey="FocusStylePreferenceKey"
+             textStylePreferenceValue="BOX"
+             verticalRulerPreferenceKey="FocusVerticalRulerPreferenceKey"
+             verticalRulerPreferenceValue="true">
+       </specification>
+    </extension>
 </plugin>

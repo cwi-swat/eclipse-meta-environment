@@ -1,9 +1,12 @@
 package org.meta_environment.eclipse.focus;
 
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.imp.editor.UniversalEditor;
 import org.eclipse.imp.parser.IParseController;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.text.ISynchronizable;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
@@ -18,8 +21,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.meta_environment.eclipse.Activator;
 import org.meta_environment.eclipse.Tool;
-
-import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
@@ -96,6 +97,25 @@ public class SelectionTrackerTool extends Tool{
 						
 						IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
 						statusLine.setMessage("Sort: "+sort.getName());
+						
+						// Focus
+						/*int focusOffset = ((ATermInt)focus.getArgument(4)).getInt();
+						int focusLength = ((ATermInt)focus.getArgument(5)).getInt();
+						
+						IDocumentProvider documentProvider = editor.getDocumentProvider();
+						IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
+						
+						// Lock on the annotation model
+						Object lockObject = ((ISynchronizable) annotationModel).getLockObject();
+						synchronized(lockObject){
+							Annotation currentFocus = selectionTrackerTool.currentFocus;
+							if(currentFocus != null) annotationModel.removeAnnotation(currentFocus);
+							
+							currentFocus = new Annotation(FOCUS_ANNOTATION, false, sort.getName());
+							selectionTrackerTool.currentFocus = currentFocus;
+							
+							annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
+						}*/
 					}
 				}
 			}
