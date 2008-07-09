@@ -10,6 +10,7 @@
 #include <editor-tool.idef>
 #include <language-actions.idef>
 #include <editor-tool.idef>
+#include <selection-listener.tb>
 
 
 /* meta-kernel */
