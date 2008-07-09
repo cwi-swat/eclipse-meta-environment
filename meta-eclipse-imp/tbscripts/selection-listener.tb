@@ -1,0 +1,26 @@
+#include <selection-tracker.idef>
+
+process SelectionListener is
+let
+  Filename : str,
+  Tree : term,
+  BeginLine: int,
+  EndLine: int,
+  Offset: int,
+  Length: int,
+  Sort: str,
+  AnnotatedTree: term
+in
+  subscribe(selected(<term>, <str>, <int>, <int>, <int>, <int>)) .
+  (
+    rec-note(selected(Tree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(add-posinfo-packed(Filename, Tree))
+    . rec-msg(tree-with-pos-info(AnnotatedTree?))
+    . snd-msg(se-get-sort-at-offset-in-tree(AnnotatedTree, Offset))
+    . rec-msg(se-got-sort-at-offset-in-tree(Sort?))
+    . printf("Selected sort: %t\n", Sort)
+  )
+  * delta
+endlet
+
+toolbus(SelectionListener)

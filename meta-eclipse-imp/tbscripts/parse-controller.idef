@@ -2,7 +2,6 @@
 #include <module-utils.tb>
 #include <parse-utils.tb>
 #include <structure-editor.idef>
-#include <selection-tracker.idef>
 
 tool parse-controller is { }
 

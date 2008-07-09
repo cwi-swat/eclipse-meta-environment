@@ -15,7 +15,6 @@ in
     rec-event(SelectionToolId, selected(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
     . snd-ack-event(SelectionToolId, selected)
     . snd-note(selected(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
-    /*. printf("Selected: %t %t %t %t %t %t\n", ParseTree, Filename, BeginLine, EndLine, Offset, Length)*/
   ) * rec-disconnect(SelectionToolId)
 endlet
 
