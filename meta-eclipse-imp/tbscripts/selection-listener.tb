@@ -9,15 +9,16 @@ let
   Offset: int,
   Length: int,
   Sort: str,
+  Focus: term,
   AnnotatedTree: term
 in
   (
     rec-msg(selected(Tree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
     . snd-msg(add-posinfo-packed(Filename, Tree))
     . rec-msg(tree-with-pos-info(AnnotatedTree?))
-    . snd-msg(se-get-sort-at-offset-in-tree(AnnotatedTree, Offset))
-    . rec-msg(se-got-sort-at-offset-in-tree(Sort?))
-    . snd-msg(selected-sort(Sort))
+    . snd-msg(se-get-selected-at-offset-in-tree(AnnotatedTree, Offset))
+    . rec-msg(se-got-selected-at-offset-in-tree(Sort?, Focus?))
+    . snd-msg(selected-area(Sort, Focus))
   )
   * delta
 endlet

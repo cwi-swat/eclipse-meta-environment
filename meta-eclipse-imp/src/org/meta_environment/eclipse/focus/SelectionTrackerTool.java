@@ -5,6 +5,9 @@ import org.eclipse.imp.editor.UniversalEditor;
 import org.eclipse.imp.parser.IParseController;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
@@ -12,15 +15,21 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.meta_environment.eclipse.Activator;
 import org.meta_environment.eclipse.Tool;
+
+import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
 import aterm.ATermAppl;
+import aterm.ATermInt;
 import aterm.pure.PureFactory;
 
 public class SelectionTrackerTool extends Tool{
 	private final static String TOOL_NAME = "selection-tracker";
+	private final static String FOCUS_ANNOTATION = Activator.PLUGIN_ID+".focus-annotation";
 	
 	private static class InstanceKeeper{
 		private final static SelectionTrackerTool instance = new SelectionTrackerTool();
@@ -29,8 +38,13 @@ public class SelectionTrackerTool extends Tool{
 		}
 	}
 	
+	private Annotation currentFocus;
+	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
+		
+		currentFocus = null;
+		
 		init();
 	}
 	
@@ -75,7 +89,10 @@ public class SelectionTrackerTool extends Tool{
 						
 						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), startLine, endLine, offset, length);
 						
-						ATermAppl sort = (ATermAppl) selectionTrackerTool.sendRequest(selected);
+						// Sort
+						ATermAppl selectedArea = (ATermAppl) selectionTrackerTool.sendRequest(selected);
+						ATermAppl sort = (ATermAppl)selectedArea.getArgument(0);
+						ATermAppl focus = (ATermAppl)selectedArea.getArgument(1);
 						
 						IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
 						statusLine.setMessage("Sort: "+sort.getName());
