@@ -11,9 +11,7 @@ import org.eclipse.ui.PlatformUI;
 import org.meta_environment.eclipse.Tool;
 
 import toolbus.adapter.AbstractTool;
-import aterm.AFun;
 import aterm.ATerm;
-import aterm.ATermInt;
 import aterm.pure.PureFactory;
 
 public class SelectionTrackerTool extends Tool{
@@ -57,13 +55,12 @@ public class SelectionTrackerTool extends Tool{
 			if(selection instanceof ITextSelection){
 				ITextSelection textSelection = (ITextSelection) selection;
 				
-				ATermInt startLine = factory.makeInt(textSelection.getStartLine());
-				ATermInt endLine = factory.makeInt(textSelection.getEndLine());
-				ATermInt offset = factory.makeInt(textSelection.getOffset());
-				ATermInt length = factory.makeInt(textSelection.getLength());
+				int startLine = textSelection.getStartLine();
+				int endLine = textSelection.getEndLine();
+				int offset = textSelection.getOffset();
+				int length = textSelection.getLength();
 				
-				AFun selectedFun = factory.makeAFun("selected", 4, false);
-				ATerm selected = factory.makeAppl(selectedFun, startLine, endLine, offset, length);
+				ATerm selected = factory.make("selected(<int>, <int>, <int>, <int>)", startLine, endLine, offset, length);
 				
 				selectionTrackerTool.sendEvent(selected);
 			}
