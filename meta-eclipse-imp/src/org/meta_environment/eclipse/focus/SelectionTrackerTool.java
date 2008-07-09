@@ -3,6 +3,7 @@ package org.meta_environment.eclipse.focus;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.imp.editor.UniversalEditor;
 import org.eclipse.imp.parser.IParseController;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
@@ -15,6 +16,7 @@ import org.meta_environment.eclipse.Tool;
 
 import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
+import aterm.ATermAppl;
 import aterm.pure.PureFactory;
 
 public class SelectionTrackerTool extends Tool{
@@ -73,7 +75,10 @@ public class SelectionTrackerTool extends Tool{
 						
 						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), startLine, endLine, offset, length);
 						
-						selectionTrackerTool.sendEvent(selected);
+						ATermAppl sort = (ATermAppl) selectionTrackerTool.sendRequest(selected);
+						
+						IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
+						statusLine.setMessage("Sort: "+sort.getName());
 					}
 				}
 			}

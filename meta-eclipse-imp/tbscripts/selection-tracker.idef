@@ -8,13 +8,15 @@ let
   BeginLine: int,
   EndLine: int,
   Offset: int,
-  Length: int
+  Length: int,
+  Sort: str
 in
   rec-connect(SelectionToolId?) .
   (
-    rec-event(SelectionToolId, selected(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
-    . snd-ack-event(SelectionToolId, selected)
-    . snd-note(selected(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    rec-request(SelectionToolId, selected(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(selected(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    . rec-msg(selected-sort(Sort?))
+    . snd-response(SelectionToolId, selected(Sort))
   ) * rec-disconnect(SelectionToolId)
 endlet
 
