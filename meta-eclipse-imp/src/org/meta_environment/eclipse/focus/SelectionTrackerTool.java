@@ -1,5 +1,8 @@
 package org.meta_environment.eclipse.focus;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.imp.editor.UniversalEditor;
+import org.eclipse.imp.parser.IParseController;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
@@ -55,14 +58,24 @@ public class SelectionTrackerTool extends Tool{
 			if(selection instanceof ITextSelection){
 				ITextSelection textSelection = (ITextSelection) selection;
 				
-				int startLine = textSelection.getStartLine();
-				int endLine = textSelection.getEndLine();
-				int offset = textSelection.getOffset();
-				int length = textSelection.getLength();
-				
-				ATerm selected = factory.make("selected(<int>, <int>, <int>, <int>)", startLine, endLine, offset, length);
-				
-				selectionTrackerTool.sendEvent(selected);
+				if(part instanceof UniversalEditor){
+					UniversalEditor editor = (UniversalEditor) part;
+					IParseController parseController = editor.getParseController();
+					Object ast = parseController.getCurrentAst();
+					if(ast instanceof ATerm){
+						ATerm parseTree = (ATerm) ast;
+						IPath path = parseController.getPath();
+						
+						int startLine = textSelection.getStartLine();
+						int endLine = textSelection.getEndLine();
+						int offset = textSelection.getOffset();
+						int length = textSelection.getLength();
+						
+						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), startLine, endLine, offset, length);
+						
+						selectionTrackerTool.sendEvent(selected);
+					}
+				}
 			}
 		}
 	}

@@ -3,6 +3,8 @@ tool selection-tracker is {}
 process SelectionTracker is
 let
   SelectionToolId: selection-tracker,
+  ParseTree: term,
+  Filename: str,
   BeginLine: int,
   EndLine: int,
   Offset: int,
@@ -10,10 +12,10 @@ let
 in
   rec-connect(SelectionToolId?) .
   (
-    rec-event(SelectionToolId, selected(BeginLine?, EndLine?, Offset?, Length?)) .
-    snd-ack-event(SelectionToolId, selected) .
-    snd-note(selected(BeginLine, EndLine, Offset, Length)) .
-    printf("Selected: %t %t %t %t\n", BeginLine, EndLine, Offset, Length)
+    rec-event(SelectionToolId, selected(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-ack-event(SelectionToolId, selected)
+    . snd-note(selected(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    /*. printf("Selected: %t %t %t %t %t %t\n", ParseTree, Filename, BeginLine, EndLine, Offset, Length)*/
   ) * rec-disconnect(SelectionToolId)
 endlet
 
