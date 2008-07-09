@@ -57,7 +57,7 @@
              isGoToNextNavigationTarget="false"
              isGoToPreviousNavigationTarget="false"
              overviewRulerPreferenceKey="FocusOverViewPreferenceKey"
-             overviewRulerPreferenceValue="true"
+             overviewRulerPreferenceValue="false"
              presentationLayer="4"
              showInNextPrevDropdownToolbarAction="false"
              textPreferenceKey="TextPreferenceKey"
@@ -65,7 +65,7 @@
              textStylePreferenceKey="FocusStylePreferenceKey"
              textStylePreferenceValue="BOX"
              verticalRulerPreferenceKey="FocusVerticalRulerPreferenceKey"
-             verticalRulerPreferenceValue="true">
+             verticalRulerPreferenceValue="false">
        </specification>
     </extension>
 </plugin>
