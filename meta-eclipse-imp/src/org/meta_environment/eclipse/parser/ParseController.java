@@ -115,7 +115,8 @@ public class ParseController extends Tool implements IParseController,
 	public Object parse(String input, boolean scanOnly, IProgressMonitor monitor) {
 		String l = this.getLanguage().getName();
 
-		ATerm res = sendRequest(factory.make("parse(<str>,<str>,<str>)", l, absPath, input));
+		ATermAppl response = sendRequest(factory.make("parse(<str>,<str>,<str>)", l, absPath, input));
+		ATerm res = response.getArgument(0);
 
 		if (res.getType() == ATerm.APPL) {
 			ATermAppl appl = (ATermAppl) res;
@@ -162,10 +163,11 @@ public class ParseController extends Tool implements IParseController,
 
 	public Iterator<?> getTokenIterator(IRegion region) {
 		if (result != null) {
-			ATerm ack = sendRequest(factory.make("highlight(<term>)", result));
+			ATermAppl response = sendRequest(factory.make("highlight(<term>)", result));
+			ATerm ack = response.getArgument(0);
 
 			if (ack instanceof ATermList) {
-				final ATermList slices = (ATermList) ack;
+				ATermList slices = (ATermList) ack;
 				return new TokenIterator(eFactory, slices);
 			}
 			// timeout happened

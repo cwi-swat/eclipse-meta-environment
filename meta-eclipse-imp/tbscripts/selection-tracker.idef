@@ -17,7 +17,7 @@ in
     rec-request(SelectionToolId, selected(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
     . snd-msg(selected(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
     . rec-msg(selected-area(Sort?, Focus?))
-    . snd-response(SelectionToolId, selected(selected-area(Sort, Focus)))
+    . snd-response(SelectionToolId, selected(Sort, Focus))
   ) * rec-disconnect(SelectionToolId)
 endlet
 

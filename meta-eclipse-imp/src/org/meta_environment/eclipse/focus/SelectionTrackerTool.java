@@ -1,7 +1,5 @@
 package org.meta_environment.eclipse.focus;
 
-import java.util.Iterator;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.imp.editor.UniversalEditor;
 import org.eclipse.imp.parser.IParseController;
@@ -91,16 +89,16 @@ public class SelectionTrackerTool extends Tool{
 						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), startLine, endLine, offset, length);
 						
 						// Sort
-						ATermAppl selectedArea = (ATermAppl) selectionTrackerTool.sendRequest(selected);
-						ATermAppl sort = (ATermAppl)selectedArea.getArgument(0);
-						ATermAppl focus = (ATermAppl)selectedArea.getArgument(1);
+						ATermAppl selectedArea = selectionTrackerTool.sendRequest(selected);
+						ATermAppl sort = (ATermAppl) selectedArea.getArgument(0);
+						ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
 						
 						IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
 						statusLine.setMessage("Sort: "+sort.getName());
 						
 						// Focus
-						/*int focusOffset = ((ATermInt)focus.getArgument(4)).getInt();
-						int focusLength = ((ATermInt)focus.getArgument(5)).getInt();
+						/*int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
+						int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
 						
 						IDocumentProvider documentProvider = editor.getDocumentProvider();
 						IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
