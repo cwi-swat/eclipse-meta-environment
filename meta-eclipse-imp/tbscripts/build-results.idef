@@ -33,7 +33,7 @@ in
     . printf("Trying to load build result from project: %t %t\n", Path, Ext)
     . snd-eval(T, load-build(Path, Ext))
     . rec-value(T, build(TermContent?))
-    . printf("Retrieved build result from project: %t", TermContent)
+    /*. printf("Retrieved build result from project: %t", TermContent)*/
     . snd-msg(res-build(Path, Ext, TermContent))
     . printf("Send build result back\n")
     . TermContent := undefined

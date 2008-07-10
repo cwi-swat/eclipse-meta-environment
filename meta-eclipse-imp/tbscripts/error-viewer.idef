@@ -1,6 +1,8 @@
 #ifndef __ERROR_VIEWER__
 #define __ERROR_VIEWER__
 
+#include <error-output.tb>
+
 tool error-viewer is {  }
 
 process ErrorViewer is
@@ -39,29 +41,7 @@ in
   rec-disconnect(T)
 endlet
 
-
 toolbus(ErrorViewer)
-
-process ConsoleMessage(Message: str) is
-  printf("%s\n", Message)
-
-process Error(Message: str) is
-  printf("error: %s\n", Message)
-  
-process Warning(Message: str) is
-  printf("warning: %s\n", Message)
-
-process DisplaySummary(Summary: summary) is
-  snd-msg(ui-show-feedback-summary("Issues", Summary))
-
-process RefreshSummary(Summary: summary) is
-  snd-msg(ui-refresh-feedback-summary("Issues", Summary))
-  
-process RemoveSummaryFor(SummaryId: str) is
-  snd-msg(ui-remove-feedback-summary("Issues", SummaryId))
-  
-process RemoveSummary(Producer: str, SummaryId: str) is
-  snd-msg(ui-remove-feedback-summary("Issues", Producer, SummaryId))
   
 #endif
 

@@ -4,11 +4,6 @@
 #include <error-support.idef>
 
 /* This is for commandline error output only */
-process AddJob(Message: str) is
-  tau
-
-process JobDone(Message: str) is
-  tau
 
 process ConsoleMessage(Message: str) is
   printf("%s\n", Message)
@@ -18,11 +13,18 @@ process Error(Message: str) is
 
 process Warning(Message: str) is
   printf("warning: %s\n", Message)
-
+  
 process DisplaySummary(Summary: summary) is
+  snd-msg(ui-show-feedback-summary("Issues", Summary)) .
   snd-msg(display-feedback(Summary))
 
+process RefreshSummary(Summary: summary) is
+  snd-msg(ui-refresh-feedback-summary("Issues", Summary))
+  
+process RemoveSummaryFor(SummaryId: str) is
+  snd-msg(ui-remove-feedback-summary("Issues", SummaryId))
+  
 process RemoveSummary(Producer: str, SummaryId: str) is
-  tau
+  snd-msg(ui-remove-feedback-summary("Issues", Producer, SummaryId))
 
 #endif /* __ERROR_OUTPUT__ */
