@@ -21,6 +21,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.imp.language.Language;
 import org.eclipse.imp.model.ISourceProject;
 import org.eclipse.imp.parser.IMessageHandler;
 import org.eclipse.imp.parser.IParseController;
@@ -235,6 +236,11 @@ public class ParseController implements IParseController{
 			handler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
 		}
 		
+		return null;
+	}
+	
+	public Language getLanguage() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }
