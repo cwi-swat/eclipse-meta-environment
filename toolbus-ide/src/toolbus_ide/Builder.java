@@ -21,6 +21,7 @@ import org.eclipse.imp.runtime.PluginBase;
 
 import toolbus.AtomSet;
 import toolbus.TBTermFactory;
+import toolbus.TBTermVar;
 import toolbus.ToolBus;
 import toolbus.atom.Atom;
 import toolbus.atom.msg.RecMsg;
@@ -130,16 +131,24 @@ public class Builder extends BuilderBase{
     protected void compileProcessDefinitions(ToolBus toolbus){
     	IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
     	
+		TBTermFactory tbTermFactory = toolbus.getTBTermFactory();
+		ATerm undefined = tbTermFactory.Undefined;
+		ATerm termResultVar = tbTermFactory.makeTBTermResVar("Dummy", tbTermFactory.make("term"));
+    	
     	List<ProcessDefinition> processDefinitions = toolbus.getProcessDefinitions();
     	Iterator<ProcessDefinition> processDefinitionsIterator = processDefinitions.iterator();
     	while(processDefinitionsIterator.hasNext()){
+    		
     		ProcessDefinition processDefinition = processDefinitionsIterator.next();
-    		int numberOfFormals = processDefinition.getNumberOfFormals();
-    		TBTermFactory tbTermFactory = toolbus.getTBTermFactory();
-    		ATerm undefined = tbTermFactory.Undefined;
+    		ATermList formals = processDefinition.getFormals();
+    		
     		ATermList dummyActuals = tbTermFactory.makeList();
-    		while(--numberOfFormals >= 0){
-    			dummyActuals = tbTermFactory.makeList(undefined, dummyActuals);
+    		while(!formals.isEmpty()){
+    			TBTermVar var = (TBTermVar) formals.getFirst();
+    			formals = formals.getNext();
+    			
+    			if(var.isResultVar()) dummyActuals = dummyActuals.append(termResultVar);
+    			else dummyActuals = dummyActuals.append(undefined);
     		}
     		
     		try{
