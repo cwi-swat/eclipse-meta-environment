@@ -41,7 +41,9 @@ public class TermEditorTools extends Tool {
 	}
 
 	public List<String> getLanguages() {
-		ATermList result = (ATermList) sendRequest(factory.make("get-languages"));
+		ATermAppl response = sendRequest(factory.make("get-languages"));
+		
+		ATermList result = (ATermList) response.getArgument(0);
 		List<String> list = new LinkedList<String>();
 		
 		for (; !result.isEmpty(); result = result.getNext()) {
@@ -52,7 +54,9 @@ public class TermEditorTools extends Tool {
 	}
 	
 	public String getLanguage(String filename) {
-		ATerm language = sendRequest(factory.make("get-language(<str>)", filename));
+		ATermAppl response = sendRequest(factory.make("get-language(<str>)", filename));
+		ATerm language = response.getArgument(0);
+		
 		return ((ATermAppl) language).getName();
 	}
 	
