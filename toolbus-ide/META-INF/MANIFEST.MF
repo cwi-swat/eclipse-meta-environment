@@ -4,7 +4,6 @@ Bundle-Name: ToolBus Script IDE
 Bundle-SymbolicName: toolbus_ide;singleton:=true
 Bundle-Version: 1.0.10
 Bundle-Activator: toolbus_ide.Activator
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
