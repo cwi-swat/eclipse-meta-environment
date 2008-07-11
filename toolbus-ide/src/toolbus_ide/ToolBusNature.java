@@ -21,7 +21,7 @@ public class ToolBusNature extends ProjectNatureBase {
 
 	public void addToProject(IProject project) {
 		super.addToProject(project);
-	};
+	}
 
 	protected void refreshPrefs() {
 	}
