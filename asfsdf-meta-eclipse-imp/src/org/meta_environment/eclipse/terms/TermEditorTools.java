@@ -93,9 +93,7 @@ public class TermEditorTools extends Tool {
 		if (i != -1) {
 			return label.substring(i+1);
 		}
-		else {
-			return label;
-		}
+		return label;
 	}
 
 	private Map<String, String> getActionMap(String language) {
