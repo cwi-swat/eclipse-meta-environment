@@ -97,7 +97,7 @@ public class SelectionTrackerTool extends Tool{
 						statusLine.setMessage("Sort: "+sort.getName());
 						
 						// Focus
-						/*int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
+						int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
 						int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
 						
 						IDocumentProvider documentProvider = editor.getDocumentProvider();
@@ -113,7 +113,7 @@ public class SelectionTrackerTool extends Tool{
 							selectionTrackerTool.currentFocus = currentFocus;
 							
 							annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
-						}*/
+						}
 					}
 				}
 			}
