@@ -71,7 +71,7 @@ public class Jobs extends Tool {
 			return false;
 		}
 
-		private Boolean jobDone = false;
+		private boolean jobDone = false;
 
 		protected synchronized void setJobDone(boolean done) {
 			jobDone = done;

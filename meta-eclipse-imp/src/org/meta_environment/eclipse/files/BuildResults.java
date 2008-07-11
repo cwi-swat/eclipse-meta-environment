@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -45,11 +46,11 @@ public class BuildResults extends Tool {
 			if (targetFile != null) {
 				if (targetFile.exists()) {
 					targetFile.setContents(new ByteArrayInputStream(content
-							.getBytes()), IFile.FORCE,
+							.getBytes()), IResource.FORCE,
 							new NullProgressMonitor());
 				} else {
 					targetFile.create(new ByteArrayInputStream(content
-							.getBytes()), IFile.FORCE,
+							.getBytes()), IResource.FORCE,
 							new NullProgressMonitor());
 				}
 
@@ -149,9 +150,7 @@ public class BuildResults extends Tool {
 		if (sourceFile != null) {
 		    return createTargetFile(targetExt, sourceFile);
 		}
-		else {
-			return createLibraryTargetFile(sourcePathStr, targetExt);
-		}
+		return createLibraryTargetFile(sourcePathStr, targetExt);
 	}
 
 	private IFile createTargetFile(String targetExt, IFile sourceFile)
@@ -192,17 +191,14 @@ public class BuildResults extends Tool {
 
 		int libIndex = sourcePathStr.indexOf(File.separator + "library");
 		if (libIndex != -1) {
-			sourcePathStr = sourcePathStr.substring(libIndex
-					+ "library".length() + 1);
+			sourcePathStr = sourcePathStr.substring(libIndex + "library".length() + 1);
 
-			targetPath = binFolder.getProjectRelativePath().append(
-					sourcePathStr).removeFileExtension().addFileExtension(
-					targetExt);
+			targetPath = binFolder.getProjectRelativePath().append(sourcePathStr).removeFileExtension().addFileExtension(targetExt);
 
 			return createFile(project, targetPath);
-		} else {
-			return null;
 		}
+		
+		return null;
 	}
 
 	private IFile createFile(IProject project, IPath targetPath)

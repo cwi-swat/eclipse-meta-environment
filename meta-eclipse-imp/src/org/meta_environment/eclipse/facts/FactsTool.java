@@ -246,9 +246,7 @@ public class FactsTool extends Tool {
 		if (value.getBoolCon().isTrue()) {
 			return TRUE_VALUE;
 		}
-		else {
-			return FALSE_VALUE;
-		}
+		return FALSE_VALUE;
 	}
 
 	private IValue convertBag(Bag value) {

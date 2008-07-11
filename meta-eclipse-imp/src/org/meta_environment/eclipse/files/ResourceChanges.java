@@ -107,7 +107,7 @@ public class ResourceChanges extends Tool implements IResourceChangeListener {
 
 	}
 
-	private void fileChanged(Language l, IResource resource) throws CoreException {
+	private void fileChanged(Language l, IResource resource) {
 		if (l != null) {
 			sendEvent(factory.make("build-module(<str>,<str>)", l.getName(),
 					resource.getLocation().toOSString()
@@ -122,11 +122,11 @@ public class ResourceChanges extends Tool implements IResourceChangeListener {
 			if (targetFile != null) {
 				if (targetFile.exists()) {
 					targetFile.setContents(new ByteArrayInputStream(content.getBytes()),
-							IFile.FORCE,
+							IResource.FORCE,
 							new NullProgressMonitor());
 				}
 				else {
-					targetFile.create(new ByteArrayInputStream(content.getBytes()), IFile.FORCE,
+					targetFile.create(new ByteArrayInputStream(content.getBytes()), IResource.FORCE,
 							new NullProgressMonitor());
 				}
 				

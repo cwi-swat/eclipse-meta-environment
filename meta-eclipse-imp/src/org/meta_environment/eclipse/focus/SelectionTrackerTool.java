@@ -20,11 +20,9 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.meta_environment.eclipse.Activator;
 import org.meta_environment.eclipse.Tool;
 
-import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermInt;
-import aterm.pure.PureFactory;
 
 public class SelectionTrackerTool extends Tool{
 	private final static String TOOL_NAME = "selection-tracker";
@@ -60,13 +58,11 @@ public class SelectionTrackerTool extends Tool{
 	
 	private static class SelectionChangeListener implements ISelectionListener{
 		private final SelectionTrackerTool selectionTrackerTool;
-		private final PureFactory factory;
 		
 		public SelectionChangeListener(SelectionTrackerTool selectionTrackerTool){
 			super();
 			
 			this.selectionTrackerTool = selectionTrackerTool;
-			this.factory = AbstractTool.getFactory();
 		}
 
 		public void selectionChanged(IWorkbenchPart part, ISelection selection){
@@ -86,7 +82,7 @@ public class SelectionTrackerTool extends Tool{
 						int offset = textSelection.getOffset();
 						int length = textSelection.getLength();
 						
-						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), startLine, endLine, offset, length);
+						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
 						
 						// Sort
 						ATermAppl selectedArea = selectionTrackerTool.sendRequest(selected);
