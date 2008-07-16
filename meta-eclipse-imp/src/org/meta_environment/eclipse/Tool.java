@@ -69,7 +69,7 @@ public class Tool extends AbstractJavaTool{
 	}
 	
 	private void connectDirectly() throws Exception{
-		connectDirectly(ToolBusEclipsePlugin.getToolBus(), Thread.currentThread().getContextClassLoader(), name, -1);
+		connectDirectly(ToolBusEclipsePlugin.getToolBus(), name, -1);
 	}
 	
 	public String getName() {
