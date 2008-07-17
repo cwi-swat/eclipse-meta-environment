@@ -81,6 +81,7 @@ public class Builder extends BuilderBase{
     }
 
     protected void collectDependencies(IFile file){
+    	/* TODO Implement if needed. */
     }
 
     protected boolean isOutputFolder(IResource resource){

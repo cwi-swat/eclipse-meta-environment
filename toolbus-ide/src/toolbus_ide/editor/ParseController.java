@@ -41,7 +41,7 @@ import toolbus.parsercup.sym;
 import toolbus.parsercup.parser.UndeclaredVariableException;
 
 public class ParseController implements IParseController{
-	private volatile IMessageHandler handler;
+	private volatile IMessageHandler messageHandler;
 	private volatile IFile file;
 
 	private volatile Lexer lexer;
@@ -58,20 +58,20 @@ public class ParseController implements IParseController{
 			ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		}
 		
-		private boolean didAnyThingHappenWeWantToKnowAbout(IResourceDelta delta){
+		private boolean didAnythingHappenWeWantToKnowAbout(IResourceDelta delta){
 			IResourceDelta[] rda = delta.getAffectedChildren();
 			for(int i = 0; i < rda.length; i++){
 				IResourceDelta rd = rda[i];
 				IResource r = rd.getResource();
 				if((rd.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) != 0 && (r instanceof IFolder || r instanceof IProject)) return true;
 				
-				if(didAnyThingHappenWeWantToKnowAbout(rd)) return true;
+				if(didAnythingHappenWeWantToKnowAbout(rd)) return true;
 			}
 			return false;
 		}
 		
 		public void resourceChanged(IResourceChangeEvent event){
-			if(didAnyThingHappenWeWantToKnowAbout(event.getDelta())){
+			if(didAnythingHappenWeWantToKnowAbout(event.getDelta())){
 				includePath = buildIncludePath();
 			}
 		}
@@ -169,7 +169,7 @@ public class ParseController implements IParseController{
 	}
 
 	public void initialize(IPath filePath, ISourceProject project, IMessageHandler handler){
-		this.handler = handler;
+		this.messageHandler = handler;
 		
 		file = project.getRawProject().getFile(filePath);
 	}
@@ -220,20 +220,20 @@ public class ParseController implements IParseController{
 			return toolbus;
 		}catch(SyntaxErrorException see){ // Parser.
 			int pos = (see.position >= input.length()) ? input.length() - 1 : see.position;
-			handler.handleSimpleMessage(see.getMessage(), pos, pos, see.column, see.column, see.line, see.line);
+			messageHandler.handleSimpleMessage(see.getMessage(), pos, pos, see.column, see.column, see.line, see.line);
 		}catch(UndeclaredVariableException uvex){ // Parser.
 			int pos = (uvex.position >= input.length()) ? input.length() - 1 : uvex.position;
-			handler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
+			messageHandler.handleSimpleMessage(uvex.getMessage(), pos, pos, uvex.column, uvex.column, uvex.line, uvex.line);
 		}catch(ToolBusExecutionException e){
 			PositionInformation p = e.getPositionInformation();
-			handler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0, 0, 1, 1);
+			messageHandler.handleSimpleMessage(e.getMessage(), p.getOffset(), p.getOffset(), 0, 0, 1, 1);
 		}catch(ToolBusException e){
-			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
+			messageHandler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
 			e.printStackTrace();
 		}catch(Error e){ // Scanner.
-			handler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
+			messageHandler.handleSimpleMessage(e.getMessage(), 0, 0, 0, 0, 1, 1);
 		}catch(Exception ex){ // Something else.
-			handler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
+			messageHandler.handleSimpleMessage(ex.getMessage(), 0, 0, 0, 0, 1, 1);
 		}
 		
 		return null;

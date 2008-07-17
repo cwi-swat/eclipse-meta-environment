@@ -7,19 +7,19 @@ import org.eclipse.imp.runtime.PluginBase;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends PluginBase {
-
 	public static final String kPluginID = "toolbus_ide";
-
 	public static final String kLanguageName = "tscript";
+	
+	private final static class InstanceKeeper{
+		private final static Activator sInstance = new Activator();
+	}
 
 	public Activator(){
 		super();
 	}
 
-	private final static Activator sInstance = new Activator();
-
 	public static Activator getInstance(){
-		return sInstance;
+		return InstanceKeeper.sInstance;
 	}
 
 	public void start(BundleContext context) throws Exception {
@@ -29,13 +29,13 @@ public class Activator extends PluginBase {
 	public String getID() {
 		return kPluginID;
 	}
-
-	protected static PreferencesService preferencesService = null;
+	
+	private volatile static PreferencesService prefsService = null;
 
 	public static PreferencesService getPreferencesService() {
-		if (preferencesService == null) {
-			preferencesService = new PreferencesService(ResourcesPlugin.getWorkspace().getRoot().getProject());
-			preferencesService.setLanguageName(kLanguageName);
+		if (prefsService == null) {
+			prefsService = new PreferencesService(ResourcesPlugin.getWorkspace().getRoot().getProject());
+			prefsService.setLanguageName(kLanguageName);
 			// To trigger the invocation of the preferences initializer:
 			try{
 				new DefaultScope().getNode(kPluginID);
@@ -46,6 +46,6 @@ public class Activator extends PluginBase {
 				// that don't exist.  So swallow the exception and continue ...
 			}
 		}
-		return preferencesService;
+		return prefsService;
 	}
 }

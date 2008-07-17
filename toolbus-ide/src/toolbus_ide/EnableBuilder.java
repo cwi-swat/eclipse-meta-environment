@@ -8,15 +8,15 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class EnableBuilder implements IWorkbenchWindowActionDelegate{
-	private IProject fProject = null;
+	private volatile IProject fProject = null;
 
 	public EnableBuilder(){
 		super();
 	}
 
-	public void dispose(){}
+	public void dispose(){/* Intentionally left empty */}
 
-	public void init(IWorkbenchWindow window){}
+	public void init(IWorkbenchWindow window){/* Intentionally left empty */}
 
 	public void run(IAction action){
 		if(fProject != null) new ToolBusNature().addToProject(fProject);

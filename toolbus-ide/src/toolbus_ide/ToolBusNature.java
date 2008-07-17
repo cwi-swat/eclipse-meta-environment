@@ -24,6 +24,7 @@ public class ToolBusNature extends ProjectNatureBase {
 	}
 
 	protected void refreshPrefs() {
+		/* Intentionally left empty */
 	}
 
 	public IPluginLog getLog() {

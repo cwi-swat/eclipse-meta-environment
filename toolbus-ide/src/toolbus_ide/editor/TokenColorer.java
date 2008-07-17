@@ -24,20 +24,12 @@ public class TokenColorer extends TokenColorerBase implements ITokenColorer {
 
 		Display display = Display.getDefault();
 
-		defaultAttribute = new TextAttribute(Display.getDefault()
-				.getSystemColor(SWT.COLOR_BLACK), null, SWT.NONE);
-
-		stringAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_BLUE), null, SWT.BOLD);
-		identifierAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_BLACK), null, SWT.NORMAL);
-		doubleAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_GREEN), null, SWT.BOLD);
-		numberAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD);
-		keywordAttribute = new TextAttribute(display
-				.getSystemColor(SWT.COLOR_DARK_MAGENTA), null, SWT.BOLD);
-
+		defaultAttribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLACK), null, SWT.NONE);
+		stringAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_BLUE), null, SWT.BOLD);
+		identifierAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_BLACK), null, SWT.NORMAL);
+		doubleAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_GREEN), null, SWT.BOLD);
+		numberAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD);
+		keywordAttribute = new TextAttribute(display.getSystemColor(SWT.COLOR_DARK_MAGENTA), null, SWT.BOLD);
 	}
 
 	public TextAttribute getColoring(IParseController controller, Object o) {
