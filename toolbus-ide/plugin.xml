@@ -5,7 +5,7 @@
    <extension
          point="org.eclipse.imp.runtime.languageDescription">
       <language
-            extensions="tb,idef,h,tb.src,idef.src,isrc"
+            extensions="tb,idef,tb.src,idef.src,isrc"
             description="ToolBus scripting language"
             language="tscript">
       </language>
