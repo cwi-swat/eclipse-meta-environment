@@ -35,7 +35,7 @@ public class SelectionTrackerTool extends Tool{
 		}
 	}
 	
-	private Annotation currentFocus;
+	private volatile Annotation currentFocus;
 	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
@@ -84,34 +84,42 @@ public class SelectionTrackerTool extends Tool{
 						
 						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
 						
-						// Sort
 						ATermAppl selectedArea = selectionTrackerTool.sendRequest(selected);
-						ATermAppl sort = (ATermAppl) selectedArea.getArgument(0);
+						String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
 						ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
-						
-						IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
-						statusLine.setMessage("Sort: "+sort.getName());
+
+						// Sort
+						updateSort(sort, editor);
 						
 						// Focus
-						int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
-						int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
-						
-						IDocumentProvider documentProvider = editor.getDocumentProvider();
-						IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
-						
-						// Lock on the annotation model
-						Object lockObject = ((ISynchronizable) annotationModel).getLockObject();
-						synchronized(lockObject){
-							Annotation currentFocus = selectionTrackerTool.currentFocus;
-							if(currentFocus != null) annotationModel.removeAnnotation(currentFocus);
-							
-							currentFocus = new Annotation(FOCUS_ANNOTATION, false, sort.getName());
-							selectionTrackerTool.currentFocus = currentFocus;
-							
-							annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
-						}
+						updateAnnotation(focus, sort, editor);
 					}
 				}
+			}
+		}
+		
+		private void updateSort(String sort, UniversalEditor editor){
+			IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
+			statusLine.setMessage("Sort: "+sort);
+		}
+		
+		private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor){
+			int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
+			int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
+			
+			IDocumentProvider documentProvider = editor.getDocumentProvider();
+			IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
+			
+			// Lock on the annotation model
+			Object lockObject = ((ISynchronizable) annotationModel).getLockObject();
+			synchronized(lockObject){
+				Annotation currentFocus = selectionTrackerTool.currentFocus;
+				if(currentFocus != null) annotationModel.removeAnnotation(currentFocus);
+				
+				currentFocus = new Annotation(FOCUS_ANNOTATION, false, sort);
+				selectionTrackerTool.currentFocus = currentFocus;
+				
+				annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
 			}
 		}
 	}
