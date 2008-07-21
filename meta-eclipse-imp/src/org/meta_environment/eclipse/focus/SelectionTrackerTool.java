@@ -28,41 +28,52 @@ public class SelectionTrackerTool extends Tool{
 	private final static String TOOL_NAME = "selection-tracker";
 	private final static String FOCUS_ANNOTATION = Activator.PLUGIN_ID+".focus-annotation";
 	
-	private static class InstanceKeeper{
-		private final static SelectionTrackerTool instance = new SelectionTrackerTool();
-		static{
-			instance.connect();
-		}
-	}
-	
-	private volatile Annotation currentFocus;
+	private volatile static SelectionTrackerTool instance = null;
 	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
-		
-		currentFocus = null;
-		
-		init();
 	}
 	
-	private void init(){
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-		ISelectionService selectionService = workbenchWindow.getSelectionService();
-		selectionService.addPostSelectionListener(new SelectionChangeListener(this));
+	public void init(){
+		final SelectionTrackerTool stt = this;
+		final IWorkbench workbench = PlatformUI.getWorkbench();
+		// Call this stuff from a UI thread, for thread-safety reasons (yuk).
+		workbench.getDisplay().asyncExec(new Runnable(){
+			public void run(){
+				IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+				if(workbenchWindow != null){
+					ISelectionService selectionService = workbenchWindow.getSelectionService();
+					selectionService.addPostSelectionListener(new SelectionChangeListener(stt));
+				}
+			}
+		});
 	}
 	
 	public static SelectionTrackerTool getInstance(){
-		return InstanceKeeper.instance;
+		if(instance == null){
+			synchronized(SelectionTrackerTool.class){
+				if(instance == null){ // DCL works on volatile fields.
+					instance = new SelectionTrackerTool();
+					instance.connect();
+					instance.init();
+				}
+			}
+		}
+		
+		return instance;
 	}
 	
 	private static class SelectionChangeListener implements ISelectionListener{
 		private final SelectionTrackerTool selectionTrackerTool;
 		
+		private volatile Annotation currentFocus;
+		
 		public SelectionChangeListener(SelectionTrackerTool selectionTrackerTool){
 			super();
 			
 			this.selectionTrackerTool = selectionTrackerTool;
+			
+			currentFocus = null;
 		}
 
 		public void selectionChanged(IWorkbenchPart part, ISelection selection){
@@ -113,11 +124,9 @@ public class SelectionTrackerTool extends Tool{
 			// Lock on the annotation model
 			Object lockObject = ((ISynchronizable) annotationModel).getLockObject();
 			synchronized(lockObject){
-				Annotation currentFocus = selectionTrackerTool.currentFocus;
 				if(currentFocus != null) annotationModel.removeAnnotation(currentFocus);
 				
 				currentFocus = new Annotation(FOCUS_ANNOTATION, false, sort);
-				selectionTrackerTool.currentFocus = currentFocus;
 				
 				annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
 			}
