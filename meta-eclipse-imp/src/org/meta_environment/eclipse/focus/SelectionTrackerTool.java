@@ -34,7 +34,7 @@ public class SelectionTrackerTool extends Tool{
 		super(TOOL_NAME);
 	}
 	
-	public void init(){
+	private void init(){
 		final SelectionTrackerTool stt = this;
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		// Call this stuff from a UI thread, for thread-safety reasons (yuk).
