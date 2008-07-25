@@ -76,35 +76,40 @@ public class SelectionTrackerTool extends Tool{
 			currentFocus = null;
 		}
 
-		public void selectionChanged(IWorkbenchPart part, ISelection selection){
+		public void selectionChanged(final IWorkbenchPart part, ISelection selection){
 			if(selection instanceof ITextSelection){
-				ITextSelection textSelection = (ITextSelection) selection;
+				final ITextSelection textSelection = (ITextSelection) selection;
 				
 				if(part instanceof UniversalEditor){
-					UniversalEditor editor = (UniversalEditor) part;
-					IParseController parseController = editor.getParseController();
-					Object ast = parseController.getCurrentAst();
-					if(ast instanceof ATerm){
-						ATerm parseTree = (ATerm) ast;
-						IPath path = parseController.getPath();
-						
-						int startLine = textSelection.getStartLine();
-						int endLine = textSelection.getEndLine();
-						int offset = textSelection.getOffset();
-						int length = textSelection.getLength();
-						
-						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
-						
-						ATermAppl selectedArea = selectionTrackerTool.sendRequest(selected);
-						String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
-						ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
-
-						// Sort
-						updateSort(sort, editor);
-						
-						// Focus
-						updateAnnotation(focus, sort, editor);
-					}
+					IWorkbench workbench = PlatformUI.getWorkbench();
+					workbench.getDisplay().syncExec(new Runnable(){
+						public void run(){
+							UniversalEditor editor = (UniversalEditor) part;
+							IParseController parseController = editor.getParseController();
+							Object ast = parseController.getCurrentAst();
+							if(ast instanceof ATerm){
+								ATerm parseTree = (ATerm) ast;
+								IPath path = parseController.getPath();
+								
+								int startLine = textSelection.getStartLine();
+								int endLine = textSelection.getEndLine();
+								int offset = textSelection.getOffset();
+								int length = textSelection.getLength();
+								
+								ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
+								
+								ATermAppl selectedArea = selectionTrackerTool.sendRequest(selected);
+								String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
+								ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
+		
+								// Sort
+								updateSort(sort, editor);
+								
+								// Focus
+								updateAnnotation(focus, sort, editor);
+							}
+						}
+					});
 				}
 			}
 		}
