@@ -30,8 +30,12 @@ public class SelectionTrackerTool extends Tool{
 	
 	private volatile static SelectionTrackerTool instance = null;
 	
+	private volatile Annotation currentFocus;
+	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
+		
+		currentFocus = null;
 	}
 	
 	private void init(){
@@ -63,17 +67,33 @@ public class SelectionTrackerTool extends Tool{
 		return instance;
 	}
 	
+	public void setSelection(int offset, int length, String sort, UniversalEditor editor){
+		setFocusAnnotation(offset, length, sort, editor);
+		editor.selectAndReveal(offset, length);
+	}
+	
+	private void setFocusAnnotation(int focusOffset, int focusLength, String sort, UniversalEditor editor){
+		IDocumentProvider documentProvider = editor.getDocumentProvider();
+		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
+		
+		// Lock on the annotation model
+		Object lockObject = ((ISynchronizable) annotationModel).getLockObject();
+		synchronized(lockObject){
+			if(currentFocus != null) annotationModel.removeAnnotation(currentFocus);
+			
+			currentFocus = new Annotation(FOCUS_ANNOTATION, false, sort);
+			
+			annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
+		}
+	}
+	
 	private static class SelectionChangeListener implements ISelectionListener{
 		private final SelectionTrackerTool selectionTrackerTool;
-		
-		private volatile Annotation currentFocus;
 		
 		public SelectionChangeListener(SelectionTrackerTool selectionTrackerTool){
 			super();
 			
 			this.selectionTrackerTool = selectionTrackerTool;
-			
-			currentFocus = null;
 		}
 
 		public void selectionChanged(final IWorkbenchPart part, ISelection selection){
@@ -123,18 +143,7 @@ public class SelectionTrackerTool extends Tool{
 			int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
 			int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
 			
-			IDocumentProvider documentProvider = editor.getDocumentProvider();
-			IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
-			
-			// Lock on the annotation model
-			Object lockObject = ((ISynchronizable) annotationModel).getLockObject();
-			synchronized(lockObject){
-				if(currentFocus != null) annotationModel.removeAnnotation(currentFocus);
-				
-				currentFocus = new Annotation(FOCUS_ANNOTATION, false, sort);
-				
-				annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
-			}
+			selectionTrackerTool.setFocusAnnotation(focusOffset, focusLength, sort, editor);
 		}
 	}
 }
