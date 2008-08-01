@@ -42,7 +42,7 @@ public class Activator extends AbstractUIPlugin {
 		} else if (os.equals(Platform.OS_WIN32)) {
 			return ".exe";
 		} else {
-			return null;
+			return "";
 		}
 	}
 
