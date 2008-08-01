@@ -8,7 +8,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 
 public class Tools {
 	private static Activator a = Activator.getInstance();
@@ -38,11 +40,11 @@ public class Tools {
 		if (os.equals(Platform.OS_LINUX)
 				|| os.equals(Platform.OS_MACOSX)) {
 			try {
-				Process p = Runtime.getRuntime().exec("/bin/chmod +x " + binary(command));
+			    String cmdBin = binary(command);
+				Process p = Runtime.getRuntime().exec("/bin/chmod +x " + cmdBin);
 				p.waitFor();
 				if (p.exitValue() != 0) {
-					System.err.println("chmod failed: " + p.exitValue());
-//					 TODO don't know what to do here	
+				    a.getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "chmod of '" + cmdBin + "' failed: " + p.exitValue()));
 				}
 			} catch (InterruptedException e) {
 			    // TODO don't know what to do here	
