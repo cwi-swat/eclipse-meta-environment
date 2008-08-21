@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SDF and BOX Eclipse Plug-in
 Bundle-SymbolicName: sdf_eclipse_installer
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.10
 Bundle-Activator: org.syntax_definition.sdf.Activator
 Bundle-Vendor: jurgen@vinju.org
 Bundle-Localization: plugin
