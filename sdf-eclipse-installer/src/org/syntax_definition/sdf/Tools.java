@@ -47,7 +47,7 @@ public class Tools {
 				    a.getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "chmod of '" + cmdBin + "' failed: " + p.exitValue()));
 				}
 			} catch (InterruptedException e) {
-			    // TODO don't know what to do here	
+				a.getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "chmod of '" + binary(command) + "' failed: " + e.getMessage()));	
 			}
 		}
 	}
