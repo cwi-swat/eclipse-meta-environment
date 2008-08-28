@@ -31,10 +31,10 @@ in
   ( printf("Paths tool ready to communicate\n")
   .
   (
-    rec-msg(io-relative-to-absolute(Directories?))
+    rec-msg(paths-relative-to-absolute(Directories?))
     . snd-eval(Paths, relative-to-absolute(Directories))
     . rec-value(Paths, absolute-directories(Directories?))
-    . snd-msg(io-absolute-directories(Directories))
+    . snd-msg(paths-absolute-directories(Directories))
   )) * delta
 
 toolbus(Paths)
