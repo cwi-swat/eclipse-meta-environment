@@ -6,6 +6,7 @@
 #include <error-viewer.idef>
 #include <jobs-manager.idef>
 #include <resource-changes.idef>
+#include <paths.idef>
 #include <build-results.idef>
 #include <editor-tool.idef>
 #include <language-actions.idef>
