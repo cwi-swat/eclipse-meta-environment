@@ -7,7 +7,7 @@ import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.errors.ErrorViewer;
 import org.meta_environment.eclipse.facts.FactsTool;
 import org.meta_environment.eclipse.files.BuildResults;
-import org.meta_environment.eclipse.files.Paths;
+import org.meta_environment.eclipse.files.IO;
 import org.meta_environment.eclipse.files.ResourceChanges;
 import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 import org.meta_environment.eclipse.jobs.Jobs;
@@ -30,7 +30,7 @@ public class Activator extends PluginBase implements IStartup{
 	public void earlyStartup() {
 		ErrorViewer.getInstance();
 		ResourceChanges.getInstance();
-		Paths.getInstance();
+		IO.getInstance();
 		BuildResults.getInstance();
 		EditorTool.getInstance();
 		LanguageActionsTool.getInstance();

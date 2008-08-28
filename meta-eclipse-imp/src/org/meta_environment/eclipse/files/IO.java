@@ -4,20 +4,20 @@ import org.meta_environment.eclipse.Tool;
 
 import aterm.ATermList;
 
-public class Paths extends Tool {
+public class IO extends Tool {
 
 	private static class InstanceKeeper {
-		private static Paths sInstance = new Paths();
+		private static IO sInstance = new IO();
 		static {
 			sInstance.connect();
 		}
 	}
 	
-	private Paths() {
+	private IO() {
 		super("paths");
 	}
 
-	static public Paths getInstance() {
+	static public IO getInstance() {
 		return InstanceKeeper.sInstance;
 	}
 	
