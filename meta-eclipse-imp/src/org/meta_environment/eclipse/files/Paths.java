@@ -2,6 +2,8 @@ package org.meta_environment.eclipse.files;
 
 import org.meta_environment.eclipse.Tool;
 
+import aterm.ATermList;
+
 public class Paths extends Tool {
 
 	private static class InstanceKeeper {
@@ -17,6 +19,10 @@ public class Paths extends Tool {
 
 	static public Paths getInstance() {
 		return InstanceKeeper.sInstance;
+	}
+	
+	public ATermList relativeToAbsolute (ATermList directories) {
+		return null;
 	}
 	
 }
