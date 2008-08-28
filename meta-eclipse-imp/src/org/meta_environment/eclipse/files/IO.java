@@ -14,7 +14,7 @@ public class IO extends Tool {
 	}
 	
 	private IO() {
-		super("paths");
+		super("io");
 	}
 
 	static public IO getInstance() {
