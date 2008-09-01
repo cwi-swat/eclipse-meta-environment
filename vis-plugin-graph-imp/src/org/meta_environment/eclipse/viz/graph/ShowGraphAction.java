@@ -8,6 +8,7 @@ import org.eclipse.imp.pdb.facts.db.FactBase;
 import org.eclipse.imp.pdb.facts.db.IFactKey;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
@@ -29,9 +30,9 @@ public class ShowGraphAction implements IViewActionDelegate {
 		try {
 			if (!selected.isEmpty()) {
 				IFactKey first = selected.get(0);
-
-				graphView = (GraphView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.meta_environment.eclipse.viz.graph");
-				graphView.showRelation(FactBase.getInstance().getFact(first));
+				
+				GraphInput input = new GraphInput(first.getType().toString(), FactBase.getInstance().getFact(first));
+				graphView = (GraphView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(input, "org.meta_environment.eclipse.viz.graph");
 			}
 		} catch (PartInitException e) {
 			e.printStackTrace();

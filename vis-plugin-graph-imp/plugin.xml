@@ -15,11 +15,13 @@
       </viewContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-      <view
+         point="org.eclipse.ui.editors">
+      <editor
             class="org.meta_environment.eclipse.viz.graph.GraphView"
+            default="false"
             id="org.meta_environment.eclipse.viz.graph"
-            name="Meta-Environment Graph View"/>
+            name="Meta-Environment Graph View">
+      </editor>
    </extension>
 
 </plugin>
