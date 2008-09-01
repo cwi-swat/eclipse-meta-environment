@@ -21,12 +21,12 @@ process ReadFile(Path: str, Contents: str?) is
 let
   Summary: summary
 in
-  snd-msg(io-read-file(Path))
+  snd-msg(ioj-read-file(Path))
   .
   (
-    rec-msg(io-file-contents(Contents?))
+    rec-msg(ioj-file-contents(Contents?))
   +
-    rec-msg(io-error-reading(Summary?))
+    rec-msg(ioj-error-reading(Summary?))
     . Contents := ""
   )
 endlet

@@ -1,12 +1,14 @@
-#ifndef __IO__
-#define __IO__
+#ifndef __IOJ__
+#define __IOJ__
 
-tool io is { }
+#include <parse-utils.tb>
+
+tool ioj is { }
 
 process IOJ is
 let
   ContentList: list,
-  Contents: term,
+  Contents: str,
   DestinationPath: str,
   Directories: list,
   Directory: str,
@@ -17,7 +19,7 @@ let
   Filename2: str,
   File: file,
   Files: list,
-  IO: io,
+  IOJ: ioj,
   Name: str,
   Path: str,
   Prefix: str,
@@ -25,17 +27,25 @@ let
   SourcePath: str,
   Term: term
 in
-  rec-connect(IO?) 
-  . printf("IO tool connected!\n")
+  rec-connect(IOJ?) 
+  . printf("IOJ tool connected!\n")
   .
-  ( printf("IO tool ready to communicate\n")
+  ( printf("IOJ tool ready to communicate\n")
   .
   (
-    rec-msg(ioe-relative-to-absolute(Directories?))
-    . snd-eval(IO, relative-to-absolute(Directories))
-    . rec-value(IO, absolute-directories(Directories?))
-    . snd-msg(ioe-absolute-directories(Directories))
-  )) * delta
+    rec-msg(ioj-read-file(Filename?))
+    . snd-eval(IOJ, read-text-file(Filename))
+    .
+    (
+      rec-value(IOJ, file-contents(Contents?))
+      . snd-msg(ioj-file-contents(Contents))
+    +
+      rec-value(IOJ, failure(Summary?))
+      . snd-msg(ioj-error-reading(Summary))
+    )
+  )
+  
+  ) * delta
 endlet
 
 toolbus(IOJ)
