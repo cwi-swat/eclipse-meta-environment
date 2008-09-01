@@ -97,10 +97,6 @@
 
 <EditorSubmenu name="Edit">
 <EditorMenuAction
-  description="Open an new editor for a different term, with the same syntax definition as the current editor"
-  name="Term"
-  toolbus_action="EditorEditTermAction"/> 
-<EditorMenuAction
   description="Open an editor for the SDF module  that defines the syntax of this term"
   name="Syntax"
   toolbus_action="EditorEditSyntaxAction"/> 
@@ -234,11 +230,6 @@
 <EditorSubmenu
       name="Edit">
    <EditorMenuAction
-         description="Open a term editor with this syntax definition"
-         name="Term"
-         toolbus_action="EditorEditTermAction">
-   </EditorMenuAction>
-   <EditorMenuAction
          description="Edit the ASF equations of this module"
          name="Equations"
          toolbus_action="EditorEditEquationsAction">
@@ -273,11 +264,6 @@
 </EditorSubmenu>
 <EditorSubmenu
       name="Edit">
-   <EditorMenuAction
-         description="Open a term editor for this module"
-         name="Term"
-         toolbus_action="EditorEditTermAction">
-   </EditorMenuAction>
    <EditorMenuAction
          description="Open an editor for the SDF syntax definition of this module"
          name="Syntax"
