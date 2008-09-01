@@ -6,12 +6,12 @@ let
   Contents: str,
   Error: term
 in
-  snd-msg(io-read-file("__PREFIX__/share/asfsdf-meta-eclipse-imp/sdf/standard.sdf.actions")) .
+  snd-msg(ioj-read-file("__PREFIX__/share/asfsdf-meta-eclipse-imp/sdf/standard.sdf.actions")) .
   (
-    rec-msg(io-file-contents(Contents?))
+    rec-msg(ioj-file-contents(Contents?))
     . snd-msg(cm-add-system-properties(Contents))
   +
-    rec-msg(io-error-reading(Error?))
+    rec-msg(ioj-error-reading(Error?))
     . printf("AddSdfProperties: %t\n", Error)
   )
 endlet
