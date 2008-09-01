@@ -1,0 +1,12 @@
+prefix=@prefix@
+Maintainers=jurgenv@cwi.nl, basten@cwi.nl
+
+Name: vis-plugin-graph-imp
+Version: 1.0
+Description:
+Requires: 
+JarFile=vis-plugin-graph-imp.jar 
+Jars=${prefix}/share/${JarFile}
+Packages=
+MainClass=
+TestClass=
