@@ -20,10 +20,10 @@ import errorapi.types.SubjectList;
 import errorapi.types.subject.Subject;
 import errorapi.types.summary.Summary;
 
-public class IO extends Tool {
+public class IOJ extends Tool {
 
 	private static class InstanceKeeper {
-		private static IO sInstance = new IO();
+		private static IOJ sInstance = new IOJ();
 		static {
 			sInstance.connect();
 		}
@@ -31,11 +31,11 @@ public class IO extends Tool {
 
 	private Factory errorFactory = errorapi.Factory.getInstance(factory);
 
-	private IO() {
+	private IOJ() {
 		super("ioj");
 	}
 
-	static public IO getInstance() {
+	static public IOJ getInstance() {
 		return InstanceKeeper.sInstance;
 	}
 
