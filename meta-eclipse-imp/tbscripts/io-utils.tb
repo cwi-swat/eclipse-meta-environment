@@ -60,12 +60,12 @@ in
     . Directories := next(Directories)
     . BuildPath(Directory, Name, Extension, FileName?)
     . BuildPath(Chosen, Name, Extension, PeerName?)
-    . snd-msg(io-compare-files(PeerName, FileName))
+    . snd-msg(ioj-compare-files(PeerName, FileName))
     .
     (
-      rec-msg(io-files-equal)
+      rec-msg(ioj-files-equal)
     +
-      rec-msg(io-files-differ)
+      rec-msg(ioj-files-differ)
       . snd-note(ui-status(messagef("Multiple occurrences of %s. Continuing with %s",
                                     [Name, PeerName])))
     )

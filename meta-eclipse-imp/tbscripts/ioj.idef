@@ -63,7 +63,20 @@ in
     . snd-eval(IOJ, get-path-extension(Path))
     . rec-value(IOJ, extension(Extension?))
     . snd-msg(ioj-extension(Path, Extension))
-    
+  +
+    rec-msg(ioj-compare-files(Filename1?, Filename2?))
+    . snd-eval(IOJ, compare-files(Filename1, Filename2))
+    .
+    (
+      rec-value(IOJ, equal)
+      . snd-msg(ioj-files-equal)
+    +
+      rec-value(IOJ, different)
+      . snd-msg(ioj-files-differ)
+    +
+      rec-value(IOJ, failure(Summary?))
+      . printf("ioj-compare-files: %t\n", Summary)
+    )    
   )) * delta
 endlet
 

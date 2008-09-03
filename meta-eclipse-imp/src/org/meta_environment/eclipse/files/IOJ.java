@@ -71,42 +71,72 @@ public class IOJ extends Tool {
 	public ATerm getFilename(String Directory, String Name, String Extension) {
 		IPath path = new Path(Directory);
 		path = path.append(Name + Extension);
-		String fileName = path.toOSString();
+		String fileName = path.toString();
 		return factory.make("filename(<str>)", fileName);
 	}
-	
+
 	public ATerm getPathFilename(String Path) {
 		IPath path = new Path(Path);
 		String fileName = path.removeFileExtension().lastSegment();
-		System.err.println("\ngetPathFilename for " + Path + " returned: " + fileName);
+		if (fileName == null) {
+			fileName = "";
+		}
+		System.err.println("\ngetPathFilename for " + Path + " returned: "
+				+ fileName);
 		return factory.make("filename(<str>)", fileName);
 	}
-	
+
 	public ATerm getPathDirectory(String Path) {
 		IPath path = new Path(Path);
 		int numberOfSegments = path.segmentCount();
-		
+
 		String directory = "";
-		if(numberOfSegments > 1) {
-			directory = path.removeLastSegments(1).toOSString();
+		if (numberOfSegments > 1) {
+			directory = path.removeLastSegments(1).toString();
 		}
-		System.err.println("\ngetPathDirectory for " + Path + " returned: " + directory);
+		System.err.println("\ngetPathDirectory for " + Path + " returned: "
+				+ directory);
 		return factory.make("directory(<str>)", directory);
 	}
-	
+
 	public ATerm getPathExtension(String Path) {
 		IPath path = new Path(Path);
 		String extension = path.getFileExtension();
-		
+
 		if (extension == null) {
 			extension = "";
-		}
-		else {
+		} else {
 			extension = "." + extension;
 		}
-		
-		System.err.println("\ngetPathExtension for " + Path + " returned: " + extension);
+
+		System.err.println("\ngetPathExtension for " + Path + " returned: "
+				+ extension);
 		return factory.make("extension(<str>)", extension);
+	}
+
+	public ATerm compareFiles(String fileName1, String fileName2) {
+		File file1 = new Path(fileName1).toFile();
+		File file2 = new Path(fileName2).toFile();
+
+		if (!file1.exists()) {
+			return factory.make("failure(<trm>)", getErrorSummary(
+					"File does not exist", file1.getPath()));
+		}
+		if (!file2.exists()) {
+			return factory.make("failure(<trm>)", getErrorSummary(
+					"File does not exist", file2.getPath()));
+		}
+
+		ATerm result = factory.make("different");
+		/*
+		 * TODO I'm not 100% sure that 'equals' is the appropriate way to compare
+		 * file handles.
+		 */
+		if (file1.equals(file2)) {
+			result = factory.make("equal");
+		}
+
+		return result;
 	}
 
 	private InputStream getFileContentsFromOS(String path) {
