@@ -5,8 +5,8 @@
 #include <sdf-namespace.h>
 
 process ModulenameBase(Modulename: str, Name: str?) is
-  snd-msg(io-get-path-filename(Modulename))
-  . rec-msg(io-filename(Modulename, Name?))
+  snd-msg(ioj-get-path-filename(Modulename))
+  . rec-msg(ioj-filename(Modulename, Name?))
 
 process ComputeCanonicalLanguagename(Modulename : str, Languagename : str?) is
 let
@@ -31,12 +31,12 @@ let
   Prefix: str,
   Name: str
 in
-  snd-msg(io-get-path-directory(Modulename)) 
-  . rec-msg(io-directory(Modulename, Directory?))
+  snd-msg(ioj-get-path-directory(Modulename)) 
+  . rec-msg(ioj-directory(Modulename, Directory?))
   .
   if not-equal(Directory, "") then
-    snd-msg(io-get-path-directory(Directory)) 
-    . rec-msg(io-directory(Directory, Languagename?))
+    snd-msg(ioj-get-path-directory(Directory)) 
+    . rec-msg(ioj-directory(Directory, Languagename?))
   else
     Languagename := "" 
   fi
