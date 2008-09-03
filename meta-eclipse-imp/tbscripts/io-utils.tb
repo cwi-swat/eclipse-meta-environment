@@ -32,8 +32,8 @@ in
 endlet
 
 process BuildPath(Directory: str, Filename: str, Extension: str, Path: str?) is
-  snd-msg(io-get-filename(Directory, Filename, Extension))
-  . rec-msg(io-filename(Path?))
+  snd-msg(ioj-get-filename(Directory, Filename, Extension))
+  . rec-msg(ioj-filename(Path?))
 
 process ReplaceExtension(SrcPath: str, NewExtension: str, DstPath: str?) is
 let
@@ -80,12 +80,12 @@ process SplitFilename(Path : str,
                       FileName : str?,
 		      Directory : str?, 
 		      Extension : str?) is
-  snd-msg(io-get-path-filename(Path))
-  . rec-msg(io-filename(Path, FileName?))
-  . snd-msg(io-get-path-directory(Path))
-  . rec-msg(io-directory(Path, Directory?))
-  . snd-msg(io-get-path-extension(Path))
-  . rec-msg(io-extension(Path, Extension?))
+  snd-msg(ioj-get-path-filename(Path))
+  . rec-msg(ioj-filename(Path, FileName?))
+  . snd-msg(ioj-get-path-directory(Path))
+  . rec-msg(ioj-directory(Path, Directory?))
+  . snd-msg(ioj-get-path-extension(Path))
+  . rec-msg(ioj-extension(Path, Extension?))
 
 process UnPackTree(Tree : term, UnpackedTree : term?) is
   snd-msg(io-unpack-term(Tree))

@@ -43,9 +43,28 @@ in
       rec-value(IOJ, failure(Summary?))
       . snd-msg(ioj-error-reading(Summary))
     )
-  )
-  
-  ) * delta
+  +
+    rec-msg(ioj-get-filename(Directory?, Name?, Extension?))
+    . snd-eval(IOJ, get-filename(Directory, Name, Extension))
+    . rec-value(IOJ, filename(Filename?))
+    . snd-msg(ioj-filename(Filename))
+  +
+    rec-msg(ioj-get-path-filename(Path?))
+    . snd-eval(IOJ, get-path-filename(Path))
+    . rec-value(IOJ, filename(Filename?))
+    . snd-msg(ioj-filename(Path, Filename))
+  +
+    rec-msg(ioj-get-path-directory(Path?))
+    . snd-eval(IOJ, get-path-directory(Path))
+    . rec-value(IOJ, directory(Directory?))
+    . snd-msg(ioj-directory(Path, Directory))
+  +
+    rec-msg(ioj-get-path-extension(Path?))
+    . snd-eval(IOJ, get-path-extension(Path))
+    . rec-value(IOJ, extension(Extension?))
+    . snd-msg(ioj-extension(Path, Extension))
+    
+  )) * delta
 endlet
 
 toolbus(IOJ)
@@ -206,25 +225,10 @@ toolbus(IOJ)
       . printf("io-compare-files: %t\n", Summary)
     )
   +
-    rec-msg(io-get-filename(Directory?, Name?, Extension?))
-    . snd-eval(IO, get-filename(Directory, Name, Extension))
-    . rec-value(IO, filename(Filename?))
-    . snd-msg(io-filename(Filename))
-  +
     rec-msg(io-get-relative-filename(Directories?, Path?, Extension?))
     . snd-eval(IO, get-relative-filename(Directories, Path, Extension))
     . rec-value(IO, filename(Prefix?, Filename?))
     . snd-msg(io-filename(Directories, Path, Extension, Prefix, Filename))
-  +
-    rec-msg(io-get-path-directory(Path?))
-    . snd-eval(IO, get-path-directory(Path))
-    . rec-value(IO, directory(Directory?))
-    . snd-msg(io-directory(Path, Directory))
-  +
-    rec-msg(io-get-path-filename(Path?))
-    . snd-eval(IO, get-path-filename(Path))
-    . rec-value(IO, filename(Filename?))
-    . snd-msg(io-filename(Path, Filename))
   +
     rec-msg(io-get-path-extension(Path?))
     . snd-eval(IO, get-path-extension(Path))

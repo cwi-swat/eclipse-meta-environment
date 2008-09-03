@@ -3,12 +3,11 @@ package org.meta_environment.eclipse.files;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.utils.StreamUtils;
 import org.meta_environment.eclipse.Tool;
@@ -39,48 +38,85 @@ public class IOJ extends Tool {
 		return InstanceKeeper.sInstance;
 	}
 
-	public ATerm readTextFile(String filename) {
+	public ATerm readTextFile(String path) {
 
 		IFile file = ResourcesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(new Path(filename));
-		
+				.getFileForLocation(new Path(path));
+
 		try {
 			InputStream fileContents = null;
-			
+
 			if (file == null) {
 				/* TODO getFileContentsFromOS should be made obsolete */
-				fileContents = getFileContentsFromOS(filename);
-			}
-			else {
+				fileContents = getFileContentsFromOS(path);
+			} else {
 				fileContents = file.getContents();
 			}
-			
+
 			if (fileContents != null) {
 				String text = StreamUtils.readStreamContents(fileContents);
 				fileContents.close();
 				return factory.make("file-contents(<str>)", text);
 			} else {
 				return factory.make("failure(<term>)", getErrorSummary(
-						"Could not read file", filename));
+						"Could not read file", path));
 			}
 
-		} catch (CoreException e) {
+		} catch (Exception e) {
 			return factory.make("failure(<term>)", getErrorSummary(
-					"Could not read file", filename));
-		} catch (IOException e) {
-			return factory.make("failure(<term>)", getErrorSummary(
-					"Could not read file", filename));
+					"Could not read file", path));
 		}
-	};
+	}
 
-	private InputStream getFileContentsFromOS(String filename) {
-		File f = new File(filename);
+	public ATerm getFilename(String Directory, String Name, String Extension) {
+		IPath path = new Path(Directory);
+		path = path.append(Name + Extension);
+		String fileName = path.toOSString();
+		return factory.make("filename(<str>)", fileName);
+	}
+	
+	public ATerm getPathFilename(String Path) {
+		IPath path = new Path(Path);
+		String fileName = path.removeFileExtension().lastSegment();
+		System.err.println("\ngetPathFilename for " + Path + " returned: " + fileName);
+		return factory.make("filename(<str>)", fileName);
+	}
+	
+	public ATerm getPathDirectory(String Path) {
+		IPath path = new Path(Path);
+		int numberOfSegments = path.segmentCount();
+		
+		String directory = "";
+		if(numberOfSegments > 1) {
+			directory = path.removeLastSegments(1).toOSString();
+		}
+		System.err.println("\ngetPathDirectory for " + Path + " returned: " + directory);
+		return factory.make("directory(<str>)", directory);
+	}
+	
+	public ATerm getPathExtension(String Path) {
+		IPath path = new Path(Path);
+		String extension = path.getFileExtension();
+		
+		if (extension == null) {
+			extension = "";
+		}
+		else {
+			extension = "." + extension;
+		}
+		
+		System.err.println("\ngetPathExtension for " + Path + " returned: " + extension);
+		return factory.make("extension(<str>)", extension);
+	}
+
+	private InputStream getFileContentsFromOS(String path) {
+		File f = new File(path);
 		FileInputStream fis = null;
 		try {
-			 fis = new FileInputStream(f);
-			 System.err.println("\nTODO: legacy absolute OS path used: " + filename);
+			fis = new FileInputStream(f);
+			System.err.println("\nTODO: legacy absolute OS path used: " + path);
 		} catch (FileNotFoundException e) {
-			
+
 		}
 		return fis;
 	}
@@ -91,7 +127,7 @@ public class IOJ extends Tool {
 		errorapi.types.error.Error error = errorFactory.makeError_Error(
 				_description, subjects);
 		ErrorList errors = errorFactory.makeErrorList(error);
-		Summary summary = errorFactory.makeSummary_Summary("IO tool", "ioj",
+		Summary summary = errorFactory.makeSummary_Summary("IOJ tool", "ioj",
 				errors);
 		return summary.toTerm();
 	}
