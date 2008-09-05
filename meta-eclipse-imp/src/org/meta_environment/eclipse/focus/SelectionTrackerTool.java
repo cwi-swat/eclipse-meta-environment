@@ -120,7 +120,6 @@ public class SelectionTrackerTool extends Tool{
 							clearAnnotation(editor);
 							if(textSelection.getLength() != 0) return;
 							
-							
 							IParseController parseController = editor.getParseController();
 							Object ast = parseController.getCurrentAst();
 							if(ast instanceof ATerm){

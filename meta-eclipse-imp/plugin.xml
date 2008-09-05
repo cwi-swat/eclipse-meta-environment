@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-<extension-point id="org.meta_environment.eclipse.actions.EditorMenus" name="EditorMenus" schema="schema/org.meta_environment.eclipse.actions.LanguageEditorMenu.exsd"/>
+  <extension-point id="org.meta_environment.eclipse.actions.EditorMenus" name="EditorMenus" schema="schema/org.meta_environment.eclipse.actions.LanguageEditorMenu.exsd" />
   <extension
          id="org.meta_environment.builder"
          name="Meta-Environment builder"
          point="org.eclipse.core.resources.builders">
       <builder>
-         <run
-               class="org.meta_environment.eclipse.builder.Builder">
+         <run class="org.meta_environment.eclipse.builder.Builder">
          </run>
       </builder>
    </extension>
@@ -20,52 +19,99 @@
             id="org.meta_environment.builder">
       </builder>
       <runtime>
-         <run
-               class="org.meta_environment.eclipse.builder.Nature">
+         <run class="org.meta_environment.eclipse.builder.Nature">
          </run>
       </runtime>
    </extension>
-    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="false"
-            nameFilter="*"
-            id="org.meta_environment.projectContextMenu">
-         <action
-               label="Enable Meta-Environment"
-               tooltip="Enable the Box builder for this project"
-               class="org.meta_environment.eclipse.builder.Enabler"
-               id="org.meta_environment.enableNatureAction">
-         </action>
-      </objectContribution>
-   </extension>
-    <extension
-          point="org.eclipse.ui.startup">
-       <startup class="org.meta_environment.eclipse.Activator"/>
-    </extension>
-    <extension
-          point="org.eclipse.ui.editors.markerAnnotationSpecification">
-       <specification
-             annotationType="org.meta_environment.focus-annotation"
-             colorPreferenceKey="FocusColorPreferenceKey"
-             colorPreferenceValue="250,250,210"
-             contributesToHeader="false"
-             highlightPreferenceKey="HighLightPreferenceKey"
-             highlightPreferenceValue="true"
-             includeOnPreferencePage="false"
-             isGoToNextNavigationTarget="false"
-             isGoToPreviousNavigationTarget="false"
-             overviewRulerPreferenceKey="FocusOverViewPreferenceKey"
-             overviewRulerPreferenceValue="false"
-             presentationLayer="4"
-             showInNextPrevDropdownToolbarAction="false"
-             textPreferenceKey="TextPreferenceKey"
-             textPreferenceValue="true"
-             textStylePreferenceKey="FocusStylePreferenceKey"
-             textStylePreferenceValue="BOX"
-             verticalRulerPreferenceKey="FocusVerticalRulerPreferenceKey"
-             verticalRulerPreferenceValue="false">
-       </specification>
-    </extension>
+   <extension point="org.eclipse.ui.popupMenus">
+     <objectContribution
+           objectClass="org.eclipse.core.resources.IProject"
+           adaptable="false"
+           nameFilter="*"
+           id="org.meta_environment.projectContextMenu">
+        <action
+              label="Enable Meta-Environment"
+              tooltip="Enable the Box builder for this project"
+              class="org.meta_environment.eclipse.builder.Enabler"
+              id="org.meta_environment.enableNatureAction">
+        </action>
+     </objectContribution>
+  </extension>
+  <extension point="org.eclipse.ui.startup">
+     <startup class="org.meta_environment.eclipse.Activator"/>
+  </extension>
+  <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+     <specification
+           annotationType="org.meta_environment.focus-annotation"
+           colorPreferenceKey="FocusColorPreferenceKey"
+           colorPreferenceValue="250,250,210"
+           contributesToHeader="false"
+           highlightPreferenceKey="HighLightPreferenceKey"
+           highlightPreferenceValue="true"
+           includeOnPreferencePage="false"
+           isGoToNextNavigationTarget="false"
+           isGoToPreviousNavigationTarget="false"
+           overviewRulerPreferenceKey="FocusOverViewPreferenceKey"
+           overviewRulerPreferenceValue="false"
+           presentationLayer="4"
+           showInNextPrevDropdownToolbarAction="false"
+           textPreferenceKey="TextPreferenceKey"
+           textPreferenceValue="true"
+           textStylePreferenceKey="FocusStylePreferenceKey"
+           textStylePreferenceValue="BOX"
+           verticalRulerPreferenceKey="FocusVerticalRulerPreferenceKey"
+           verticalRulerPreferenceValue="false">
+     </specification>
+  </extension>
+  <extension point="org.eclipse.ui.commands">
+    <category
+       description="Stuff that has to do with the selection/focus."
+       id="focus.category"
+       name="Focus">
+    </category>
+	<command
+       categoryId="focus.category"
+       description="Moves the selection up"
+       id="focus.move_up"
+       name="Move selection up">
+	</command>
+	<command
+       categoryId="focus.category"
+       description="Moves the selection down"
+       id="focus.move_down"
+       name="Move selection down">
+	</command>
+  </extension>
+  <extension point="org.eclipse.ui.bindings">
+    <key
+          sequence="M1+ARROW_UP"
+          commandId="focus.move_up"
+          contextId="org.eclipse.ui.contexts"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+  </extension>
+  <extension point="org.eclipse.ui.bindings">
+    <key
+          sequence="M1+ARROW_DOWN"
+          commandId="focus.move_down"
+          contextId="org.eclipse.ui.contexts"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+  </extension>
+  <extension point="org.eclipse.ui.actionSets">
+    <actionSet id="focus.move_selection"
+          label="Move"
+          visible="true">
+      <action
+            class="org.meta_environment.eclipse.focus.MoveUp"
+            definitionId="focus.move_up"
+            id="focus.move_up"
+            label="Move up">
+      </action>
+      <action
+            class="org.meta_environment.eclipse.focus.MoveDown"
+            definitionId="focus.move_down"
+            id="focus.move_down"
+            label="Move down">
+      </action>
+    </actionSet>
+  </extension>
 </plugin>
