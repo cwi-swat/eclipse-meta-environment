@@ -10,10 +10,11 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 public class Enabler implements IWorkbenchWindowActionDelegate {
 	private IProject fProject;
 
-	public Enabler() {
+	public Enabler(){
+		super();
 	}
 
-	public void dispose() {
+	public void dispose(){
 	}
 
 	public void init(IWorkbenchWindow window) {

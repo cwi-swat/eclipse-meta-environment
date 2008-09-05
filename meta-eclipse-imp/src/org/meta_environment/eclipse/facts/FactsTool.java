@@ -71,12 +71,10 @@ public class FactsTool extends Tool {
 			this.id = id;
 		}
 		
-		@Override
 		public String toString() {
 			return id;
 		}
 		
-		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof StringContext) {
 				return id.equals(((StringContext) obj).id);

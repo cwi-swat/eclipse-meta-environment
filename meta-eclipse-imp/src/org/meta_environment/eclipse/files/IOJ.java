@@ -57,10 +57,8 @@ public class IOJ extends Tool {
 				String text = StreamUtils.readStreamContents(fileContents);
 				fileContents.close();
 				return factory.make("file-contents(<str>)", text);
-			} else {
-				return factory.make("failure(<term>)", getErrorSummary(
-						"Could not read file", path));
 			}
+			return factory.make("failure(<term>)", getErrorSummary("Could not read file", path));
 
 		} catch (Exception e) {
 			return factory.make("failure(<term>)", getErrorSummary(
@@ -146,7 +144,7 @@ public class IOJ extends Tool {
 			fis = new FileInputStream(f);
 			System.err.println("\nTODO: legacy absolute OS path used: " + path);
 		} catch (FileNotFoundException e) {
-
+// TODO Handle this.
 		}
 		return fis;
 	}
