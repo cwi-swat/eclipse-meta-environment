@@ -108,7 +108,6 @@ public class SelectionTrackerTool extends Tool{
 		}
 
 		public void selectionChanged(final IWorkbenchPart part, ISelection selection){
-			System.out.println(selection);
 			if(selection instanceof ITextSelection){
 				final ITextSelection textSelection = (ITextSelection) selection;
 				
