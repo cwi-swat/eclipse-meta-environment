@@ -2,6 +2,8 @@ package org.meta_environment.eclipse.viz.graph;
 
 import java.awt.event.MouseEvent;
 
+import org.eclipse.ui.PlatformUI;
+import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.viz.prefusedot.DotAdapter;
 import org.meta_environment.eclipse.viz.prefusedot.DotEdgeRenderer;
 import org.meta_environment.eclipse.viz.prefusedot.DotLabelLayout;
@@ -93,10 +95,16 @@ public class GraphDisplayBuilder {
 
         display.addControlListener(new ControlAdapter() {
 			public void itemPressed(VisualItem item, MouseEvent e) {
-				String link = item.getString(DotAdapter.DOT_LINK);
+				final String link = item.getString(DotAdapter.DOT_LINK);
 
-				if (link != null) {
-					System.err.println("go to " + link);
+				if (link != null) {					
+					PlatformUI.getWorkbench().getDisplay().asyncExec(
+						new Runnable() {
+							public void run() {
+								EditorTool.getInstance().open(link, "");								
+							}
+						}
+					);
 				}
 			}
 

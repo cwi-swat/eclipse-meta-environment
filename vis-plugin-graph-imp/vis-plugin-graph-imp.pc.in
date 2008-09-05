@@ -4,7 +4,8 @@ Maintainers=jurgenv@cwi.nl, basten@cwi.nl
 Name: vis-plugin-graph-imp
 Version: 1.0
 Description:
-Requires: 
+EclipseRequires=org.eclipse.imp.runtime,org.eclipse.core.runtime,org.eclipse.jface.text,org.eclipse.swt,org.eclipse.core.resources,org.eclipse.ui,org.eclipse.compare,org.eclipse.ui.ide,org.eclipse.ui.editors,org.eclipse.ui.plugin,org.eclipse.imp.pdb
+Requires: meta-eclipse-imp
 JarFile=vis-plugin-graph-imp.jar 
 Jars=${prefix}/share/${JarFile}
 Packages=
