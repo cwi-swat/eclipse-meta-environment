@@ -72,6 +72,17 @@ public class SelectionTrackerTool extends Tool{
 		editor.selectAndReveal(offset, length);
 	}
 	
+	private void clearFocusAnnotation(UniversalEditor editor){
+		IDocumentProvider documentProvider = editor.getDocumentProvider();
+		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
+		
+		// Lock on the annotation model
+		Object lockObject = ((ISynchronizable) annotationModel).getLockObject();
+		synchronized(lockObject){
+			if(currentFocus != null) annotationModel.removeAnnotation(currentFocus);
+		}
+	}
+	
 	private void setFocusAnnotation(int focusOffset, int focusLength, String sort, UniversalEditor editor){
 		IDocumentProvider documentProvider = editor.getDocumentProvider();
 		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
@@ -97,6 +108,7 @@ public class SelectionTrackerTool extends Tool{
 		}
 
 		public void selectionChanged(final IWorkbenchPart part, ISelection selection){
+			System.out.println(selection);
 			if(selection instanceof ITextSelection){
 				final ITextSelection textSelection = (ITextSelection) selection;
 				
@@ -105,6 +117,11 @@ public class SelectionTrackerTool extends Tool{
 					workbench.getDisplay().syncExec(new Runnable(){
 						public void run(){
 							UniversalEditor editor = (UniversalEditor) part;
+							
+							clearAnnotation(editor);
+							if(textSelection.getLength() != 0) return;
+							
+							
 							IParseController parseController = editor.getParseController();
 							Object ast = parseController.getCurrentAst();
 							if(ast instanceof ATerm){
@@ -137,6 +154,10 @@ public class SelectionTrackerTool extends Tool{
 		private void updateSort(String sort, UniversalEditor editor){
 			IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
 			statusLine.setMessage("Sort: "+sort);
+		}
+		
+		private void clearAnnotation(UniversalEditor editor){
+			selectionTrackerTool.clearFocusAnnotation(editor);
 		}
 		
 		private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor){
