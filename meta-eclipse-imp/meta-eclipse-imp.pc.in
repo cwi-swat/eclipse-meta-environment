@@ -9,5 +9,5 @@ EclipseRequires=org.eclipse.imp.runtime,org.eclipse.core.runtime,org.eclipse.jfa
 Requires: toolbus-ng-eclipse-imp,aterm-java,error-support-java,config-manager,io-support,io-support-java,rstore-support-java,rstore-support,module-manager,pandora,pt-support,sglr,structure-editor,term-store,pt-support-java
 JarFile=meta-eclipse-imp.jar
 Jars=${prefix}/share/${JarFile}
-Packages=org.meta_environment.eclipse,org.meta_environment.eclipse.builder,org.meta_environment.eclipse.errors,org.meta_environment.eclipse.files,org.meta_environment.eclipse.parser,org.meta_environment.eclipse.tokens,org.meta_environment.eclipse.actions
+Packages=org.meta_environment.eclipse,org.meta_environment.eclipse.builder,org.meta_environment.eclipse.errors,org.meta_environment.eclipse.files,org.meta_environment.eclipse.parser,org.meta_environment.eclipse.tokens,org.meta_environment.eclipse.actions,org.meta_environment.eclipse.editors
 ToolBusFlags=-I${prefix}/share/meta-eclipse-imp
