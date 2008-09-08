@@ -4,11 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.imp.runtime.RuntimePlugin;
 import org.eclipse.imp.utils.StreamUtils;
 import org.meta_environment.eclipse.Tool;
 
@@ -39,18 +40,24 @@ public class IOJ extends Tool {
 	}
 
 	public ATerm readTextFile(String path) {
-
-		IFile file = ResourcesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(new Path(path));
+		URL url = null;
 
 		try {
+			url = FileLocator.resolve(new URL(path));
+		} catch (Exception e) {
+			RuntimePlugin.getInstance().logException(
+					"Could resolve url " + path, e);
+		} 
+				
+		try {
+	
 			InputStream fileContents = null;
 
-			if (file == null) {
+			if (url == null) {
 				/* TODO getFileContentsFromOS should be made obsolete */
 				fileContents = getFileContentsFromOS(path);
 			} else {
-				fileContents = file.getContents();
+				fileContents = url.openConnection().getInputStream();
 			}
 
 			if (fileContents != null) {
@@ -58,9 +65,12 @@ public class IOJ extends Tool {
 				fileContents.close();
 				return factory.make("file-contents(<str>)", text);
 			}
-			return factory.make("failure(<term>)", getErrorSummary("Could not read file", path));
+			return factory.make("failure(<term>)", getErrorSummary(
+					"Could not read file", path));
 
 		} catch (Exception e) {
+			RuntimePlugin.getInstance().logException(
+					"Could not read file " + path, e);
 			return factory.make("failure(<term>)", getErrorSummary(
 					"Could not read file", path));
 		}
@@ -127,8 +137,8 @@ public class IOJ extends Tool {
 
 		ATerm result = factory.make("different");
 		/*
-		 * TODO I'm not 100% sure that 'equals' is the appropriate way to compare
-		 * file handles.
+		 * TODO I'm not 100% sure that 'equals' is the appropriate way to
+		 * compare file handles.
 		 */
 		if (file1.equals(file2)) {
 			result = factory.make("equal");
@@ -144,7 +154,8 @@ public class IOJ extends Tool {
 			fis = new FileInputStream(f);
 			System.err.println("\nTODO: legacy absolute OS path used: " + path);
 		} catch (FileNotFoundException e) {
-// TODO Handle this.
+			RuntimePlugin.getInstance().logException(
+					"Could not read file " + path, e);
 		}
 		return fis;
 	}
