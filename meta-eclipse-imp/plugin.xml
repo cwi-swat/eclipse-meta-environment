@@ -84,16 +84,16 @@
   </extension>
   <extension point="org.eclipse.ui.bindings">
     <key
-          sequence="M1+ARROW_UP"
+          sequence="M1+M2+ARROW_UP"
           commandId="focus.move_up"
-          contextId="org.eclipse.ui.contexts"
+          contextId="org.eclipse.ui.editors.text"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
   </extension>
   <extension point="org.eclipse.ui.bindings">
     <key
-          sequence="M1+ARROW_DOWN"
+          sequence="M1+M2+ARROW_DOWN"
           commandId="focus.move_down"
-          contextId="org.eclipse.ui.contexts"
+          contextId="org.eclipse.ui.editors.text"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
   </extension>
   <extension point="org.eclipse.ui.actionSets">
