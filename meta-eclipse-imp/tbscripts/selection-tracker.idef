@@ -18,6 +18,16 @@ in
     . snd-msg(selected(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
     . rec-msg(selected-area(Sort?, Focus?))
     . snd-response(SelectionToolId, selected(Sort, Focus))
+  +
+    rec-request(SelectionToolId, move-up(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(move-up(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    . rec-msg(moved-up(Sort, Focus, Offset?, Length?))
+    . snd-response(SelectionToolId, move-up(Sort, Focus, Offset, Length))
+  +
+    rec-request(SelectionToolId, move-down(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(move-down(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    . rec-msg(moved-down(Sort, Focus, Offset?, Length?))
+    . snd-response(SelectionToolId, move-down(Sort, Focus, Offset, Length))
   ) * rec-disconnect(SelectionToolId)
 endlet
 
