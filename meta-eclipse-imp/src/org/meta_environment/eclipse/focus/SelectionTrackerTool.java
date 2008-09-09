@@ -72,10 +72,10 @@ public class SelectionTrackerTool extends Tool{
 		editor.selectAndReveal(offset, length);
 	}
 	
-	public void updateSelection(String sort, ATermAppl focus, UniversalEditor editor){
+	public void updateSelection(String sort, ATermAppl focus, UniversalEditor editor, boolean setSelection){
 		clearAnnotation(editor);
 		updateSort(sort, editor);
-		updateAnnotation(focus, sort, editor);
+		updateAnnotation(focus, sort, editor, setSelection);
 	}
 	
 	private void clearFocusAnnotation(UniversalEditor editor){
@@ -113,11 +113,12 @@ public class SelectionTrackerTool extends Tool{
 		clearFocusAnnotation(editor);
 	}
 	
-	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor){
+	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor, boolean setSelection){
 		int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
 		int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
 		
 		setFocusAnnotation(focusOffset, focusLength, sort, editor);
+		if(setSelection) setSelection(focusOffset, 0, sort, editor); // Temp test
 	}
 	
 	private static class SelectionChangeListener implements ISelectionListener{
@@ -159,7 +160,7 @@ public class SelectionTrackerTool extends Tool{
 								String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
 								ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
 		
-								selectionTrackerTool.updateSelection(sort, focus, editor);
+								selectionTrackerTool.updateSelection(sort, focus, editor, false);
 							}
 						}
 					});

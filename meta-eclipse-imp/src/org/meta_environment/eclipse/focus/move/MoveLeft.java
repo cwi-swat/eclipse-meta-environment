@@ -51,7 +51,7 @@ public class MoveLeft implements IActionDelegate{
 					String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
 					ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
 
-					selectionTracker.updateSelection(sort, focus, universalEditor);
+					selectionTracker.updateSelection(sort, focus, universalEditor, true);
 				}
 			}
 		}
