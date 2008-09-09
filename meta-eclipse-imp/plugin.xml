@@ -81,19 +81,35 @@
        id="focus.move_down"
        name="Move selection down">
 	</command>
+	<command
+       categoryId="focus.category"
+       description="Moves the selection right"
+       id="focus.move_right"
+       name="Move selection right">
+	</command>
+	<command
+       categoryId="focus.category"
+       description="Moves the selection left"
+       id="focus.move_left"
+       name="Move selection left">
+	</command>
   </extension>
   <extension point="org.eclipse.ui.bindings">
     <key
           sequence="M1+M2+ARROW_UP"
           commandId="focus.move_up"
-          contextId="org.eclipse.ui.editors.text"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
-  </extension>
-  <extension point="org.eclipse.ui.bindings">
     <key
           sequence="M1+M2+ARROW_DOWN"
           commandId="focus.move_down"
-          contextId="org.eclipse.ui.editors.text"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+    <key
+          sequence="M1+M2+ARROW_RIGHT"
+          commandId="focus.move_right"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+    <key
+          sequence="M1+M2+ARROW_LEFT"
+          commandId="focus.move_left"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
   </extension>
   <extension point="org.eclipse.ui.actionSets">
@@ -101,16 +117,28 @@
           label="Move"
           visible="true">
       <action
-            class="org.meta_environment.eclipse.focus.MoveUp"
+            class="org.meta_environment.eclipse.focus.move.MoveUp"
             definitionId="focus.move_up"
             id="focus.move_up"
             label="Move up">
       </action>
       <action
-            class="org.meta_environment.eclipse.focus.MoveDown"
+            class="org.meta_environment.eclipse.focus.move.MoveDown"
             definitionId="focus.move_down"
             id="focus.move_down"
             label="Move down">
+      </action>
+      <action
+            class="org.meta_environment.eclipse.focus.move.MoveRight"
+            definitionId="focus.move_right"
+            id="focus.move_right"
+            label="Move right">
+      </action>
+      <action
+            class="org.meta_environment.eclipse.focus.move.MoveLeft"
+            definitionId="focus.move_left"
+            id="focus.move_left"
+            label="Move left">
       </action>
     </actionSet>
   </extension>

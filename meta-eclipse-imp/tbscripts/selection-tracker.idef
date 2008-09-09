@@ -20,14 +20,24 @@ in
     . snd-response(SelectionToolId, selected(Sort, Focus))
   +
     rec-request(SelectionToolId, move-up(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
-    . snd-msg(move-up(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
-    . rec-msg(moved-up(Sort, Focus))
+    . snd-msg(move-selection-up(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    . rec-msg(moved-selection-up(Sort?, Focus?))
     . snd-response(SelectionToolId, move-up(Sort, Focus))
   +
     rec-request(SelectionToolId, move-down(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
-    . snd-msg(move-down(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
-    . rec-msg(moved-down(Sort, Focus))
+    . snd-msg(move-selection-down(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    . rec-msg(moved-selection-down(Sort?, Focus?))
     . snd-response(SelectionToolId, move-down(Sort, Focus))
+  +
+    rec-request(SelectionToolId, move-left(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(move-selection-left(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    . rec-msg(moved-selection-left(Sort?, Focus?))
+    . snd-response(SelectionToolId, move-left(Sort, Focus))
+  +
+    rec-request(SelectionToolId, move-right(ParseTree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(move-selection-right(ParseTree, Filename, BeginLine, EndLine, Offset, Length))
+    . rec-msg(moved-selection-right(Sort?, Focus?))
+    . snd-response(SelectionToolId, move-right(Sort, Focus))
   ) * rec-disconnect(SelectionToolId)
 endlet
 

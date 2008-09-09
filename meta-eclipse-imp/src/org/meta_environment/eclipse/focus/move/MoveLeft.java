@@ -1,4 +1,4 @@
-package org.meta_environment.eclipse.focus;
+package org.meta_environment.eclipse.focus.move;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.imp.editor.UniversalEditor;
@@ -9,14 +9,14 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 
 import toolbus.adapter.AbstractTool;
-
 import aterm.ATerm;
 
-public class MoveDown implements IActionDelegate{
+public class MoveLeft implements IActionDelegate{
 	
-	public MoveDown(){
+	public MoveLeft(){
 		super();
 	}
 	
@@ -44,14 +44,15 @@ public class MoveDown implements IActionDelegate{
 					int offset = textSelection.getOffset();
 					int length = textSelection.getLength();
 					
-					ATerm moveDown = AbstractTool.getFactory().make("move-down(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
-					//ATerm movedDown = selectionTracker.sendRequest(moveDown);
-					
+					ATerm moveLeft = AbstractTool.getFactory().make("move-left(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
+					ATerm movedLeft = selectionTracker.sendRequest(moveLeft);
+
+					System.out.println(movedLeft); // Temp
 					// TODO Handle response.
 				}
 			}
 		}
-		System.out.println("Moved Down.");
+		System.out.println("Moved Left.");
 		
 		// TODO Implement.
 		

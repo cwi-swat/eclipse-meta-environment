@@ -1,4 +1,4 @@
-package org.meta_environment.eclipse.focus;
+package org.meta_environment.eclipse.focus.move;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.imp.editor.UniversalEditor;
@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 
 import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
@@ -44,8 +45,9 @@ public class MoveUp implements IActionDelegate{
 					int length = textSelection.getLength();
 					
 					ATerm moveUp = AbstractTool.getFactory().make("move-up(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
-					//ATerm movedUp = selectionTracker.sendRequest(moveUp);
-					
+					ATerm movedUp = selectionTracker.sendRequest(moveUp);
+
+					System.out.println(movedUp); // Temp
 					// TODO Handle response.
 				}
 			}
