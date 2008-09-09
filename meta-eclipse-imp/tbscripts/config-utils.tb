@@ -18,13 +18,13 @@ let
 in
   snd-msg(cm-get-module-paths)
   . rec-msg(cm-module-paths(Directories?))
-  . snd-msg(io-find-file(Directories, Modulename, Extension))
+  . snd-msg(ioj-find-file(Directories, Modulename, Extension))
   .
   (
-    rec-msg(io-file-not-found)
+    rec-msg(ioj-file-not-found)
     . Path := ""
   +
-    rec-msg(io-file-found(Directories?))
+    rec-msg(ioj-file-found(Directories?))
     . Directory := first(Directories)
     . Directories := next(Directories)
     .
