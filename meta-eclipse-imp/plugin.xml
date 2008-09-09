@@ -96,19 +96,19 @@
   </extension>
   <extension point="org.eclipse.ui.bindings">
     <key
-          sequence="M1+M2+ARROW_UP"
+          sequence="M3+M2+ARROW_UP"
           commandId="focus.move_up"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
     <key
-          sequence="M1+M2+ARROW_DOWN"
+          sequence="M3+M2+ARROW_DOWN"
           commandId="focus.move_down"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
     <key
-          sequence="M1+M2+ARROW_RIGHT"
+          sequence="M3+M2+ARROW_RIGHT"
           commandId="focus.move_right"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
     <key
-          sequence="M1+M2+ARROW_LEFT"
+          sequence="M3+M2+ARROW_LEFT"
           commandId="focus.move_left"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
   </extension>
