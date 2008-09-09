@@ -30,27 +30,23 @@ public class SelectionTrackerTool extends Tool{
 	
 	private volatile static SelectionTrackerTool instance = null;
 	
+	private final SelectionChangeListener selectionChangeListener;
 	private volatile Annotation currentFocus;
 	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
 		
+		selectionChangeListener = new SelectionChangeListener(this);
 		currentFocus = null;
 	}
 	
 	private void init(){
-		final SelectionTrackerTool stt = this;
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		// Call this stuff from a UI thread, for thread-safety reasons (yuk).
-		workbench.getDisplay().asyncExec(new Runnable(){
-			public void run(){
-				IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-				if(workbenchWindow != null){
-					ISelectionService selectionService = workbenchWindow.getSelectionService();
-					selectionService.addPostSelectionListener(new SelectionChangeListener(stt));
-				}
-			}
-		});
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+		if(workbenchWindow != null){
+			ISelectionService selectionService = workbenchWindow.getSelectionService();
+			selectionService.addPostSelectionListener(selectionChangeListener);
+		}
 	}
 	
 	public static SelectionTrackerTool getInstance(){
@@ -67,15 +63,15 @@ public class SelectionTrackerTool extends Tool{
 		return instance;
 	}
 	
-	public void setSelection(int offset, int length, String sort, UniversalEditor editor){
-		setFocusAnnotation(offset, length, sort, editor);
-		editor.selectAndReveal(offset, length);
-	}
-	
-	public void updateSelection(String sort, ATermAppl focus, UniversalEditor editor, boolean setSelection){
+	public void updateSelection(final String sort, final ATermAppl focus, final UniversalEditor editor, final boolean setSelection){
 		clearAnnotation(editor);
 		updateSort(sort, editor);
 		updateAnnotation(focus, sort, editor, setSelection);
+	}
+	
+	private void setSelection(int offset, int length, String sort, UniversalEditor editor){
+		setFocusAnnotation(offset, length, sort, editor);
+		editor.selectAndReveal(offset, length);
 	}
 	
 	private void clearFocusAnnotation(UniversalEditor editor){
@@ -135,35 +131,30 @@ public class SelectionTrackerTool extends Tool{
 				final ITextSelection textSelection = (ITextSelection) selection;
 				
 				if(part instanceof UniversalEditor){
-					IWorkbench workbench = PlatformUI.getWorkbench();
-					workbench.getDisplay().syncExec(new Runnable(){
-						public void run(){
-							UniversalEditor editor = (UniversalEditor) part;
-							
-							selectionTrackerTool.clearAnnotation(editor);
-							if(textSelection.getLength() != 0) return;
-							
-							IParseController parseController = editor.getParseController();
-							Object ast = parseController.getCurrentAst();
-							if(ast instanceof ATerm){
-								ATerm parseTree = (ATerm) ast;
-								IPath path = parseController.getPath();
-								
-								int startLine = textSelection.getStartLine();
-								int endLine = textSelection.getEndLine();
-								int offset = textSelection.getOffset();
-								int length = textSelection.getLength();
-								
-								ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
-								
-								ATermAppl selectedArea = selectionTrackerTool.sendRequest(selected);
-								String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
-								ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
-		
-								selectionTrackerTool.updateSelection(sort, focus, editor, false);
-							}
-						}
-					});
+					UniversalEditor editor = (UniversalEditor) part;
+					
+					selectionTrackerTool.clearAnnotation(editor);
+					if(textSelection.getLength() != 0) return;
+					
+					IParseController parseController = editor.getParseController();
+					Object ast = parseController.getCurrentAst();
+					if(ast instanceof ATerm){
+						ATerm parseTree = (ATerm) ast;
+						IPath path = parseController.getPath();
+						
+						int startLine = textSelection.getStartLine();
+						int endLine = textSelection.getEndLine();
+						int offset = textSelection.getOffset();
+						int length = textSelection.getLength();
+						
+						ATerm selected = factory.make("selected(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
+						
+						ATermAppl selectedArea = selectionTrackerTool.sendRequest(selected);
+						String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
+						ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
+
+						selectionTrackerTool.updateSelection(sort, focus, editor, false);
+					}
 				}
 			}
 		}
