@@ -72,6 +72,12 @@ public class SelectionTrackerTool extends Tool{
 		editor.selectAndReveal(offset, length);
 	}
 	
+	public void updateSelection(String sort, ATermAppl focus, UniversalEditor editor){
+		clearAnnotation(editor);
+		updateSort(sort, editor);
+		updateAnnotation(focus, sort, editor);
+	}
+	
 	private void clearFocusAnnotation(UniversalEditor editor){
 		IDocumentProvider documentProvider = editor.getDocumentProvider();
 		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
@@ -98,6 +104,22 @@ public class SelectionTrackerTool extends Tool{
 		}
 	}
 	
+	private void updateSort(String sort, UniversalEditor editor){
+		IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
+		statusLine.setMessage("Sort: "+sort);
+	}
+	
+	private void clearAnnotation(UniversalEditor editor){
+		clearFocusAnnotation(editor);
+	}
+	
+	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor){
+		int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
+		int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
+		
+		setFocusAnnotation(focusOffset, focusLength, sort, editor);
+	}
+	
 	private static class SelectionChangeListener implements ISelectionListener{
 		private final SelectionTrackerTool selectionTrackerTool;
 		
@@ -117,7 +139,7 @@ public class SelectionTrackerTool extends Tool{
 						public void run(){
 							UniversalEditor editor = (UniversalEditor) part;
 							
-							clearAnnotation(editor);
+							selectionTrackerTool.clearAnnotation(editor);
 							if(textSelection.getLength() != 0) return;
 							
 							IParseController parseController = editor.getParseController();
@@ -137,32 +159,12 @@ public class SelectionTrackerTool extends Tool{
 								String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
 								ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
 		
-								// Sort
-								updateSort(sort, editor);
-								
-								// Focus
-								updateAnnotation(focus, sort, editor);
+								selectionTrackerTool.updateSelection(sort, focus, editor);
 							}
 						}
 					});
 				}
 			}
-		}
-		
-		private void updateSort(String sort, UniversalEditor editor){
-			IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
-			statusLine.setMessage("Sort: "+sort);
-		}
-		
-		private void clearAnnotation(UniversalEditor editor){
-			selectionTrackerTool.clearFocusAnnotation(editor);
-		}
-		
-		private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor){
-			int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
-			int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
-			
-			selectionTrackerTool.setFocusAnnotation(focusOffset, focusLength, sort, editor);
 		}
 	}
 }

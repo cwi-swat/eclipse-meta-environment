@@ -13,6 +13,7 @@ import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 
 import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
+import aterm.ATermAppl;
 
 public class MoveLeft implements IActionDelegate{
 	
@@ -45,16 +46,15 @@ public class MoveLeft implements IActionDelegate{
 					int length = textSelection.getLength();
 					
 					ATerm moveLeft = AbstractTool.getFactory().make("move-left(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
-					ATerm movedLeft = selectionTracker.sendRequest(moveLeft);
+					ATermAppl selectedArea = selectionTracker.sendRequest(moveLeft);
+					
+					String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
+					ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
 
-					System.out.println(movedLeft); // Temp
-					// TODO Handle response.
+					selectionTracker.updateSelection(sort, focus, universalEditor);
 				}
 			}
 		}
-		System.out.println("Moved Left.");
-		
-		// TODO Implement.
-		
+		System.out.println("Moved Left."); // Temp
 	}
 }

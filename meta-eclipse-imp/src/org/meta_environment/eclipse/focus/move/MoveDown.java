@@ -13,6 +13,7 @@ import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 
 import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
+import aterm.ATermAppl;
 
 public class MoveDown implements IActionDelegate{
 	
@@ -45,16 +46,15 @@ public class MoveDown implements IActionDelegate{
 					int length = textSelection.getLength();
 					
 					ATerm moveDown = AbstractTool.getFactory().make("move-down(<term>, <str>, <int>, <int>, <int>, <int>)", parseTree, path.toOSString(), Integer.valueOf(startLine), Integer.valueOf(endLine), Integer.valueOf(offset), Integer.valueOf(length));
-					ATerm movedDown = selectionTracker.sendRequest(moveDown);
+					ATermAppl selectedArea = selectionTracker.sendRequest(moveDown);
 					
-					System.out.println(movedDown); // Temp
-					// TODO Handle response.
+					String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
+					ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
+
+					selectionTracker.updateSelection(sort, focus, universalEditor);
 				}
 			}
 		}
-		System.out.println("Moved Down.");
-		
-		// TODO Implement.
-		
+		System.out.println("Moved Down."); // Temp
 	}
 }
