@@ -1,8 +1,8 @@
 configuration([
   import("./meta.actions"),
   editor("StartSDFEditor","languages/sdf2/syntax/Sdf2",".sdf"),
-  library-path("SDF Grammar Library","__SDF_LIBRARY__"),
-  library-path("ASF+SDF Library","__ASF_LIBRARY__"),
+  library-path("SDF Grammar Library","platform:/plugin/sdf_library_VERSION/install/share/sdf-library/library"),
+  library-path("ASF+SDF Library","platform:/plugin/asf_library_VERSION/install/share/asf-library/library"),
   action([description(tree-panel, click)],
          "ShowAreaAction"),
   action([description(feedback-list, click)],
