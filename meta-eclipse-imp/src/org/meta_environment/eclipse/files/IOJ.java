@@ -3,8 +3,13 @@ package org.meta_environment.eclipse.files;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import nl.cwi.sen1.configapi.types.Property;
+import nl.cwi.sen1.configapi.types.PropertyList;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -13,8 +18,9 @@ import org.eclipse.imp.runtime.RuntimePlugin;
 import org.eclipse.imp.utils.StreamUtils;
 import org.meta_environment.eclipse.Tool;
 
+import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
-import errorapi.Factory;
+import aterm.ATermList;
 import errorapi.types.ErrorList;
 import errorapi.types.SubjectList;
 import errorapi.types.subject.Subject;
@@ -29,8 +35,9 @@ public class IOJ extends Tool {
 		}
 	}
 
-	private Factory errorFactory = errorapi.Factory.getInstance(factory);
-
+	private errorapi.Factory errorFactory = errorapi.Factory.getInstance(factory);
+	private nl.cwi.sen1.configapi.Factory configFactory = nl.cwi.sen1.configapi.Factory.getInstance(factory);
+	
 	private IOJ() {
 		super("ioj");
 	}
@@ -47,10 +54,9 @@ public class IOJ extends Tool {
 		} catch (Exception e) {
 			RuntimePlugin.getInstance().logException(
 					"Could resolve url " + path, e);
-		} 
-				
+		}
+
 		try {
-	
 			InputStream fileContents = null;
 
 			if (url == null) {
@@ -60,13 +66,9 @@ public class IOJ extends Tool {
 				fileContents = url.openConnection().getInputStream();
 			}
 
-			if (fileContents != null) {
-				String text = StreamUtils.readStreamContents(fileContents);
-				fileContents.close();
-				return factory.make("file-contents(<str>)", text);
-			}
-			return factory.make("failure(<term>)", getErrorSummary(
-					"Could not read file", path));
+			String text = StreamUtils.readStreamContents(fileContents);
+			fileContents.close();
+			return factory.make("file-contents(<str>)", text);
 
 		} catch (Exception e) {
 			RuntimePlugin.getInstance().logException(
@@ -147,16 +149,56 @@ public class IOJ extends Tool {
 		return result;
 	}
 
-	private InputStream getFileContentsFromOS(String path) {
+	public ATerm packTerm(ATerm term) {
+		return factory.make("term(<trm>)", AbstractTool.pack(term));
+	}
+
+	public ATerm unpackTerm(ATerm term) {
+		return factory.make("term(<trm>)", AbstractTool.unpack(term));
+	}
+
+	public ATerm findFile(ATermList directories, String fileName,
+			String extension) {
+		ATermList containingDirectories = factory.makeList();
+		PropertyList pl = configFactory.PropertyListFromTerm(directories);
+		
+		int l = pl.getLength();
+		for (int i = 0; i < l; i++) {
+			Property p = pl.getPropertyAt(i);
+			String dir = p.getPath();
+			String path = dir + "/" + fileName + extension;
+
+			try {
+				FileLocator.resolve(new URL(path));
+				containingDirectories = containingDirectories.append(factory
+						.make("<str>", dir));
+			} catch (MalformedURLException e) {
+				System.err.println("TODO: non-URL used as path: " + path);
+				RuntimePlugin.getInstance().logException(
+						"Malformed URL " + path, e);
+			} catch (IOException e) {
+				/*
+				 * TODO This exception occurs if the file could not be resolved.
+				 * Perhaps we need a better solution for this.
+				 */
+			}
+		}
+
+		if (containingDirectories.getLength() > 0) {
+			return factory.make("file-found(<list>)", containingDirectories);
+		} else {
+			return factory.make("file-not-found");
+		}
+	}
+
+	private InputStream getFileContentsFromOS(String path)
+			throws FileNotFoundException {
 		File f = new File(path);
 		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(f);
-			System.err.println("\nTODO: legacy absolute OS path used: " + path);
-		} catch (FileNotFoundException e) {
-			RuntimePlugin.getInstance().logException(
-					"Could not read file " + path, e);
-		}
+
+		fis = new FileInputStream(f);
+		System.err.println("\nTODO: legacy absolute OS path used: " + path);
+
 		return fis;
 	}
 

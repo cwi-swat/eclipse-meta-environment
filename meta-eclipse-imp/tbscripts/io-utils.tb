@@ -88,10 +88,10 @@ process SplitFilename(Path : str,
   . rec-msg(ioj-extension(Path, Extension?))
 
 process UnPackTree(Tree : term, UnpackedTree : term?) is
-  snd-msg(io-unpack-term(Tree))
-  . rec-msg(io-term(UnpackedTree?))
+  snd-msg(ioj-unpack-term(Tree))
+  . rec-msg(ioj-term(UnpackedTree?))
 
 process PackTree(Tree : term, PackedTree : term?) is
-  snd-msg(io-pack-term(Tree))
-  . rec-msg(io-term(PackedTree?))
+  snd-msg(ioj-pack-term(Tree))
+  . rec-msg(ioj-term(PackedTree?))
 #endif
