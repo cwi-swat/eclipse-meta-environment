@@ -11,6 +11,7 @@ import org.meta_environment.eclipse.files.IOJ;
 import org.meta_environment.eclipse.files.ResourceChanges;
 import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 import org.meta_environment.eclipse.jobs.Jobs;
+import org.meta_environment.eclipse.modules.ModuleManager;
 
 public class Activator extends PluginBase implements IStartup{
 	public static final String PLUGIN_ID = "org.meta_environment";
@@ -28,6 +29,7 @@ public class Activator extends PluginBase implements IStartup{
 	}
 
 	public void earlyStartup() {
+		ModuleManager.getInstance();
 		ErrorViewer.getInstance();
 		ResourceChanges.getInstance();
 		IOJ.getInstance();
