@@ -31,7 +31,7 @@ public class SelectionTrackerTool extends Tool{
 	private volatile static SelectionTrackerTool instance = null;
 	
 	private final SelectionChangeListener selectionChangeListener;
-	private volatile Annotation currentFocus;
+	private Annotation currentFocus;
 	
 	private volatile String focussedSort;
 	private volatile Position focussedPosition;
