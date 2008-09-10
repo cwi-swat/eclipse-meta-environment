@@ -33,6 +33,9 @@ public class SelectionTrackerTool extends Tool{
 	private final SelectionChangeListener selectionChangeListener;
 	private volatile Annotation currentFocus;
 	
+	private volatile String focussedSort;
+	private volatile Position focussedPosition;
+	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
 		
@@ -61,6 +64,14 @@ public class SelectionTrackerTool extends Tool{
 		}
 		
 		return instance;
+	}
+	
+	public String getFocussedSort(){
+		return focussedSort;
+	}
+	
+	public Position getFocussedPosition(){
+		return focussedPosition;
 	}
 	
 	public void updateSelection(final String sort, final ATermAppl focus, final UniversalEditor editor, final boolean setSelection){
@@ -96,7 +107,10 @@ public class SelectionTrackerTool extends Tool{
 			
 			currentFocus = new Annotation(FOCUS_ANNOTATION, false, sort);
 			
-			annotationModel.addAnnotation(currentFocus, new Position(focusOffset, focusLength));
+			focussedSort = sort;
+			focussedPosition = new Position(focusOffset, focusLength);
+			
+			annotationModel.addAnnotation(currentFocus, focussedPosition);
 		}
 	}
 	
