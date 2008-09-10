@@ -114,7 +114,7 @@ public class SelectionTrackerTool extends Tool{
 		int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
 		
 		setFocusAnnotation(focusOffset, focusLength, sort, editor);
-		if(setSelection) setSelection(focusOffset, 0, sort, editor); // Temp test
+		//if(setSelection) setSelection(focusOffset, 0, sort, editor); // Temp test
 	}
 	
 	private static class SelectionChangeListener implements ISelectionListener{
