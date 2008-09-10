@@ -74,10 +74,10 @@ public class SelectionTrackerTool extends Tool{
 		return focussedPosition;
 	}
 	
-	public void updateSelection(final String sort, final ATermAppl focus, final UniversalEditor editor, final boolean setSelection){
+	public void updateSelection(String sort, ATermAppl focus, UniversalEditor editor){
 		clearAnnotation(editor);
 		updateSort(sort, editor);
-		updateAnnotation(focus, sort, editor, setSelection);
+		updateAnnotation(focus, sort, editor);
 	}
 	
 	private void setSelection(int offset, int length, String sort, UniversalEditor editor){
@@ -123,7 +123,7 @@ public class SelectionTrackerTool extends Tool{
 		clearFocusAnnotation(editor);
 	}
 	
-	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor, boolean setSelection){
+	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor){
 		int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
 		int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
 		
@@ -167,7 +167,7 @@ public class SelectionTrackerTool extends Tool{
 						String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
 						ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
 
-						selectionTrackerTool.updateSelection(sort, focus, editor, false);
+						selectionTrackerTool.updateSelection(sort, focus, editor);
 					}
 				}
 			}
