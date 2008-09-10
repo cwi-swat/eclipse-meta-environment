@@ -77,9 +77,25 @@ public class SelectionTrackerTool extends Tool{
 	}
 	
 	public void updateFocus(String sort, ATermAppl focus, UniversalEditor editor, boolean scrollToFocus){
-		clearAnnotation(editor);
+		clearFocusAnnotation(editor);
 		updateSort(sort, editor);
 		updateAnnotation(focus, sort, editor, scrollToFocus);
+	}
+	
+	private void updateSort(String sort, UniversalEditor editor){
+		IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
+		statusLine.setMessage("Sort: "+sort);
+	}
+	
+	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor, boolean scrollToFocus){
+		int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
+		int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
+		
+		setFocusAnnotation(focusOffset, focusLength, sort, editor);
+		if(scrollToFocus){
+			expectEvent = true;
+			editor.selectAndReveal(focusOffset, 0);
+		}
 	}
 	
 	private void clearFocusAnnotation(UniversalEditor editor){
@@ -111,26 +127,6 @@ public class SelectionTrackerTool extends Tool{
 		}
 	}
 	
-	private void updateSort(String sort, UniversalEditor editor){
-		IStatusLineManager statusLine = editor.getEditorSite().getActionBars().getStatusLineManager();
-		statusLine.setMessage("Sort: "+sort);
-	}
-	
-	private void clearAnnotation(UniversalEditor editor){
-		clearFocusAnnotation(editor);
-	}
-	
-	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor, boolean scrollToFocus){
-		int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
-		int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
-		
-		setFocusAnnotation(focusOffset, focusLength, sort, editor);
-		if(scrollToFocus){
-			expectEvent = true;
-			editor.selectAndReveal(focusOffset, 0);
-		}
-	}
-	
 	private static class SelectionChangeListener implements ISelectionListener{
 		private final SelectionTrackerTool selectionTrackerTool;
 		
@@ -152,7 +148,7 @@ public class SelectionTrackerTool extends Tool{
 				if(part instanceof UniversalEditor){
 					UniversalEditor editor = (UniversalEditor) part;
 					
-					selectionTrackerTool.clearAnnotation(editor);
+					selectionTrackerTool.clearFocusAnnotation(editor);
 					if(textSelection.getLength() != 0) return;
 					
 					IParseController parseController = editor.getParseController();
