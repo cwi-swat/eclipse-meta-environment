@@ -36,13 +36,14 @@ public class SelectionTrackerTool extends Tool{
 	private volatile String focussedSort;
 	private volatile Position focussedPosition;
 	
-	private volatile boolean expectEvent = false;
+	private volatile boolean expectEvent;
 	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
 		
 		selectionChangeListener = new SelectionChangeListener(this);
 		currentFocus = null;
+		expectEvent = false;
 	}
 	
 	private void init(){
