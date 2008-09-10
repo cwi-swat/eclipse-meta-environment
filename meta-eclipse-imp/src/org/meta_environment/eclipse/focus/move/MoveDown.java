@@ -55,6 +55,5 @@ public class MoveDown implements IActionDelegate{
 				}
 			}
 		}
-		System.out.println("Moved Down."); // Temp
 	}
 }

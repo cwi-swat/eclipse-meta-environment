@@ -55,6 +55,5 @@ public class MoveLeft implements IActionDelegate{
 				}
 			}
 		}
-		System.out.println("Moved Left."); // Temp
 	}
 }
