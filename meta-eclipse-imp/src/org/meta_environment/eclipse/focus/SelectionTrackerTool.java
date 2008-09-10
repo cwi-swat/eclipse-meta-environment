@@ -36,6 +36,8 @@ public class SelectionTrackerTool extends Tool{
 	private volatile String focussedSort;
 	private volatile Position focussedPosition;
 	
+	private volatile boolean expectEvent = false;
+	
 	private SelectionTrackerTool(){
 		super(TOOL_NAME);
 		
@@ -74,15 +76,10 @@ public class SelectionTrackerTool extends Tool{
 		return focussedPosition;
 	}
 	
-	public void updateSelection(String sort, ATermAppl focus, UniversalEditor editor){
+	public void updateFocus(String sort, ATermAppl focus, UniversalEditor editor, boolean scrollToFocus){
 		clearAnnotation(editor);
 		updateSort(sort, editor);
-		updateAnnotation(focus, sort, editor);
-	}
-	
-	private void setSelection(int offset, int length, String sort, UniversalEditor editor){
-		setFocusAnnotation(offset, length, sort, editor);
-		editor.selectAndReveal(offset, length);
+		updateAnnotation(focus, sort, editor, scrollToFocus);
 	}
 	
 	private void clearFocusAnnotation(UniversalEditor editor){
@@ -123,12 +120,15 @@ public class SelectionTrackerTool extends Tool{
 		clearFocusAnnotation(editor);
 	}
 	
-	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor){
+	private void updateAnnotation(ATermAppl focus, String sort, UniversalEditor editor, boolean scrollToFocus){
 		int focusOffset = ((ATermInt) focus.getArgument(4)).getInt();
 		int focusLength = ((ATermInt) focus.getArgument(5)).getInt();
 		
 		setFocusAnnotation(focusOffset, focusLength, sort, editor);
-		//if(setSelection) setSelection(focusOffset, 0, sort, editor); // Temp test
+		if(scrollToFocus){
+			expectEvent = true;
+			editor.selectAndReveal(focusOffset, 0);
+		}
 	}
 	
 	private static class SelectionChangeListener implements ISelectionListener{
@@ -141,6 +141,11 @@ public class SelectionTrackerTool extends Tool{
 		}
 
 		public void selectionChanged(final IWorkbenchPart part, ISelection selection){
+			if(selectionTrackerTool.expectEvent){
+				selectionTrackerTool.expectEvent = false;
+				return;
+			}
+			
 			if(selection instanceof ITextSelection){
 				final ITextSelection textSelection = (ITextSelection) selection;
 				
@@ -167,7 +172,7 @@ public class SelectionTrackerTool extends Tool{
 						String sort = ((ATermAppl) selectedArea.getArgument(0)).getName();
 						ATermAppl focus = (ATermAppl) selectedArea.getArgument(1);
 
-						selectionTrackerTool.updateSelection(sort, focus, editor);
+						selectionTrackerTool.updateFocus(sort, focus, editor, false);
 					}
 				}
 			}
