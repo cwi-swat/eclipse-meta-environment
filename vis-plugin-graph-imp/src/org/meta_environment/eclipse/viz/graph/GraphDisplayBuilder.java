@@ -2,8 +2,6 @@ package org.meta_environment.eclipse.viz.graph;
 
 import java.awt.event.MouseEvent;
 
-import org.eclipse.ui.PlatformUI;
-import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.viz.prefusedot.DotAdapter;
 import org.meta_environment.eclipse.viz.prefusedot.DotEdgeRenderer;
 import org.meta_environment.eclipse.viz.prefusedot.DotLabelLayout;
@@ -98,13 +96,13 @@ public class GraphDisplayBuilder {
 				final String link = item.getString(DotAdapter.DOT_LINK);
 
 				if (link != null) {					
-					PlatformUI.getWorkbench().getDisplay().asyncExec(
+					/*PlatformUI.getWorkbench().getDisplay().asyncExec(
 						new Runnable() {
 							public void run() {
 								EditorTool.getInstance().open(link, "");								
 							}
 						}
-					);
+					);*/
 				}
 			}
 
@@ -133,6 +131,8 @@ public class GraphDisplayBuilder {
                 VisualItem.FILLCOLOR);
         nFill.setDefaultColor(GraphConstants.NODE_FILLCOLOR);
 
+        
+        
         // Edge lines and heads.
         ColorAction nEdges = new ColorAction(GraphConstants.EDGES,
                 VisualItem.STROKECOLOR);

@@ -1,10 +1,15 @@
 package org.meta_environment.eclipse.viz.prefusedot;
 
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import prefuse.Constants;
 import prefuse.render.EdgeRenderer;
@@ -66,7 +71,10 @@ public class DotEdgeRenderer extends EdgeRenderer {
 	}
 
 	protected Shape getArrowShape(Point2D start, Point2D end, VisualItem item) {
-		int i = getIntersectionPoint(item, start, end, m_isctPoints);
+		ArrayList<Point2D> intersection = new ArrayList<Point2D>();
+		
+		int i = getIntersectionPoint(item, start, end, intersection);
+		m_isctPoints = intersection.toArray(m_isctPoints);
 		if (i > 0) {
 			end = m_isctPoints[0];
 		}
@@ -166,25 +174,37 @@ public class DotEdgeRenderer extends EdgeRenderer {
 	}
 
 	protected int getIntersectionPoint(VisualItem item, Point2D from, Point2D to,
-			Point2D[] intersection) {
+			ArrayList<Point2D> intersection) {
 		String shapeName = item.getString(DotAdapter.DOT_SHAPE);
 		int i;
 
-		if (shapeName != null) {
-			if (shapeName.equals("box")) {
-				i = computeBoxIntersectionPoint(item, from, to, intersection);
-			} else if (shapeName.equals("circle")) {
-				i = computeCircleIntersectionPoint(item, from, to, intersection);
-			} else if (shapeName.equals("ellipse")) {
-				i = computeEllipseIntersectionPoint(item, from, to,
-						intersection);
-			} else {
-				i = computeBoxIntersectionPoint(item, from, to, intersection);
-			}
+		Point2D[] intersectionArray = {new Point2D.Double(), new Point2D.Double()}; 
+		
+		if ("box".equals(shapeName)) {
+			i = computeBoxIntersectionPoint(item, from, to, intersectionArray);
+		} else if ("circle".equals(shapeName)) {
+			i = computeCircleIntersectionPoint(item, from, to, intersectionArray);
+		} else if ("ellipse".equals(shapeName)) {
+			i = computeEllipseIntersectionPoint(item, from, to, intersectionArray);
+		} else if ("diamond".equals(shapeName)) {
+			Rectangle2D bounds = item.getBounds();
+			double x = item.getX();
+			double y = item.getY();
+			double w = bounds.getWidth();
+			double h = bounds.getHeight();
+			
+			Polygon p = (Polygon) DotNodeRenderer.getDiamondShape(x, y, w, h);
+
+			i = computePolygonIntersectionPoint(p, from, to, intersection);
 		} else {
-			i = computeBoxIntersectionPoint(item, from, to, intersection);
+			i = computeBoxIntersectionPoint(item, from, to, intersectionArray);
 		}
 
+		if (!"diamond".equals(shapeName)) {
+			intersection.add(intersectionArray[0]);
+			intersection.add(intersectionArray[1]);
+		}
+		
 		return i;
 	}
 
@@ -216,4 +236,25 @@ public class DotEdgeRenderer extends EdgeRenderer {
 				intersection);
 		return i;
 	}
+	
+	protected int computePolygonIntersectionPoint(Polygon p, Point2D from,
+			Point2D to, ArrayList<Point2D> intersection) {
+		
+		final int TRUE_GRAPHICSLIB_RETURN_VALUE_FOR_COINCIDENT = 1;
+		Line2D line1 = new Line2D.Double(from, to);
+		intersection.clear();
+
+		for (int i = 0; i < p.npoints; i++) {
+			int i2 = (i+1) % p.npoints;
+			Line2D line2 = new Line2D.Double(p.xpoints[i], p.ypoints[i], p.xpoints[i2], p.ypoints[i2]);
+			Point intersectionPoint = new Point();
+			int inter = GraphicsLib.intersectLineLine(line1, line2, intersectionPoint);
+			
+			if (inter == GraphicsLib.COINCIDENT || inter == TRUE_GRAPHICSLIB_RETURN_VALUE_FOR_COINCIDENT) {
+				intersection.add(intersectionPoint);
+			}
+		}
+		
+		return intersection.size() > 0 ? TRUE_GRAPHICSLIB_RETURN_VALUE_FOR_COINCIDENT : GraphicsLib.NO_INTERSECTION;
+	}	
 }

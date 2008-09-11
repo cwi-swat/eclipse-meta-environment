@@ -10,10 +10,12 @@ import java.io.PrintStream;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +55,14 @@ public class DotAdapter extends Graph {
     
     public static final String DOT_LINK = "link";
 
+    public static final String DOT_LEVEL = "level";
+    
+    public static final String DOT_COLOR = "color";
+    
+    public static final String DOT_FILLCOLOR = "fillcolor";
+
+    public static final String DOT_STYLE = "style";
+
     private double scale;
 
     private Map<String, Node> nodeIds = new HashMap<String, Node>();
@@ -68,6 +78,10 @@ public class DotAdapter extends Graph {
         addColumn(DOT_HEIGHT, int.class);
         addColumn(DOT_SHAPE, String.class);
         addColumn(DOT_LINK, String.class);
+        addColumn(DOT_LEVEL, String.class);
+        addColumn(DOT_COLOR, String.class);
+        addColumn(DOT_FILLCOLOR, String.class);
+        addColumn(DOT_STYLE, String.class);
     }
 
     /**
@@ -318,6 +332,8 @@ public class DotAdapter extends Graph {
     private void printNodes(PrintStream b) {
         Iterator iter = nodes();
 
+        Map<String, Set<Node>> levels = new HashMap<String, Set<Node>>();
+        
         while (iter.hasNext()) {
             Node t = (Node) iter.next();
             String id = idToDot(t.getString(DOT_ID));
@@ -329,11 +345,28 @@ public class DotAdapter extends Graph {
                 if (t.canGetString(key)) {
                     String value = t.getString(i);
                     if (value != null) {
-                        b.append(" " + key + "=\"" + escape(value) + "\" ");
+                    	if (key == DOT_LEVEL) {
+                    		Set set = levels.get(value);
+                            if (set == null) {
+                            	set = new HashSet<Node>();
+                            }
+                            set.add(t);
+                            levels.put(value, set);
+                    	} else {
+                    		b.append(" " + key + "=\"" + escape(value) + "\" ");
+                    	}
                     }
                 }
             }
             b.append(" ]\n");
+        }
+        
+        for (String level : levels.keySet()) {
+        	b.append("{rank=same");
+        	for (Node n : levels.get(level)) {
+        		b.append(" " + idToDot(n.getString(DOT_ID)));
+        	}
+        	b.append("}\n");
         }
     }
 

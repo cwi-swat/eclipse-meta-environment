@@ -19,7 +19,7 @@ public class GraphInput implements IEditorInput {
 		if (other instanceof GraphInput) {
 			GraphInput otherInput = (GraphInput) other;
 			if (value != null && name != null) {
-				return value.equals(otherInput.getValue()) && name.equals(otherInput.getName());
+				return name.equals(otherInput.getName()) && value.equals(otherInput.getValue());
 			}
 		}
 		return false;

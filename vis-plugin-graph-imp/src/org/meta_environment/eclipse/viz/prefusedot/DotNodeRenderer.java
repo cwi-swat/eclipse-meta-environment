@@ -1,5 +1,6 @@
 package org.meta_environment.eclipse.viz.prefusedot;
 
+import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
@@ -22,8 +23,6 @@ public class DotNodeRenderer extends AbstractShapeRenderer {
 		System.err.println("Init DotNodeRenderer");
 	}
 
-	
-
 	public Shape getRawShape(VisualItem item) {
 		Rectangle2D bounds = ((Rectangle2D) item.get(VisualItem.BOUNDS))
 				.getFrame();
@@ -34,17 +33,14 @@ public class DotNodeRenderer extends AbstractShapeRenderer {
 		String shapeName = item.getString(DotAdapter.DOT_SHAPE);
 		Shape result;
 
-		// TODO: implement diamond and other shapes
-		if (shapeName != null) {
-			if (shapeName.equals("box")) {
-				result = getBoxShape(x, y, w, h);
-			} else if (shapeName.equals("circle")) {
-				result = getCircleShape(x, y, w, h);
-			} else if (shapeName.equals("ellipse")) {
-				result = getEllipseShape(x, y, w, h);
-			} else {
-				result = getBoxShape(x, y, w, h);
-			}
+		if ("diamond".equals(shapeName)) {
+            result = getDiamondShape(x, y, w, h);
+        } else if ("box".equals(shapeName)) {
+			result = getBoxShape(x, y, w, h);
+		} else if ("circle".equals(shapeName)) {
+			result = getCircleShape(x, y, w, h);
+		} else if ("ellipse".equals(shapeName)) {
+			result = getEllipseShape(x, y, w, h);
 		} else {
 			result = getBoxShape(x, y, w, h);
 		}
@@ -68,5 +64,23 @@ public class DotNodeRenderer extends AbstractShapeRenderer {
 		ellipse.setFrame(x, y, width, height);
 		return ellipse;
 	}
+	
+	public static Shape getDiamondShape(double x, double y, double width,
+            double height) {
+        int iw = (int) width;
+        int ih = (int) height;
+        int ix = (int) x + iw / 2;
+        int iy = (int) y + ih / 2;
+        
+        /*int[] xs = new int[] { ix - (iw / ih) * (ih / 2), ix + iw / 2,
+                ix + iw + (iw / ih) * (ih / 2), ix + iw / 2 };
+        int[] ys = new int[] { iy + ih / 2, iy + ih + (ih / iw) * (iw / 2),
+                iy + ih / 2, iy - (ih / iw) * (iw / 2) };*/
+
+        int[] xs = new int[] { ix, ix + iw / 2, ix, ix - iw / 2 };
+        int[] ys = new int[] { iy + ih / 2, iy, iy - ih / 2, iy };
+        
+        return new Polygon(xs, ys, 4);
+    }
 
 }

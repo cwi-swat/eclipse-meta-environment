@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
 import prefuse.data.Graph;
@@ -27,7 +28,7 @@ public class GraphView extends EditorPart {
 	private Frame fFrame;
 	private Composite fComposite;
 	private IValue relation;
-
+	
     public GraphView() {
         super();
     }
@@ -55,7 +56,7 @@ public class GraphView extends EditorPart {
 		}
     }
 
-    public void showRelation(IValue relation) {
+    private void showRelation(IValue relation) {
         GraphBuilder graphBuilder = new GraphBuilder();
         Graph graph = graphBuilder.computeGraph(relation);
         Component tempDisplay;
@@ -86,6 +87,22 @@ public class GraphView extends EditorPart {
         }
 	}
 
+	public static void showGraph(String name, IValue value) {
+		final GraphInput input = new GraphInput(name, value);
+		PlatformUI.getWorkbench().getDisplay().asyncExec(
+				new Runnable() {
+					public void run() {
+						try
+						{
+							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(input, "org.meta_environment.eclipse.viz.graph");
+						} catch (PartInitException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			);
+	}
+	
     @Override
     public void setFocus() {
         // TODO Auto-generated method stub
