@@ -91,8 +91,7 @@ public class IOJ extends EclipseTool {
 		if (fileName == null) {
 			fileName = "";
 		}
-		System.err.println("\ngetPathFilename for " + Path + " returned: "
-				+ fileName);
+		//System.err.println("\ngetPathFilename for " + Path + " returned: " + fileName);
 		return factory.make("filename(<str>)", fileName);
 	}
 
@@ -104,8 +103,7 @@ public class IOJ extends EclipseTool {
 		if (numberOfSegments > 1) {
 			directory = path.removeLastSegments(1).toString();
 		}
-		System.err.println("\ngetPathDirectory for " + Path + " returned: "
-				+ directory);
+		//System.err.println("\ngetPathDirectory for " + Path + " returned: " + directory);
 		return factory.make("directory(<str>)", directory);
 	}
 
@@ -119,8 +117,7 @@ public class IOJ extends EclipseTool {
 			extension = "." + extension;
 		}
 
-		System.err.println("\ngetPathExtension for " + Path + " returned: "
-				+ extension);
+		//System.err.println("\ngetPathExtension for " + Path + " returned: " + extension);
 		return factory.make("extension(<str>)", extension);
 	}
 
@@ -173,7 +170,7 @@ public class IOJ extends EclipseTool {
 				containingDirectories = containingDirectories.append(factory
 						.make("<str>", dir));
 			} catch (MalformedURLException e) {
-				System.err.println("TODO: non-URL used as path: " + path);
+				//System.err.println("TODO: non-URL used as path: " + path);
 				RuntimePlugin.getInstance().logException(
 						"Malformed URL " + path, e);
 			} catch (IOException e) {
@@ -196,7 +193,7 @@ public class IOJ extends EclipseTool {
 		FileInputStream fis = null;
 
 		fis = new FileInputStream(f);
-		System.err.println("\nTODO: legacy absolute OS path used: " + path);
+		//System.err.println("\nTODO: legacy absolute OS path used: " + path);
 
 		return fis;
 	}

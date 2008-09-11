@@ -30,8 +30,6 @@ in
   rec-connect(IOJ?) 
   . printf("IOJ tool connected!\n")
   .
-  ( printf("IOJ tool ready to communicate\n")
-  .
   (
     rec-msg(ioj-read-file(Filename?))
     . snd-eval(IOJ, read-text-file(Filename))
@@ -99,7 +97,7 @@ in
       . snd-msg(ioj-file-not-found)
     )    
     
-  )) * delta
+  ) * delta
 endlet
 
 toolbus(IOJ)

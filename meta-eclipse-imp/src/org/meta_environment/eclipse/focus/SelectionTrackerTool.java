@@ -12,6 +12,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -48,11 +49,27 @@ public class SelectionTrackerTool extends EclipseTool{
 	
 	private void init(){
 		IWorkbench workbench = PlatformUI.getWorkbench();
-		IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-		if(workbenchWindow != null){
-			ISelectionService selectionService = workbenchWindow.getSelectionService();
-			selectionService.addPostSelectionListener(selectionChangeListener);
-		}
+		workbench.addWindowListener(new IWindowListener(){
+			public void windowActivated(IWorkbenchWindow window){
+				ISelectionService selectionService = window.getSelectionService();
+				selectionService.addPostSelectionListener(selectionChangeListener);
+			}
+
+			public void windowClosed(IWorkbenchWindow window){
+				ISelectionService selectionService = window.getSelectionService();
+				selectionService.removePostSelectionListener(selectionChangeListener);
+			}
+
+			public void windowDeactivated(IWorkbenchWindow window){
+				ISelectionService selectionService = window.getSelectionService();
+				selectionService.removePostSelectionListener(selectionChangeListener);
+			}
+
+			public void windowOpened(IWorkbenchWindow window){
+				ISelectionService selectionService = window.getSelectionService();
+				selectionService.addPostSelectionListener(selectionChangeListener);
+			}
+		});
 	}
 	
 	public static SelectionTrackerTool getInstance(){
