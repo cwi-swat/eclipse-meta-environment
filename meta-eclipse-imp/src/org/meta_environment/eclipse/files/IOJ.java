@@ -186,9 +186,8 @@ public class IOJ extends EclipseTool {
 
 		if (containingDirectories.getLength() > 0) {
 			return factory.make("file-found(<list>)", containingDirectories);
-		} else {
-			return factory.make("file-not-found");
 		}
+		return factory.make("file-not-found");
 	}
 
 	private InputStream getFileContentsFromOS(String path)
