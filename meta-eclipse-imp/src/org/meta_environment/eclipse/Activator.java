@@ -11,6 +11,7 @@ import org.meta_environment.eclipse.files.IOJ;
 import org.meta_environment.eclipse.files.ResourceChanges;
 import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 import org.meta_environment.eclipse.jobs.Jobs;
+import org.meta_environment.eclipse.visualization.VisualizationTool;
 import org.meta_environment.eclipse.modules.ModuleManager;
 
 public class Activator extends PluginBase implements IStartup{
@@ -35,6 +36,7 @@ public class Activator extends PluginBase implements IStartup{
 		IOJ.getInstance();
 		BuildResults.getInstance();
 		EditorTool.getInstance();
+		VisualizationTool.getInstance();
 		LanguageActionsTool.getInstance();
 		Jobs.getInstance();
 		FactsTool.getInstance();

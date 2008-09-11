@@ -119,11 +119,11 @@ public class FactsTool extends EclipseTool {
 		base.defineFact(key, value);
 	}
 
-	private IFactKey convertVariable(IdCon variable, Type type, IFactContext context) {
+	public IFactKey convertVariable(IdCon variable, Type type, IFactContext context) {
 		return new FactKey(types.namedType(variable.getString(), type), context);
 	}
 
-	private IValue convertValue(RElem value, RType type) {
+	public IValue convertValue(RElem value, RType type) {
 		if (value.isBag()) {
 			return convertBag((Bag) value);
 		}
@@ -251,7 +251,7 @@ public class FactsTool extends EclipseTool {
 		throw new UnsupportedOperationException("Unknown kind of value: " + value.getClass());
 	}
 
-	private Type convertType(RType rtype) {
+	public Type convertType(RType rtype) {
 		if (rtype.isBag()) {
 			return types.setTypeOf(convertType(rtype.getElementType()));
 		}
