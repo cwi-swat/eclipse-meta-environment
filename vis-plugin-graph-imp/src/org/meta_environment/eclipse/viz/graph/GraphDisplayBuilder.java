@@ -3,6 +3,7 @@ package org.meta_environment.eclipse.viz.graph;
 import java.awt.event.MouseEvent;
 
 import org.meta_environment.eclipse.viz.prefusedot.DotAdapter;
+import org.meta_environment.eclipse.viz.prefusedot.DotColorAction;
 import org.meta_environment.eclipse.viz.prefusedot.DotEdgeRenderer;
 import org.meta_environment.eclipse.viz.prefusedot.DotLabelLayout;
 import org.meta_environment.eclipse.viz.prefusedot.DotNodeLayout;
@@ -122,13 +123,13 @@ public class GraphDisplayBuilder {
                 GraphConstants.NODE_FONT);
 
         // Outer line color.
-        ColorAction nStroke = new ColorAction(GraphConstants.NODES,
-                VisualItem.STROKECOLOR);
+        ColorAction nStroke = new DotColorAction(GraphConstants.NODES,
+                DotAdapter.DOT_COLOR, VisualItem.STROKECOLOR);
         nStroke.setDefaultColor(GraphConstants.NODE_LINECOLOR);
 
         // Fill color.
-        ColorAction nFill = new ColorAction(GraphConstants.NODES,
-                VisualItem.FILLCOLOR);
+        ColorAction nFill = new DotColorAction(GraphConstants.NODES,
+                DotAdapter.DOT_FILLCOLOR, VisualItem.FILLCOLOR);
         nFill.setDefaultColor(GraphConstants.NODE_FILLCOLOR);
 
         

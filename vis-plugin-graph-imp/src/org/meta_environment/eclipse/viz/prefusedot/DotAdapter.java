@@ -1,5 +1,6 @@
 package org.meta_environment.eclipse.viz.prefusedot;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,8 +80,8 @@ public class DotAdapter extends Graph {
         addColumn(DOT_SHAPE, String.class);
         addColumn(DOT_LINK, String.class);
         addColumn(DOT_LEVEL, String.class);
-        addColumn(DOT_COLOR, String.class);
-        addColumn(DOT_FILLCOLOR, String.class);
+        addColumn(DOT_COLOR, int.class);
+        addColumn(DOT_FILLCOLOR, int.class);
         addColumn(DOT_STYLE, String.class);
     }
 

@@ -1,7 +1,10 @@
 package org.meta_environment.eclipse.viz.graph;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.imp.pdb.facts.IRelation;
 import org.eclipse.imp.pdb.facts.ISourceLocation;
@@ -22,6 +25,7 @@ public class GraphBuilder {
     private static final TypeFactory types = org.eclipse.imp.pdb.facts.type.TypeFactory.getInstance();
 	private HashMap<String, Node> fNodeCache = new HashMap<String, Node>();
 	private static final Type locatedNodeType = types.tupleTypeOf(types.stringType(), types.sourceLocationType());
+	private static final Pattern colorPattern = Pattern.compile("rgb\\(([^,]*),([^,]*),([^,]*)\\)");
 	private static Type attributedGraphType;
 	private static Map<String, String> attrKeyMap;
 	
@@ -80,7 +84,9 @@ public class GraphBuilder {
     	
     	for (ITuple tuple : nodes) {
     		Node node = getOrCreateNode(graph, tuple.get(0));
-    		setAttributes(node, (IRelation) tuple.get(1));
+    		if (graph instanceof DotAdapter) {
+    			setAttributes((DotAdapter)graph, node, (IRelation) tuple.get(1));
+    		}
     	}
     	
     	for (ITuple tuple : edges) {
@@ -116,13 +122,27 @@ public class GraphBuilder {
         return node;
     }
     
-    private void setAttributes(Node node, IRelation attrs) {
+    private void setAttributes(DotAdapter da, Node node, IRelation attrs) {
     	for (ITuple attr : attrs) {
     		String attrKey = ((IString)attr.get(0)).getValue();
     		String dotKey = attrKeyMap.get(attrKey);
     		if (dotKey != null) {
     			String attrValue = ((IString)attr.get(1)).getValue();
-    			node.setString(dotKey, attrValue);
+
+    			if (node.canGet(dotKey, int.class)) {
+    				Matcher m = colorPattern.matcher(attrValue);
+                    if (m.matches()) {
+                        int r = Integer.parseInt(m.group(1));
+                        int g = Integer.parseInt(m.group(2));
+                        int b = Integer.parseInt(m.group(3));
+
+                        node.set(dotKey, (new Color(r, g, b)).getRGB());
+                    } else {
+                    	node.setInt(dotKey, Integer.parseInt(attrValue));
+                    }
+    			} else {
+    				node.setString(dotKey, attrValue);
+    			}
     		} else {
     			System.err.println("Unknown node attribute: " + attrKey + ", on node: " + node.getString(DotAdapter.DOT_ID));
     		}    		
