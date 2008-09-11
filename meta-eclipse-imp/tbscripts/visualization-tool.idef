@@ -1,0 +1,22 @@
+#ifndef VISUALIZATION_TOOL_IDEF
+#define VISUALIZATION_TOOL_IDEF
+
+tool visualization-tool is { }
+
+process VisualizationToolProcess is
+let
+  T : visualization-tool,
+  Filename : str,
+  RStore : term
+in
+  rec-connect(T?) .
+  (
+    rec-msg(vt-show-graph(Filename?, RStore?))
+    . snd-do(T, view-graph(Filename, RStore))
+  )
+  * delta
+endlet
+
+toolbus(VisualizationToolProcess)
+
+#endif
