@@ -6,13 +6,13 @@ import nl.cwi.sen1.relationstores.types.RTuple;
 import nl.cwi.sen1.relationstores.types.RTupleRtuples;
 
 import org.eclipse.imp.pdb.facts.IValue;
-import org.meta_environment.eclipse.Tool;
 import org.meta_environment.eclipse.facts.FactsTool;
 import org.meta_environment.eclipse.viz.graph.GraphView;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 
-public class VisualizationTool extends Tool {
+public class VisualizationTool extends EclipseTool {
 	
 	private static Factory factory;
 	
