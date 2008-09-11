@@ -11,16 +11,14 @@ import nl.cwi.sen1.moduleapi.types.Dependency;
 import nl.cwi.sen1.moduleapi.types.DependencyList;
 import nl.cwi.sen1.moduleapi.types.ModuleId;
 import nl.cwi.sen1.moduleapi.types.ModuleIdList;
-
-import org.meta_environment.eclipse.Tool;
-
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import aterm.ATermList;
 
-public class ModuleManager extends Tool implements  AttributeSetListener {
+public class ModuleManager extends EclipseTool implements  AttributeSetListener {
 	private ModuleGraph moduleDB;
 
-	private Factory factory = Factory.getInstance(Tool.factory);
+	private Factory factory = Factory.getInstance(EclipseTool.factory);
 
 	private static class InstanceKeeper {
 		private static ModuleManager sInstance = new ModuleManager();
@@ -35,14 +33,14 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 	
 	public ModuleManager() {
 		super("module-manager");
-		moduleDB = new ModuleGraph(Tool.factory, this);
+		moduleDB = new ModuleGraph(EclipseTool.factory, this);
 	}
 
 	public ATerm createModule() {
 		ModuleId moduleId = factory.makeModuleId_ModuleId(moduleDB
 				.getNextModuleId());
 		moduleDB.addModule(new Module(factory), moduleId);
-		return Tool.factory.make("module-id(<term>)", moduleId
+		return EclipseTool.factory.make("module-id(<term>)", moduleId
 				.toTerm());
 	}
 
@@ -51,17 +49,17 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 				value);
 
 		if (moduleId == null) {
-			return Tool.factory.parse("no-such-module");
+			return EclipseTool.factory.parse("no-such-module");
 		}
 
-		return Tool.factory.make("module-id(<term>)", moduleId
+		return EclipseTool.factory.make("module-id(<term>)", moduleId
 				.toTerm());
 	}
 
 	public ATerm getAllModules() {
 		Set<ModuleId> modules = moduleDB.getAllModules();
 
-		return Tool.factory.make("modules(<list>)",
+		return EclipseTool.factory.make("modules(<list>)",
 				extractATermList(modules));
 	}
 
@@ -70,11 +68,11 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 			ModuleId moduleId = factory.ModuleIdFromTerm(id);
 			AttributeStore attributes = moduleDB.getAllAttributes(moduleId);
 
-			return Tool.factory.make("attributes(<term>)", attributes
+			return EclipseTool.factory.make("attributes(<term>)", attributes
 					.toTerm());
 		} catch (IllegalArgumentException e) {
 			System.err.println("warning:" + e);
-			return Tool.factory.make("no-such-module");
+			return EclipseTool.factory.make("no-such-module");
 		}
 	}
 
@@ -102,13 +100,13 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 			ATerm value = moduleDB.getModuleAttribute(moduleId, namespace, key);
 
 			if (value == null) {
-				return Tool.factory.parse("no-such-key");
+				return EclipseTool.factory.parse("no-such-key");
 			}
 
-			return Tool.factory.make("attribute(<term>)", value);
+			return EclipseTool.factory.make("attribute(<term>)", value);
 		} catch (IllegalArgumentException e) {
 			System.err.println("warning:" + e);
-			return Tool.factory.parse("no-such-key");
+			return EclipseTool.factory.parse("no-such-key");
 		}
 	}
 
@@ -140,14 +138,14 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 			Set<ModuleId> dependencies = moduleDB.getChildren(moduleId);
 
 			if (dependencies == null) {
-				return Tool.factory.parse("no-such-module");
+				return EclipseTool.factory.parse("no-such-module");
 			}
 
-			return Tool.factory.make("children-modules(<list>)",
+			return EclipseTool.factory.make("children-modules(<list>)",
 					extractATermList(dependencies));
 		} catch (IllegalArgumentException e) {
 			System.err.println("warning:" + e);
-			return Tool.factory.make("children-modules([])");
+			return EclipseTool.factory.make("children-modules([])");
 		}
 	}
 
@@ -158,15 +156,15 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 			Set<ModuleId> dependencies = moduleDB.getAllParents(moduleId);
 
 			if (dependencies == null) {
-				return Tool.factory.parse("no-such-module");
+				return EclipseTool.factory.parse("no-such-module");
 			}
 
-			return Tool.factory.make("all-parent-modules(<list>)",
+			return EclipseTool.factory.make("all-parent-modules(<list>)",
 					extractATermList(dependencies));
 		} catch (IllegalArgumentException e) {
 			System.err.println("warning:" + e);
 
-			return Tool.factory.make("all-parent-modules([])");
+			return EclipseTool.factory.make("all-parent-modules([])");
 		}
 	}
 
@@ -177,14 +175,14 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 			Set<ModuleId> dependencies = moduleDB.getParents(moduleId);
 
 			if (dependencies == null) {
-				return Tool.factory.parse("no-such-module");
+				return EclipseTool.factory.parse("no-such-module");
 			}
 
-			return Tool.factory.make("parent-modules(<list>)",
+			return EclipseTool.factory.make("parent-modules(<list>)",
 					extractATermList(dependencies));
 		} catch (IllegalArgumentException e) {
 			System.err.println("warning:" + e);
-			return Tool.factory.parse("no-such-module");
+			return EclipseTool.factory.parse("no-such-module");
 		}
 	}
 
@@ -195,14 +193,14 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 			Set<ModuleId> dependencies = moduleDB.getAllChildren(moduleId);
 
 			if (dependencies == null) {
-				return Tool.factory.parse("no-such-module");
+				return EclipseTool.factory.parse("no-such-module");
 			}
 
-			return Tool.factory.make("all-children-modules(<list>)",
+			return EclipseTool.factory.make("all-children-modules(<list>)",
 					extractATermList(dependencies));
 		} catch (IllegalArgumentException e) {
 			System.err.println("warning:" + e);
-			return Tool.factory.parse("no-such-module");
+			return EclipseTool.factory.parse("no-such-module");
 		}
 	}
 
@@ -213,11 +211,11 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 			Set<ModuleId> closableModules = moduleDB
 					.getClosableModules(moduleId);
 
-			return Tool.factory.make("closable-modules(<list>)",
+			return EclipseTool.factory.make("closable-modules(<list>)",
 					extractATermList(closableModules));
 		} catch (IllegalArgumentException e) {
 			System.err.println("warning:" + e);
-			return Tool.factory.make("closable-modules([])");
+			return EclipseTool.factory.make("closable-modules([])");
 		}
 	}
 
@@ -240,12 +238,12 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 					moduleList);
 			list = list.append(dependency);
 		}
-		return Tool.factory.make("dependencies(<term>)", list
+		return EclipseTool.factory.make("dependencies(<term>)", list
 				.toTerm());
 	}
 
 	private ATermList extractATermList(Set<ModuleId> dependencies) {
-		ATermList list = Tool.factory.makeList();
+		ATermList list = EclipseTool.factory.makeList();
 		for (Iterator<ModuleId> iter = dependencies.iterator(); iter.hasNext();) {
 			list = list.append(iter.next().toTerm());
 		}
@@ -271,7 +269,7 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 	public ATerm getModuleGraph(ATerm namespace) {
 		Graph graph = moduleDB.getModuleGraph(namespace);
 
-		return Tool.factory.make("module-graph(<term>)", graph
+		return EclipseTool.factory.make("module-graph(<term>)", graph
 				.toTerm());
 	}
 
@@ -298,7 +296,7 @@ public class ModuleManager extends Tool implements  AttributeSetListener {
 		}
 
 		
-	  sendEvent(Tool.factory.make(
+	  sendEvent(EclipseTool.factory.make(
 				"attribute-changed(<term>,<term>,<term>,<term>,<term>)", id
 						.toTerm(), namespace, key, oldValue, newValue));
 	}

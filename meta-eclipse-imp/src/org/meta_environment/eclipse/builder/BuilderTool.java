@@ -6,7 +6,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.imp.language.ILanguageService;
 import org.eclipse.imp.utils.StreamUtils;
 
-public class BuilderTool extends org.meta_environment.eclipse.Tool implements ILanguageService {
+import toolbus.adapter.eclipse.EclipseTool;
+
+public class BuilderTool extends EclipseTool implements ILanguageService {
 	private static final String TOOL_NAME = "builder";
 
 	public BuilderTool() {

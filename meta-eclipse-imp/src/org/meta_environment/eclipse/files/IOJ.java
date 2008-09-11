@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.runtime.RuntimePlugin;
 import org.eclipse.imp.utils.StreamUtils;
-import org.meta_environment.eclipse.Tool;
 
 import toolbus.adapter.AbstractTool;
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import aterm.ATermList;
 import errorapi.types.ErrorList;
@@ -26,7 +26,7 @@ import errorapi.types.SubjectList;
 import errorapi.types.subject.Subject;
 import errorapi.types.summary.Summary;
 
-public class IOJ extends Tool {
+public class IOJ extends EclipseTool {
 
 	private static class InstanceKeeper {
 		private static IOJ sInstance = new IOJ();

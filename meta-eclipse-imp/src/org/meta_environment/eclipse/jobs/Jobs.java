@@ -7,11 +7,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.meta_environment.eclipse.Tool;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 
-public class Jobs extends Tool {
+public class Jobs extends EclipseTool {
 	private static final String TOOL_NAME = "jobs-manager";
 
 	private Map<String, ToolBusJob> jobs = new HashMap<String, ToolBusJob>();

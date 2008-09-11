@@ -15,12 +15,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.runtime.RuntimePlugin;
 import org.eclipse.imp.utils.StreamUtils;
-import org.meta_environment.eclipse.Tool;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import aterm.pure.binary.BinaryWriter;
 
-public class BuildResults extends Tool {
+public class BuildResults extends EclipseTool {
 	private static final String BIN_FOLDER = "bin";
 	private static final String EXTENSION_SEPARATOR = ".";
 

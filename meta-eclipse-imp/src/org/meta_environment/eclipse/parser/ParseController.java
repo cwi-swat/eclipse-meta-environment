@@ -18,10 +18,10 @@ import org.eclipse.imp.services.IAnnotationTypeInfo;
 import org.eclipse.imp.services.ILanguageSyntaxProperties;
 import org.eclipse.jface.text.IRegion;
 import org.meta_environment.eclipse.Activator;
-import org.meta_environment.eclipse.Tool;
 import org.meta_environment.eclipse.tokens.TokenIterator;
 import org.meta_environment.eclipse.tokens.TokenLocator;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermList;
@@ -31,7 +31,7 @@ import errorapi.types.Error;
 import errorapi.types.ErrorList;
 import errorapi.types.Subject;
 
-public class ParseController extends Tool implements IParseController,
+public class ParseController extends EclipseTool implements IParseController,
 		ILanguageService {
 
 	private IPath filePath;

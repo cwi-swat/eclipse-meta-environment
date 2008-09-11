@@ -38,11 +38,11 @@ import org.eclipse.imp.pdb.facts.type.TupleType;
 import org.eclipse.imp.pdb.facts.type.Type;
 import org.eclipse.imp.pdb.facts.type.TypeFactory;
 import org.eclipse.imp.runtime.RuntimePlugin;
-import org.meta_environment.eclipse.Tool;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 
-public class FactsTool extends Tool {
+public class FactsTool extends EclipseTool {
 	private static final TypeFactory types = TypeFactory.getInstance();
 	private static final ValueFactory values = ValueFactory.getInstance();
 

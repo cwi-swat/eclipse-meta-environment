@@ -19,12 +19,12 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.language.Language;
 import org.eclipse.imp.language.LanguageRegistry;
 import org.eclipse.imp.runtime.RuntimePlugin;
-import org.meta_environment.eclipse.Tool;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import aterm.pure.binary.BinaryWriter;
 
-public class ResourceChanges extends Tool implements IResourceChangeListener {
+public class ResourceChanges extends EclipseTool implements IResourceChangeListener {
 	private static final String BIN_FOLDER = "bin";
 	private static final String EXTENSION_SEPARATOR = ".";
 

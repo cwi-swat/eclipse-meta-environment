@@ -1,8 +1,8 @@
 package org.meta_environment.eclipse.actions;
 
-import org.meta_environment.eclipse.Tool;
+import toolbus.adapter.eclipse.EclipseTool;
 
-public class LanguageActionsTool extends Tool {
+public class LanguageActionsTool extends EclipseTool {
 	private static class InstanceKeeper{
 		private static LanguageActionsTool sInstance = new LanguageActionsTool();
 		static{

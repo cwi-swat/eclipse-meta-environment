@@ -18,13 +18,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.meta_environment.eclipse.Activator;
-import org.meta_environment.eclipse.Tool;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermInt;
 
-public class SelectionTrackerTool extends Tool{
+public class SelectionTrackerTool extends EclipseTool{
 	private final static String TOOL_NAME = "selection-tracker";
 	private final static String FOCUS_ANNOTATION = Activator.PLUGIN_ID+".focus-annotation";
 	

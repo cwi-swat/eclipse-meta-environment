@@ -16,9 +16,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.meta_environment.eclipse.Activator;
-import org.meta_environment.eclipse.Tool;
 
-public class EditorTool extends Tool {
+import toolbus.adapter.eclipse.EclipseTool;
+
+public class EditorTool extends EclipseTool {
 	private static class InstanceKeeper {
 		private static EditorTool sInstance = new EditorTool();
 		static {

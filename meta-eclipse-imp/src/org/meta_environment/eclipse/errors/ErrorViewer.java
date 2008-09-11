@@ -5,8 +5,8 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.meta_environment.eclipse.Tool;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import errorapi.Factory;
 import errorapi.types.Area;
@@ -17,7 +17,7 @@ import errorapi.types.Subject;
 import errorapi.types.SubjectList;
 import errorapi.types.Summary;
 
-public class ErrorViewer extends Tool {
+public class ErrorViewer extends EclipseTool {
 	private static final String TOOL_NAME = "error-viewer";
 	private static final String PRODUCER = TOOL_NAME + ".producer";
 	private static final String ERROR_ID = TOOL_NAME + ".errorid";
