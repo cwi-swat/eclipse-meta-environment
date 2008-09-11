@@ -10,7 +10,7 @@
 #include <build-results.idef>
 #include <editor-tool.idef>
 #include <language-actions.idef>
-#include <editor-tool.idef>
+#include <visualization-tool.idef>
 #include <selection-listener.tb>
 
 
@@ -31,6 +31,7 @@
 #include <sdf-transactions.tb>
 #include <term-listeners.tb>
 #include <term-parsetable.tb>
+#include <term-editor-actions.tb>
 #include <term-language.idef>
 
 /* asf-sdf-meta */

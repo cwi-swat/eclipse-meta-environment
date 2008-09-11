@@ -33,12 +33,12 @@ in
       .
       if not-equal(Text, "") then
         create(ParseTreeHandler(SdfModuleId, Path), Pid?)
-	. RemoveAmbiguitySummary(Path)
+	    . RemoveAmbiguitySummary(Path)
         . ParseText(Pid, Text, ParseTable, NO_NONTERMINAL, off)
         .
         (
           rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
-	  . create(AmbiguityHandler(Tree, Path), AmbPid?)
+	      . create(AmbiguityHandler(Tree, Path), AmbPid?)
           . AnnotateTree(Tree, Path, Result?)
         +
           rec-msg(parse-handler-done(Pid))
@@ -63,6 +63,26 @@ in
     MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
   else
     SdfModuleId := UNDEFINED
+  fi
+endlet
+
+process ShowTree(Path: str, LayoutOn: bool, LeafsOn: bool, SharingOn: bool) is
+let
+  Tree : term,
+  TermModuleId: module-id,
+  SdfModuleId: module-id,
+  RStore: term
+in
+  GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+  . TermToSdfModuleId(TermModuleId, SdfModuleId?)
+  . GetTermParsetree(SdfModuleId, Path, Tree?)
+  .
+  if not-equal(Tree, UNDEFINED) then
+    snd-msg(gs-tree-to-relation(Tree, LayoutOn, LeafsOn, SharingOn))
+    . rec-msg(gs-relation(RStore?))
+    . snd-msg(vt-show-graph(Path, RStore))
+  else
+    printf("Error: could not get parse tree for %s\n", Path)
   fi
 endlet
 

@@ -1,0 +1,32 @@
+#ifndef __TERM_EDITOR_ACTIONS__
+#define __TERM_EDITOR_ACTIONS__
+
+/**
+ * This file contains action implementations for features in term
+ * editors that are implemented using SDF functionality.
+ */
+
+#include <sdf-namespace.h>
+#include <asf-namespace.h>
+#include <term-namespace.h>
+#include <term-utils.tb>
+#include <tree2relation.idef>
+
+//#include <module-manager.tb>
+//#include <module-utils.tb>
+//#include <error-viewer.idef>
+//#include <jobs-manager.idef>
+//#include <lower-rstore.idef>
+//#include <facts.idef>
+
+
+process ShowTreeAction(Path: str, Language: str) is
+let
+  Tree : term,
+  RStore : term
+in
+  printf("ShowTreeAction: %s - %s\n", Path, Language)
+  . ShowTree(Path, false, false, false)
+endlet
+
+#endif
