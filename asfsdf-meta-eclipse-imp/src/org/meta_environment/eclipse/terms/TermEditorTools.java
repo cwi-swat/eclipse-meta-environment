@@ -16,14 +16,14 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.meta_environment.eclipse.Tool;
 import org.meta_environment.eclipse.sdf.Activator;
 
+import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermList;
 
-public class TermEditorTools extends Tool {
+public class TermEditorTools extends EclipseTool {
 	private static TermEditorTools sInstance;
 	
 	private Map<String, Map<String, String>> actions = new HashMap<String, Map<String, String>>();
