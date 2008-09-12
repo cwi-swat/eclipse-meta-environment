@@ -13,6 +13,7 @@ import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
 
 public class VisualizationTool extends EclipseTool {
+	private static final String TOOL_NAME = "visualization-tool";
 	
 	private static Factory factory;
 	
@@ -29,7 +30,7 @@ public class VisualizationTool extends EclipseTool {
 	}
 
 	private VisualizationTool() {
-		super("visualization-tool");
+		super(TOOL_NAME);
 	}
 	
 	public void viewGraph(final String path, final ATerm aterm) {

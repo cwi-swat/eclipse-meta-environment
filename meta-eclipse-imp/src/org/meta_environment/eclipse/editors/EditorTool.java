@@ -20,6 +20,8 @@ import org.meta_environment.eclipse.Activator;
 import toolbus.adapter.eclipse.EclipseTool;
 
 public class EditorTool extends EclipseTool {
+	private static final String TOOL_NAME = "editor-tool";
+	
 	private static class InstanceKeeper {
 		private static EditorTool sInstance = new EditorTool();
 		static {
@@ -32,7 +34,7 @@ public class EditorTool extends EclipseTool {
 	}
 
 	private EditorTool() {
-		super("editor-tool");
+		super(TOOL_NAME);
 	}
 
 	public void open(final String filename, String language) {

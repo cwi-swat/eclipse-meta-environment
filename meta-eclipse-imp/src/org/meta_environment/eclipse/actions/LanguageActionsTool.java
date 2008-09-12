@@ -3,6 +3,8 @@ package org.meta_environment.eclipse.actions;
 import toolbus.adapter.eclipse.EclipseTool;
 
 public class LanguageActionsTool extends EclipseTool {
+	private static final String TOOL_NAME = "language-actions";
+	
 	private static class InstanceKeeper{
 		private static LanguageActionsTool sInstance = new LanguageActionsTool();
 		static{
@@ -11,7 +13,7 @@ public class LanguageActionsTool extends EclipseTool {
 	}
 	
 	private LanguageActionsTool() {
-		super("language-actions");
+		super(TOOL_NAME);
 	}
 	
 	public static LanguageActionsTool getInstance(){

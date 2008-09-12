@@ -16,6 +16,8 @@ import aterm.ATerm;
 import aterm.ATermList;
 
 public class ModuleManager extends EclipseTool implements  AttributeSetListener {
+	private static final String TOOL_NAME = "module-manager";
+	
 	private ModuleGraph moduleDB;
 
 	private Factory factory = Factory.getInstance(EclipseTool.factory);
@@ -32,7 +34,7 @@ public class ModuleManager extends EclipseTool implements  AttributeSetListener 
 	}
 	
 	public ModuleManager() {
-		super("module-manager");
+		super(TOOL_NAME);
 		moduleDB = new ModuleGraph(EclipseTool.factory, this);
 	}
 

@@ -27,6 +27,7 @@ import errorapi.types.subject.Subject;
 import errorapi.types.summary.Summary;
 
 public class IOJ extends EclipseTool {
+	private static final String TOOL_NAME = "ioj";
 
 	private static class InstanceKeeper {
 		private static IOJ sInstance = new IOJ();
@@ -39,7 +40,7 @@ public class IOJ extends EclipseTool {
 	private nl.cwi.sen1.configapi.Factory configFactory = nl.cwi.sen1.configapi.Factory.getInstance(factory);
 	
 	private IOJ() {
-		super("ioj");
+		super(TOOL_NAME);
 	}
 
 	static public IOJ getInstance() {

@@ -33,6 +33,7 @@ import errorapi.types.Subject;
 
 public class ParseController extends EclipseTool implements IParseController,
 		ILanguageService {
+	private static final String TOOL_NAME = "parse-controller";
 
 	private IPath filePath;
 
@@ -49,7 +50,7 @@ public class ParseController extends EclipseTool implements IParseController,
 	Factory eFactory;
 
 	public ParseController() {
-		super("parse-controller");
+		super(TOOL_NAME);
 		eFactory = Factory.getInstance(factory);
 		
 		// Hack to make sure the other tools are loaded
