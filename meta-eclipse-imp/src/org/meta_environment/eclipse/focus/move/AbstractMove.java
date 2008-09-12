@@ -15,7 +15,7 @@ import aterm.ATermAppl;
 
 public class AbstractMove{
 	
-	public void move(String requestPattern){
+	protected void move(String requestPattern){
 		SelectionTrackerTool selectionTracker = SelectionTrackerTool.getInstance();
 		
 		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
