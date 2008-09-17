@@ -19,7 +19,7 @@ import org.eclipse.imp.language.Language;
 import org.eclipse.imp.language.LanguageRegistry;
 import org.eclipse.imp.runtime.PluginBase;
 
-import toolbus.AtomSet;
+import toolbus.AtomList;
 import toolbus.TBTermFactory;
 import toolbus.TBTermVar;
 import toolbus.ToolBus;
@@ -176,7 +176,7 @@ public class Builder extends BuilderBase{
 			ProcessDefinition processDefinition = processDefinitionsIterator.next();
 			
 			ProcessExpression originalProcessExpression = processDefinition.getOriginalProcessExpression();
-			AtomSet atoms = originalProcessExpression.getAtoms();
+			AtomList atoms = originalProcessExpression.getAtoms();
 			Iterator<Atom> atomSetIterator = atoms.iterator();
 			while(atomSetIterator.hasNext()){
 				Atom a = atomSetIterator.next();
