@@ -54,7 +54,7 @@ public class IOJ extends EclipseTool {
 			url = FileLocator.resolve(new URL(path));
 		} catch (Exception e) {
 			RuntimePlugin.getInstance().logException(
-					"Could resolve url " + path, e);
+					"Could not resolve url " + path, e);
 		}
 
 		try {
@@ -171,7 +171,7 @@ public class IOJ extends EclipseTool {
 				containingDirectories = containingDirectories.append(factory
 						.make("<str>", dir));
 			} catch (MalformedURLException e) {
-				//System.err.println("TODO: non-URL used as path: " + path);
+				System.err.println("TODO: non-URL used as path: " + path);
 				RuntimePlugin.getInstance().logException(
 						"Malformed URL " + path, e);
 			} catch (IOException e) {
@@ -194,7 +194,7 @@ public class IOJ extends EclipseTool {
 		FileInputStream fis = null;
 
 		fis = new FileInputStream(f);
-		//System.err.println("\nTODO: legacy absolute OS path used: " + path);
+		System.err.println("\nTODO: legacy absolute OS path used: " + path);
 
 		return fis;
 	}
