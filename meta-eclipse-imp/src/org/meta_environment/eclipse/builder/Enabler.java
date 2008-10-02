@@ -15,6 +15,7 @@ public class Enabler implements IWorkbenchWindowActionDelegate {
 	}
 
 	public void dispose(){
+		// Do nothing.
 	}
 
 	public void init(IWorkbenchWindow window) {

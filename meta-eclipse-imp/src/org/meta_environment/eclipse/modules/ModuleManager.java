@@ -276,6 +276,7 @@ public class ModuleManager extends EclipseTool implements  AttributeSetListener 
 	}
 
 	public void recTerminate(ATerm t0) {
+		// Do nothing.
 	}
 
 	public void attributeSet(ModuleId id, ATerm namespace, ATerm key,
