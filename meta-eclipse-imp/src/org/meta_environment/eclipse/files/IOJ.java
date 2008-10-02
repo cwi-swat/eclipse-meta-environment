@@ -3,7 +3,6 @@ package org.meta_environment.eclipse.files;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,7 +10,6 @@ import java.net.URL;
 import nl.cwi.sen1.configapi.types.Property;
 import nl.cwi.sen1.configapi.types.PropertyList;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.runtime.RuntimePlugin;
@@ -28,9 +26,10 @@ import errorapi.types.summary.Summary;
 
 public class IOJ extends EclipseTool {
 	private static final String TOOL_NAME = "ioj";
+	private final static String DEFAULT_PROTOCOL = "file://";
 
 	private static class InstanceKeeper {
-		private static IOJ sInstance = new IOJ();
+		private final static IOJ sInstance = new IOJ();
 		static {
 			sInstance.connect();
 		}
@@ -51,10 +50,9 @@ public class IOJ extends EclipseTool {
 		URL url = null;
 
 		try {
-			url = FileLocator.resolve(new URL(path));
+			url = new URL(DEFAULT_PROTOCOL+path);
 		} catch (Exception e) {
-			RuntimePlugin.getInstance().logException(
-					"Could not resolve url " + path, e);
+			RuntimePlugin.getInstance().logException("Could not resolve url " + path, e);
 		}
 
 		try {
@@ -72,10 +70,8 @@ public class IOJ extends EclipseTool {
 			return factory.make("file-contents(<str>)", text);
 
 		} catch (Exception e) {
-			RuntimePlugin.getInstance().logException(
-					"Could not read file " + path, e);
-			return factory.make("failure(<term>)", getErrorSummary(
-					"Could not read file", path));
+			RuntimePlugin.getInstance().logException("Could not read file " + path, e);
+			return factory.make("failure(<term>)", getErrorSummary("Could not read file", path));
 		}
 	}
 
@@ -127,19 +123,14 @@ public class IOJ extends EclipseTool {
 		File file2 = new Path(fileName2).toFile();
 
 		if (!file1.exists()) {
-			return factory.make("failure(<trm>)", getErrorSummary(
-					"File does not exist", file1.getPath()));
+			return factory.make("failure(<trm>)", getErrorSummary("File does not exist", file1.getPath()));
 		}
 		if (!file2.exists()) {
-			return factory.make("failure(<trm>)", getErrorSummary(
-					"File does not exist", file2.getPath()));
+			return factory.make("failure(<trm>)", getErrorSummary("File does not exist", file2.getPath()));
 		}
 
 		ATerm result = factory.make("different");
-		/*
-		 * TODO I'm not 100% sure that 'equals' is the appropriate way to
-		 * compare file handles.
-		 */
+		
 		if (file1.equals(file2)) {
 			result = factory.make("equal");
 		}
@@ -155,8 +146,7 @@ public class IOJ extends EclipseTool {
 		return factory.make("term(<trm>)", AbstractTool.unpack(term));
 	}
 
-	public ATerm findFile(ATermList directories, String fileName,
-			String extension) {
+	public ATerm findFile(ATermList directories, String fileName, String extension) {
 		ATermList containingDirectories = factory.makeList();
 		PropertyList pl = configFactory.PropertyListFromTerm(directories);
 		
@@ -167,18 +157,11 @@ public class IOJ extends EclipseTool {
 			String path = dir + "/" + fileName + extension;
 
 			try {
-				FileLocator.resolve(new URL(path));
-				containingDirectories = containingDirectories.append(factory
-						.make("<str>", dir));
+				new URL(DEFAULT_PROTOCOL+path);
+				containingDirectories = containingDirectories.append(factory.make("<str>", dir));
 			} catch (MalformedURLException e) {
 				System.err.println("TODO: non-URL used as path: " + path);
-				RuntimePlugin.getInstance().logException(
-						"Malformed URL " + path, e);
-			} catch (IOException e) {
-				/*
-				 * TODO This exception occurs if the file could not be resolved.
-				 * Perhaps we need a better solution for this.
-				 */
+				RuntimePlugin.getInstance().logException("Malformed URL " + path, e);
 			}
 		}
 
@@ -188,8 +171,7 @@ public class IOJ extends EclipseTool {
 		return factory.make("file-not-found");
 	}
 
-	private InputStream getFileContentsFromOS(String path)
-			throws FileNotFoundException {
+	private InputStream getFileContentsFromOS(String path) throws FileNotFoundException {
 		File f = new File(path);
 		FileInputStream fis = null;
 
@@ -202,11 +184,9 @@ public class IOJ extends EclipseTool {
 	private ATerm getErrorSummary(String _description, String _subject) {
 		Subject subject = errorFactory.makeSubject_Subject(_subject);
 		SubjectList subjects = errorFactory.makeSubjectList(subject);
-		errorapi.types.error.Error error = errorFactory.makeError_Error(
-				_description, subjects);
+		errorapi.types.error.Error error = errorFactory.makeError_Error(_description, subjects);
 		ErrorList errors = errorFactory.makeErrorList(error);
-		Summary summary = errorFactory.makeSummary_Summary("IOJ tool", "ioj",
-				errors);
+		Summary summary = errorFactory.makeSummary_Summary("IOJ tool", "ioj", errors);
 		return summary.toTerm();
 	}
 
