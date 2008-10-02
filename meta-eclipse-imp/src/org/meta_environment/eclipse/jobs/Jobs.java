@@ -62,8 +62,7 @@ public class Jobs extends EclipseTool {
 			super(name);
 			this.aborter = aborter;
 		}
-
-		@Override
+		
 		public boolean equals(Object obj) {
 			if (obj instanceof ToolBusJob) {
 				return ((ToolBusJob) obj).getName().equals(this.getName());
@@ -80,10 +79,8 @@ public class Jobs extends EclipseTool {
 		protected synchronized boolean getJobDone() {
 			return jobDone;
 		}
-
-		@Override
+		
 		protected IStatus run(final IProgressMonitor monitor) {
-
 			Thread monitorPoller = new Thread(getName() + "Thread") {
 				public void run() {
 					try {
@@ -91,8 +88,7 @@ public class Jobs extends EclipseTool {
 							Thread.sleep(1000);
 						}
 						if (monitor.isCanceled()) {
-							sendEvent(factory
-									.make("abort-job(<term>)", aborter));
+							sendEvent(factory.make("abort-job(<term>)", aborter));
 						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
