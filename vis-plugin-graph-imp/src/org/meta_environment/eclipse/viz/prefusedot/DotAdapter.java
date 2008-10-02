@@ -1,6 +1,5 @@
 package org.meta_environment.eclipse.viz.prefusedot;
 
-import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -318,7 +317,7 @@ public class DotAdapter extends Graph {
     }
 
     private void printEdges(PrintStream b) {
-        Iterator iter = edges();
+        Iterator<?> iter = edges();
 
         while (iter.hasNext()) {
             Edge t = (Edge) iter.next();
@@ -331,7 +330,7 @@ public class DotAdapter extends Graph {
     }
 
     private void printNodes(PrintStream b) {
-        Iterator iter = nodes();
+        Iterator<?> iter = nodes();
 
         Map<String, Set<Node>> levels = new HashMap<String, Set<Node>>();
         
@@ -347,7 +346,7 @@ public class DotAdapter extends Graph {
                     String value = t.getString(i);
                     if (value != null) {
                     	if (key == DOT_LEVEL) {
-                    		Set set = levels.get(value);
+                    		Set<Node> set = levels.get(value);
                             if (set == null) {
                             	set = new HashSet<Node>();
                             }

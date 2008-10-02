@@ -6,7 +6,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.awt.geom.PathIterator;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class DotEdgeRenderer extends EdgeRenderer {
 		Point2D from = start;
 		Point2D to = from;
 
-		GeneralPath gp = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+		GeneralPath gp = new GeneralPath(Path2D.WIND_NON_ZERO);
 		gp.moveTo((float) from.getX(), (float) from.getY());
 
 		int i;

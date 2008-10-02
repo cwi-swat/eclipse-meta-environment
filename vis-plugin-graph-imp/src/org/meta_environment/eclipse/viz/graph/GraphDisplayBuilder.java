@@ -56,7 +56,7 @@ public class GraphDisplayBuilder {
         LabelRenderer lr = new LabelRenderer(GraphConstants.LABEL);
         lr.setHorizontalTextAlignment(Constants.CENTER);
         lr.setVerticalTextAlignment(Constants.CENTER);
-        lr.setRenderType(LabelRenderer.RENDER_TYPE_NONE);
+        lr.setRenderType(AbstractShapeRenderer.RENDER_TYPE_NONE);
         drf.add(new InGroupPredicate(GraphConstants.LABELS), lr);
 
         DotNodeRenderer nr = new DotNodeRenderer();
@@ -69,7 +69,7 @@ public class GraphDisplayBuilder {
 
         vis.setRendererFactory(drf);
 
-        // Create an actions avaible for the graph.
+        // Create an actions available for the graph.
         ActionList layout = new ActionList();
         dotLayout = new DotNodeLayout(GraphConstants.GRAPH);
         layout.add(dotLayout);

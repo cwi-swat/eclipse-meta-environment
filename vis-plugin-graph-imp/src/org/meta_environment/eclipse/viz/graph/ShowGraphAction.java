@@ -34,7 +34,6 @@ public class ShowGraphAction implements IViewActionDelegate {
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		
+		// Ignore this.
 	}
-
 }

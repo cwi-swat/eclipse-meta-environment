@@ -14,7 +14,7 @@ public class DotLabelLayout extends Layout {
 	}
 
 	public void run(double frac) {
-		Iterator iter = m_vis.items(m_group);
+		Iterator<?> iter = m_vis.items(m_group);
 		while (iter.hasNext()) {
 			DecoratorItem item = (DecoratorItem) iter.next();
 			VisualItem node = item.getDecoratedItem();

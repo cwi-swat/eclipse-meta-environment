@@ -84,9 +84,7 @@ public class GraphBuilder {
     	
     	for (ITuple tuple : nodes) {
     		Node node = getOrCreateNode(graph, tuple.get(0));
-    		if (graph instanceof DotAdapter) {
-    			setAttributes((DotAdapter)graph, node, (IRelation) tuple.get(1));
-    		}
+    		setAttributes(graph, node, (IRelation) tuple.get(1));
     	}
     	
     	for (ITuple tuple : edges) {
@@ -136,7 +134,7 @@ public class GraphBuilder {
                         int g = Integer.parseInt(m.group(2));
                         int b = Integer.parseInt(m.group(3));
 
-                        node.set(dotKey, (new Color(r, g, b)).getRGB());
+                        node.set(dotKey, Integer.valueOf((new Color(r, g, b)).getRGB()));
                     } else {
                     	node.setInt(dotKey, Integer.parseInt(attrValue));
                     }

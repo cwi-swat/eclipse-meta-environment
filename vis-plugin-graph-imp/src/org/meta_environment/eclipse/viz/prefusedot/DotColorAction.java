@@ -1,6 +1,5 @@
 package org.meta_environment.eclipse.viz.prefusedot;
 
-import java.awt.Color;
 import java.util.logging.Logger;
 
 import prefuse.action.assignment.ColorAction;
