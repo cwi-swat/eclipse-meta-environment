@@ -47,9 +47,7 @@ in
     . snd-msg(se-move-selection-right(AnnotatedTree, Offset))
     . rec-msg(se-moved-selection-right(Sort?, Focus?))
     . snd-msg(st-moved-selection-right(Sort, Focus))
-  )
   +
-  (
     rec-msg(st-get-current-selection)
     . snd-msg(st-got-current-selection(Focus, Sort))
   )
