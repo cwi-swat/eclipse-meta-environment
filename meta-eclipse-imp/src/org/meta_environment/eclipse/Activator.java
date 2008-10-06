@@ -11,8 +11,8 @@ import org.meta_environment.eclipse.files.IOJ;
 import org.meta_environment.eclipse.files.ResourceChanges;
 import org.meta_environment.eclipse.focus.SelectionTrackerTool;
 import org.meta_environment.eclipse.jobs.Jobs;
-import org.meta_environment.eclipse.visualization.VisualizationTool;
 import org.meta_environment.eclipse.modules.ModuleManager;
+import org.meta_environment.eclipse.visualization.VisualizationTool;
 
 public class Activator extends PluginBase implements IStartup{
 	public static final String PLUGIN_ID = "org.meta_environment";
