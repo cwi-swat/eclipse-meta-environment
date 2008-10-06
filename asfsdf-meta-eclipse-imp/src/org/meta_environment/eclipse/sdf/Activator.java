@@ -1,6 +1,5 @@
 package org.meta_environment.eclipse.sdf;
 
-import org.eclipse.imp.preferences.PreferencesService;
 import org.eclipse.imp.runtime.PluginBase;
 import org.eclipse.ui.IStartup;
 
@@ -23,8 +22,6 @@ public class Activator extends PluginBase implements IStartup {
 	public String getID() {
 		return kPluginID;
 	}
-
-	protected static PreferencesService preferencesService = null;
 
 	public void earlyStartup(){
 		getInstance();
