@@ -31,8 +31,7 @@ import errorapi.types.Error;
 import errorapi.types.ErrorList;
 import errorapi.types.Subject;
 
-public class ParseController extends EclipseTool implements IParseController,
-		ILanguageService {
+public class ParseController extends EclipseTool implements IParseController, ILanguageService{
 	private static final String TOOL_NAME = "parse-controller";
 
 	private IPath filePath;
@@ -49,8 +48,9 @@ public class ParseController extends EclipseTool implements IParseController,
 
 	Factory eFactory;
 
-	public ParseController() {
+	public ParseController(){
 		super(TOOL_NAME);
+		
 		eFactory = Factory.getInstance(factory);
 		
 		// Hack to make sure the other tools are loaded
@@ -117,7 +117,7 @@ public class ParseController extends EclipseTool implements IParseController,
 		String l = this.getLanguage().getName();
 
 		ATermAppl response = sendRequest(factory.make("parse(<str>,<str>,<str>)", l, absPath, input));
-		ATerm res = response.getArgument(0);
+		ATerm res = unpack(response.getArgument(0));
 
 		if (res.getType() == ATerm.APPL) {
 			ATermAppl appl = (ATermAppl) res;

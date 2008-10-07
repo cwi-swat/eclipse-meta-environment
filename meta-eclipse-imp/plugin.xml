@@ -142,4 +142,18 @@
       </action>
     </actionSet>
   </extension>
+  <extension
+        point="org.eclipse.imp.runtime.modelTreeBuilder">
+     <treeBuilder
+           class="org.meta_environment.eclipse.outline.OutlineService"
+           language="sdf">
+     </treeBuilder>
+  </extension>
+  <extension
+        point="org.eclipse.imp.runtime.labelProvider">
+     <labelProvider
+           class="org.meta_environment.eclipse.outline.OutlineService"
+           language="sdf">
+     </labelProvider>
+  </extension>
 </plugin>
