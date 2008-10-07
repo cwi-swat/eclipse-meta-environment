@@ -1,0 +1,17 @@
+tool outline-tool is {}
+
+process Outliner is
+let
+  Outliner: outline-tool,
+  ParseTree: term,
+  FactsStore: term
+in
+  rec-connect(Outliner?) .
+  (
+    rec-request(Outliner, processParseTree(ParseTree?)) .
+    /* TODO Implement. */
+    snd-response(Outliner, processParseTree(FactsStore))
+  )
+endlet
+
+toolbus(Outliner)
