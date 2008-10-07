@@ -1,5 +1,6 @@
 package org.meta_environment.eclipse.outline;
 
+import org.eclipse.imp.editor.ModelTreeNode;
 import org.eclipse.imp.services.ILabelProvider;
 import org.eclipse.imp.services.base.TreeModelBuilderBase;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -24,7 +25,14 @@ public class OutlineService extends TreeModelBuilderBase implements ILabelProvid
 		ATerm parseTree = (ATerm) root;
 		ATerm factsStore = outlineTool.sendRequest(factory.make("processParseTree(<term>)", parseTree));
 		
-		System.out.println(factsStore);
+		System.err.println(factsStore);
+		
+		
+		createTopItem("test"); // temp
+		createSubItem("bla"); // temp
+		pushSubItem("bla"); // temp
+		pushSubItem("bla2"); // temp
+		
 		
 		// TODO Implement
 	}
@@ -35,8 +43,10 @@ public class OutlineService extends TreeModelBuilderBase implements ILabelProvid
 	}
 
 	public String getText(Object element){
-		// TODO Implement
-		return null;
+		// TODO Implement for real. This stuff is just temporary.
+		ModelTreeNode mtn = (ModelTreeNode) element;
+		String name = (String) mtn.getASTNode();
+		return name;
 	}
 
 	public void addListener(ILabelProviderListener listener){
