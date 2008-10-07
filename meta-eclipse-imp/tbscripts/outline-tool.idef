@@ -9,9 +9,10 @@ in
   rec-connect(Outliner?) .
   (
     rec-request(Outliner, processParseTree(ParseTree?)) .
-    /* TODO Implement. */
+    snd-msg(gs-tree-to-relation(ParseTree, false, false, false)) .
+    rec-msg(gs-relation(FactsStore?)) .
     snd-response(Outliner, processParseTree(FactsStore))
-  )
+  ) * delta
 endlet
 
 toolbus(Outliner)

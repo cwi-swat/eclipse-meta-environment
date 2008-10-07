@@ -5,20 +5,26 @@ import org.eclipse.imp.services.base.TreeModelBuilderBase;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
+import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
+import aterm.pure.PureFactory;
 
 public class OutlineService extends TreeModelBuilderBase implements ILabelProvider{
 	private final OutlineTool outlineTool;
+	private final PureFactory factory;
 	
 	public OutlineService(){
 		super();
 		
 		outlineTool = OutlineTool.getInstance();
+		factory = AbstractTool.getFactory();
 	}
 	
 	public void visitTree(Object root){
 		ATerm parseTree = (ATerm) root;
+		ATerm factsStore = outlineTool.sendRequest(factory.make("processParseTree(<term>)", parseTree));
 		
+		System.out.println(factsStore);
 		
 		// TODO Implement
 	}
