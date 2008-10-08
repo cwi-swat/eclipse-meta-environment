@@ -8,6 +8,8 @@ import org.eclipse.swt.graphics.Image;
 
 import toolbus.adapter.AbstractTool;
 import aterm.ATerm;
+import aterm.ATermAppl;
+import aterm.ATermList;
 import aterm.pure.PureFactory;
 
 public class OutlineService extends TreeModelBuilderBase implements ILabelProvider{
@@ -21,48 +23,59 @@ public class OutlineService extends TreeModelBuilderBase implements ILabelProvid
 		factory = AbstractTool.getFactory();
 	}
 	
-	public void visitTree(Object root){
-		ATerm parseTree = (ATerm) root;
-		ATerm factsStore = outlineTool.sendRequest(factory.make("processParseTree(<term>)", parseTree));
+	private void visitNode(ATermAppl node){
+		pushSubItem(node.getName());
 		
-		System.err.println(factsStore);
+		if(node.getArity() != 0){
+			ATermList children = (ATermList) node.getArgument(0);
+			
+			while(!children.isEmpty()){
+				visitNode((ATermAppl) children.getFirst());
+				children = children.getNext();
+			}
+		}
 		
-		
-		createTopItem("test"); // temp
-		createSubItem("bla"); // temp
-		pushSubItem("bla"); // temp
-		pushSubItem("bla2"); // temp
-		
-		
-		// TODO Implement
+		popSubItem();
 	}
 	
-	public Image getImage(Object element){
-		// TODO Implement
-		return null;
+	public void visitTree(Object root){
+		//ATerm parseTree = (ATerm) root;
+		//ATermAppl factsStore = outlineTool.sendRequest(factory.make("processParseTree(<term>)", parseTree));
+		
+		// Temp
+		ATermAppl factsStore = (ATermAppl) factory.make("outline(Sorts([<str>]), Productions([<str>, <str>]))", "BoolCon", "\"true\" -> BoolCon", "\"false\" -> BoolCon");
+		// End temp
+		
+		ATerm[] children = factsStore.getArgumentArray();
+		for(int i = 0; i < children.length; i++){
+			visitNode((ATermAppl) children[i]);
+		}
 	}
 
 	public String getText(Object element){
-		// TODO Implement for real. This stuff is just temporary.
 		ModelTreeNode mtn = (ModelTreeNode) element;
-		String name = (String) mtn.getASTNode();
-		return name;
+		return (String) mtn.getASTNode();
 	}
-
-	public void addListener(ILabelProviderListener listener){
-		// TODO Implement
-	}
-
-	public void dispose(){
-		// TODO Implement
+	
+	public Image getImage(Object element){
+		// We don't have icons.
+		return null;
 	}
 
 	public boolean isLabelProperty(Object element, String property){
-		// TODO Implement
+		// We don't have properties.
 		return false;
 	}
 
+	public void addListener(ILabelProviderListener listener){
+		// We don't need this.
+	}
+
 	public void removeListener(ILabelProviderListener listener){
-		// TODO Implement
+		// We don't need this.
+	}
+
+	public void dispose(){
+		// Ignore this.
 	}
 }
