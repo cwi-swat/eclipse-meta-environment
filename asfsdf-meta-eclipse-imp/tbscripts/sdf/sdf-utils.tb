@@ -106,12 +106,12 @@ in
     else
       NewFilename := Filename
     fi
-    . snd-msg(io-unpack-and-write-term-in-baf(NewFilename, Table))
+    . snd-msg(ioj-unpack-and-write-term-in-baf(NewFilename, Table))
     .
     (
-      rec-msg(io-file-written)
+      rec-msg(ioj-file-written)
     +
-      rec-msg(io-file-not-written(Error?))
+      rec-msg(ioj-file-not-written(Error?))
     )
   +
     rec-msg(no-parsetable(ModuleId))
@@ -135,12 +135,12 @@ in
     GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
     . snd-msg(unparse(Syntax))
     . rec-msg(unparsed-text(Text?))
-    . snd-msg(io-write-text-list(Filename, [Text]))
+    . snd-msg(ioj-write-text-list(Filename, [Text]))
     .
     (
-      rec-msg(io-file-written)
+      rec-msg(ioj-file-written)
     +
-      rec-msg(io-file-not-written(Error?))
+      rec-msg(ioj-file-not-written(Error?))
     )
   else
     tau
@@ -304,22 +304,22 @@ in
     .
     if equal(ModuleId, UNDEFINED) then
       BuildPath(BaseDir, Modulename, SDF_EXTENSION, Path?)
-      . snd-msg(io-exists-file(Path))
+      . snd-msg(ioj-exists-file(Path))
       .
       (
-        rec-msg(io-file-exists)
+        rec-msg(ioj-file-exists)
         . CancelCreateNewModule(Pid, "File %s already exists", [Path])
       +
-        rec-msg(io-file-not-exists)
+        rec-msg(ioj-file-not-exists)
         . snd-msg(get-module-contents(Pid, Modulename))
         . rec-msg(module-contents(Pid, Contents?))
-        . snd-msg(io-write-text-list(Path, Contents))
+        . snd-msg(ioj-write-text-list(Path, Contents))
         .
         (
-          rec-msg(io-file-written)
+          rec-msg(ioj-file-written)
           . OpenModule(Modulename, ModuleId?)
         +
-          rec-msg(io-file-not-written(Error?))
+          rec-msg(ioj-file-not-written(Error?))
           . snd-note(ui-status(errorf("%s: %s", [Path, Error])))
         )
       )
@@ -441,8 +441,8 @@ in
   snd-msg(cm-get-library-paths)
   . rec-msg(cm-library-paths(Directories?))
   . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
-  . snd-msg(io-get-relative-filename(Directories, Path, ".sdf"))
-  . rec-msg(io-filename(Directories, Path, ".sdf", Prefix?, Filename?))
+  . snd-msg(ioj-get-relative-filename(Directories, Path, ".sdf"))
+  . rec-msg(ioj-filename(Directories, Path, ".sdf", Prefix?, Filename?))
   .
   if equal(Filename, "") then
     LibraryModule := false

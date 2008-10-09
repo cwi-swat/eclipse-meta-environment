@@ -12,6 +12,7 @@
 #include <language-actions.idef>
 #include <visualization-tool.idef>
 #include <selection-listener.tb>
+#include <outline-tool.idef>
 
 
 /* meta-kernel */

@@ -16,7 +16,7 @@ in
     rec-msg(get-parsetable(ModuleId?, Type))
     .
     if equal(Table, UNDEFINED) then 
-      snd-msg(io-read-and-pack-term("__PGEN_PREFIX__/share/pgen/Sdf2.baf"))
+      snd-msg(io-read-and-pack-term("__PGEN_PREFIX__/share/pgen/Sdf2.saf"))
       .
       (
         rec-msg(io-packed-term(Table?))

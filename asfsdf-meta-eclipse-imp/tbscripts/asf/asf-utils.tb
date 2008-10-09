@@ -99,16 +99,16 @@ let
   LibraryModule: bool
 in
   GetModulePath(ModuleId, ASF_NAMESPACE, AsfPath?)
-  . snd-msg(io-exists-file(AsfPath))
+  . snd-msg(ioj-exists-file(AsfPath))
   .
   (
-    rec-msg(io-file-exists)
+    rec-msg(ioj-file-exists)
     . IsLibraryModule(ModuleId, LibraryModule?)
     . Editable := not(LibraryModule)
     . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "editable", Editable)
     . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", dirty)
   +
-    rec-msg(io-file-not-exists)
+    rec-msg(ioj-file-not-exists)
     . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", unavailable)
   )
 endlet
