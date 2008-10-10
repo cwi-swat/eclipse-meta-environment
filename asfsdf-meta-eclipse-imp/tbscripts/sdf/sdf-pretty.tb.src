@@ -6,12 +6,12 @@ process GetSdfToBoxEqs(Eqs : term?) is
 let
   Error: term
 in
-  snd-msg(io-read-and-pack-term("__SDF2_PRETTY__"))
+  snd-msg(ioj-read-and-pack-term("__SDF2_PRETTY__"))
   . 
   (
-    rec-msg(io-packed-term(Eqs?))
+    rec-msg(ioj-packed-term(Eqs?))
   +
-    rec-msg(io-error-reading(Error?))
+    rec-msg(ioj-error-reading(Error?))
     . Eqs := UNDEFINED
   )
 endlet

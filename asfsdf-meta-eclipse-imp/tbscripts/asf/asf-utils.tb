@@ -183,7 +183,7 @@ in
   . GetModulePath(AsfModuleId, ASF_NAMESPACE, AsfPath?)
   . GetCachedValue(".asf.pt", AsfPath, Tree?)
   .
-  if equal(Tree, UNDEFINED) then
+  if and(equal(Tree, UNDEFINED), not-equal(AsfPath, "")) then
     printf("GetASFParseTree: not cached\n")
     . ReadText(AsfPath, Text?)
     .

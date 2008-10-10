@@ -16,13 +16,13 @@ in
     rec-msg(get-parsetable(ModuleId?, Type))
     .
     if equal(Table, UNDEFINED) then 
-      snd-msg(io-read-and-pack-term("__PGEN_PREFIX__/share/pgen/Sdf2.saf"))
+      snd-msg(ioj-read-and-pack-term("__PGEN_PREFIX__/share/pgen/Sdf2.saf"))
       .
       (
-        rec-msg(io-packed-term(Table?))
+        rec-msg(ioj-packed-term(Table?))
         . snd-msg(parsetable(ModuleId, Type, Table))
       +
-        rec-msg(io-error-reading(Error?))
+        rec-msg(ioj-error-reading(Error?))
         . snd-msg(no-parsetable(ModuleId, Type))
       )
     else

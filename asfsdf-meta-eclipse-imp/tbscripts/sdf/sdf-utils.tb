@@ -12,8 +12,7 @@
 #include <module-utils.tb>
 #include <jobs-manager.idef>
 
-toolbus(ClearCacheHandler(SDF_NAMESPACE, 
-                           [".sdf.pt", "trm.tbl", ".asf.tbl"]))
+toolbus(ClearCacheHandler(SDF_NAMESPACE,   [".sdf.pt", "trm.tbl", ".asf.tbl"]))
 
 /**
  * This process safely/lazily retrieves a module name 
@@ -432,7 +431,6 @@ endlet
 process IsLibraryModule(ModuleId: module-id, LibraryModule: bool?) is
 let
   Directories: list,
-  Extension: str,
   Filename: str,
   Modulename: str,
   Path: str,
@@ -441,8 +439,8 @@ in
   snd-msg(cm-get-library-paths)
   . rec-msg(cm-library-paths(Directories?))
   . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
-  . snd-msg(ioj-get-relative-filename(Directories, Path, ".sdf"))
-  . rec-msg(ioj-filename(Directories, Path, ".sdf", Prefix?, Filename?))
+  . snd-msg(ioj-get-relative-filename(Directories, Path))
+  . rec-msg(ioj-filename(Directories, Path, Prefix?, Filename?))
   .
   if equal(Filename, "") then
     LibraryModule := false
