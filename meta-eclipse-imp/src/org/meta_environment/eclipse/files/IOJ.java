@@ -43,7 +43,7 @@ public class IOJ extends EclipseTool{
 	}
 	
 	private String readFileContents(String filename) throws IOException{
-		File f = new File(filename);
+		File f = new Path(filename).toFile();
 		byte[] content = new byte[(int) f.length()];
 		FileInputStream fis = null;
 		try{
