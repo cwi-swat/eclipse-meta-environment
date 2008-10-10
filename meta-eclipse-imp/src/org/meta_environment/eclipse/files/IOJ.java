@@ -149,8 +149,9 @@ public class IOJ extends EclipseTool{
 		ATermList directories = factory.makeList();
 		
 		while(!searchPaths.isEmpty()){
-			searchPaths = searchPaths.getTail();
 			Property path = searchPaths.getHead();
+			searchPaths = searchPaths.getTail();
+			
 			String pathString = path.getPath();
 			File f = new Path(pathString+"/"+name+"."+extension).toFile();
 			if(f.exists()){
