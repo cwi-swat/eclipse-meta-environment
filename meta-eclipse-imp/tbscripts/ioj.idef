@@ -7,19 +7,19 @@ tool ioj is { }
 
 process IOJ is
 let
+  IOJ: ioj,
   ContentList: list,
-  Contents: str,
+  Contents: term,
   DestinationPath: str,
   Directories: list,
   Directory: str,
-  Summary: summary,
+  Summary: term,
   Extension: str,
   Filename: str,
   Filename1: str,
   Filename2: str,
   File: file,
   Files: list,
-  IOJ: ioj,
   Name: str,
   Path: str,
   Prefix: str,
@@ -27,10 +27,52 @@ let
   SourcePath: str,
   Term: term
 in
-  rec-connect(IOJ?) 
-  . printf("IOJ tool connected!\n")
+  rec-connect(IOJ?)
   .
   (
+    rec-msg(ioj-find-file(Directories?, Name?, Extension?))
+    . snd-eval(IOJ, find-file(Directories, Name, Extension))
+    .
+    (
+      rec-value(IOJ, file-found(Directories?))
+      . snd-msg(ioj-file-found(Directories))
+    +
+      rec-value(IOJ, file-not-found)
+      . snd-msg(ioj-file-not-found)
+    )
+  +
+    rec-msg(ioj-remove-file(Path?))
+    . snd-eval(IOJ, remove-file(Path))
+    .
+    (
+      rec-value(IOJ, success)
+      . snd-msg(ioj-file-removed(Path))
+    +
+      rec-value(IOJ, failure(Summary?))
+      . snd-msg(ioj-file-not-removed(Path, Summary))
+    )
+  +
+    rec-msg(ioj-exists-file(Filename?))
+    . snd-eval(IOJ, exists-file(Filename))
+    .
+    (
+      rec-value(IOJ, success)
+      . snd-msg(ioj-file-exists)
+    +
+      rec-value(IOJ, failure(Summary?))
+      . snd-msg(ioj-file-not-exists)
+    )
+  +
+    rec-msg(ioj-pack-term(Term?))
+    . snd-eval(IOJ, pack-term(Term))
+    . rec-value(IOJ, term(Term?))
+    . snd-msg(ioj-term(Term))
+  +
+    rec-msg(ioj-unpack-term(Term?))
+    . snd-eval(IOJ, unpack-term(Term))
+    . rec-value(IOJ, term(Term?))
+    . snd-msg(ioj-term(Term))
+  +
     rec-msg(ioj-read-file(Filename?))
     . snd-eval(IOJ, read-text-file(Filename))
     .
@@ -42,25 +84,17 @@ in
       . snd-msg(ioj-error-reading(Summary))
     )
   +
-    rec-msg(ioj-get-filename(Directory?, Name?, Extension?))
-    . snd-eval(IOJ, get-filename(Directory, Name, Extension))
-    . rec-value(IOJ, filename(Filename?))
-    . snd-msg(ioj-filename(Filename))
-  +
-    rec-msg(ioj-get-path-filename(Path?))
-    . snd-eval(IOJ, get-path-filename(Path))
-    . rec-value(IOJ, filename(Filename?))
-    . snd-msg(ioj-filename(Path, Filename))
-  +
-    rec-msg(ioj-get-path-directory(Path?))
-    . snd-eval(IOJ, get-path-directory(Path))
-    . rec-value(IOJ, directory(Directory?))
-    . snd-msg(ioj-directory(Path, Directory))
-  +
-    rec-msg(ioj-get-path-extension(Path?))
-    . snd-eval(IOJ, get-path-extension(Path))
-    . rec-value(IOJ, extension(Extension?))
-    . snd-msg(ioj-extension(Path, Extension))
+    rec-msg(ioj-read-and-pack-term(Filename?))
+    . snd-eval(IOJ, read-and-pack-term(Filename))
+    .
+    (
+      rec-value(IOJ, packed-term(Contents?))
+      . snd-msg(ioj-packed-term(Contents))
+      . Contents := help-the-garbage-collector
+    +
+      rec-value(IOJ, failure(Summary?))
+      . snd-msg(ioj-error-reading(Summary))
+    )
   +
     rec-msg(ioj-compare-files(Filename1?, Filename2?))
     . snd-eval(IOJ, compare-files(Filename1, Filename2))
@@ -74,208 +108,48 @@ in
     +
       rec-value(IOJ, failure(Summary?))
       . printf("ioj-compare-files: %t\n", Summary)
-    )    
-  +
-    rec-msg(ioj-pack-term(Term?))
-    . snd-eval(IOJ, pack-term(Term))
-    . rec-value(IOJ, term(Term?))
-    . snd-msg(ioj-term(Term))
-  +
-    rec-msg(ioj-unpack-term(Term?))
-    . snd-eval(IOJ, unpack-term(Term))
-    . rec-value(IOJ, term(Term?))
-    . snd-msg(ioj-term(Term))
-  +
-    rec-msg(ioj-find-file(Directories?, Name?, Extension?))
-    . snd-eval(IOJ, find-file(Directories, Name, Extension))
-    .
-    (
-      rec-value(IOJ, file-found(Directories?))
-      . snd-msg(ioj-file-found(Directories))
-    +
-      rec-value(IOJ, file-not-found)
-      . snd-msg(ioj-file-not-found)
-    )    
-    
-  ) * delta
-endlet
-
-toolbus(IOJ)
-
-/*************************************** 
-
-  +
-    rec-msg(io-remove-file(Path?))
-    . snd-eval(IO, remove-file(Path))
-    .
-    (
-      rec-value(IO, success)
-      . snd-msg(io-file-removed(Path))
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-file-not-removed(Path, Summary))
     )
   +
-    rec-msg(io-copy-file(SourcePath?, DestinationPath?))
-    . snd-eval(IO, copy-file(SourcePath, DestinationPath))
+    rec-msg(ioj-get-filename(Directory?, Name?, Extension?))
+    . snd-eval(IOJ, get-filename(Directory, Name, Extension))
+    . rec-value(IOJ, filename(Filename?))
+    . snd-msg(ioj-filename(Filename))
+  +
+    rec-msg(ioj-get-path-directory(Path?))
+    . snd-eval(IOJ, get-path-directory(Path))
+    . rec-value(IOJ, directory(Directory?))
+    . snd-msg(ioj-directory(Path, Directory))
+  +
+    rec-msg(ioj-get-path-filename(Path?))
+    . snd-eval(IOJ, get-path-filename(Path))
+    . rec-value(IOJ, filename(Filename?))
+    . snd-msg(ioj-filename(Path, Filename))
+  +
+    rec-msg(ioj-get-path-extension(Path?))
+    . snd-eval(IOJ, get-path-extension(Path))
+    . rec-value(IOJ, extension(Extension?))
+    . snd-msg(ioj-extension(Path, Extension))
+  +
+    rec-msg(ioj-get-relative-filename(Directories?, Path?))
+    . snd-eval(IOJ, get-relative-filename(Directories, Path))
+    . rec-value(IOJ, filename(Prefix?, Filename?))
+    . snd-msg(ioj-filename(Directories, Path, Prefix, Filename))
+  +
+    rec-msg(ioj-write-text-list(Filename?, ContentList?))
+    . snd-eval(IOJ, write-text-list(Filename, ContentList))
     .
     (
-      rec-value(IO, success)
-      . snd-msg(io-file-copied(SourcePath, DestinationPath))
+      rec-value(IOJ, success)
+      . snd-msg(ioj-file-written)
     +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-file-not-copied(SourcePath, DestinationPath, Summary))
+      rec-value(IOJ, failure(Summary?))
+      . snd-msg(ioj-file-not-written(Summary))
     )
-  +
-    rec-msg(io-exists-file(Filename?))
-    . snd-eval(IO, exists-file(Filename))
-    .
-    (
-      rec-value(IO, success)
-      . snd-msg(io-file-exists)
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-file-not-exists)
-    )
-  +
-    rec-msg(io-list-files(Path?, Extension?))
-    . snd-eval(IO, list-files(Path, Extension))
-    . rec-value(IO, file-list(Files?))
-    . snd-msg(io-file-list(Files))
-  +
-    rec-msg(io-write-text-list(Filename?, ContentList?))
-    . snd-eval(IO, write-text-list(Filename, ContentList))
-    .
-    (
-      rec-value(IO, success)
-      . snd-msg(io-file-written)
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-file-not-written(Summary))
-    )
-  +
-    rec-msg(io-write-term-as-text(Filename?, Term?))
-    . snd-eval(IO, write-term-as-text(Filename, Term))
-    .
-    (
-      rec-value(IO, success)
-      . snd-msg(io-file-written)
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-file-not-written(Summary))
-    )
-  +
-    rec-msg(io-write-term-in-baf(Filename?, Term?))
-    . snd-eval(IO, write-in-baf(Filename, Term))
-    .
-    (
-      rec-value(IO, success)
-      . snd-msg(io-file-written)
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-file-not-written(Summary))
-    )
-    . Term := help-the-garbage-collector
-  +
-    rec-msg(io-unpack-and-write-term-in-baf(Filename?, Term?))
-    . snd-eval(IO, unpack-and-write-in-baf(Filename, Term))
-    .
-    (
-      rec-value(IO, success)
-      . snd-msg(io-file-written)
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-file-not-written(Summary))
-    )
-    . Term := help-the-garbage-collector
-  +
-    rec-msg(io-read-file(Filename?))
-    . snd-eval(IO, read-text-file(Filename))
-    .
-    (
-      rec-value(IO, file-contents(Contents?))
-      . snd-msg(io-file-contents(Contents))
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-error-reading(Summary))
-    )
-  +
-    rec-msg(io-read-and-pack-term(Filename?))
-    . snd-eval(IO, read-and-pack-term(Filename))
-    .
-    (
-      rec-value(IO, packed-term(Contents?))
-      . snd-msg(io-packed-term(Contents))
-      . Contents := help-the-garbage-collector
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-error-reading(Summary))
-    )
-  +
-    rec-msg(io-read-term(Filename?))
-    . snd-eval(IO, read-term-file(Filename))
-    .
-    (
-      rec-value(IO, term(Contents?))
-      . snd-msg(io-term(Contents))
-      . Contents := help-the-garbage-collector
-    +
-      rec-value(IO, failure(Summary?))
-      . snd-msg(io-error-reading(Summary))
-    )
-  +
-    rec-msg(io-compare-files(Filename1?, Filename2?))
-    . snd-eval(IO, compare-files(Filename1, Filename2))
-    .
-    (
-      rec-value(IO, equal)
-      . snd-msg(io-files-equal)
-    +
-      rec-value(IO, different)
-      . snd-msg(io-files-differ)
-    +
-      rec-value(IO, failure(Summary?))
-      . printf("io-compare-files: %t\n", Summary)
-    )
-  +
-    rec-msg(io-get-relative-filename(Directories?, Path?, Extension?))
-    . snd-eval(IO, get-relative-filename(Directories, Path, Extension))
-    . rec-value(IO, filename(Prefix?, Filename?))
-    . snd-msg(io-filename(Directories, Path, Extension, Prefix, Filename))
-  +
-    rec-msg(io-get-path-extension(Path?))
-    . snd-eval(IO, get-path-extension(Path))
-    . rec-value(IO, extension(Extension?))
-    . snd-msg(io-extension(Path, Extension))
-  +
-    rec-msg(io-get-file-size(Path?))
-    . snd-eval(IO, get-file-size(Path))
-    . rec-value(IO, file-size(Size?))
-    . snd-msg(io-file-size(Path, Size))
-  +
-    rec-msg(io-make-file(Path?))
-    . snd-eval(IO, make-file(Path))
-    . rec-value(IO, file(File?))
-    . snd-msg(io-file(Path, File))
-  +
-    rec-msg(io-get-file-path(File?))
-    . snd-eval(IO, get-file-path(File))
-    . rec-value(IO, file-path(Path?))
-    . snd-msg(io-file-path(File, Path))
-  +
-    rec-msg(io-get-file-name(File?))
-    . snd-eval(IO, get-file-name(File))
-    . rec-value(IO, file-name(Filename?))
-    . snd-msg(io-file-name(File, Filename))
-  +
-    rec-msg(io-get-file-extension(File?))
-    . snd-eval(IO, get-file-extension(File))
-    . rec-value(IO, file-extension(Extension?))
-    . snd-msg(io-file-extension(File, Extension))
   )
   *
   delta
+endlet
 
-****************************************/
+toolbus(IOJ)
 
 #endif
