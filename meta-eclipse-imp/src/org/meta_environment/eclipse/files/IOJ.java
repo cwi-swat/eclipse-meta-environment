@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import nl.cwi.sen1.configapi.types.Property;
 import nl.cwi.sen1.configapi.types.PropertyList;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.imp.runtime.RuntimePlugin;
@@ -42,8 +45,17 @@ public class IOJ extends EclipseTool{
 		return InstanceKeeper.sInstance;
 	}
 	
+	private static String resolvePath(String path){
+		try{
+			URL url = new URL(path);
+			return FileLocator.resolve(url).getFile();
+		}catch(IOException ioex){
+			return path; // The path is fine, no need to resolve it then ....
+		}
+	}
+	
 	private String readFileContents(String filename) throws IOException{
-		File f = new Path(filename).toFile();
+		File f = new Path(resolvePath(filename)).toFile();
 		byte[] content = new byte[(int) f.length()];
 		FileInputStream fis = null;
 		try{
@@ -96,7 +108,7 @@ public class IOJ extends EclipseTool{
 	}
 	
 	public ATerm removeFile(String path){
-		File f = new Path(path).toFile();
+		File f = new Path(resolvePath(path)).toFile();
 		
 		boolean removed = f.delete();
 		if(removed){
@@ -116,7 +128,7 @@ public class IOJ extends EclipseTool{
 	public ATerm readTextFile(String path){
 		String contents;
 		try{
-			contents = readFileContents(new Path(path).toOSString());
+			contents = readFileContents(new Path(resolvePath(path)).toOSString());
 		}catch(IOException ioex){
 			return makeResultMessage(createSummary("Failed to read text file", path));
 		}
@@ -127,17 +139,19 @@ public class IOJ extends EclipseTool{
 	public ATerm readAndPackTerm(String path){
 		ATerm content;
 		try{
-			content = factory.readFromFile(new Path(path).toOSString());
+			content = factory.readFromFile(new Path(resolvePath(path)).toOSString());
 		}catch(IOException ioex){
+			ioex.printStackTrace();
 			return makeResultMessage(createSummary("Failed to read packed file", path));
 		}catch(RuntimeException rex){
+			rex.printStackTrace();
 			return makeResultMessage(createSummary("Failed to read packed file", path));
 		}
 		return factory.make("packed-term(<term>)", pack(content));
 	}
 	
 	public ATerm existsFile(String path){
-		File f = new Path(path).toFile();
+		File f = new Path(resolvePath(path)).toFile();
 		if(f.exists()){
 			return makeResultMessage(null);
 		}
@@ -166,12 +180,12 @@ public class IOJ extends EclipseTool{
 	}
 	
 	public ATerm compareFiles(String p1, String p2){
-		File file1 = new Path(p1).toFile();
+		File file1 = new Path(resolvePath(p1)).toFile();
 		if(!file1.exists()){
 			return makeResultMessage(createSummary("Cannot stat", p1));
 		}
 		
-		File file2 = new Path(p2).toFile();
+		File file2 = new Path(resolvePath(p2)).toFile();
 		if(!file2.exists()){
 		    return makeResultMessage(createSummary("Cannot stat", p2));
 		}
@@ -183,14 +197,14 @@ public class IOJ extends EclipseTool{
 	}
 	
 	public ATerm getFilename(String directory, String name, String extension){
-		IPath path = new Path(directory);
+		IPath path = new Path(resolvePath(directory));
 		path = path.append(name + extension);
 		String fileName = path.toString();
 		return factory.make("filename(<str>)", fileName);
 	}
 	
 	public ATerm getPathDirectory(String dir){
-		IPath path = new Path(dir);
+		IPath path = new Path(resolvePath(dir));
 		int numberOfSegments = path.segmentCount();
 
 		String directory = "";
@@ -201,7 +215,7 @@ public class IOJ extends EclipseTool{
 	}
 
 	public ATerm getPathFilename(String filename){
-		IPath path = new Path(filename);
+		IPath path = new Path(resolvePath(filename));
 		String fileName = path.removeFileExtension().lastSegment();
 		
 		if(fileName == null) fileName = "";
@@ -210,7 +224,7 @@ public class IOJ extends EclipseTool{
 	}
 	
 	public ATerm getPathExtension(String path){
-		String extension = new Path(path).getFileExtension();
+		String extension = new Path(resolvePath(path)).getFileExtension();
 		
 		if(extension == null) return factory.make("extension(\"\")");
 		
@@ -218,7 +232,7 @@ public class IOJ extends EclipseTool{
 	}
 	
 	private String normalizePath(String path){
-		IPath p = new Path(path);
+		IPath p = new Path(resolvePath(path));
 		return p.toFile().getAbsolutePath();
 	}
 	
@@ -247,7 +261,7 @@ public class IOJ extends EclipseTool{
 	}
 	
 	private void writeToFile(String filename, String content) throws IOException{
-		File f = new Path(filename).toFile();
+		File f = new Path(resolvePath(filename)).toFile();
 		FileOutputStream fos = null;
 		try{
 			fos = new FileOutputStream(f);
@@ -278,7 +292,7 @@ public class IOJ extends EclipseTool{
 	
 	public ATerm writeTextList(String path, ATermList content){
 		try{
-			writeToFile(path, constructTextList(content));
+			writeToFile(resolvePath(path), constructTextList(content));
 		}catch(IOException ioex){
 			return makeResultMessage(createSummary("Failed to write", path));
 		}
