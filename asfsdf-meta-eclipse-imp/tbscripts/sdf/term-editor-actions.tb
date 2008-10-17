@@ -21,12 +21,15 @@
 
 
 process ShowTreeAction(Path: str, Language: str) is
-let
-  Tree : term,
-  RStore : term
-in
-  printf("ShowTreeAction: %s - %s\n", Path, Language)
-  . ShowTree(Path, false, false, false)
-endlet
+	ShowTree(Path, false, false, false)
+
+process ShowFullTreeWithoutLayoutAction(Path: str, Language: str) is
+	ShowTree(Path, false, true, false)
+
+process ShowFullTreeAction(Path: str, Language: str) is
+	ShowTree(Path, true, true, false)
+
+process ShowSharedTreeAction(Path: str, Language: str) is
+	ShowTree(Path, true, true, true)
 
 #endif
