@@ -19,6 +19,7 @@
       <editor
             class="org.meta_environment.eclipse.viz.graph.GraphView"
             default="false"
+            icon="none"
             id="org.meta_environment.eclipse.viz.graph"
             name="Meta-Environment Graph View">
       </editor>
