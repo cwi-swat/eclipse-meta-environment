@@ -184,6 +184,24 @@
 <EditorMenu 
   language="sdf"
   name="sdf">
+<EditorSubmenu name="Focus">
+<EditorMenuAction
+  description="Move the focus to the leftmost child of the current focus"
+  name="Down"
+  toolbus_action="MoveCursorDownAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node up"
+  name="Up"
+  toolbus_action="MoveCursorUpAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
+  name="Right"
+  toolbus_action="MoveCursorRightAction"/> 
+<EditorMenuAction
+  description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+  name="Left"
+  toolbus_action="MoveCursorLeftAction"/>
+</EditorSubmenu> 
 <EditorSubmenu name="Tools">
    <EditorMenuAction
          description="Format this SDF module according to some standard formatting rules"

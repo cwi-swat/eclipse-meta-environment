@@ -9,6 +9,8 @@
 #include <term-namespace.h>
 #include <term-utils.tb>
 
+/* Tree */
+
 process ShowTreeAction(Path: str, Language: str) is
 	ShowTree(Path, false, false, false)
 
@@ -20,6 +22,8 @@ process ShowFullTreeAction(Path: str, Language: str) is
 
 process ShowSharedTreeAction(Path: str, Language: str) is
 	ShowTree(Path, true, true, true)
+
+/* Tools */
 
 process AddBracketsAction(Path: str, Language: str) is
 let
