@@ -1,3 +1,5 @@
+#include <undefined.h>
+
 tool outline-tool is {}
 
 process Outliner is
@@ -9,8 +11,7 @@ in
   rec-connect(Outliner?) .
   (
     rec-request(Outliner, processParseTree(ParseTree?)) .
-    snd-msg(gs-tree-to-relation(ParseTree, false, false, false)) .
-    rec-msg(gs-relation(FactsStore?)) .
+    FactsStore := UNDEFINED . /* TODO: Get proper data. */
     snd-response(Outliner, processParseTree(FactsStore))
   ) * delta
 endlet
