@@ -45,5 +45,16 @@ in
   create(EditSyntax(ModuleId), Pid?)
 endlet
 
+process CompileModuleAction(Path: str, Language: str) is
+let
+	NewPath : str,
+	SdfModuleId : term
+in
+	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
+	
+	. ReplaceExtension(Path, ".c", NewPath?)
+	. CompileModule(SdfModuleId, NewPath)
+endlet
+
 
 #endif /* __ASF_EDITOR_ACTIONS__ */
