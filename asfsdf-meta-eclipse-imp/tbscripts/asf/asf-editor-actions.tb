@@ -51,10 +51,26 @@ let
 	SdfModuleId : term
 in
 	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
-	
 	. ReplaceExtension(Path, ".c", NewPath?)
 	. CompileModule(SdfModuleId, NewPath)
 endlet
 
+process RunAsfTestsAction(Path: str, Language: str) is
+let
+	NewPath : str,
+	SdfModuleId : term
+in
+	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
+	. TestAsfSpecification(SdfModuleId, off)
+endlet
+
+process DebugRunAsfTestsAction(Path: str, Language: str) is
+let
+	NewPath : str,
+	SdfModuleId : term
+in
+	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
+	. TestAsfSpecification(SdfModuleId, on)
+endlet
 
 #endif /* __ASF_EDITOR_ACTIONS__ */
