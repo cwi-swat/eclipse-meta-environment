@@ -7,6 +7,7 @@
 #include <cache-utils.tb>
 #include <attribute-changed-event.tb>
 #include <module-utils.tb>
+#include <tree2relation.idef>
 
 #define NO_NONTERMINAL ""
 #define TERM_TREE_CACHE "term-annotated-tree"
@@ -69,8 +70,8 @@ endlet
 process ShowTree(Path: str, LayoutOn: bool, LeafsOn: bool, SharingOn: bool) is
 let
   Tree : term,
-  TermModuleId: module-id,
-  SdfModuleId: module-id,
+  TermModuleId: term,
+  SdfModuleId: term,
   RStore: term
 in
   GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)

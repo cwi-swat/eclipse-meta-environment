@@ -6,19 +6,8 @@
  * editors that are implemented using SDF functionality.
  */
 
-#include <sdf-namespace.h>
-#include <asf-namespace.h>
 #include <term-namespace.h>
 #include <term-utils.tb>
-#include <tree2relation.idef>
-
-//#include <module-manager.tb>
-//#include <module-utils.tb>
-//#include <error-viewer.idef>
-//#include <jobs-manager.idef>
-//#include <lower-rstore.idef>
-//#include <facts.idef>
-
 
 process ShowTreeAction(Path: str, Language: str) is
 	ShowTree(Path, false, false, false)
@@ -31,5 +20,25 @@ process ShowFullTreeAction(Path: str, Language: str) is
 
 process ShowSharedTreeAction(Path: str, Language: str) is
 	ShowTree(Path, true, true, true)
+
+process AddBracketsAction(Path: str, Language: str) is
+let
+	TermModuleId : term,
+	SdfModuleId : term,
+	Tree : term,
+	RTree : term
+in
+	GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+	. TermToSdfModuleId(TermModuleId, SdfModuleId?)
+	. GetTermParsetree(SdfModuleId, Path, Tree?)
+	.
+	if not-equal(Tree, UNDEFINED) then
+		AddTermBrackets(SdfModuleId, Tree, RTree?)
+		.
+		if not-equal(RTree, UNDEFINED) then
+			tau /* TODO: What to do here? */
+		else tau fi
+	else tau fi
+endlet
 
 #endif
