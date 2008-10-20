@@ -6,7 +6,7 @@
  * editors that are implemented using SDF functionality.
  */
 
-#include <sdf-namespace.h>
+#include <term-namespace.h>
 #include <term-utils.tb>
 
 /* Tree */
@@ -27,11 +27,13 @@ process ShowSharedTreeAction(Path: str, Language: str) is
 
 process AddBracketsAction(Path: str, Language: str) is
 let
+	TermModuleId : term,
 	SdfModuleId : term,
 	Tree : term,
 	RTree : term
 in
-	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
+	GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+	. TermToSdfModuleId(TermModuleId, SdfModuleId?)
 	. GetTermParsetree(SdfModuleId, Path, Tree?)
 	.
 	if not-equal(Tree, UNDEFINED) then
