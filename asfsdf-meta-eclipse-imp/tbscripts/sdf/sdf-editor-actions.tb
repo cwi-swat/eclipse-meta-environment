@@ -15,7 +15,7 @@ let
   Path : str,
   PrettyText : str,
   ModuleTree : term,
-  ModuleId : module-id
+  ModuleId : term
 in
   GetModule(SDF_NAMESPACE, Filename, ModuleId?) 
   . GetSDFParsetree(ModuleId, ModuleTree?)
@@ -26,7 +26,7 @@ endlet
 
 process ExtractSDFAction(Filename: str, Language : str) is
 let
-  ModuleId : module-id
+  ModuleId : term
 in
   GetModule(SDF_NAMESPACE, Filename, ModuleId?) 
   . SDFExtraction(ModuleId)

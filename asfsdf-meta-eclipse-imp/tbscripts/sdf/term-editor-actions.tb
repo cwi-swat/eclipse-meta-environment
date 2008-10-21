@@ -30,17 +30,41 @@ let
 	TermModuleId : term,
 	SdfModuleId : term,
 	Tree : term,
-	RTree : term
+	BracketedTree : term,
+	BracketedText : str
 in
 	GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
 	. TermToSdfModuleId(TermModuleId, SdfModuleId?)
 	. GetTermParsetree(SdfModuleId, Path, Tree?)
 	.
 	if not-equal(Tree, UNDEFINED) then
-		AddTermBrackets(SdfModuleId, Tree, RTree?)
+		AddTermBrackets(SdfModuleId, Tree, BracketedTree?)
 		.
-		if not-equal(RTree, UNDEFINED) then
-			tau /* TODO: What to do here? */
+		if not-equal(BracketedTree, UNDEFINED) then
+			UnParseTerm(BracketedTree, BracketedText?)  
+			. snd-msg(et-edit-term(Path, TERM_NAMESPACE, BracketedText))
+		else tau fi
+	else tau fi
+endlet
+
+process DefaultPrettyPrintAction(Path: str, Language: str) is
+let
+	TermModuleId : term,
+	SdfModuleId : term,
+	Tree : term,
+	PrettyTree : term,
+	PrettyText : str
+in
+	GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+	. TermToSdfModuleId(TermModuleId, SdfModuleId?)
+	. GetTermParsetree(SdfModuleId, Path, Tree?)
+	.
+	if not-equal(Tree, UNDEFINED) then
+		PrettyPrint(Path, Tree, PrettyTree?)
+		.
+		if not-equal(PrettyTree, UNDEFINED) then
+			UnParseTerm(PrettyTree, PrettyText?)  
+			. snd-msg(et-edit-term(Path, TERM_NAMESPACE, PrettyText))
 		else tau fi
 	else tau fi
 endlet
