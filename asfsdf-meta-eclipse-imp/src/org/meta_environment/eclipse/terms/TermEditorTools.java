@@ -16,6 +16,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.sdf.Activator;
 
 import toolbus.adapter.eclipse.EclipseTool;
@@ -23,21 +24,22 @@ import aterm.ATerm;
 import aterm.ATermAppl;
 import aterm.ATermList;
 
-public class TermEditorTools extends EclipseTool {
-	private static TermEditorTools sInstance;
-	
+public class TermEditorTools extends EclipseTool{
 	private Map<String, Map<String, String>> actions = new HashMap<String, Map<String, String>>();
+	
+	private static class InstanceKeeper{
+		private static TermEditorTools sInstance = new TermEditorTools();
+		static {
+			sInstance.connect();
+		}
+	}
 	
 	private TermEditorTools(){
 		super("term-language-registrar");
 	}
 	
 	public static TermEditorTools getInstance() {
-		if (sInstance == null) {
-			sInstance = new TermEditorTools();
-			sInstance.connect();
-		}
-		return sInstance;
+		return InstanceKeeper.sInstance;
 	}
 
 	public List<String> getLanguages() {
