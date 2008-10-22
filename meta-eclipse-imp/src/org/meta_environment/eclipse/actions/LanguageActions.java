@@ -85,7 +85,7 @@ public class LanguageActions extends DefaultLanguageActionsContributor {
 		Action action = new Action(name) {
 			public void run() {
 				LanguageActionsTool.getInstance()
-						.PerformAction(toolbus_action, language, getFileName(editor));
+						.performAction(toolbus_action, language, getFileName(editor));
 			}
 		};
 		action.setToolTipText(editorMenuAction.getAttribute("description"));

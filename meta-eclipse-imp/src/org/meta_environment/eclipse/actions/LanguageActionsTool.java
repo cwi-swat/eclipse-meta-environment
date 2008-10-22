@@ -20,7 +20,7 @@ public class LanguageActionsTool extends EclipseTool {
 		return InstanceKeeper.sInstance;
 	}
 	
-	public void PerformAction (String Action, String language, String Filename) {
+	public void performAction (String Action, String language, String Filename) {
 		this.sendEvent(factory.make("perform-action(<str>,<str>,<str>)", Action, language, Filename));
 	}
 	
