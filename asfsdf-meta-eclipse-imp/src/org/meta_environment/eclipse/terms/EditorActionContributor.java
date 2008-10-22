@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.Control;
 public class EditorActionContributor extends DefaultLanguageActionsContributor {
 	public static final String TERM_LANGUAGE_SELECTOR = "term-language-selector";
 
-	public void contributeToEditorMenu(UniversalEditor editor,
-			IMenuManager menuManager) {
+	public void contributeToEditorMenu(UniversalEditor editor, IMenuManager menuManager) {
 		String file = getFilename(editor);
 		String language = TermEditorTools.getInstance().getLanguage(file);
 		List<Action> actions = TermEditorTools.getInstance().getDynamicActions(language, file);

@@ -1,9 +1,11 @@
 package org.meta_environment.eclipse.terms;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -16,7 +18,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.meta_environment.eclipse.editors.EditorTool;
 import org.meta_environment.eclipse.sdf.Activator;
 
 import toolbus.adapter.eclipse.EclipseTool;
@@ -111,9 +112,10 @@ public class TermEditorTools extends EclipseTool{
 	
 	public List<Action> getDynamicActions(final String language, final String filename) {
 	  Map<String, String> map = getActionMap(language);
-	  List<Action> result = new LinkedList<Action>();
+	  Set<String> keys = map.keySet();
+	  List<Action> result = new ArrayList<Action>(keys.size());
 	  
-	  for (String label : map.keySet()) {
+	  for (String label : keys) {
 		  final String action = map.get(label);
 		  result.add(new Action(label) {
 			public void run() {
