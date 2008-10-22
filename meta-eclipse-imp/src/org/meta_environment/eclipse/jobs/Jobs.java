@@ -70,13 +70,13 @@ public class Jobs extends EclipseTool {
 			return false;
 		}
 
-		private boolean jobDone = false;
+		private volatile boolean jobDone = false;
 
-		protected synchronized void setJobDone(boolean done) {
+		protected void setJobDone(boolean done) {
 			jobDone = done;
 		}
 
-		protected synchronized boolean getJobDone() {
+		protected boolean getJobDone() {
 			return jobDone;
 		}
 		
