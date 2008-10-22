@@ -21,7 +21,7 @@ public class LanguageActionsTool extends EclipseTool {
 	}
 	
 	public void performAction (String Action, String language, String Filename) {
-		this.sendEvent(factory.make("perform-action(<str>,<str>,<str>)", Action, language, Filename));
+		sendEvent(factory.make("perform-action(<str>,<str>,<str>)", Action, language, Filename));
 	}
 	
 }

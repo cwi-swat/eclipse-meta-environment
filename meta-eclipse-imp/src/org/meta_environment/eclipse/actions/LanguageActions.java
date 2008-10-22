@@ -17,18 +17,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 
 public class LanguageActions extends DefaultLanguageActionsContributor {
-
-	private final String extensionPointId = "org.meta_environment.eclipse.actions.EditorMenus";
+	private final static String EXTENSION_POINT_ID = "org.meta_environment.eclipse.actions.EditorMenus";
 
 	public void contributeToEditorMenu(UniversalEditor editor, IMenuManager menu) {
 		// TODO: Bugzilla: Request getter for UniversalEditor.fLanguage
-		final Language language = editor.fLanguage;
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(extensionPointId);
+		Language language = editor.fLanguage;
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
 
 		if (extensionPoint != null) {
-			List<IConfigurationElement> extensions = getExtensionsForLanguage(
-					extensionPoint, language);
+			List<IConfigurationElement> extensions = getExtensionsForLanguage(extensionPoint, language);
 			if (extensions.size() != 0) {
 				for (IConfigurationElement ext : extensions) {
 					createActionsForEditorMenu(ext, editor, menu);
@@ -37,8 +34,7 @@ public class LanguageActions extends DefaultLanguageActionsContributor {
 		}
 	}
 
-	private List<Action> createActionsForEditorMenu(
-			IConfigurationElement editorMenu, final UniversalEditor editor, IMenuManager menu) {
+	private List<Action> createActionsForEditorMenu(IConfigurationElement editorMenu, final UniversalEditor editor, IMenuManager menu) {
 		List<Action> actions = new ArrayList<Action>();
 
 		IConfigurationElement[] children = editorMenu.getChildren();
@@ -50,10 +46,7 @@ public class LanguageActions extends DefaultLanguageActionsContributor {
 		return actions;
 	}
 
-	private List<Action> createActionsForEditorMenuItem(
-			IConfigurationElement editorMenuItem, 
-			final UniversalEditor editor, IMenuManager menu) {
-
+	private List<Action> createActionsForEditorMenuItem(IConfigurationElement editorMenuItem, UniversalEditor editor, IMenuManager menu) {
 		List<Action> actions = new ArrayList<Action>();
 		String name = editorMenuItem.getAttribute("name");
 
@@ -75,17 +68,13 @@ public class LanguageActions extends DefaultLanguageActionsContributor {
 		return actions;
 	}
 
-	private void addActionForEditorMenuAction(
-			IConfigurationElement editorMenuAction, String name,
-			final UniversalEditor editor, IMenuManager menu) {
-		final String toolbus_action = editorMenuAction
-				.getAttribute("toolbus_action");
+	private void addActionForEditorMenuAction(IConfigurationElement editorMenuAction, String name, final UniversalEditor editor, IMenuManager menu) {
+		final String toolbus_action = editorMenuAction.getAttribute("toolbus_action");
 		final String language = editor.fLanguage.getName();
 
 		Action action = new Action(name) {
 			public void run() {
-				LanguageActionsTool.getInstance()
-						.performAction(toolbus_action, language, getFileName(editor));
+				LanguageActionsTool.getInstance().performAction(toolbus_action, language, getFileName(editor));
 			}
 		};
 		action.setToolTipText(editorMenuAction.getAttribute("description"));
@@ -100,29 +89,22 @@ public class LanguageActions extends DefaultLanguageActionsContributor {
 		String filename;
 
 		if (project != null) {
-			filename = project.getRawProject().getLocation().append(path)
-					.makeAbsolute().toOSString();
-		}
-
-		else {
+			filename = project.getRawProject().getLocation().append(path).makeAbsolute().toOSString();
+		} else {
 			filename = editor.getParseController().getPath().toOSString();
 		}
 
 		return filename;
 	}
 
-	public static List<IConfigurationElement> getExtensionsForLanguage(
-			IExtensionPoint extensionPoint, Language language) {
-
-		IConfigurationElement[] elements = extensionPoint
-				.getConfigurationElements();
+	public static List<IConfigurationElement> getExtensionsForLanguage(IExtensionPoint extensionPoint, Language language) {
+		IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
 		List<IConfigurationElement> result = new ArrayList<IConfigurationElement>();
 
 		if (elements != null) {
 			for (int n = 0; n < elements.length; n++) {
 				IConfigurationElement element = elements[n];
-				final String attrValue = element
-						.getAttribute(Language.LANGUAGE_ID_ATTR);
+				String attrValue = element.getAttribute(Language.LANGUAGE_ID_ATTR);
 
 				if (isSameLanguageString(attrValue, language.getName())) {
 					result.add(element);
