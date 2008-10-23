@@ -1,5 +1,7 @@
 package org.meta_environment.eclipse.actions;
 
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+
 import toolbus.adapter.eclipse.EclipseTool;
 
 public class LanguageActionsTool extends EclipseTool {
@@ -20,8 +22,11 @@ public class LanguageActionsTool extends EclipseTool {
 		return InstanceKeeper.sInstance;
 	}
 	
-	public void performAction (String Action, String language, String Filename) {
-		sendEvent(factory.make("perform-action(<str>,<str>,<str>)", Action, language, Filename));
+	public void performAction (String Action, String language, String Filename, IWorkbenchWindowActionDelegate actionDelegate) {
+		if(actionDelegate == null){
+			sendEvent(factory.make("perform-action(<str>,<str>,<str>)", Action, language, Filename));
+		}else{
+			actionDelegate.run(null);
+		}
 	}
-	
 }

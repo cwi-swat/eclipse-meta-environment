@@ -104,6 +104,14 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation />
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.ui.IWorkbenchWindowActionDelegate"/>
+               </appInfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

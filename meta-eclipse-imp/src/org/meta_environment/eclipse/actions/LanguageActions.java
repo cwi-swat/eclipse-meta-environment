@@ -15,6 +15,7 @@ import org.eclipse.imp.services.base.DefaultLanguageActionsContributor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class LanguageActions extends DefaultLanguageActionsContributor {
 	private final static String EXTENSION_POINT_ID = "org.meta_environment.eclipse.actions.EditorMenus";
@@ -59,9 +60,7 @@ public class LanguageActions extends DefaultLanguageActionsContributor {
 			}
 			
 			menu.add(subMenu);
-		}
-
-		else if (editorMenuItem.getName().equals("EditorMenuAction")) {
+		} else if (editorMenuItem.getName().equals("EditorMenuAction")) {
 			addActionForEditorMenuAction(editorMenuItem, name, editor, menu);
 		}
 
@@ -70,11 +69,26 @@ public class LanguageActions extends DefaultLanguageActionsContributor {
 
 	private void addActionForEditorMenuAction(IConfigurationElement editorMenuAction, String name, final UniversalEditor editor, IMenuManager menu) {
 		final String toolbus_action = editorMenuAction.getAttribute("toolbus_action");
+		String actionDelegateImpl = editorMenuAction.getAttribute("class");
+		final IWorkbenchWindowActionDelegate actionDelegate;
+		if(actionDelegateImpl != null){
+			try{
+				actionDelegate = (IWorkbenchWindowActionDelegate) Class.forName(actionDelegateImpl).newInstance();
+			}catch(InstantiationException iex){
+				throw new RuntimeException(iex);
+			}catch(ClassNotFoundException cnfex){
+				throw new RuntimeException(cnfex);
+			}catch(IllegalAccessException iaex){
+				throw new RuntimeException(iaex);
+			}
+		}else{
+			actionDelegate = null;
+		}
 		final String language = editor.fLanguage.getName();
-
+		
 		Action action = new Action(name) {
 			public void run() {
-				LanguageActionsTool.getInstance().performAction(toolbus_action, language, getFileName(editor));
+				LanguageActionsTool.getInstance().performAction(toolbus_action, language, getFileName(editor), actionDelegate);
 			}
 		};
 		action.setToolTipText(editorMenuAction.getAttribute("description"));
