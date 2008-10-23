@@ -134,21 +134,25 @@
 </EditorSubmenu>
 <EditorSubmenu name="Focus">
 <EditorMenuAction
-  description="Move the focus to the leftmost child of the current focus"
-  name="Down"
-  toolbus_action="MoveCursorDownAction"/> 
+      class="org.meta_environment.eclipse.focus.move.MoveDown"
+      description="Move the focus to the leftmost child of the current focus"
+      name="Down"
+      toolbus_action="MoveCursorDownAction"/> 
 <EditorMenuAction
-  description="Move the focus one syntax tree node up"
-  name="Up"
-  toolbus_action="MoveCursorUpAction"/> 
+      class="org.meta_environment.eclipse.focus.move.MoveUp"
+      description="Move the focus one syntax tree node up"
+      name="Up"
+      toolbus_action="MoveCursorUpAction"/> 
 <EditorMenuAction
-  description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
-  name="Right"
-  toolbus_action="MoveCursorRightAction"/> 
+      class="org.meta_environment.eclipse.focus.move.MoveRight"
+      description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
+      name="Right"
+      toolbus_action="MoveCursorRightAction"/> 
 <EditorMenuAction
-  description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
-  name="Left"
-  toolbus_action="MoveCursorLeftAction"/>
+      class="org.meta_environment.eclipse.focus.move.MoveLeft"
+      description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+      name="Left"
+      toolbus_action="MoveCursorLeftAction"/>
 </EditorSubmenu> 
 
 <EditorSubmenu name="View">
@@ -186,21 +190,25 @@
   name="sdf">
 <EditorSubmenu name="Focus">
 <EditorMenuAction
-  description="Move the focus to the leftmost child of the current focus"
-  name="Down"
-  toolbus_action="MoveCursorDownAction"/> 
+      class="org.meta_environment.eclipse.focus.move.MoveDown"
+      description="Move the focus to the leftmost child of the current focus"
+      name="Down"
+      toolbus_action="MoveCursorDownAction"/> 
 <EditorMenuAction
-  description="Move the focus one syntax tree node up"
-  name="Up"
-  toolbus_action="MoveCursorUpAction"/> 
+      class="org.meta_environment.eclipse.focus.move.MoveUp"
+      description="Move the focus one syntax tree node up"
+      name="Up"
+      toolbus_action="MoveCursorUpAction"/> 
 <EditorMenuAction
-  description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
-  name="Right"
-  toolbus_action="MoveCursorRightAction"/> 
+      class="org.meta_environment.eclipse.focus.move.MoveRight"
+      description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
+      name="Right"
+      toolbus_action="MoveCursorRightAction"/> 
 <EditorMenuAction
-  description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
-  name="Left"
-  toolbus_action="MoveCursorLeftAction"/>
+      class="org.meta_environment.eclipse.focus.move.MoveLeft"
+      description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+      name="Left"
+      toolbus_action="MoveCursorLeftAction"/>
 </EditorSubmenu> 
 <EditorSubmenu name="Tools">
    <EditorMenuAction
@@ -260,21 +268,25 @@
 <EditorSubmenu
       name="Focus">
    <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveDown"
          description="Move the focus to the leftmost child of the current focus"
          name="Down"
          toolbus_action="MoveCursorDownAction">
    </EditorMenuAction>
    <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveUp"
          description="Move the focus one syntax tree node up"
          name="Up"
          toolbus_action="MoveCursorUpAction">
    </EditorMenuAction>
    <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveRight"
          description="Move the focus one syntax tree node to the right or up if no more siblings exist"
          name="Right"
          toolbus_action="MoveCursorRightAction">
    </EditorMenuAction>
    <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveLeft"
          description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
          name="Left"
          toolbus_action="MoveCursorLeftAction">
