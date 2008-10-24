@@ -48,10 +48,10 @@ public class EditorActionContributor extends DefaultLanguageActionsContributor {
 					
 					final String filename = getFilename(ed);
 					final String current = TermEditorTools.getInstance().getLanguage(filename);
-					if (languages.contains(current)) {
-						combo.select(combo.indexOf(current));
+					if (!languages.contains(current)) {
+						languages.add(current);
 					}
-					
+					combo.select(combo.indexOf(current));
 					combo.addSelectionListener(new SelectionListener() {
 
 						public void widgetDefaultSelected(SelectionEvent e) {
