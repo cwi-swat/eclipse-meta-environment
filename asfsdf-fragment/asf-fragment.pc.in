@@ -1,0 +1,7 @@
+prefix=@prefix@
+Maintainers=jurgenv@cwi.nl,storm@cwi.nl
+
+Name: asf-fragment
+Version: 0.1
+Description: ASF fragment
+Requires: asf
