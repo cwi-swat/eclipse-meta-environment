@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: asfsdf-fragment-linux-x86 Fragment
-Bundle-SymbolicName: asfsdf_fragment_linux_x86
-Bundle-Version: 0.1
-Fragment-Host: asf_plugin
-Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86))
