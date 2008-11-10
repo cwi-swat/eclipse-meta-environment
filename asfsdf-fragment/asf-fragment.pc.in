@@ -5,3 +5,4 @@ Name: asf-fragment
 Version: 0.1
 Description: ASF fragment
 Requires: asf
+FragmentHost=asf-plugin
