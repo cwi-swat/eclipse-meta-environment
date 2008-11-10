@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ASF fragment
+Bundle-SymbolicName: asf_fragment
+Bundle-Version: 1.0.0
+Bundle-Vendor: jurgen@vinju.org
+Fragment-Host: asf_plugin
