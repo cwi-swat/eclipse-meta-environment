@@ -1,8 +1,7 @@
 prefix=@prefix@
 Maintainers=jurgenv@cwi.nl,storm@cwi.nl
 
-Name: asfsdf-fragment
+Name: asfsdf-plugin
 Version: 0.1
-Description: ASF+SDF fragment
-Requires: asf,sdf
+Description: ASF+SDF plugin
 FragmentHost=asfsdf-plugin
