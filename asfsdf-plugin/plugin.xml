@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="toolbus.binaryProvider">
+      <binaryProvider
+            path="install/bin">
+      </binaryProvider>
+   </extension>
+   <extension
+         point="toolbus.includePath">
+      <toolbus.includePath
+            path="install/share">
+      </toolbus.includePath>
+   </extension>
+
+</plugin>
