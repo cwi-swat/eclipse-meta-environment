@@ -25,6 +25,8 @@
 
    <plugin
          id="asfsdf_fragment_linux_x86"
+         os="linux"
+         arch="x86,x86_64"
          download-size="0"
          install-size="0"
          version="0.1.0"
@@ -47,13 +49,13 @@
          id="aterm_java"
          download-size="0"
          install-size="0"
-         version="1.8.1"/>
+         version="1.8.0"/>
 
    <plugin
          id="config_support_java"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
    <plugin
          id="error_support_java"
@@ -65,13 +67,13 @@
          id="graph_support_java"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
    <plugin
          id="io_support_java"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
    <plugin
          id="JJTraveler"
@@ -89,7 +91,7 @@
          id="module_support_java"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
    <plugin
          id="pt_support_java"
@@ -101,13 +103,13 @@
          id="rstore_support_java"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
    <plugin
          id="shared_objects"
          download-size="0"
          install-size="0"
-         version="1.4.8"/>
+         version="1.4.6"/>
 
    <plugin
          id="toolbus_ng"
@@ -120,12 +122,6 @@
          download-size="0"
          install-size="0"
          version="1.0.3"/>
-
-   <plugin
-         id="vis_plugin_charts_imp"
-         download-size="0"
-         install-size="0"
-         version="0.1.0"/>
 
    <plugin
          id="vis_plugin_graph_imp"
