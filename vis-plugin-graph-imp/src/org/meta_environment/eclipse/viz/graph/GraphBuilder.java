@@ -24,7 +24,7 @@ import prefuse.data.Node;
 public class GraphBuilder {
     private static final TypeFactory types = org.eclipse.imp.pdb.facts.type.TypeFactory.getInstance();
 	private HashMap<String, Node> fNodeCache = new HashMap<String, Node>();
-	private static final Type locatedNodeType = types.tupleTypeOf(types.stringType(), types.sourceLocationType());
+	private static final Type locatedNodeType = types.tupleType(types.stringType(), types.sourceLocationType());
 	private static final Pattern colorPattern = Pattern.compile("rgb\\(([^,]*),([^,]*),([^,]*)\\)");
 	private static Type attributedGraphType;
 	private static Map<String, String> attrKeyMap;
@@ -32,9 +32,9 @@ public class GraphBuilder {
 	public GraphBuilder() {
     	//create tuple type: <rel[str,rel[str,str]],rel[str,str]>
     	StringType st = types.stringType();
-    	RelationType rss = types.relTypeOf(st, st);
-    	RelationType rsr = types.relTypeOf(st, rss);
-    	attributedGraphType = types.tupleTypeOf(rsr, rss);
+    	RelationType rss = types.relType(st, st);
+    	RelationType rsr = types.relType(st, rss);
+    	attributedGraphType = types.tupleType(rsr, rss);
     
     	attrKeyMap = new HashMap<String, String>();
     	attrKeyMap.put("label", DotAdapter.DOT_LABEL);
@@ -62,7 +62,8 @@ public class GraphBuilder {
         fNodeCache.clear();
         DotAdapter graph = new DotAdapter();
 
-        for (ITuple tuple : rel) {
+        for (IValue value : rel) {
+        	ITuple tuple = (ITuple) value;
             Node from = getOrCreateNode(graph, tuple.get(0));
             Node to = getOrCreateNode(graph, tuple.get(1));
 
@@ -82,12 +83,14 @@ public class GraphBuilder {
     	IRelation nodes = (IRelation) rel.get(0);
     	IRelation edges = (IRelation) rel.get(1);
     	
-    	for (ITuple tuple : nodes) {
+    	for (IValue value : nodes) {
+        	ITuple tuple = (ITuple) value;
     		Node node = getOrCreateNode(graph, tuple.get(0));
     		setAttributes(graph, node, (IRelation) tuple.get(1));
     	}
     	
-    	for (ITuple tuple : edges) {
+    	for (IValue value : edges) {
+        	ITuple tuple = (ITuple) value;
     		createEdge(graph, tuple.get(0), tuple.get(1));
     	}
     	
@@ -121,7 +124,8 @@ public class GraphBuilder {
     }
     
     private void setAttributes(DotAdapter da, Node node, IRelation attrs) {
-    	for (ITuple attr : attrs) {
+    	for (IValue value : attrs) {
+        	ITuple attr = (ITuple) value;
     		String attrKey = ((IString)attr.get(0)).getValue();
     		String dotKey = attrKeyMap.get(attrKey);
     		if (dotKey != null) {
