@@ -1,10 +1,12 @@
+include $(top_srcdir)/Makefile.meta
+
 lib_LTLIBRARIES = libSGLRInvoker.la
 
 AM_CPPFLAGS = -I$(srcdir)
 
-libSGLRInvoker_la_SOURCES = SGLRInvoker.c
-
 include_HEADERS = sglr_SGLRInvoker.h
+
+libSGLRInvoker_la_SOURCES = SGLRInvoker.c
 
 INCLUDES= \
         -I$(top_srcdir)/lib \
