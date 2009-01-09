@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libSGLRInvoker.la
 
 AM_CPPFLAGS = -I$(srcdir)
 
-include_HEADERS = sglr_SGLRInvoker.h
+noinst_HEADERS = sglr_SGLRInvoker.h
 
 libSGLRInvoker_la_SOURCES = SGLRInvoker.c
 
