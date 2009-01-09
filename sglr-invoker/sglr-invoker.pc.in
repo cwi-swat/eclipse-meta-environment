@@ -4,7 +4,7 @@ Name: sglr-invoker
 Description: 
 Version: 0.1
 EclipseRequires=org.eclipse.imp.pdb.values
-Requires: sglr
+Requires: sglr,aterm,error-support,pt-support,ptable-support
 JarFile=sglr-invoker.jar
 Jars=${prefix}/share/${JarFile}
 Packages=sglr

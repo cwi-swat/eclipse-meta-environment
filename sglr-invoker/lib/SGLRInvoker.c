@@ -27,7 +27,7 @@ JNIEXPORT jint JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject met
 
 static ATerm result = NULL;
 
-static ATerm parse(const unsigned char *inputString, const unsigned char *parseTableName){
+static ATerm parse(const unsigned char *inputString, const char *parseTableName){
 	PT_ParseTree parseTree;
 	
 	InputString sglrInputString = IS_createInputStringFromString(inputString);
@@ -65,7 +65,7 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject method){
 	/* Get parse table. */
 	jmethodID getParseTableName = (*env)->GetMethodID(env, clazz, "getParseTableName", "()Ljava/lang/String;");
 	jstring parseTableNameString = (*env)->CallNonvirtualObjectMethod(env, method, clazz, getParseTableName);
-	const unsigned char *parseTableName = (*env)->GetStringUTFChars(env, parseTableNameString, NULL);
+	const char *parseTableName = (*env)->GetStringUTFChars(env, parseTableNameString, NULL);
 	
 	/* Call parser. */
 	result = parse(inputString, parseTableName); /* No need to protect the result, since no GC will occur until the next invocation of the parser (in which case we want the old result to be collectable). */
