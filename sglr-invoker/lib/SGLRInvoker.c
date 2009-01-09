@@ -16,7 +16,7 @@
 
 static int initialized = 0;
 
-JNIEXPORT jint JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject method){
+JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject method){
 	if(!initialized){
 		ATerm x;
 		ATinit(0, NULL, &x);
@@ -73,8 +73,6 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject method){
 	/* Release stuff. */
 	(*env)->ReleaseStringUTFChars(env, parseTableNameString, parseTableName);
 }
-
-static BinaryWriter resultWriter = NULL;
 
 JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_getResultData(JNIEnv* env, jobject method){
 	char *resultData = ATwriteToString(result); /* ResultData doesn't need to be freed, since it's managed by the aterm library. */

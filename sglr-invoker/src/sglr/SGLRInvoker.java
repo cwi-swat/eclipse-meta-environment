@@ -186,7 +186,7 @@ public class SGLRInvoker implements Runnable{
 		return parseTableName;
 	}
 	
-	private native int initialize();
+	private native void initialize();
 	
 	private native void parse();
 	

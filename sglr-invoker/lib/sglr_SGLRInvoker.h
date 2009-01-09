@@ -10,9 +10,9 @@ extern "C" {
 /*
  * Class:     sglr_SGLRInvoker
  * Method:    initialize
- * Signature: ()I
+ * Signature: ()V
  */
-JNIEXPORT jint JNICALL Java_sglr_SGLRInvoker_initialize
+JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize
   (JNIEnv *, jobject);
 
 /*
