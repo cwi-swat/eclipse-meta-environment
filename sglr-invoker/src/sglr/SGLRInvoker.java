@@ -43,7 +43,7 @@ public class SGLRInvoker implements Runnable{
 	public static SGLRInvoker getInstance(){
 		if(instance == null){
 			synchronized(SGLRInvoker.class){
-				if(instance == null){
+				if(instance == null){ // Yes DCL works on volatiles.
 					instance = new SGLRInvoker();
 					instance.start();
 				}
@@ -101,7 +101,7 @@ public class SGLRInvoker implements Runnable{
 		}
 	}
 	
-	private byte[] buffer = new byte[8192]; // Shared / locked.
+	private byte[] buffer = new byte[8192]; // Shared & locked.
 	
 	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName) throws IOException{
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
@@ -142,7 +142,7 @@ public class SGLRInvoker implements Runnable{
 		synchronized(readerDoneLock){
 			ByteBuffer inputStringBuffer = getInputStringBuffer(inputString.length);
 			inputStringBuffer.put(inputString);
-			inputStringBuffer.put((byte) 0);
+			inputStringBuffer.put((byte) 0); // \0 terminated.
 			inputStringBuffer.flip();
 			this.inputString = inputStringBuffer;
 			this.parseTableName = parseTableName;
