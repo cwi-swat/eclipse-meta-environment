@@ -54,7 +54,9 @@ static ATerm parse(const unsigned char *inputString, const char *parseTableName)
 	return PT_ParseTreeToTerm(parseTree);
 }
 
-JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject method){
+JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject method){
+	char *resultData;
+	
 	jclass clazz = (*env)->GetObjectClass(env, method);
 	
 	/* Get source data. */
@@ -72,10 +74,8 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject method){
 	
 	/* Release stuff. */
 	(*env)->ReleaseStringUTFChars(env, parseTableNameString, parseTableName);
-}
-
-JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_getResultData(JNIEnv* env, jobject method){
-	char *resultData = ATwriteToString(result); /* ResultData doesn't need to be freed, since it's managed by the aterm library. */
+	
+	resultData = ATwriteToString(result); /* ResultData doesn't need to be freed, since it's managed by the aterm library. */
 	
 	return (*env)->NewDirectByteBuffer(env, resultData, strlen(resultData));
 }

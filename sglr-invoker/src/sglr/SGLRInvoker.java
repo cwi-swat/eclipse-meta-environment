@@ -88,10 +88,12 @@ public class SGLRInvoker implements Runnable{
 			}
 			
 			// Invoke the parser.
-			parse();
+			ByteBuffer resultBuffer = parse();
 			
-			// Get the result.
-			result = getResult();
+			// Construct the result.
+			byte[] data = new byte[resultBuffer.capacity()];
+			resultBuffer.get(data);
+			result = data;
 			
 			// Cleanup.
 			inputString = null;
@@ -201,14 +203,6 @@ public class SGLRInvoker implements Runnable{
 		return parseTree;
 	}
 	
-	private byte[] getResult(){
-		ByteBuffer buffer = getResultData();
-		
-		byte[] data = new byte[buffer.capacity()];
-		buffer.get(data);
-		return data;
-	}
-	
 	private ByteBuffer getInputString(){
 		return inputString;
 	}
@@ -219,9 +213,7 @@ public class SGLRInvoker implements Runnable{
 	
 	private native void initialize();
 	
-	private native void parse();
-	
-	private native ByteBuffer getResultData();
+	private native ByteBuffer parse();
 	
 	private static class NotifiableLock{
 		public boolean notified = false;

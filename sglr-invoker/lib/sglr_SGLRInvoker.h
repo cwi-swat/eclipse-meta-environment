@@ -18,17 +18,9 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize
 /*
  * Class:     sglr_SGLRInvoker
  * Method:    parse
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_parse
-  (JNIEnv *, jobject);
-
-/*
- * Class:     sglr_SGLRInvoker
- * Method:    getResultData
  * Signature: ()Ljava/nio/ByteBuffer;
  */
-JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_getResultData
+JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_parse
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus
