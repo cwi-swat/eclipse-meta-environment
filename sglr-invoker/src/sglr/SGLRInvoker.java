@@ -1,9 +1,12 @@
 package sglr;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class SGLRInvoker implements Runnable{
 	static{
@@ -101,9 +104,17 @@ public class SGLRInvoker implements Runnable{
 		}
 	}
 	
+	public synchronized byte[] parseFromString(String inputString, String parseTableName){
+		if(inputString == null) throw new IllegalArgumentException("InputString must not be null.");
+		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
+		
+		return reallyParse(fillInputStringBufferFromBytes(inputString.getBytes()), parseTableName);
+	}
+	
 	private byte[] buffer = new byte[8192]; // Shared & locked.
 	
 	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName) throws IOException{
+		if(inputStringStream == null) throw new IllegalArgumentException("InputStringStream must not be null.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
 		ByteArrayOutputStream inputStringData = new ByteArrayOutputStream();
@@ -113,14 +124,15 @@ public class SGLRInvoker implements Runnable{
 			inputStringData.write(buffer, 0, bytesRead);
 		}
 		
-		return reallyParse(inputStringData.toByteArray(), parseTableName);
+		return reallyParse(fillInputStringBufferFromBytes(inputStringData.toByteArray()), parseTableName);
 	}
 	
-	public byte[] parse(String inputString, String parseTableName){
-		if(inputString == null) throw new IllegalArgumentException("InputString must not be null.");
+	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
+		if(inputFile == null) throw new IllegalArgumentException("InputFile must not be null.");
+		if(!inputFile.exists()) throw new IllegalArgumentException("InputFile "+inputFile+" does not exist.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
-		return reallyParse(inputString.getBytes(), parseTableName);
+		return reallyParse(fillInputStringBufferFromFile(inputFile), parseTableName);
 	}
 	
 	private ByteBuffer cachedInputStringBuffer = ByteBuffer.allocateDirect(65536);
@@ -138,12 +150,31 @@ public class SGLRInvoker implements Runnable{
 		return cachedInputStringBuffer;
 	}
 	
-	private byte[] reallyParse(byte[] inputString, String parseTableName){
+	private ByteBuffer fillInputStringBufferFromBytes(byte[] inputStringData){
+		ByteBuffer inputStringBuffer = getInputStringBuffer(inputStringData.length);
+		inputStringBuffer.put(inputStringData);
+		inputStringBuffer.put((byte) 0); // \0 terminated.
+		inputStringBuffer.flip();
+		
+		return inputStringBuffer;
+	}
+	
+	private ByteBuffer fillInputStringBufferFromFile(File inputFile) throws IOException{
+		ByteBuffer inputStringBuffer = getInputStringBuffer((int) inputFile.length()); // If you want to parse something larger then 2GB it won't work anyway.
+		FileInputStream fis = null;
+		try{
+			fis = new FileInputStream(inputFile);
+			FileChannel fc = fis.getChannel();
+			fc.read(inputStringBuffer);
+		}finally{
+			if(fis != null) fis.close();
+		}
+		inputStringBuffer.flip();
+		return inputStringBuffer;
+	}
+	
+	private byte[] reallyParse(ByteBuffer inputStringBuffer, String parseTableName){
 		synchronized(readerDoneLock){
-			ByteBuffer inputStringBuffer = getInputStringBuffer(inputString.length);
-			inputStringBuffer.put(inputString);
-			inputStringBuffer.put((byte) 0); // \0 terminated.
-			inputStringBuffer.flip();
 			this.inputString = inputStringBuffer;
 			this.parseTableName = parseTableName;
 			
