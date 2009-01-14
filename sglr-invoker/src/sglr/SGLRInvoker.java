@@ -36,15 +36,11 @@ public class SGLRInvoker implements Runnable{
 	
 	private byte[] result;
 	
-	private boolean errorOccurred;
-	
 	private SGLRInvoker(){
 		super();
 		
 		readerThread = new Thread(this);
 		running = false;
-		
-		errorOccurred = false;
 	}
 	
 	public static SGLRInvoker getInstance(){
@@ -78,8 +74,6 @@ public class SGLRInvoker implements Runnable{
 		initialize();
 		
 		while(running){
-			errorOccurred = false;
-			
 			synchronized(readerLock){
 				while(!readerLock.notified){
 					try{
@@ -97,14 +91,9 @@ public class SGLRInvoker implements Runnable{
 			ByteBuffer resultBuffer = null;
 			try{
 				resultBuffer = parse();
-			}catch(RuntimeException rex){
-				errorOccurred = true;
-				
-				synchronized(readerDoneLock){
-					readerDoneLock.notified = true;
-					readerDoneLock.notify();
-				}
-				continue;
+			}catch(NullPointerException npex){
+				npex.printStackTrace();
+				System.err.println(resultBuffer);
 			}
 			
 			// Construct the result.
@@ -211,8 +200,6 @@ public class SGLRInvoker implements Runnable{
 				}
 			}
 			readerDoneLock.notified = false;
-			
-			if(errorOccurred) throw new RuntimeException("A parse error occured.");
 		}
 		
 		byte[] parseTree = result;
