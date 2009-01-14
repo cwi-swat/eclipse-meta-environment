@@ -14,13 +14,13 @@ public class SGRLInvokerDemo{
 		SGLRInvoker sglrInvoker = SGLRInvoker.getInstance();
 		
 		// A few example calls that parse from a string.
-		byte[] data = sglrInvoker.parse("true", "example/booleanTerm.trm.tbl"); // <--
+		byte[] data = sglrInvoker.parseFromString("true", "example/booleanTerm.trm.tbl"); // <--
 		System.out.println(factory.readFromTextFile(new ByteArrayInputStream(data)));
 		
-		data = sglrInvoker.parse("false", "example/booleanTerm.trm.tbl"); // <--
+		data = sglrInvoker.parseFromString("false", "example/booleanTerm.trm.tbl"); // <--
 		System.out.println(factory.readFromTextFile(new ByteArrayInputStream(data)));
 		
-		data = sglrInvoker.parse("true & false", "example/booleanTerm.trm.tbl"); // <--
+		data = sglrInvoker.parseFromString("true & false", "example/booleanTerm.trm.tbl"); // <--
 		System.out.println(factory.readFromTextFile(new ByteArrayInputStream(data)));
 		
 		
