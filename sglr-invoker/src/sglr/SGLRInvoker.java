@@ -88,13 +88,7 @@ public class SGLRInvoker implements Runnable{
 			}
 			
 			// Invoke the parser.
-			ByteBuffer resultBuffer = null;
-			try{
-				resultBuffer = parse();
-			}catch(NullPointerException npex){
-				npex.printStackTrace();
-				System.err.println(resultBuffer);
-			}
+			ByteBuffer resultBuffer = parse();
 			
 			// Construct the result.
 			byte[] data = new byte[resultBuffer.capacity()];
