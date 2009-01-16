@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
-<plugin>
+<plugin
+   id="asfsdf_plugin"
+   name="asfsdf-plugin"
+   version="0.1"
+>
    <extension
          point="toolbus.binaryProvider">
       <binaryProvider
