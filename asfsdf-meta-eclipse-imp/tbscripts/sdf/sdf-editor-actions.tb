@@ -12,10 +12,9 @@
 process PrettyPrintSdfAction(Filename: str, Language: str) is
 let
   PrettyTree: term,
-  Path : str,
   PrettyText : str,
   ModuleTree : term,
-  ModuleId : term
+  ModuleId : str
 in
   GetModule(SDF_NAMESPACE, Filename, ModuleId?) 
   . GetSDFParsetree(ModuleId, ModuleTree?)
@@ -26,7 +25,7 @@ endlet
 
 process ExtractSDFAction(Filename: str, Language : str) is
 let
-  ModuleId : term
+  ModuleId : str
 in
   GetModule(SDF_NAMESPACE, Filename, ModuleId?) 
   . SDFExtraction(ModuleId)

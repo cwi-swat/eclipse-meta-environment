@@ -8,12 +8,12 @@
 process CleanASFForNewSDFListener is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   Tree: term,
   Result: term,
   Parents: list
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,complete)
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,complete)
   .
   (
     rec-note(mm-attribute-changed(Event?))
@@ -29,12 +29,12 @@ toolbus(CleanASFForNewSDFListener)
 process ASFModuleRegistrar is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   NewPath: term,
   Idle: term
 in
   Idle := no
-  . MM-Subscribe-Attribute-Changed(<module-id>,ASF_NAMESPACE,"status",<term>, created) 
+  . MM-Subscribe-Attribute-Changed(<str>,ASF_NAMESPACE,"status",<term>, created) 
   .
   (
     rec-note(mm-attribute-changed(Event?))
@@ -50,24 +50,17 @@ toolbus(ASFModuleRegistrar)
 process ASFSDFSyntaxChecker is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   Tree: term,
   Result: term,
   Parents: list
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,complete)
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,complete)
   .
   (
     rec-note(mm-attribute-changed(Event?))
     . ACE-GetModuleId(Event, ModuleId?)
-    . MM-GetModuleParents(ModuleId, Parents?)
-    . /* we only check top modules */
-    if equal(Parents, []) then
-      printf("Checking syntax\n") .
-      CheckASFSDFSyntax(ModuleId)
-    else
-      tau
-    fi
+    .  CheckASFSDFSyntax(ModuleId)
   )
   *
   delta
@@ -78,11 +71,11 @@ toolbus(ASFSDFSyntaxChecker)
 process ASFModuleChecker is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   NewPath: term,
   Tree: term
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,ASF_NAMESPACE,"status",dirty,parsed)  
+  MM-Subscribe-Attribute-Changed(<str>,ASF_NAMESPACE,"status",dirty,parsed)  
   .
   (
     rec-note(mm-attribute-changed(Event?))
@@ -98,11 +91,11 @@ toolbus(ASFModuleChecker)
 process ASFAutoBuild is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
-  SdfModuleId : module-id,
+  ModuleId: str,
+  SdfModuleId : str,
   Tree: term
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,ASF_NAMESPACE,"status",<term>, clean)
+  MM-Subscribe-Attribute-Changed(<str>,ASF_NAMESPACE,"status",<term>, clean)
   .
   (
   
@@ -134,8 +127,8 @@ let
   ErrorSummary : term,
   ParseResult : term,
   Annotated : term,
-  ModuleId : module-id,
-  SdfModuleId : module-id
+  ModuleId : str,
+  SdfModuleId : str
 in
   (
     rec-msg(pc-parse-event(ASF_NAMESPACE, Filename?, Contents?))

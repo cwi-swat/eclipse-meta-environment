@@ -7,7 +7,7 @@ let
   Error: term,
   Table: term,
   Type: str,
-  ModuleId: term
+  ModuleId: str
 in
   Type := "sdf"
   . Table := UNDEFINED
@@ -16,7 +16,7 @@ in
     rec-msg(get-parsetable(ModuleId?, Type))
     .
     if equal(Table, UNDEFINED) then 
-      snd-msg(ioj-read-and-pack-term("platform:/plugin/pgen/grammar/Sdf2.saf"))
+      snd-msg(ioj-read-and-pack-term("plugin://asfsdf_plugin/install/share/pgen/Sdf2.saf"))
       .
       (
         rec-msg(ioj-packed-term(Table?))

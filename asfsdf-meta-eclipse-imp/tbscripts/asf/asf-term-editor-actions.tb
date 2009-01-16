@@ -19,7 +19,7 @@
 
 process ReduceAction(Filename: str, Language: str) is
 let 
-  ModuleId : module-id
+  ModuleId : str
 in
   GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
   . ReduceMyTerm(ModuleId, Filename, false)
@@ -27,9 +27,9 @@ endlet
 
 process CheckAction(Path: str, Language : str) is
 let
-  TermModuleId : module-id,
-  SdfModuleId : module-id,
-  RunModuleId : module-id,
+  TermModuleId : str,
+  SdfModuleId : str,
+  RunModuleId : str,
   ResultTree: term,
   Summary: summary
 in
@@ -56,9 +56,9 @@ endlet
 
 process RunAction(Path: str, Language : str) is
 let
-  TermModuleId : module-id,
-  SdfModuleId : module-id,
-  RunModuleId : module-id,
+  TermModuleId : str,
+  SdfModuleId : str,
+  RunModuleId : str,
   ResultTree: term,
   Sid: session-id,
   Pid: int,
@@ -89,9 +89,9 @@ endlet
 
 process ExtractAction(Path: str, Language : str) is
 let
-  TermModuleId : module-id,
-  SdfModuleId : module-id,
-  ExtractModuleId : module-id,
+  TermModuleId : str,
+  SdfModuleId : str,
+  ExtractModuleId : str,
   ResultTree: term,
   Pid: int,
   Language: str,
@@ -123,9 +123,9 @@ endlet
 
 process TestAction(Path: str, Language : str) is
 let
-  TermModuleId : module-id,
-  SdfModuleId : module-id,
-  RunModuleId : module-id,
+  TermModuleId : str,
+  SdfModuleId : str,
+  RunModuleId : str,
   ResultTree: term,
   Summary: summary
 in
@@ -154,8 +154,8 @@ process PrettyPrintTermAction(Path: str, Language : str) is
 let
   Tree : term,
   RTree : term,
-  SdfModuleId: module-id,
-  TermModuleId : module-id,
+  SdfModuleId: str,
+  TermModuleId : str,
   Text : str
 in
   printf("PrettyPrintTermAction: %s - %s\n", Path, Language) .

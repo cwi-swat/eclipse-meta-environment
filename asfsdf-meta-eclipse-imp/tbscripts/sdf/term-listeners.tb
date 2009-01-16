@@ -5,17 +5,16 @@
 
 process TermCreator is
 let
-  ModuleId : module-id,
+  ModuleId : str,
   Event : attribute-changed-event
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,TERM_NAMESPACE,"status",<term>,created)
+  MM-Subscribe-Attribute-Changed(<str>,TERM_NAMESPACE,"status",<term>,created)
   .
   ( 
     rec-note(mm-attribute-changed(Event?))
-    . printf("Term module created: %t\n", Event)
     . ACE-GetModuleId(Event, ModuleId?)
     . MM-SetAttribute(ModuleId, TERM_NAMESPACE, "status", idle)
-    . MM-SetAttribute(ModuleId, TERM_NAMESPACE, "language", UNDEFINED)
+    /*. MM-SetAttribute(ModuleId, TERM_NAMESPACE, "language", UNDEFINED)*/
   ) * delta
 endlet
 
@@ -25,7 +24,8 @@ process TermLanguageSetter is
 let
   Filename : str,
   Language : str,
-  ModuleId : module-id
+  ModuleId : str,
+  SdfModuleId : str
 in
   subscribe(tlr-set-language(<str>, <str>))
   .
@@ -33,7 +33,10 @@ in
     rec-note(tlr-set-language(Filename?, Language?))
     . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
     . MM-SetAttribute(ModuleId, TERM_NAMESPACE, "language", Language)
-    . printf("Set language of %s to %s\n", Filename, Language)
+    /* Remove the old dependancies and add the new one. */
+    . MM-DeleteModuleDependencies(ModuleId) 
+    . TermToSdfModuleId(ModuleId, SdfModuleId?)
+    . MM-AddModuleDependency(ModuleId, SdfModuleId)
   +
     rec-msg(tlr-get-language(Filename?))
     . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
@@ -54,16 +57,15 @@ let
   ParseResult : term,
   Annotated : term,
   Language : str,
-  SdfModuleId : module-id,
-  ModuleId : module-id
+  SdfModuleId : str,
+  ModuleId : str
 in
   printf("listening for pc-parse-event(TERM_NAMESPACE, Filename?, Contents?)\n") .
   (
     rec-msg(pc-parse-event(TERM_NAMESPACE, Filename?, Contents?))
     . printf("received pc-parse-event for TERM_NAMESPACE\n")
     . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
-    . TermToSdfModuleId (ModuleId, SdfModuleId?)
-    . printf("sdfmoduleid: %t for moduleid %t\n", SdfModuleId, ModuleId)
+    . TermToSdfModuleId(ModuleId, SdfModuleId?)
     .
     if not-equal(SdfModuleId, UNDEFINED) then
       GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
@@ -83,7 +85,7 @@ in
       else
         snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
       fi
-    else
+   else
       snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
     fi
   ) * delta 

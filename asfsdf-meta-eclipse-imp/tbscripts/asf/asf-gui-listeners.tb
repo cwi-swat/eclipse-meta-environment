@@ -13,7 +13,7 @@
 process LanguageFeatureMenuListener(Feature : str, Action : str, Info : str) is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   Path: term,
   Modulename: str,
   FeatureModulename: str,
@@ -23,7 +23,7 @@ let
   Pid: int,
   Tip: str
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",identified,<term>) 
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",identified,<term>) 
   . printf("Language feature listener started: %s will start %s\n", Feature, Action)
   .
   (
@@ -63,7 +63,7 @@ toolbus(LanguageFeatureMenuListener("draw", "DrawAction","Display using Scalable
 toolbus(LanguageFeatureMenuListener("test", "TestAction","Run unit tests"))
 toolbus(LanguageFeatureMenuListener("display", "DisplayAction","Display a Swing GUI"))
 
-process LanguageFeatureRemoveListener(ModuleId: module-id, Language : str, Label: str) is
+process LanguageFeatureRemoveListener(ModuleId: str, Language : str, Label: str) is
   subscribe(mm-module-deleted(ModuleId))
   .
   (

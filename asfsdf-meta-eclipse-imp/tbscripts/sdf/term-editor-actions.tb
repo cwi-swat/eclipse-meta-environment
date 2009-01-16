@@ -27,8 +27,8 @@ process ShowSharedTreeAction(Path: str, Language: str) is
 
 process AddBracketsAction(Path: str, Language: str) is
 let
-	TermModuleId : term,
-	SdfModuleId : term,
+	TermModuleId : str,
+	SdfModuleId : str,
 	Tree : term,
 	BracketedTree : term,
 	BracketedText : str
@@ -49,8 +49,8 @@ endlet
 
 process DefaultPrettyPrintAction(Path: str, Language: str) is
 let
-	TermModuleId : term,
-	SdfModuleId : term,
+	TermModuleId : str,
+	SdfModuleId : str,
 	Tree : term,
 	PrettyTree : term,
 	PrettyText : str

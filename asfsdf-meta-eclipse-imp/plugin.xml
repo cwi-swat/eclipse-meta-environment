@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-  <extension
-         id="test-config"
-         name="test-config"
-         point="toolbus.config">
-          <toolbus config="tbscripts/asfsdf-meta.props"/>
-   </extension>
    <extension
          point="org.eclipse.imp.runtime.languageDescription">
       <language
@@ -381,5 +375,17 @@
              The ASF+SDF perspective loads the views that are apropriate for editing and testing ASF+SDF programs.
           </description>
        </perspective>
+    </extension>
+    <extension
+          point="toolbus.includePath">
+       <toolbus.includePath
+             path="tbscripts">
+       </toolbus.includePath>
+    </extension>
+    <extension
+          point="toolbus.mainScript">
+       <toolbus.mainScript
+             path="tbscripts/main.tb">
+       </toolbus.mainScript>
     </extension>
     </plugin>

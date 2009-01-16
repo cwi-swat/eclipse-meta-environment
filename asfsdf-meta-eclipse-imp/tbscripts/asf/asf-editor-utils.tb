@@ -7,11 +7,11 @@
 #include <asf-utils.tb>
 #include <undefined.h>
 
-process EditEquations(ModuleId: module-id) is
+process EditEquations(ModuleId: str) is
 let
   Path: str,
   AsfPath: str,
-  AsfModuleId : module-id
+  AsfModuleId : str
 in
   GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
   . SdfPath2AsfPath(Path?, AsfPath?)
@@ -19,11 +19,11 @@ in
   . snd-msg(et-open-editor(AsfPath, ASF_NAMESPACE))
 endlet
 
-process EditSyntax(ModuleId: module-id) is
+process EditSyntax(ModuleId: str) is
 let
   Path: str,
   SdfPath: str,
-  SdfModuleId : module-id
+  SdfModuleId : str
 in
   GetModulePath(ModuleId, ASF_NAMESPACE, Path?)
   . AsfPath2SdfPath(Path, SdfPath?)
@@ -32,14 +32,14 @@ in
 endlet
 
 
-process ReduceMyTerm(ModuleId: module-id, Filename: str, Debugging: term) is
+process ReduceMyTerm(ModuleId: str, Filename: str, Debugging: term) is
 let
-  Result: term,
-  ResultText: str,
-  TermModuleId : module-id,
+  Result : term,
+  ResultText : str,
+  TermModuleId : str,
   TermPath : str,
   Language : str,
-  SdfModuleId : module-id
+  SdfModuleId : str
 in
   MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
   . if not-equal(Language, UNDEFINED) then

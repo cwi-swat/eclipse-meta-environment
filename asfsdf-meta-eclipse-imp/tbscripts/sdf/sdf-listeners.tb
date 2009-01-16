@@ -40,12 +40,12 @@ toolbus(InitializeInheritedStatus)
 process SDFModuleParser is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   Tree: term,
   Pid: int
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,created)
-  . MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,dirty) 
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,created)
+  . MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,dirty) 
   .
   (
     rec-note(mm-attribute-changed(Event?))
@@ -71,11 +71,11 @@ toolbus(SDFModuleParser)
 process SDFModuleIdentifier is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   Tree: term,
   Result: term
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,parsed)
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,parsed)
   .
   (
     rec-note(mm-attribute-changed(Event?))
@@ -93,12 +93,12 @@ process SDFSetModuleImports is
 let
   Event: attribute-changed-event,
   Import: str,
-  ImportId: module-id,
+  ImportId: str,
   Imports: list,
-  ModuleId: module-id,
+  ModuleId: str,
   Tree: term
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,identified)
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,identified)
   .
   (
     rec-note(mm-attribute-changed(Event?))
@@ -138,10 +138,10 @@ toolbus(SDFSetModuleImports)
 process SDFRemoveDependencies is
 let
   Event: attribute-changed-event,
-  ModuleId: module-id,
+  ModuleId: str,
   Value: term
 in
-  MM-Subscribe-Attribute-Changed(<module-id>,SDF_NAMESPACE,"status",<term>,unknown)
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,unknown)
   .
   (
     rec-note(mm-attribute-changed(Event?))
@@ -169,7 +169,7 @@ let
   ErrorSummary : term,
   ParseResult : term,
   Annotated : term,
-  ModuleId : module-id
+  ModuleId : str
 in
   (
     rec-msg(pc-parse-event(SDF_NAMESPACE, Filename?, Contents?))

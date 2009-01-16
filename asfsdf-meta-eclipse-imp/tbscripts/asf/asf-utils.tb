@@ -32,12 +32,12 @@ process SdfPath2AsfPath(SdfPath : str, AsfPath : str?) is
  * It reuses the same module Id, and constructs an ASF path from
  * a SDF path.
  */
-process RegisterASFModule(ModuleId: module-id) is
+process RegisterASFModule(ModuleId: str) is
 let
   AsfPath: str,
   Modulename: str,
   SdfPath: str,
-  SdfModuleId: module-id
+  SdfModuleId: str
 in
   GetModulePath(ModuleId, ASF_NAMESPACE, AsfPath?)
   . printf("Asf path: %t\n", AsfPath)
@@ -57,7 +57,7 @@ endlet
 
 
 
-process Asf2SdfId(AsfModuleId: module-id, SdfModuleId: module-id?) is
+process Asf2SdfId(AsfModuleId: str, SdfModuleId: str?) is
 let
   AsfPath : str,
   SdfPath : str
@@ -73,7 +73,7 @@ in
   fi
 endlet
 
-process Sdf2AsfId(SdfModuleId: module-id, AsfModuleId: module-id?) is
+process Sdf2AsfId(SdfModuleId: str, AsfModuleId: str?) is
 let
   AsfPath : str,
   SdfPath : str
@@ -89,10 +89,10 @@ in
   fi
 endlet
   
-process GetASFModuleId(Filename : str, ModuleId : module-id?) is
+process GetASFModuleId(Filename : str, ModuleId : str?) is
   GetOrCreateModule(ASF_NAMESPACE, Filename, ModuleId?)
 
-process OpenASFModule(ModuleId: module-id) is
+process OpenASFModule(ModuleId: str) is
 let
   AsfPath: str,
   Editable: bool,
@@ -113,7 +113,7 @@ in
   )
 endlet
 
-process CheckASFSDFSyntax(ModuleId : module-id) is
+process CheckASFSDFSyntax(ModuleId : str) is
 let
   Syntax: term,
   Feedback: term,
@@ -142,13 +142,13 @@ in
   . JobDone("Checking syntax definition") 
 endlet
 
-process CheckASFModule(AsfModuleId: module-id) is
+process CheckASFModule(AsfModuleId: str) is
 let
   Summary : summary,
   Errors: list,
   Modulename: str,
   Tree: term,
-  SdfModuleId : module-id,
+  SdfModuleId : str,
   Path : str
 in
   GetASFParseTree(AsfModuleId, Tree?)
@@ -166,13 +166,13 @@ in
   fi
 endlet
 
-process GetASFParseTree(AsfModuleId: module-id, Result: term?) is
+process GetASFParseTree(AsfModuleId: str, Result: term?) is
 let
   AmbPid: int,
   ParseTable: term,
   SdfPath: str,
   AsfPath: str,
-  SdfModuleId : module-id,
+  SdfModuleId : str,
   Pid: int,
   Text: str,
   Type: str,
@@ -237,7 +237,7 @@ in
   rec-msg(compilation-done(Modulename))
 endlet
 
-process CompileModule(ModuleId : module-id, OutputFile: str) is
+process CompileModule(ModuleId : str, OutputFile: str) is
 let
   Equations: term,
   Error: str,
@@ -269,7 +269,7 @@ endlet
 
 
 
-process NormalizeEquations(ModuleId : term, Equations: term, Result : term?) is
+process NormalizeEquations(ModuleId : str, Equations: term, Result : term?) is
 let
   Tree : term,
   SdfPath : str
@@ -298,10 +298,10 @@ is
   . rec-msg(sr-renamed-module(Result?))
   . JobDone("Renaming ...")
 
-process GetSpecification(ModuleId: module-id, Result: term?) is
+process GetSpecification(ModuleId: str, Result: term?) is
 let
   Error: term,
-  CurModule: module-id,
+  CurModule: str,
   Equations: term,
   NormalizedEquations: term,
   RenamedEquations: term,
@@ -314,7 +314,7 @@ let
   Id : int,
   Count : int,
   Done : int,
-  AsfModuleId : module-id
+  AsfModuleId : str
 in
   Id := process-id
   . snd-note(ui-status(start(Id, "Get Specification")))
@@ -360,7 +360,7 @@ in
   . JobDone("Collecting and normalizing specification")
 endlet
 
-process GetSpecificationEquations(ModuleId : module-id, Specification: term, Equations: term?) is
+process GetSpecificationEquations(ModuleId :str, Specification: term, Equations: term?) is
 let
   AsfPath : str
 in
@@ -374,7 +374,7 @@ process GetSpecificationTests(Specification: term, Tests: term?) is
   snd-msg(ao-extract-tests(Specification))
   . rec-msg(ao-extract-tests-result(Tests?))
 
-process TestAsfSpecification(ModuleId: module-id, Debugging: term) is
+process TestAsfSpecification(ModuleId: str, Debugging: term) is
 let
   Specification : term,
   Equations : term,
@@ -427,7 +427,7 @@ in
   . JobDone("Testing ASF Specification")
 endlet
 
-process ReduceTerm(Tree: term, ModuleId: module-id, Debugging: term, NormalForm: term?) is
+process ReduceTerm(Tree: term, ModuleId: str, Debugging: term, NormalForm: term?) is
 let
   Summary: summary,
   Equations: term,
@@ -474,7 +474,7 @@ in
   fi
 endlet
 
-process Reduce(ModuleId : module-id, Path : str, Debugging: term, Tree: term?) is
+process Reduce(ModuleId : str, Path : str, Debugging: term, Tree: term?) is
 let
   Parsetree: term,
   ResultTree: term

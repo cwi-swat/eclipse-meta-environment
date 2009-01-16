@@ -6,7 +6,7 @@ let
   Contents: str,
   Error: term
 in
-  snd-msg(ioj-read-file("platform:/plugin/asfsdf-meta-eclipse-imp/sdf/standard.sdf.actions")) .
+  snd-msg(ioj-read-file("platform:/plugin/asfsdf_meta_eclipse_imp_1.0/tbscripts/sdf/standard.sdf.actions")) .
   (
     rec-msg(ioj-file-contents(Contents?))
     . snd-msg(cm-add-system-properties(Contents))

@@ -17,13 +17,13 @@
 
 process EditorEditEquationsAction(Filename: str, Language: str) is
 let 
-  ModuleId : module-id
+  ModuleId : str
 in
   GetOrCreateModule(SDF_NAMESPACE, Filename, ModuleId?) 
   . EditEquationsAction(ModuleId)
 endlet
 
-process EditEquationsAction(ModuleId : module-id) is
+process EditEquationsAction(ModuleId : str) is
 let
   Pid: int
 in
@@ -32,13 +32,13 @@ endlet
 
 process EditorEditSyntaxAction(Filename: str, Language: str) is
 let 
-  ModuleId : module-id
+  AsfModuleId : str
 in
-  GetOrCreateModule(ASF_NAMESPACE, Filename, ModuleId?) 
-  . EditSyntaxAction(ModuleId)
+  GetOrCreateModule(ASF_NAMESPACE, Filename, AsfModuleId?) 
+  . EditSyntaxAction(AsfModuleId)
 endlet
 
-process EditSyntaxAction(ModuleId : module-id) is
+process EditSyntaxAction(ModuleId : str) is
 let
   Pid: int
 in
@@ -48,7 +48,7 @@ endlet
 process CompileModuleAction(Path: str, Language: str) is
 let
 	NewPath : str,
-	SdfModuleId : term
+	SdfModuleId : str
 in
 	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
 	. ReplaceExtension(Path, ".c", NewPath?)
@@ -58,7 +58,7 @@ endlet
 process RunAsfTestsAction(Path: str, Language: str) is
 let
 	NewPath : str,
-	SdfModuleId : term
+	SdfModuleId : str
 in
 	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
 	. TestAsfSpecification(SdfModuleId, off)
@@ -67,7 +67,7 @@ endlet
 process DebugRunAsfTestsAction(Path: str, Language: str) is
 let
 	NewPath : str,
-	SdfModuleId : term
+	SdfModuleId : str
 in
 	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
 	. TestAsfSpecification(SdfModuleId, on)

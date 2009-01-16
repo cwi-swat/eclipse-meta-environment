@@ -13,9 +13,9 @@
  * returns the pretty printed result as text.
  */
 
-process BoxAndPrettyPrint(ModuleId : module-id, Path: str, Tree: term, RTree :term?) is
+process BoxAndPrettyPrint(ModuleId : str, Path: str, Tree: term, RTree :term?) is
 let
-  PrettyModuleId: module-id,
+  PrettyModuleId: str,
   PrettySpec: term,
   PrettyEquations: term,
   UserDefined: term,

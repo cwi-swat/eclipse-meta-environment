@@ -17,7 +17,7 @@ toolbus(ClearCacheHandler(SDF_NAMESPACE,   [".sdf.pt", "trm.tbl", ".asf.tbl"]))
 /**
  * This process safely/lazily retrieves a module name 
  */
-process SDFGetModulename(ModuleId : module-id, Modulename : str?) is
+process SDFGetModulename(ModuleId : str, Modulename : str?) is
 let
   HasName : bool,
   Status : term
@@ -50,7 +50,7 @@ process GetAllSdfModuleNames(SdfModuleNames : list?) is
 let
   Modules : list,
   Result : list,
-  ModuleId : module-id,
+  ModuleId : str,
   Modulename : str,
   IsSdfModule : bool
 in
@@ -85,7 +85,7 @@ let
   Runner: list,
   Result: list,
   ModuleTree: term,
-  ModuleId: module-id,
+  ModuleId: str,
   Incomplete: bool
 in
   Runner := ModuleIds
@@ -115,7 +115,7 @@ in
   fi
 endlet
 
-process GetSyntaxDefinition(ModuleId: module-id, Syntax: term?) is
+process GetSyntaxDefinition(ModuleId: str, Syntax: term?) is
 let
   ModuleIds: list,
   Modules: list,
@@ -150,133 +150,6 @@ endlet
 process GetImportedModulenames(Tree: term, Imports: list?) is
   snd-msg(sm-get-imported-module-names(Tree))
   . rec-msg(sm-imported-module-names(Imports?)) 
-
-process CloseOtherModules(ModuleId: module-id) is
-let
-  Dependencies: list,
-  CloseModules: list,
-  NewTerm: term
-in
-  MM-GetAllModuleDependencies(ModuleId, Dependencies?)
-  . Dependencies := join(Dependencies, [ModuleId])
-  . MM-GetAllModules(CloseModules?)
-  . CloseModules := diff(CloseModules, Dependencies)
-  . CloseModules(CloseModules)
-endlet
-
-process CloseModule(ModuleId: module-id, Recursive: bool) is
-let
-  Dependencies: list,
-  Modulename: str,
-  CloseModules: list,
-  NewTerm: term
-in
-  MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
-  .
-  if equal(Recursive, true) then
-    MM-GetClosableModules(ModuleId, CloseModules?)
-    .
-    if equal(CloseModules, []) then
-      printf("warning: Unable to close %s, it would break some import(s).\n", Modulename)
-    else
-      CloseModules(CloseModules)
-    fi
-  else
-    MM-GetModuleParents(ModuleId, Dependencies?)
-    .
-    if equal(Dependencies, []) then
-      CloseModules([ModuleId])
-    else
-      printf("warning: Unable to close %s, it would break the import of: %t\n",
-            Modulename, Dependencies)
-    fi
-  fi
-endlet
-
-process CloseModules(CloseModules: list) is
-let
-  ModuleId: module-id,
-  Modules: list
-in
-  Modules := quote(CloseModules)
-  .
-  if not-equal(Modules, []) then
-    ModuleId := first(Modules)
-    . MM-DeleteModule(ModuleId)
-    . Modules := next(Modules)
-  fi
-  *
-  if equal(Modules, []) then
-    tau
-  fi
-endlet
-
-process CancelCreateNewModule(Pid: int, Error: str, Args: list) is
-  snd-note(ui-status(errorf(Error, Args)))
-  . snd-msg(cancel-content-handler(Pid))
-
-process CreateNewModule(Pid: int, Directory: str, Filename: str) is
-let
-  BaseDir: str,
-  Contents: list,
-  Error: term,
-  Extension: str,
-  ModuleId: module-id,
-  Modulename: str,
-  Path: str,
-  SearchPaths: list
-in
-  snd-msg(cm-get-module-paths)
-  . rec-msg(cm-module-paths(SearchPaths?))
-  . snd-msg(sm-get-new-module-name(SearchPaths, Directory, Filename))
-  .
-  (
-    rec-msg(sm-new-module-name(BaseDir?, Modulename?))
-    . MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Modulename, ModuleId?)
-    .
-    if equal(ModuleId, UNDEFINED) then
-      BuildPath(BaseDir, Modulename, SDF_EXTENSION, Path?)
-      . snd-msg(ioj-exists-file(Path))
-      .
-      (
-        rec-msg(ioj-file-exists)
-        . CancelCreateNewModule(Pid, "File %s already exists", [Path])
-      +
-        rec-msg(ioj-file-not-exists)
-        . snd-msg(get-module-contents(Pid, Modulename))
-        . rec-msg(module-contents(Pid, Contents?))
-        . snd-msg(ioj-write-text-list(Path, Contents))
-        .
-        (
-          rec-msg(ioj-file-written)
-          . OpenModule(Modulename, ModuleId?)
-        +
-          rec-msg(ioj-file-not-written(Error?))
-          . snd-note(ui-status(errorf("%s: %s", [Path, Error])))
-        )
-      )
-    else
-      CancelCreateNewModule(Pid, "Module %s already exists", [Modulename])
-    fi
-  +
-    rec-msg(sm-new-module-name-inconsistent)
-    . CancelCreateNewModule(Pid,
-                         "Module %s in %s is inconsistent with module paths",
-                         [Filename, Path])
-  )
-endlet
-
-process CopySdfModule(SrcModulename: str, Directory: str, Filename: str) is
-let
-  Id: int,
-  Pid: int
-in
-  Id := process-id
-  . snd-note(ui-status(statf(Id, "Copying %s to %s", [SrcModulename, Filename])))
-  . create(CopySdfContentHandler(SrcModulename), Pid?)
-  . CreateNewModule(Pid, Directory, Filename)
-  . snd-note(ui-status(endstat(Id)))
-endlet
 
 process CopySdfContentHandler(SrcModulename: str) is
 let
@@ -361,7 +234,7 @@ endlet
 
 /* end of dead code */
 
-process IsLibraryModule(ModuleId: module-id, LibraryModule: bool?) is
+process IsLibraryModule(ModuleId: str, LibraryModule: bool?) is
 let
   Directories: list,
   Filename: str,
@@ -382,50 +255,42 @@ in
   fi
 endlet
 
-process SDFCreateModule(Modulename: str, ModuleId: module-id?) is
-  MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Modulename, ModuleId?)
+process SDFCreateModule(ModuleName: str, ModuleId: str?) is
+let
+  Path : str
+in
+  MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", ModuleName, ModuleId?)
   .
   if equal(ModuleId, UNDEFINED) then
-    MM-CreateModule(ModuleId?)
-    . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename)
-    . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "status", unknown)
-  else
-    tau
-  fi
-
-process OpenModule(Modulename: str, ModuleId: module-id?) is
-let
-  Editable: bool,
-  LibraryModule: bool,
-  Path: str
-in
-  SDFCreateModule(Modulename, ModuleId?)
-  . GetModulePath(ModuleId, SDF_NAMESPACE, Path?)
-  .
-  if equal(Path, EMPTY_PATH) then
-    LocateFile(Modulename, SDF_EXTENSION, Path?)
+    printf("ModuleName: %t\n", ModuleName)
+    .
+    LocateFile(ModuleName, SDF_EXTENSION, Path?)
     .
     if equal(Path, EMPTY_PATH) then
-      printf("warning: Unable to locate %s\n", Modulename)
-      . BuildPath(".", Modulename, SDF_EXTENSION, Path?)
-      . SetModulePath(ModuleId, SDF_NAMESPACE, Path)
-      . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "editable", true)
-      . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "status", unavailable)
-    else
-      SetModulePath(ModuleId, SDF_NAMESPACE, Path)
-      . IsLibraryModule(ModuleId, LibraryModule?)
-      . Editable := not(LibraryModule)
-      . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "editable", Editable)
-      . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "status", dirty)
-    fi
+      printf("warning: Unable to locate %s\n", ModuleName)
+      . BuildPath(".", ModuleName, SDF_EXTENSION, Path?)
+    else tau fi
+    
+    . MM-CreateModule(Path, ModuleId?)
+    . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "name", ModuleName)
+    . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "status", unknown)
   else
     tau
   fi
 endlet
 
+process OpenModule(Modulename: str, ModuleId: str?) is
+let
+  Editable: bool,
+  LibraryModule: bool
+in
+    SDFCreateModule(Modulename, ModuleId?)
+    . SetModulePath(ModuleId, SDF_NAMESPACE, Modulename)
+    . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "editable", true)
+    . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "status", unavailable)
+endlet
 
-
-process GetSDFParsetree(ModuleId: module-id, Result: term?) is
+process GetSDFParsetree(ModuleId: str, Result: term?) is
 let
   ParseTable: term,
   Path: str,
@@ -470,7 +335,7 @@ in
   . snd-msg(tm-end-transaction(sdf-parsing))
 endlet
 
-process SDFIdentifyModule(ModuleId: module-id, ResultStatus: term?) is
+process SDFIdentifyModule(ModuleId: str, ResultStatus: term?) is
 let
   Tree: term,
   Path: str,
@@ -502,7 +367,7 @@ in
   fi
 endlet
 
-process GetImportsForRenaming(ModuleId: module-id, ModuleIds: list, Imports: term?) is
+process GetImportsForRenaming(ModuleId: str, ModuleIds: list, Imports: term?) is
 let
   Modulename: str,
   Modules: list
@@ -518,7 +383,7 @@ in
   fi
 endlet
 
-process SDFExtraction(ModuleId: module-id) is
+process SDFExtraction(ModuleId: str) is
 let
   Modulename: str,
   RStore: rstore,

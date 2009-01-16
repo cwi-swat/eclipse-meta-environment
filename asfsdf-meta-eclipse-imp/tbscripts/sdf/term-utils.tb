@@ -13,10 +13,10 @@
 #define NO_NONTERMINAL ""
 #define TERM_TREE_CACHE "term-annotated-tree"
 
-process GetTermParseTable(SdfModuleId: module-id, Table: term?) is
+process GetTermParseTable(SdfModuleId: str, Table: term?) is
     GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
 
-process GetTermParsetree(SdfModuleId: module-id, Path: str, Result: term?) is
+process GetTermParsetree(SdfModuleId: str, Path: str, Result: term?) is
 let
   AmbPid: int,
   ParseTable: term,
@@ -55,7 +55,7 @@ in
   . snd-msg(tm-end-transaction(term-parsing))
 endlet
 
-process TermToSdfModuleId (ModuleId : module-id, SdfModuleId : module-id?) is
+process TermToSdfModuleId (ModuleId : str, SdfModuleId : str?) is
 let
   Language : str
 in
@@ -63,12 +63,6 @@ in
   . 
   if not-equal(Language, UNDEFINED) then
     MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
-    . 
-    if equal(SdfModuleId, UNDEFINED) then
-      SDFCreateModule(Language, SdfModuleId?)
-    else
-      tau
-    fi
   else
     SdfModuleId := UNDEFINED
   fi
@@ -77,8 +71,8 @@ endlet
 process ShowTree(Path: str, LayoutOn: bool, LeafsOn: bool, SharingOn: bool) is
 let
   Tree : term,
-  TermModuleId: term,
-  SdfModuleId: term,
+  TermModuleId: str,
+  SdfModuleId: str,
   RStore: term
 in
   GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
