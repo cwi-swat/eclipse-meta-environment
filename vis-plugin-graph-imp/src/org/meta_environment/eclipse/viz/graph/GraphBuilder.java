@@ -11,8 +11,6 @@ import org.eclipse.imp.pdb.facts.ISourceLocation;
 import org.eclipse.imp.pdb.facts.IString;
 import org.eclipse.imp.pdb.facts.ITuple;
 import org.eclipse.imp.pdb.facts.IValue;
-import org.eclipse.imp.pdb.facts.type.RelationType;
-import org.eclipse.imp.pdb.facts.type.StringType;
 import org.eclipse.imp.pdb.facts.type.Type;
 import org.eclipse.imp.pdb.facts.type.TypeFactory;
 import org.meta_environment.eclipse.viz.prefusedot.DotAdapter;
@@ -31,9 +29,9 @@ public class GraphBuilder {
 	
 	public GraphBuilder() {
     	//create tuple type: <rel[str,rel[str,str]],rel[str,str]>
-    	StringType st = types.stringType();
-    	RelationType rss = types.relType(st, st);
-    	RelationType rsr = types.relType(st, rss);
+    	Type st = types.stringType();
+    	Type rss = types.relType(st, st);
+    	Type rsr = types.relType(st, rss);
     	attributedGraphType = types.tupleType(rsr, rss);
     
     	attrKeyMap = new HashMap<String, String>();
@@ -47,9 +45,9 @@ public class GraphBuilder {
 	}
 
 	public Graph computeGraph(IValue fact) {
-    	if (fact.getBaseType().equals(attributedGraphType)) {
+    	if (fact.getType().comparable(attributedGraphType)) {
     		return createAttributedGraph((ITuple) fact);
-    	} else if (fact.getBaseType().isRelationType()) {
+    	} else if (fact.getType().isRelationType()) {
             if (((IRelation) fact).arity() == 2) {
                 return convertBinaryRelToGraph((IRelation) fact);
             }
@@ -86,7 +84,7 @@ public class GraphBuilder {
     	for (IValue value : nodes) {
         	ITuple tuple = (ITuple) value;
     		Node node = getOrCreateNode(graph, tuple.get(0));
-    		setAttributes(graph, node, (IRelation) tuple.get(1));
+    		setAttributes(node, (IRelation) tuple.get(1));
     	}
     	
     	for (IValue value : edges) {
@@ -123,7 +121,7 @@ public class GraphBuilder {
         return node;
     }
     
-    private void setAttributes(DotAdapter da, Node node, IRelation attrs) {
+    private void setAttributes(Node node, IRelation attrs) {
     	for (IValue value : attrs) {
         	ITuple attr = (ITuple) value;
     		String attrKey = ((IString)attr.get(0)).getValue();
@@ -161,9 +159,9 @@ public class GraphBuilder {
     }
     
 	private String getNodeName(IValue value) {
-		Type type = value.getBaseType();
+		Type type = value.getType();
 		
-		if (type == locatedNodeType) {
+		if (type.comparable(locatedNodeType)) {
 		    return ((IString) ((ITuple) value).get(0)).getValue();	
 		}
 		
@@ -171,9 +169,9 @@ public class GraphBuilder {
 	}
 	
 	private String getNodeLink(IValue value) {
-		Type type = value.getBaseType();
+		Type type = value.getType();
 		
-		if (type == locatedNodeType) {
+		if (type.comparable(locatedNodeType)) {
 			return ((ISourceLocation) ((ITuple) value).get(1)).getPath();
 		}
 		

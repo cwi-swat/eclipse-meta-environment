@@ -83,7 +83,7 @@ public class GraphView extends EditorPart {
         	GraphInput graphInput = ((GraphInput)input); 
         	relation = graphInput.getValue();
         	setPartName(graphInput.getName());
-        	setContentDescription(relation.getBaseType().toString());
+        	setContentDescription(relation.getType().toString());
         }
 	}
 
