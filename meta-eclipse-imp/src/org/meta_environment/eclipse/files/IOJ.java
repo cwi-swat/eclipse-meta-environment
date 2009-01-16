@@ -12,6 +12,7 @@ import nl.cwi.sen1.configapi.types.PropertyList;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.imp.runtime.RuntimePlugin;
 
 import toolbus.adapter.eclipse.EclipseTool;
@@ -25,6 +26,8 @@ import errorapi.types.Summary;
 
 public class IOJ extends EclipseTool{
 	private final static String TOOL_NAME = "ioj";
+	
+	private final static String PLUGIN_PROTOCOL = "plugin://";
 
 	private final static errorapi.Factory errorFactory = errorapi.Factory.getInstance(factory);
 	private final static nl.cwi.sen1.configapi.Factory configFactory = nl.cwi.sen1.configapi.Factory.getInstance(factory);
@@ -45,6 +48,18 @@ public class IOJ extends EclipseTool{
 	}
 	
 	private static String resolvePath(String path){
+		if(path.indexOf(PLUGIN_PROTOCOL) == 0){
+			try{
+				String url = path.substring(PLUGIN_PROTOCOL.length());
+				String pluginName = url.substring(0, url.indexOf('/'));
+				String location = url.substring(pluginName.length() + 1);
+				
+				path = FileLocator.find(Platform.getBundle(pluginName), new Path(location), null).toString();
+			}catch(RuntimeException rex){
+				// Obviously this wasn't a plugin URL, so just continue.
+			}
+		}
+		
 		try{
 			URL url = new URL(path);
 			return FileLocator.resolve(url).getFile();

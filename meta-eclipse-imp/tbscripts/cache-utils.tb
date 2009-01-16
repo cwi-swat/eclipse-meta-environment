@@ -7,12 +7,12 @@
 process ClearCacheHandler(Namespace : term, Targetexts : list) is
 let
   WTargetexts : list, 
-  ModuleId : module-id,
+  ModuleId : str,
   TargetExt : str,
   Path : str,
   AttributeEvent : attribute-changed-event
 in
-  MM-Subscribe-Attribute-Changed(<module-id>, Namespace, "status", <term>, dirty)
+  MM-Subscribe-Attribute-Changed(<str>, Namespace, "status", <term>, dirty)
   .
   (
     rec-note(mm-attribute-changed(AttributeEvent?))

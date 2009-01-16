@@ -14,14 +14,11 @@ public class AttributeUpdateRuleMap {
 	}
 
 	private ATerm getKey(ATerm namespace, ATerm key, ATerm value) {
-		return namespace.getFactory().makeList(namespace).insert(key).insert(
-				value);
+		return namespace.getFactory().makeList(namespace).insert(key).insert(value);
 	}
 
-	public AttributeUpdateRule put(ATerm namespace, ATerm key, ATerm rule,
-			ATerm predicateValue) {
-		AttributeUpdateRule attr = makeInheritedAttribute(namespace, key, rule,
-				predicateValue);
+	public AttributeUpdateRule put(ATerm namespace, ATerm key, ATerm rule, ATerm predicateValue) {
+		AttributeUpdateRule attr = makeInheritedAttribute(namespace, key, rule, predicateValue);
 
 		map.put(getKey(namespace, key, predicateValue), attr);
 		return attr;
@@ -35,10 +32,8 @@ public class AttributeUpdateRuleMap {
 		map.remove(getKey(namespace, key, predicateValue));
 	}
 
-	private AttributeUpdateRule makeInheritedAttribute(ATerm namespace,
-			ATerm key, ATerm rule, ATerm predicateValue) {
-		AttributeUpdateRule attr = new AttributeUpdateRule(namespace, key, rule,
-				predicateValue);
+	private AttributeUpdateRule makeInheritedAttribute(ATerm namespace, ATerm key, ATerm rule, ATerm predicateValue) {
+		AttributeUpdateRule attr = new AttributeUpdateRule(namespace, key, rule, predicateValue);
 		return attr;
 	}
 

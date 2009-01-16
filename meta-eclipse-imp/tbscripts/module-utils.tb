@@ -14,7 +14,7 @@ process ResourcesService is
 let
   Language : str,
   Path : str,
-  ModuleId : module-id
+  ModuleId : str
 in
   subscribe(res-create-module(<str>,<str>))
   . subscribe(res-delete-module(<str>,<str>))
@@ -36,32 +36,26 @@ endlet
 
 toolbus(ResourcesService)
 
-process CreateModule(Language : str, Path : str, ModuleId : module-id?) is
-   printf("Create module: %t, %t, ", Language, Path)
-   . MM-CreateModule(ModuleId?)
-   . printf(" %t.\n", ModuleId)
+process CreateModule(Language : str, Path : str, ModuleId : str?) is
+   MM-CreateModule(Path, ModuleId?)
    . MM-SetAttribute(ModuleId, Language, "path", path(Path))
    . MM-SetAttribute(ModuleId, Language, "status", created)
 
+process GetModule(Language : str, Path : str, ModuleId : str?) is
+   CreateModule(Language, Path, ModuleId?)
 
-process GetModule(Language : str, Path : str, ModuleId : module-id?) is
-   MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
-
-   
-process GetOrCreateModule(Language : str, Path : str, ModuleId : module-id?) is
+process GetOrCreateModule(Language : str, Path : str, ModuleId : str?) is
    GetModule(Language, Path, ModuleId?)
    .
    if equal(ModuleId, UNDEFINED) then
      CreateModule(Language, Path, ModuleId?)
-   else
-     tau
-   fi
+   else tau fi
    
 process DeleteModule(Language : str, Path : str) is
 let
-  ModuleId : module-id
+  ModuleId : str
 in
-   MM-GetModuleIdByAttribute(Language, "path", path(Path), ModuleId?)
+   ModuleId := Path
    . 
    if not-equal(ModuleId, UNDEFINED) then
      MM-DeleteModule(ModuleId)
@@ -72,14 +66,14 @@ endlet
 
 process ChangedModule(Language : str, Path : str) is
 let
-  ModuleId : module-id
+  ModuleId : str
 in
   printf("Changed module %t language %t\n", Path, Language)
   . GetOrCreateModule(Language, Path, ModuleId?)
   . MM-SetAttribute(ModuleId, Language, "status", dirty)
 endlet
- 
-process GetModulePath(ModuleId: module-id, Namespace: str, Path: str?) is
+
+process GetModulePath(ModuleId: str, Namespace: str, Path: str?) is
 let
   Term: path,
   HasAttribute: bool
@@ -94,7 +88,7 @@ in
   fi
 endlet
 
-process SetModulePath(ModuleId: module-id, Namespace: str, Path: str) is
+process SetModulePath(ModuleId: str, Namespace: str, Path: str) is
 let
   Term: path
 in

@@ -10,12 +10,13 @@ import nl.cwi.sen1.moduleapi.types.TableEntryTable;
 import aterm.ATerm;
 
 public class AttributeTable {
-    private Map<ATerm, ATerm> entries;
-
-    private Factory factory;
+    private final Factory factory;
+    
+    private final Map<ATerm, ATerm> entries;
 
     public AttributeTable(Factory factory) {
         this.factory = factory;
+        
         entries = new HashMap<ATerm, ATerm>();
     }
 

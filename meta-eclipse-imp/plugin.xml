@@ -156,4 +156,10 @@
            language="sdf">
      </labelProvider>
   </extension>
+  <extension
+        point="toolbus.includePath">
+     <toolbus.includePath
+           path="tbscripts">
+     </toolbus.includePath>
+  </extension>
 </plugin>

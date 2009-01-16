@@ -64,8 +64,7 @@ in
       rec-msg(ioj-files-equal)
     +
       rec-msg(ioj-files-differ)
-      . snd-note(ui-status(messagef("Multiple occurrences of %s. Continuing with %s",
-                                    [Name, PeerName])))
+      . snd-note(ui-status(messagef("Multiple occurrences of %s. Continuing with %s", [Name, PeerName])))
     )
   fi
   *
@@ -74,10 +73,7 @@ in
   fi
 endlet
 
-process SplitFilename(Path : str, 
-                      FileName : str?,
-		      Directory : str?, 
-		      Extension : str?) is
+process SplitFilename(Path : str, FileName : str?, Directory : str?, Extension : str?) is
   snd-msg(ioj-get-path-filename(Path))
   . rec-msg(ioj-filename(Path, FileName?))
   . snd-msg(ioj-get-path-directory(Path))

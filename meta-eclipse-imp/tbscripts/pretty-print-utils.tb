@@ -4,9 +4,7 @@
 #include <pandora.idef>
 #include <undefined.h>
 
-process PrettyPrint(Path : str,
-		    Tree : term, 
-		    Result : term?) is
+process PrettyPrint(Path : str, Tree : term,  Result : term?) is
 let
   Id : int,
   Feedback: summary

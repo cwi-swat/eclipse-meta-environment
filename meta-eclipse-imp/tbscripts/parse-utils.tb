@@ -60,7 +60,7 @@ endlet
 process RemoveAmbiguitySummary(Path: str) is
   RemoveSummary("ambtracker", Path)
 
-process ParseTreeHandler(ModuleId: module-id, Path: str) is
+process ParseTreeHandler(ModuleId: str, Path: str) is
 let
   ParseSummary: term,
   ParseResult: term,
@@ -129,7 +129,7 @@ in
   fi
 endlet
 
-process RestoreTermBrackets(ModuleId: module-id, Tree: term, Result: term?) is
+process RestoreTermBrackets(ModuleId: str, Tree: term, Result: term?) is
 let
   Table: term
 in
@@ -143,7 +143,7 @@ in
   fi
 endlet
 
-process AddTermBrackets(ModuleId: module-id, Tree: term, Result: term?) is
+process AddTermBrackets(ModuleId: str, Tree: term, Result: term?) is
 let
   Table: term
 in

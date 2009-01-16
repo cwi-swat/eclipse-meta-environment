@@ -17,7 +17,7 @@ let
   Key: term,
   OldValue: term,
   NewValue: term,
-  ModuleId: module-id
+  ModuleId: str
 in
   (
     rec-msg(mm-attribute-changed(ModuleId?, Namespace?, Key?, OldValue?, NewValue?))
@@ -28,15 +28,12 @@ endlet
 
 toolbus(MM-NotifyAboutChangedAttributes)
 
-process MM-SetModuleGraphAttribute(ModuleId: module-id, Key: term, Value: term) is
-  MM-SetAttribute(ModuleId, GRAPH_NAMESPACE, Key, Value)
-
-process MM-CreateModule(ModuleId: module-id?) is
-  snd-msg(mm-create-module)
+process MM-CreateModule(Path : str, ModuleId: str?) is
+  snd-msg(mm-create-module(Path))
   . rec-msg(mm-module-created(ModuleId?))
   . snd-note(mm-module-created(ModuleId))
 
-process MM-GetModuleIdByAttribute(Namespace: str, Key: term, Value: term, ModuleId: term?) is
+process MM-GetModuleIdByAttribute(Namespace: str, Key: term, Value: term, ModuleId: str?) is
   snd-msg(mm-get-module-id-by-attribute(Namespace, Key, Value))
   .
   (
@@ -50,14 +47,14 @@ process MM-GetAllModules(Modules: list?) is
   snd-msg(mm-get-all-modules)
   . rec-msg(mm-modules(Modules?))
 
-process MM-DeleteModule(ModuleId: module-id) is
+process MM-DeleteModule(ModuleId: str) is
   snd-msg(mm-delete-module(ModuleId))
   . snd-note(mm-module-deleted(ModuleId))
 
-process MM-SetAttribute(ModuleId: module-id, Namespace: str, Key: term, Value: term) is
+process MM-SetAttribute(ModuleId: str, Namespace: str, Key: term, Value: term) is
   snd-msg(mm-add-attribute(ModuleId, Namespace, Key, Value))
 
-process MM-HasAttribute(ModuleId: module-id, Namespace: str, Key: term, HasAttribute: bool?) is
+process MM-HasAttribute(ModuleId: str, Namespace: str, Key: term, HasAttribute: bool?) is
 let
   Value: term
 in
@@ -75,7 +72,7 @@ in
   )
 endlet
 
-process MM-GetAttribute(ModuleId: module-id, Namespace: str, Key: term, Value: term?) is
+process MM-GetAttribute(ModuleId: str, Namespace: str, Key: term, Value: term?) is
   snd-msg(mm-get-attribute(ModuleId, Namespace, Key))
   .
   (
@@ -92,17 +89,7 @@ process MM-GetAttribute(ModuleId: module-id, Namespace: str, Key: term, Value: t
     . Value := UNDEFINED
   )
 
-process MM-GetAllAttributes(ModuleId: module-id, Attributes: term?) is
-  snd-msg(mm-get-all-attributes(ModuleId))
-  .
-  (
-    rec-msg(mm-attributes(ModuleId, Attributes?))
-  +
-    rec-msg(mm-no-such-module(ModuleId))
-    . Attributes := UNDEFINED
-  )
-
-process MM-AddModuleDependency(ModuleId: module-id, Dependency: term) is
+process MM-AddModuleDependency(ModuleId: str, Dependency: str) is
 let
   Event: dependencies-changed-event
 in
@@ -111,11 +98,7 @@ in
   . snd-note(mm-dependencies-changed(Event))
 endlet
 
-process MM-GetDependencies(Dependencies: list?) is
-  snd-msg(mm-get-dependencies)
-  . rec-msg(mm-dependencies(Dependencies?))
-
-process MM-GetModuleDependencies(ModuleId: module-id, Dependencies: list?) is
+process MM-GetModuleDependencies(ModuleId: str, Dependencies: list?) is
   snd-msg(mm-get-children-modules(ModuleId))
   .
   (
@@ -125,7 +108,7 @@ process MM-GetModuleDependencies(ModuleId: module-id, Dependencies: list?) is
     . Dependencies := UNDEFINED
   )
 
-process MM-GetAllModuleDependencies(ModuleId: module-id, Dependencies: list?) is
+process MM-GetAllModuleDependencies(ModuleId: str, Dependencies: list?) is
   snd-msg(mm-get-all-children-modules(ModuleId))
   .
   (
@@ -135,17 +118,7 @@ process MM-GetAllModuleDependencies(ModuleId: module-id, Dependencies: list?) is
     . Dependencies := []
   )
 
-process MM-GetAllModuleParents(ModuleId: module-id, Parents: list?) is
-  snd-msg(mm-get-all-parent-modules(ModuleId))
-  .
-  (
-    rec-msg(mm-all-parent-modules(ModuleId, Parents?))
-  +
-    rec-msg(mm-no-such-module(ModuleId))
-    . Parents := []
-  )
-
-process MM-GetModuleParents(ModuleId: module-id, Parents: list?) is
+process MM-GetModuleParents(ModuleId: str, Parents: list?) is
   snd-msg(mm-get-parent-modules(ModuleId))
   .
   (
@@ -155,11 +128,7 @@ process MM-GetModuleParents(ModuleId: module-id, Parents: list?) is
     . Parents := []
   )
 
-process MM-GetClosableModules(ModuleId: module-id, Modules: list?) is
-  snd-msg(mm-get-closable-modules(ModuleId))
-  . rec-msg(mm-closable-modules(ModuleId, Modules?))
-
-process MM-DeleteModuleDependencies(ModuleId: module-id) is
+process MM-DeleteModuleDependencies(ModuleId: str) is
 let
   Event: dependencies-changed-event
 in
@@ -168,14 +137,10 @@ in
   . snd-note(mm-dependencies-changed(Event))
 endlet
 
-process MM-GetModuleGraph(Namespace: str, Graph: term?) is
-  snd-msg(mm-get-module-graph(Namespace))
-  . rec-msg(mm-module-graph(Namespace, Graph?))
-
-process MM-Subscribe-Attribute-Changed(ModuleId: module-id, Namespace: str, Key: term, OldValue: term, NewValue: term) is
+process MM-Subscribe-Attribute-Changed(ModuleId: str, Namespace: str, Key: term, OldValue: term, NewValue: term) is
   subscribe(mm-attribute-changed(attribute-changed-event(ModuleId, Namespace, Key, OldValue, NewValue)))
 
-process MM-Subscribe-Dependencies-Changed(ModuleId: module-id) is
+process MM-Subscribe-Dependencies-Changed(ModuleId: str) is
   subscribe(mm-dependencies-changed(dependencies-changed-event(ModuleId)))
 
 #endif /* __MODULE_MANAGER__ */

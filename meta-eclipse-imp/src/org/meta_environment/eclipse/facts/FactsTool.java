@@ -21,9 +21,6 @@ import nl.cwi.sen1.relationstores.types.relem.Str;
 import nl.cwi.sen1.relationstores.types.relem.Tuple;
 import nl.cwi.sen1.relationstores.types.rtype.Relation;
 
-import org.eclipse.imp.pdb.facts.IRelation;
-import org.eclipse.imp.pdb.facts.IRelationWriter;
-import org.eclipse.imp.pdb.facts.ISet;
 import org.eclipse.imp.pdb.facts.ISetWriter;
 import org.eclipse.imp.pdb.facts.ISourceRange;
 import org.eclipse.imp.pdb.facts.IString;
@@ -164,7 +161,7 @@ public class FactsTool extends EclipseTool {
 			tmpArray[i] = convertValue(elems.getHead(), columnTypes.getRTypeAt(i));
 		}
 		
-		return values.tuple(tmpArray, size);
+		return values.tuple(tmpArray);
 	}
 
 	private IValue convertLocation(Loc value) {
@@ -206,30 +203,26 @@ public class FactsTool extends EclipseTool {
 	private IValue convertSet(Set value, nl.cwi.sen1.relationstores.types.rtype.Set type) {
 		RElemElements elements = value.getElements();
 		Type elementType = convertType(type.getElementType());
-		ISet set = values.set(elementType);
-		ISetWriter w = set.getWriter();
+		ISetWriter w = values.setWriter(elementType);
 		
 		for ( ; !elements.isEmpty(); elements = elements.getTail()) {
 			w.insert(convertValue(elements.getHead(), type.getElementType()));
 		}
 		
-		w.done();
-		return set;
+		return w.done();
 	}
 
 	private IValue convertRelation(Set value, Relation type) {
 		RElemElements elements = value.getElements();
 		TupleType tupleType = getTupleType(type);
 		nl.cwi.sen1.relationstores.types.rtype.Tuple rTupleType = factory.makeRType_Tuple(type.getColumnTypes());
-		IRelation rel = values.relation(tupleType);
-		IRelationWriter w = rel.getWriter();
+		ISetWriter w = values.relationWriter(tupleType);
 		
 		for ( ; !elements.isEmpty(); elements = elements.getTail()) {
 			w.insert((ITuple) convertValue(elements.getHead(), rTupleType));
 		}
 		
-		w.done();
-		return rel;
+		return w.done();
 	}
 
 	private TupleType getTupleType(Relation type) {
@@ -253,7 +246,7 @@ public class FactsTool extends EclipseTool {
 
 	public Type convertType(RType rtype) {
 		if (rtype.isBag()) {
-			return types.setTypeOf(convertType(rtype.getElementType()));
+			return types.setType(convertType(rtype.getElementType()));
 		}
 		else if (rtype.isBool()) {
 			return types.stringType();
@@ -265,7 +258,7 @@ public class FactsTool extends EclipseTool {
 			return types.relType(convertTupleTypes(rtype.getColumnTypes()));
 		}
 		else if (rtype.isSet()) {
-			return types.setTypeOf(convertType(rtype.getElementType()));
+			return types.setType(convertType(rtype.getElementType()));
 		}
 		else if (rtype.isLoc()) {
 			return types.sourceLocationType();
@@ -290,6 +283,6 @@ public class FactsTool extends EclipseTool {
 			fieldTypes.add(fieldTypes.size(), convertType(columnTypes.getHead()));
 		}
 		
-		return types.tupleTypeOf(fieldTypes);
+		return types.tupleType(fieldTypes);
 	}
 }

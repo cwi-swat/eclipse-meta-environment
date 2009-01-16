@@ -5,7 +5,7 @@
 #include <parsetablegen.idef>
 #include <sdf-namespace.h>
 
-process GetParseTable(ModuleId: module-id, Type: str, Table: term?) is
+process GetParseTable(ModuleId: str, Type: str, Table: term?) is
 let
   Error: term
 in
@@ -27,7 +27,7 @@ endlet
  */
 process BuildParsetable(TableName: str, Namespace: str, Type: str, PreprocessSyntaxHandler: str) is
 let
-  ModuleId: module-id,
+  ModuleId: str,
   Syntax: term,
   Table: term,
   Modulename: str,
