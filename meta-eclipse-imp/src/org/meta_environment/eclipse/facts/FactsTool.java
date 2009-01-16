@@ -30,8 +30,7 @@ import org.eclipse.imp.pdb.facts.db.FactBase;
 import org.eclipse.imp.pdb.facts.db.FactKey;
 import org.eclipse.imp.pdb.facts.db.IFactContext;
 import org.eclipse.imp.pdb.facts.db.IFactKey;
-import org.eclipse.imp.pdb.facts.impl.hash.ValueFactory;
-import org.eclipse.imp.pdb.facts.type.TupleType;
+import org.eclipse.imp.pdb.facts.impl.reference.ValueFactory;
 import org.eclipse.imp.pdb.facts.type.Type;
 import org.eclipse.imp.pdb.facts.type.TypeFactory;
 import org.eclipse.imp.runtime.RuntimePlugin;
@@ -214,7 +213,7 @@ public class FactsTool extends EclipseTool {
 
 	private IValue convertRelation(Set value, Relation type) {
 		RElemElements elements = value.getElements();
-		TupleType tupleType = getTupleType(type);
+		Type tupleType = getTupleType(type);
 		nl.cwi.sen1.relationstores.types.rtype.Tuple rTupleType = factory.makeRType_Tuple(type.getColumnTypes());
 		ISetWriter w = values.relationWriter(tupleType);
 		
@@ -225,7 +224,7 @@ public class FactsTool extends EclipseTool {
 		return w.done();
 	}
 
-	private TupleType getTupleType(Relation type) {
+	private Type getTupleType(Relation type) {
 	  return convertTupleTypes(type.getColumnTypes());
 	}
 	
@@ -276,7 +275,7 @@ public class FactsTool extends EclipseTool {
 		throw new UnsupportedOperationException("Unknown type: " + rtype);
 	}
 
-	private TupleType convertTupleTypes(RTypeColumnTypes columnTypes) {
+	private Type convertTupleTypes(RTypeColumnTypes columnTypes) {
 		List<Type> fieldTypes = new LinkedList<Type>();
 		
 		for ( ; !columnTypes.isEmpty(); columnTypes = columnTypes.getTail()) {
