@@ -46,4 +46,9 @@ public class Activator extends PluginBase implements IStartup{
 	public String getID() {
 		return PLUGIN_ID;
 	}
+
+	@Override
+	public String getLanguageID() {
+		return PLUGIN_ID;
+	}
 }

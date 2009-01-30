@@ -6,8 +6,16 @@ import nl.cwi.sen1.relationstores.types.RTuple;
 import nl.cwi.sen1.relationstores.types.RTupleRtuples;
 
 import org.eclipse.imp.pdb.facts.IValue;
+import org.eclipse.imp.pdb.ui.graph.Editor;
+import org.eclipse.imp.pdb.ui.graph.ValueEditorInput;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.meta_environment.eclipse.Activator;
 import org.meta_environment.eclipse.facts.FactsTool;
-import org.meta_environment.eclipse.viz.graph.GraphView;
+
 
 import toolbus.adapter.eclipse.EclipseTool;
 import aterm.ATerm;
@@ -44,8 +52,23 @@ public class VisualizationTool extends EclipseTool {
 		if (!tuples.isEmpty()) {
 			RTuple tuple = tuples.getHead();
 			IValue value = factsTool.convertValue(tuple.getValue(), tuple.getRtype());
-			
-			GraphView.showGraph(path, value);
+
+			try {
+				IWorkbench wb = PlatformUI.getWorkbench();
+				IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+
+				if (win != null) {
+					IWorkbenchPage page = win.getActivePage();
+
+					if (page != null) {
+
+						page.openEditor(new ValueEditorInput(value), Editor.EditorId);
+
+					}
+				}
+			} catch (PartInitException e) {
+				Activator.getInstance().logException("Can not view graph", e);
+			}
 		}		
 	}	
 }
