@@ -116,7 +116,7 @@ public class FactsTool extends EclipseTool {
 	}
 
 	public IFactKey convertVariable(IdCon variable, Type type, IFactContext context) {
-		return new FactKey(types.namedType(variable.getString(), type), context);
+		return new FactKey(types.aliasType(variable.getString(), type), context);
 	}
 
 	public IValue convertValue(RElem value, RType type) {
@@ -269,7 +269,7 @@ public class FactsTool extends EclipseTool {
 			return convertTupleTypes(rtype.getColumnTypes());
 		}
 		else if (rtype.isUserDefined()) {
-			return types.namedType(rtype.getTypeName().getString(), types.valueType());
+			return types.aliasType(rtype.getTypeName().getString(), types.valueType());
 		}
 		
 		throw new UnsupportedOperationException("Unknown type: " + rtype);
