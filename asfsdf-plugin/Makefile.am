@@ -4,7 +4,8 @@ DISTCLEANFILES = META-INF/MANIFEST.MF \
                 .classpath \
                 build.properties \
                 .settings/org.eclipse.jdt.ui.prefs \
-                .settings/org.eclipse.jdt.core.prefs
+                .settings/org.eclipse.jdt.core.prefs \
+		${PACKAGE}-uninstalled.pc
 
 ACLOCAL_AMFLAGS = -I .
 
