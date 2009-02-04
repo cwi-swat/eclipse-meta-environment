@@ -10,6 +10,7 @@ libSGLRInvoker_la_SOURCES = SGLRInvoker.c
 
 INCLUDES= \
         -I$(top_srcdir)/lib \
+	$(JDK_INCLUDES) \
         $(ATERM_CFLAGS) \
         $(ERROR_SUPPORT_CFLAGS) \
         $(PT_SUPPORT_CFLAGS) \
@@ -19,6 +20,7 @@ INCLUDES= \
 
 libSGLRInvoker_la_LIBADD = \
         -L$(top_builddir)/lib \
+	$(JDK_LIBS) \
         $(ATERM_LIBS) \
         $(ERROR_SUPPORT_LIBS) \
         $(PT_SUPPORT_LIBS) \
@@ -28,6 +30,7 @@ libSGLRInvoker_la_LIBADD = \
 
 SGLRInvoker_LDADD = \
         -L$(top_builddir)/lib -lSGLRInvoker \
+	$(JDK_LIBS) \
         $(ATERM_LIBS) \
         $(ERROR_SUPPORT_LIBS) \
         $(PT_SUPPORT_LIBS) \
