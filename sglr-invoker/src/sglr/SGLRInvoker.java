@@ -144,11 +144,9 @@ public class SGLRInvoker implements Runnable{
 	private ByteBuffer cachedInputStringBuffer = ByteBuffer.allocateDirect(65536);
 	
 	private ByteBuffer getInputStringBuffer(int requiredSize){
-		int realRequiredSize = requiredSize + 1; // Need one more for \0 termination.
-		
 		int cachedBufferCapacity = cachedInputStringBuffer.capacity();
-		if(realRequiredSize > cachedBufferCapacity){
-			cachedInputStringBuffer = ByteBuffer.allocateDirect(realRequiredSize);
+		if(requiredSize > cachedBufferCapacity){
+			cachedInputStringBuffer = ByteBuffer.allocateDirect(requiredSize);
 		}
 		
 		cachedInputStringBuffer.clear();
