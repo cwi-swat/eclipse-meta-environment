@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject met
 
 static ATerm result = NULL;
 
-static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const unsigned char *inputPath, const unsigned char *parseTableName){
+static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const char *inputPath, const char *parseTableName){
 	PT_ParseTree parseTree;
 	
 	InputString sglrInputString = IS_allocateString(inputPath, inputString, inputStringLength);
