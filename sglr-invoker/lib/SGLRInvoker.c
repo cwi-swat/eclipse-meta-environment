@@ -1,15 +1,16 @@
 #include <jni.h>
 #include <stdlib.h>
 
-#include "aterm2.h"
-#include "safio.h"
+#include <aterm2.h>
+#include <safio.h>
 
-#include "sglrInterface.h"
-#include "inputStringBuilder.h"
-#include "filters.h"
-#include "parseTableDB.h"
+#include <sglrInterface.h>
+#include <inputStringBuilder.h>
+#include <inputString-api.h>
+#include <filters.h>
+#include <parseTableDB.h>
 
-#include "Error-manager.h"
+#include <Error-manager.h>
 
 #include <sglr_SGLRInvoker.h>
 
@@ -27,7 +28,7 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject met
 
 static ATerm result = NULL;
 
-static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const unsigned char *inputPath, const char *parseTableName){
+static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const unsigned char *inputPath, const unsigned char *parseTableName){
 	PT_ParseTree parseTree;
 	
 	InputString sglrInputString = IS_allocateString(inputPath, inputString, inputStringLength);

@@ -21,9 +21,15 @@ public class SGLRInvoker implements Runnable{
 	        System.loadLibrary("PTMEPT");
 	        System.loadLibrary("sglr");
 	        System.loadLibrary("SGLRInvoker");
-	    }catch(UnsatisfiedLinkError x){
+	    } catch(UnsatisfiedLinkError x){
 	        throw new RuntimeException(x);
-	    }
+	    } catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private volatile static SGLRInvoker instance = null;
