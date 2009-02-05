@@ -32,6 +32,7 @@ public class SGLRInvoker implements Runnable{
 	private volatile boolean running;
 	
 	private ByteBuffer inputString;
+	private int inputStringLength;
 	private String parseTableName;
 	
 	private byte[] result;
@@ -155,7 +156,6 @@ public class SGLRInvoker implements Runnable{
 	private ByteBuffer fillInputStringBufferFromBytes(byte[] inputStringData){
 		ByteBuffer inputStringBuffer = getInputStringBuffer(inputStringData.length);
 		inputStringBuffer.put(inputStringData);
-		inputStringBuffer.put((byte) 0); // \0 terminated.
 		inputStringBuffer.flip();
 		
 		return inputStringBuffer;
@@ -178,6 +178,7 @@ public class SGLRInvoker implements Runnable{
 	private byte[] reallyParse(ByteBuffer inputStringBuffer, String parseTableName){
 		synchronized(readerDoneLock){
 			this.inputString = inputStringBuffer;
+			this.inputStringLength = inputStringBuffer.limit();
 			this.parseTableName = parseTableName;
 			
 			synchronized(readerLock){
@@ -205,6 +206,10 @@ public class SGLRInvoker implements Runnable{
 	
 	private ByteBuffer getInputString(){
 		return inputString;
+	}
+	
+	private int getInputStringLength(){
+		return inputStringLength;
 	}
 	
 	private String getParseTableName(){

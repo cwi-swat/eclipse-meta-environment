@@ -27,19 +27,19 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject met
 
 static ATerm result = NULL;
 
-static ATerm parse(const unsigned char *inputString, const char *parseTableName){
+static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const char *parseTableName){
 	PT_ParseTree parseTree;
 	
-	InputString sglrInputString = IS_createInputStringFromString(inputString);
+	InputString sglrInputString = IS_allocateString("_noPath_", inputString, inputStringLength);
 	
 	if(inputString == NULL){
-		ERR_displaySummary(ERR_getManagerSummary());
+		/*ERR_displaySummary(ERR_getManagerSummary());*/
 		return ERR_SummaryToTerm(ERR_getManagerSummary());
 	}
 	
 	if(!SGLR_isParseTableLoaded(parseTableName)){
 		if(SG_AddParseTable(parseTableName) == NULL){
-			ERR_displaySummary(ERR_getManagerSummary());
+			/*ERR_displaySummary(ERR_getManagerSummary());*/
 			return ERR_SummaryToTerm(ERR_getManagerSummary());
 		}
 	}
@@ -47,7 +47,7 @@ static ATerm parse(const unsigned char *inputString, const char *parseTableName)
 	parseTree = SGLR_parse(sglrInputString, parseTableName);
 	
 	if(parseTree == NULL){
-		ERR_displaySummary(ERR_getManagerSummary());
+		/*ERR_displaySummary(ERR_getManagerSummary());*/
 		return ERR_SummaryToTerm(ERR_getManagerSummary());
 	}
 	
@@ -64,13 +64,17 @@ JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject metho
 	jobject inputStringBuffer = (*env)->CallNonvirtualObjectMethod(env, method, clazz, getInputString);
 	const unsigned char *inputString = (unsigned char*) ((*env)->GetDirectBufferAddress(env, inputStringBuffer));
 	
+	/* Get the input string length. */
+	jmethodID getInputStringLength = (*env)->GetMethodID(env, clazz, "getInputStringLength", "()I");
+	unsigned int inputStringLength = (unsigned int) (*env)->CallNonvirtualObjectMethod(env, method, clazz, getInputStringLength);
+	
 	/* Get parse table. */
 	jmethodID getParseTableName = (*env)->GetMethodID(env, clazz, "getParseTableName", "()Ljava/lang/String;");
 	jstring parseTableNameString = (*env)->CallNonvirtualObjectMethod(env, method, clazz, getParseTableName);
 	const char *parseTableName = (*env)->GetStringUTFChars(env, parseTableNameString, NULL);
 	
 	/* Call parser. */
-	result = parse(inputString, parseTableName); /* No need to protect the result, since no GC will occur until the next invocation of the parser (in which case we want the old result to be collectable). */
+	result = parse(inputString, inputStringLength, parseTableName); /* No need to protect the result, since no GC will occur until the next invocation of the parser (in which case we want the old result to be collectable). */
 	
 	/* Release stuff. */
 	(*env)->ReleaseStringUTFChars(env, parseTableNameString, parseTableName);
