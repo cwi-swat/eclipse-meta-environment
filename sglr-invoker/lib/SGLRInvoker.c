@@ -27,10 +27,10 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject met
 
 static ATerm result = NULL;
 
-static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const char *parseTableName){
+static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const unsigned char *inputPath, const char *parseTableName){
 	PT_ParseTree parseTree;
 	
-	InputString sglrInputString = IS_allocateString("_noPath_", inputString, inputStringLength);
+	InputString sglrInputString = IS_allocateString(inputPath, inputString, inputStringLength);
 	
 	if(inputString == NULL){
 		/*ERR_displaySummary(ERR_getManagerSummary());*/
@@ -68,16 +68,22 @@ JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject metho
 	jmethodID getInputStringLength = (*env)->GetMethodID(env, clazz, "getInputStringLength", "()I");
 	unsigned int inputStringLength = (unsigned int) (*env)->CallNonvirtualObjectMethod(env, method, clazz, getInputStringLength);
 	
+	/* Get the input path. */
+	jmethodID getInputPath = (*env)->GetMethodID(env, clazz, "getInputPath", "()Ljava/lang/String;");
+	jstring inputPathString = (*env)->CallNonvirtualObjectMethod(env, method, clazz, getInputPath);
+	const char *inputPath = (*env)->GetStringUTFChars(env, inputPathString, NULL);
+	
 	/* Get parse table. */
 	jmethodID getParseTableName = (*env)->GetMethodID(env, clazz, "getParseTableName", "()Ljava/lang/String;");
 	jstring parseTableNameString = (*env)->CallNonvirtualObjectMethod(env, method, clazz, getParseTableName);
 	const char *parseTableName = (*env)->GetStringUTFChars(env, parseTableNameString, NULL);
 	
 	/* Call parser. */
-	result = parse(inputString, inputStringLength, parseTableName); /* No need to protect the result, since no GC will occur until the next invocation of the parser (in which case we want the old result to be collectable). */
+	result = parse(inputString, inputStringLength, inputPath, parseTableName); /* No need to protect the result, since no GC will occur until the next invocation of the parser (in which case we want the old result to be collectable). */
 	
 	/* Release stuff. */
 	(*env)->ReleaseStringUTFChars(env, parseTableNameString, parseTableName);
+	(*env)->ReleaseStringUTFChars(env, inputPathString, inputPath);
 	
 	resultData = ATwriteToString(result); /* ResultData doesn't need to be freed, since it's managed by the aterm library. */
 	

@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 public class SGLRInvoker implements Runnable{
+	private final static String NO_INPUT_PATH = "_noPath_";
+	
 	static{
 		try{
 	        System.loadLibrary("ATerm");
@@ -33,6 +35,7 @@ public class SGLRInvoker implements Runnable{
 	
 	private ByteBuffer inputString;
 	private int inputStringLength;
+	private String inputPath;
 	private String parseTableName;
 	
 	private byte[] result;
@@ -111,7 +114,7 @@ public class SGLRInvoker implements Runnable{
 		if(inputString == null) throw new IllegalArgumentException("InputString must not be null.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
-		return reallyParse(fillInputStringBufferFromBytes(inputString.getBytes()), parseTableName);
+		return reallyParse(fillInputStringBufferFromBytes(inputString.getBytes()), NO_INPUT_PATH, parseTableName);
 	}
 	
 	private byte[] buffer = new byte[8192]; // Shared & locked.
@@ -127,7 +130,7 @@ public class SGLRInvoker implements Runnable{
 			inputStringData.write(buffer, 0, bytesRead);
 		}
 		
-		return reallyParse(fillInputStringBufferFromBytes(inputStringData.toByteArray()), parseTableName);
+		return reallyParse(fillInputStringBufferFromBytes(inputStringData.toByteArray()), NO_INPUT_PATH, parseTableName);
 	}
 	
 	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
@@ -135,7 +138,7 @@ public class SGLRInvoker implements Runnable{
 		if(!inputFile.exists()) throw new IllegalArgumentException("InputFile "+inputFile+" does not exist.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
-		return reallyParse(fillInputStringBufferFromFile(inputFile), parseTableName);
+		return reallyParse(fillInputStringBufferFromFile(inputFile), inputFile.getAbsolutePath(), parseTableName);
 	}
 	
 	private ByteBuffer cachedInputStringBuffer = ByteBuffer.allocateDirect(65536);
@@ -175,10 +178,11 @@ public class SGLRInvoker implements Runnable{
 		return inputStringBuffer;
 	}
 	
-	private byte[] reallyParse(ByteBuffer inputStringBuffer, String parseTableName){
+	private byte[] reallyParse(ByteBuffer inputStringBuffer, String inputPath, String parseTableName){
 		synchronized(readerDoneLock){
 			this.inputString = inputStringBuffer;
 			this.inputStringLength = inputStringBuffer.limit();
+			this.inputPath = inputPath;
 			this.parseTableName = parseTableName;
 			
 			synchronized(readerLock){
@@ -210,6 +214,10 @@ public class SGLRInvoker implements Runnable{
 	
 	private int getInputStringLength(){
 		return inputStringLength;
+	}
+	
+	private String getInputPath(){
+		return inputPath;
 	}
 	
 	private String getParseTableName(){
