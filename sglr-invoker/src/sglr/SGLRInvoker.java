@@ -21,22 +21,16 @@ public class SGLRInvoker implements Runnable{
 	        System.loadLibrary("PTMEPT");
 	        System.loadLibrary("sglr");
 	        System.loadLibrary("SGLRInvoker");
-	    } catch(UnsatisfiedLinkError x){
-	        throw new RuntimeException(x);
-	    } catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    }catch(UnsatisfiedLinkError ule){
+	        throw new RuntimeException(ule);
+	    }
 	}
 	
 	private volatile static SGLRInvoker instance = null;
 	
-	private final NotifiableLock readerLock = new NotifiableLock();
-	private final NotifiableLock readerDoneLock = new NotifiableLock();
-	private final Thread readerThread;
+	private final NotifiableLock parserLock = new NotifiableLock();
+	private final NotifiableLock parserDoneLock = new NotifiableLock();
+	private final Thread parserThread;
 	private volatile boolean running;
 	
 	private ByteBuffer inputString;
@@ -49,7 +43,8 @@ public class SGLRInvoker implements Runnable{
 	private SGLRInvoker(){
 		super();
 		
-		readerThread = new Thread(this);
+		parserThread = new Thread(this);
+		parserThread.setDaemon(true);
 		running = false;
 	}
 	
@@ -68,15 +63,15 @@ public class SGLRInvoker implements Runnable{
 	
 	private void start(){
 		running = true;
-		readerThread.start();
+		parserThread.start();
 	}
 	
 	public void stop(){
 		running = false;
 		
-		synchronized(readerLock){
-			readerLock.notified = true;
-			readerLock.notify();
+		synchronized(parserLock){
+			parserLock.notified = true;
+			parserLock.notify();
 		}
 	}
 	
@@ -84,17 +79,17 @@ public class SGLRInvoker implements Runnable{
 		initialize();
 		
 		while(running){
-			synchronized(readerLock){
-				while(!readerLock.notified){
+			synchronized(parserLock){
+				while(!parserLock.notified){
 					try{
-						readerLock.wait();
+						parserLock.wait();
 					}catch(InterruptedException irex){
 						// Ignore this; we don't want to know.
 					}
 					
 					if(!running) return;
 				}
-				readerLock.notified = false;
+				parserLock.notified = false;
 			}
 			
 			// Invoke the parser.
@@ -109,9 +104,9 @@ public class SGLRInvoker implements Runnable{
 			inputString = null;
 			parseTableName = null;
 			
-			synchronized(readerDoneLock){
-				readerDoneLock.notified = true;
-				readerDoneLock.notify();
+			synchronized(parserDoneLock){
+				parserDoneLock.notified = true;
+				parserDoneLock.notify();
 			}
 		}
 	}
@@ -183,26 +178,26 @@ public class SGLRInvoker implements Runnable{
 	}
 	
 	private byte[] reallyParse(ByteBuffer inputStringBuffer, String inputPath, String parseTableName){
-		synchronized(readerDoneLock){
+		synchronized(parserDoneLock){
 			this.inputString = inputStringBuffer;
 			this.inputStringLength = inputStringBuffer.limit();
 			this.inputPath = inputPath;
 			this.parseTableName = parseTableName;
 			
-			synchronized(readerLock){
-				readerLock.notified = true;
-				readerLock.notify();
+			synchronized(parserLock){
+				parserLock.notified = true;
+				parserLock.notify();
 			}
 		
 			/* Wait for it. */
-			while(!readerDoneLock.notified){
+			while(!parserDoneLock.notified){
 				try{
-					readerDoneLock.wait();
+					parserDoneLock.wait();
 				}catch(InterruptedException irex){
 					// Ignore this; we don't want to know.
 				}
 			}
-			readerDoneLock.notified = false;
+			parserDoneLock.notified = false;
 		}
 		
 		byte[] parseTree = result;
