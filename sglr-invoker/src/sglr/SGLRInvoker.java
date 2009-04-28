@@ -30,7 +30,6 @@ public class SGLRInvoker implements Runnable{
 	
 	private final NotifiableLock parserLock = new NotifiableLock();
 	private final NotifiableLock parserDoneLock = new NotifiableLock();
-	private final Thread parserThread;
 	private volatile boolean running;
 	
 	private ByteBuffer inputString;
@@ -43,9 +42,7 @@ public class SGLRInvoker implements Runnable{
 	private SGLRInvoker(){
 		super();
 		
-		parserThread = new Thread(this);
-		parserThread.setDaemon(true);
-		running = false;
+		running = true;
 	}
 	
 	public static SGLRInvoker getInstance(){
@@ -53,17 +50,15 @@ public class SGLRInvoker implements Runnable{
 			synchronized(SGLRInvoker.class){
 				if(instance == null){ // Yes DCL works on volatiles.
 					instance = new SGLRInvoker();
-					instance.start();
+					
+					Thread parserThread = new Thread(instance);
+					parserThread.setDaemon(true);
+					parserThread.start();
 				}
 			}
 		}
 		
 		return instance;
-	}
-	
-	private void start(){
-		running = true;
-		parserThread.start();
 	}
 	
 	public void stop(){
