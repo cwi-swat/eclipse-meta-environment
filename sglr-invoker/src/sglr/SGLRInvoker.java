@@ -49,7 +49,7 @@ public class SGLRInvoker implements Runnable{
 		if(instance == null){
 			synchronized(SGLRInvoker.class){
 				if(instance == null){ // Yes DCL works on volatiles.
-					loadLibraries("");
+					loadLibraries(""); // TODO Get the base library path from somewhere.
 					
 					instance = new SGLRInvoker();
 					
