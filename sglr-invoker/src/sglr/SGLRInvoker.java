@@ -13,6 +13,8 @@ public class SGLRInvoker implements Runnable{
 	
 	private volatile static SGLRInvoker instance = null;
 	
+	private volatile static String baseLibraryPath = "";
+	
 	private final NotifiableLock parserLock = new NotifiableLock();
 	private final NotifiableLock parserDoneLock = new NotifiableLock();
 	private volatile boolean running;
@@ -30,16 +32,21 @@ public class SGLRInvoker implements Runnable{
 		running = true;
 	}
 	
-	public static void loadLibraries(String basePath){
+	public static void setLibraryPath(String basePath){
+		if(basePath.endsWith("/")) baseLibraryPath = basePath;
+		else baseLibraryPath = basePath+"/";
+	}
+	
+	public static void loadLibraries(){
 		try{
-	        System.loadLibrary(basePath+"ATerm");
-	        System.loadLibrary(basePath+"ConfigAPI");
-	        System.loadLibrary(basePath+"ErrorAPI");
-	        System.loadLibrary(basePath+"ptable");
-	        System.loadLibrary(basePath+"mept");
-	        System.loadLibrary(basePath+"PTMEPT");
-	        System.loadLibrary(basePath+"sglr");
-	        System.loadLibrary(basePath+"SGLRInvoker");
+	        System.loadLibrary(baseLibraryPath+"ATerm");
+	        System.loadLibrary(baseLibraryPath+"ConfigAPI");
+	        System.loadLibrary(baseLibraryPath+"ErrorAPI");
+	        System.loadLibrary(baseLibraryPath+"ptable");
+	        System.loadLibrary(baseLibraryPath+"mept");
+	        System.loadLibrary(baseLibraryPath+"PTMEPT");
+	        System.loadLibrary(baseLibraryPath+"sglr");
+	        System.loadLibrary(baseLibraryPath+"SGLRInvoker");
 	    }catch(UnsatisfiedLinkError ule){
 	        throw new RuntimeException(ule);
 	    }
@@ -49,7 +56,7 @@ public class SGLRInvoker implements Runnable{
 		if(instance == null){
 			synchronized(SGLRInvoker.class){
 				if(instance == null){ // Yes DCL works on volatiles.
-					loadLibraries(""); // TODO Get the base library path from somewhere.
+					loadLibraries();
 					
 					instance = new SGLRInvoker();
 					
