@@ -11,21 +11,6 @@ import java.nio.channels.FileChannel;
 public class SGLRInvoker implements Runnable{
 	private final static String NO_INPUT_PATH = "_noPath_";
 	
-	static{
-		try{
-	        System.loadLibrary("ATerm");
-	        System.loadLibrary("ConfigAPI");
-	        System.loadLibrary("ErrorAPI");
-	        System.loadLibrary("ptable");
-	        System.loadLibrary("mept");
-	        System.loadLibrary("PTMEPT");
-	        System.loadLibrary("sglr");
-	        System.loadLibrary("SGLRInvoker");
-	    }catch(UnsatisfiedLinkError ule){
-	        throw new RuntimeException(ule);
-	    }
-	}
-	
 	private volatile static SGLRInvoker instance = null;
 	
 	private final NotifiableLock parserLock = new NotifiableLock();
@@ -45,10 +30,27 @@ public class SGLRInvoker implements Runnable{
 		running = true;
 	}
 	
+	public static void loadLibraries(String basePath){
+		try{
+	        System.loadLibrary(basePath+"ATerm");
+	        System.loadLibrary(basePath+"ConfigAPI");
+	        System.loadLibrary(basePath+"ErrorAPI");
+	        System.loadLibrary(basePath+"ptable");
+	        System.loadLibrary(basePath+"mept");
+	        System.loadLibrary(basePath+"PTMEPT");
+	        System.loadLibrary(basePath+"sglr");
+	        System.loadLibrary(basePath+"SGLRInvoker");
+	    }catch(UnsatisfiedLinkError ule){
+	        throw new RuntimeException(ule);
+	    }
+	}
+	
 	public static SGLRInvoker getInstance(){
 		if(instance == null){
 			synchronized(SGLRInvoker.class){
 				if(instance == null){ // Yes DCL works on volatiles.
+					loadLibraries("");
+					
 					instance = new SGLRInvoker();
 					
 					Thread parserThread = new Thread(instance);
