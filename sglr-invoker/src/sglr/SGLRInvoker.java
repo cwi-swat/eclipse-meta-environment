@@ -13,7 +13,7 @@ public class SGLRInvoker implements Runnable{
 	
 	private volatile static SGLRInvoker instance = null;
 	
-	private volatile static String baseLibraryPath = "";
+	private volatile static String baseLibraryPath = null;
 	
 	private final NotifiableLock parserLock = new NotifiableLock();
 	private final NotifiableLock parserDoneLock = new NotifiableLock();
@@ -33,23 +33,43 @@ public class SGLRInvoker implements Runnable{
 	}
 	
 	public static void setLibraryPath(String basePath){
+		if(basePath == null){
+			baseLibraryPath = null;
+			return;
+		}
+			
 		if(basePath.endsWith("/")) baseLibraryPath = basePath;
 		else baseLibraryPath = basePath+"/";
 	}
 	
 	public static void loadLibraries(){
-		try{
-	        System.loadLibrary(baseLibraryPath+"ATerm");
-	        System.loadLibrary(baseLibraryPath+"ConfigAPI");
-	        System.loadLibrary(baseLibraryPath+"ErrorAPI");
-	        System.loadLibrary(baseLibraryPath+"ptable");
-	        System.loadLibrary(baseLibraryPath+"mept");
-	        System.loadLibrary(baseLibraryPath+"PTMEPT");
-	        System.loadLibrary(baseLibraryPath+"sglr");
-	        System.loadLibrary(baseLibraryPath+"SGLRInvoker");
-	    }catch(UnsatisfiedLinkError ule){
-	        throw new RuntimeException(ule);
-	    }
+		if(baseLibraryPath == null){
+			try{
+		        System.loadLibrary("ATerm");
+		        System.loadLibrary("ConfigAPI");
+		        System.loadLibrary("ErrorAPI");
+		        System.loadLibrary("ptable");
+		        System.loadLibrary("mept");
+		        System.loadLibrary("PTMEPT");
+		        System.loadLibrary("sglr");
+		        System.loadLibrary("SGLRInvoker");
+		    }catch(UnsatisfiedLinkError ule){
+		        throw new RuntimeException(ule);
+		    }
+		}else{
+			try{
+		        System.loadLibrary(baseLibraryPath+"ATerm");
+		        System.loadLibrary(baseLibraryPath+"ConfigAPI");
+		        System.loadLibrary(baseLibraryPath+"ErrorAPI");
+		        System.loadLibrary(baseLibraryPath+"ptable");
+		        System.loadLibrary(baseLibraryPath+"mept");
+		        System.loadLibrary(baseLibraryPath+"PTMEPT");
+		        System.loadLibrary(baseLibraryPath+"sglr");
+		        System.loadLibrary(baseLibraryPath+"SGLRInvoker");
+		    }catch(UnsatisfiedLinkError ule){
+		        throw new RuntimeException(ule);
+		    }
+		}
 	}
 	
 	public static SGLRInvoker getInstance(){
