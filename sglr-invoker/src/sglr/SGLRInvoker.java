@@ -32,7 +32,7 @@ public class SGLRInvoker implements Runnable{
 		running = true;
 	}
 	
-	public static void setLibraryPath(String basePath){
+	public static void setBaseLibraryPath(String basePath){
 		if(basePath == null){
 			baseLibraryPath = null;
 			return;
