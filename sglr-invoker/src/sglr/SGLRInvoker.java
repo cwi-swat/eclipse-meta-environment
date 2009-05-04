@@ -56,16 +56,16 @@ public class SGLRInvoker implements Runnable{
 		    }catch(UnsatisfiedLinkError ule){
 		        throw new RuntimeException(ule);
 		    }
-		}else{
+		}else{ // Work for Linux (but needs to be fixed for the rest :-/).
 			try{
-		        System.loadLibrary(baseLibraryPath+"ATerm");
-		        System.loadLibrary(baseLibraryPath+"ConfigAPI");
-		        System.loadLibrary(baseLibraryPath+"ErrorAPI");
-		        System.loadLibrary(baseLibraryPath+"ptable");
-		        System.loadLibrary(baseLibraryPath+"mept");
-		        System.loadLibrary(baseLibraryPath+"PTMEPT");
-		        System.loadLibrary(baseLibraryPath+"sglr");
-		        System.loadLibrary(baseLibraryPath+"SGLRInvoker");
+		        System.load(baseLibraryPath+"libATerm.so");
+		        System.load(baseLibraryPath+"libConfigAPI.so");
+		        System.load(baseLibraryPath+"libErrorAPI.so");
+		        System.load(baseLibraryPath+"libptable.so");
+		        System.load(baseLibraryPath+"libmept.so");
+		        System.load(baseLibraryPath+"libPTMEPT.so");
+		        System.load(baseLibraryPath+"libsglr.so");
+		        System.load(baseLibraryPath+"libSGLRInvoker.so");
 		    }catch(UnsatisfiedLinkError ule){
 		        throw new RuntimeException(ule);
 		    }
