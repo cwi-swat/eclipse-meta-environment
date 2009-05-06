@@ -17,6 +17,17 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import plugin="com.ibm.wala.shrike"/>
+      <import plugin="lpg.runtime"/>
+      <import plugin="org.eclipse.imp.pdb"/>
+      <import plugin="org.eclipse.imp.pdb.ui"/>
+      <import plugin="org.eclipse.imp.runtime"/>
+      <import plugin="org.eclipse.imp.smapi"/>
+      <import plugin="org.eclipse.imp.smapifier"/>
+      <import plugin="org.eclipse.imp.xform"/>
+   </requires>
+
    <plugin
          id="asf_library"
          download-size="0"
@@ -128,61 +139,6 @@
 
    <plugin
          id="vis_plugin_graph_imp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.imp.pdb.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.ibm.wala.shrike"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.imp.pdb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.imp.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.imp.smapi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.imp.smapifier"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.imp.xform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="lpg.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
