@@ -48,9 +48,13 @@ public class SGLRInvoker implements Runnable{
 		        System.loadLibrary("ATerm");
 		        System.loadLibrary("ConfigAPI");
 		        System.loadLibrary("ErrorAPI");
-		        System.loadLibrary("ptable");
+		        System.loadLibrary("LocationAPI");
+		        System.loadLibrary("ATB");
 		        System.loadLibrary("mept");
 		        System.loadLibrary("PTMEPT");
+		        System.loadLibrary("ptable");
+		        System.loadLibrary("logging");
+		        System.loadLibrary("statistics");
 		        System.loadLibrary("sglr");
 		        System.loadLibrary("SGLRInvoker");
 		    }catch(UnsatisfiedLinkError ule){
@@ -61,9 +65,13 @@ public class SGLRInvoker implements Runnable{
 		        System.load(baseLibraryPath+"libATerm.so");
 		        System.load(baseLibraryPath+"libConfigAPI.so");
 		        System.load(baseLibraryPath+"libErrorAPI.so");
-		        System.load(baseLibraryPath+"libptable.so");
+		        System.load(baseLibraryPath+"libLocationAPI.so");
+		        System.load(baseLibraryPath+"libATB.so");
 		        System.load(baseLibraryPath+"libmept.so");
 		        System.load(baseLibraryPath+"libPTMEPT.so");
+		        System.load(baseLibraryPath+"libptable.so");
+		        System.load(baseLibraryPath+"liblogging.so");
+		        System.load(baseLibraryPath+"libstatistics.so");
 		        System.load(baseLibraryPath+"libsglr.so");
 		        System.load(baseLibraryPath+"libSGLRInvoker.so");
 		    }catch(UnsatisfiedLinkError ule){

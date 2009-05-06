@@ -6,4 +6,14 @@ Bundle-SymbolicName: sglr_invoker;singleton:=true
 Bundle-Version: 0.1
 Bundle-ClassPath: sglr-invoker.jar
 Export-Package: sglr
-Require-Bundle:  org.eclipse.imp.pdb.values
+Require-Bundle: sglr,
+ aterm,
+ c_library,
+ config_support,
+ error_support,
+ toolbuslib,
+ ptable_support,
+ pt_support,
+ pt_support,
+ org.eclipse.imp.pdb.values
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
