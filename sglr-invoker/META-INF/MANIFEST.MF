@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: sglr-invoker
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-SymbolicName: sglr_invoker;singleton:=true
 Bundle-Version: 0.1
 Bundle-ClassPath: sglr-invoker.jar
@@ -16,4 +16,4 @@ Require-Bundle: sglr,
  pt_support,
  pt_support,
  org.eclipse.imp.pdb.values
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.5
