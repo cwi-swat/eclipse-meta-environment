@@ -84,18 +84,18 @@ public class SGLRInvoker implements Runnable{
 			}else{
 				// Works for Mac (but needs to be fixed for the rest :-/).
 				try{
-			        System.load(baseLibraryPath+"libATerm.dynlib");
-			        System.load(baseLibraryPath+"libConfigAPI.dynlib");
-			        System.load(baseLibraryPath+"libErrorAPI.dynlib");
-			        System.load(baseLibraryPath+"libLocationAPI.dynlib");
-			        System.load(baseLibraryPath+"libATB.dynlib");
-			        System.load(baseLibraryPath+"libmept.dynlib");
-			        System.load(baseLibraryPath+"libPTMEPT.dynlib");
-			        System.load(baseLibraryPath+"libptable.dynlib");
-			        System.load(baseLibraryPath+"liblogging.dynlib");
-			        System.load(baseLibraryPath+"libstatistics.dynlib");
-			        System.load(baseLibraryPath+"libsglr.dynlib");
-			        System.load(baseLibraryPath+"libSGLRInvoker.dynlib");
+			        System.load(baseLibraryPath+"libATerm.dylib");
+			        System.load(baseLibraryPath+"libConfigAPI.dylib");
+			        System.load(baseLibraryPath+"libErrorAPI.dylib");
+			        System.load(baseLibraryPath+"libLocationAPI.dylib");
+			        System.load(baseLibraryPath+"libATB.dylib");
+			        System.load(baseLibraryPath+"libmept.dylib");
+			        System.load(baseLibraryPath+"libPTMEPT.dylib");
+			        System.load(baseLibraryPath+"libptable.dylib");
+			        System.load(baseLibraryPath+"liblogging.dylib");
+			        System.load(baseLibraryPath+"libstatistics.dylib");
+			        System.load(baseLibraryPath+"libsglr.dylib");
+			        System.load(baseLibraryPath+"libSGLRInvoker.dylib");
 			    }catch(UnsatisfiedLinkError ule){
 			        throw new RuntimeException(ule);
 			    }
