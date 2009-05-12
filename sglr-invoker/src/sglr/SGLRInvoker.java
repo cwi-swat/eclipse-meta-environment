@@ -60,23 +60,46 @@ public class SGLRInvoker implements Runnable{
 		    }catch(UnsatisfiedLinkError ule){
 		        throw new RuntimeException(ule);
 		    }
-		}else{ // Work for Linux (but needs to be fixed for the rest :-/).
-			try{
-		        System.load(baseLibraryPath+"libATerm.so");
-		        System.load(baseLibraryPath+"libConfigAPI.so");
-		        System.load(baseLibraryPath+"libErrorAPI.so");
-		        System.load(baseLibraryPath+"libLocationAPI.so");
-		        System.load(baseLibraryPath+"libATB.so");
-		        System.load(baseLibraryPath+"libmept.so");
-		        System.load(baseLibraryPath+"libPTMEPT.so");
-		        System.load(baseLibraryPath+"libptable.so");
-		        System.load(baseLibraryPath+"liblogging.so");
-		        System.load(baseLibraryPath+"libstatistics.so");
-		        System.load(baseLibraryPath+"libsglr.so");
-		        System.load(baseLibraryPath+"libSGLRInvoker.so");
-		    }catch(UnsatisfiedLinkError ule){
-		        throw new RuntimeException(ule);
-		    }
+		}else{
+			String osName = System.getProperty("os.name");
+			
+			if(osName.equals("Linux")){
+				// Works for Linux (but needs to be fixed for the rest :-/).
+				try{
+			        System.load(baseLibraryPath+"libATerm.so");
+			        System.load(baseLibraryPath+"libConfigAPI.so");
+			        System.load(baseLibraryPath+"libErrorAPI.so");
+			        System.load(baseLibraryPath+"libLocationAPI.so");
+			        System.load(baseLibraryPath+"libATB.so");
+			        System.load(baseLibraryPath+"libmept.so");
+			        System.load(baseLibraryPath+"libPTMEPT.so");
+			        System.load(baseLibraryPath+"libptable.so");
+			        System.load(baseLibraryPath+"liblogging.so");
+			        System.load(baseLibraryPath+"libstatistics.so");
+			        System.load(baseLibraryPath+"libsglr.so");
+			        System.load(baseLibraryPath+"libSGLRInvoker.so");
+			    }catch(UnsatisfiedLinkError ule){
+			        throw new RuntimeException(ule);
+			    }
+			}else{
+				// Works for Mac (but needs to be fixed for the rest :-/).
+				try{
+			        System.load(baseLibraryPath+"libATerm.dynlib");
+			        System.load(baseLibraryPath+"libConfigAPI.dynlib");
+			        System.load(baseLibraryPath+"libErrorAPI.dynlib");
+			        System.load(baseLibraryPath+"libLocationAPI.dynlib");
+			        System.load(baseLibraryPath+"libATB.dynlib");
+			        System.load(baseLibraryPath+"libmept.dynlib");
+			        System.load(baseLibraryPath+"libPTMEPT.dynlib");
+			        System.load(baseLibraryPath+"libptable.dynlib");
+			        System.load(baseLibraryPath+"liblogging.dynlib");
+			        System.load(baseLibraryPath+"libstatistics.dynlib");
+			        System.load(baseLibraryPath+"libsglr.dynlib");
+			        System.load(baseLibraryPath+"libSGLRInvoker.dynlib");
+			    }catch(UnsatisfiedLinkError ule){
+			        throw new RuntimeException(ule);
+			    }
+			}
 		}
 	}
 	
