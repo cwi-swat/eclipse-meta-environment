@@ -1,6 +1,7 @@
 package org.meta_environment.eclipse.viz.graph;
 
 import java.awt.Color;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -172,7 +173,7 @@ public class GraphBuilder {
 		Type type = value.getType();
 		
 		if (type.comparable(locatedNodeType)) {
-			return ((ISourceLocation) ((ITuple) value).get(1)).getPath();
+			return ((ISourceLocation) ((ITuple) value).get(1)).getURL().getPath();
 		}
 		
 		return null;
