@@ -43,7 +43,7 @@ public class SGLRInvoker implements Runnable{
 	}
 	
 	public static void loadLibraries(){
-		if(baseLibraryPath == null){
+		if(baseLibraryPath == null){ // Look in the library path to find the libraries.
 			try{
 		        System.loadLibrary("ATerm");
 		        System.loadLibrary("ConfigAPI");
@@ -60,11 +60,10 @@ public class SGLRInvoker implements Runnable{
 		    }catch(UnsatisfiedLinkError ule){
 		        throw new RuntimeException(ule);
 		    }
-		}else{
+		}else{ // Look in the given absolute path (OS specific).
 			String osName = System.getProperty("os.name");
 			
-			if(osName.equals("Linux")){
-				// Works for Linux (but needs to be fixed for the rest :-/).
+			if(osName.equals("Linux")){ // Linux.
 				try{
 			        System.load(baseLibraryPath+"libATerm.so");
 			        System.load(baseLibraryPath+"libConfigAPI.so");
@@ -81,8 +80,7 @@ public class SGLRInvoker implements Runnable{
 			    }catch(UnsatisfiedLinkError ule){
 			        throw new RuntimeException(ule);
 			    }
-			}else{
-				// Works for Mac (but needs to be fixed for the rest :-/).
+			}else if(osName.startsWith("Mac")){ // Mac.
 				try{
 			        System.load(baseLibraryPath+"libATerm.dylib");
 			        System.load(baseLibraryPath+"libConfigAPI.dylib");
@@ -99,6 +97,25 @@ public class SGLRInvoker implements Runnable{
 			    }catch(UnsatisfiedLinkError ule){
 			        throw new RuntimeException(ule);
 			    }
+			}else if(osName.startsWith("Win")){ // Windows.
+				try{
+			        System.load(baseLibraryPath+"ATerm.dll");
+			        System.load(baseLibraryPath+"ConfigAPI.dll");
+			        System.load(baseLibraryPath+"ErrorAPI.dll");
+			        System.load(baseLibraryPath+"LocationAPI.dll");
+			        System.load(baseLibraryPath+"ATB.dll");
+			        System.load(baseLibraryPath+"mept.dll");
+			        System.load(baseLibraryPath+"PTMEPT.dll");
+			        System.load(baseLibraryPath+"ptable.dll");
+			        System.load(baseLibraryPath+"logging.dll");
+			        System.load(baseLibraryPath+"statistics.dll");
+			        System.load(baseLibraryPath+"sglr.dll");
+			        System.load(baseLibraryPath+"SGLRInvoker.dll");
+			    }catch(UnsatisfiedLinkError ule){
+			        throw new RuntimeException(ule);
+			    }
+			}else{
+				throw new RuntimeException("Unknown OS. Unable to load libraries for SGLR Invoker.");
 			}
 		}
 	}
