@@ -1,3 +1,4 @@
+include $(top_srcdir)/Makefile.java.meta
 
 DISTCLEANFILES = META-INF/MANIFEST.MF \
                 .project \
