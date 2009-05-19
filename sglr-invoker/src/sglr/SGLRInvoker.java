@@ -60,63 +60,12 @@ public class SGLRInvoker implements Runnable{
 		    }catch(UnsatisfiedLinkError ule){
 		        throw new RuntimeException(ule);
 		    }
-		}else{ // Look in the given absolute path (OS specific).
-			String osName = System.getProperty("os.name");
-			
-			if(osName.equals("Linux")){ // Linux.
-				try{
-			        System.load(baseLibraryPath+"libATerm.so");
-			        System.load(baseLibraryPath+"libConfigAPI.so");
-			        System.load(baseLibraryPath+"libErrorAPI.so");
-			        System.load(baseLibraryPath+"libLocationAPI.so");
-			        System.load(baseLibraryPath+"libATB.so");
-			        System.load(baseLibraryPath+"libmept.so");
-			        System.load(baseLibraryPath+"libPTMEPT.so");
-			        System.load(baseLibraryPath+"libptable.so");
-			        System.load(baseLibraryPath+"liblogging.so");
-			        System.load(baseLibraryPath+"libstatistics.so");
-			        System.load(baseLibraryPath+"libsglr.so");
-			        System.load(baseLibraryPath+"libSGLRInvoker.so");
-			    }catch(UnsatisfiedLinkError ule){
-			        throw new RuntimeException(ule);
-			    }
-			}else if(osName.startsWith("Mac")){ // Mac.
-				try{
-			        System.load(baseLibraryPath+"libATerm.dylib");
-			        System.load(baseLibraryPath+"libConfigAPI.dylib");
-			        System.load(baseLibraryPath+"libErrorAPI.dylib");
-			        System.load(baseLibraryPath+"libLocationAPI.dylib");
-			        System.load(baseLibraryPath+"libATB.dylib");
-			        System.load(baseLibraryPath+"libmept.dylib");
-			        System.load(baseLibraryPath+"libPTMEPT.dylib");
-			        System.load(baseLibraryPath+"libptable.dylib");
-			        System.load(baseLibraryPath+"liblogging.dylib");
-			        System.load(baseLibraryPath+"libstatistics.dylib");
-			        System.load(baseLibraryPath+"libsglr.dylib");
-			        System.load(baseLibraryPath+"libSGLRInvoker.dylib");
-			    }catch(UnsatisfiedLinkError ule){
-			        throw new RuntimeException(ule);
-			    }
-			}else if(osName.startsWith("Win")){ // Windows.
-				try{
-			        System.load(baseLibraryPath+"ATerm.dll");
-			        System.load(baseLibraryPath+"ConfigAPI.dll");
-			        System.load(baseLibraryPath+"ErrorAPI.dll");
-			        System.load(baseLibraryPath+"LocationAPI.dll");
-			        System.load(baseLibraryPath+"ATB.dll");
-			        System.load(baseLibraryPath+"mept.dll");
-			        System.load(baseLibraryPath+"PTMEPT.dll");
-			        System.load(baseLibraryPath+"ptable.dll");
-			        System.load(baseLibraryPath+"logging.dll");
-			        System.load(baseLibraryPath+"statistics.dll");
-			        System.load(baseLibraryPath+"sglr.dll");
-			        System.load(baseLibraryPath+"SGLRInvoker.dll");
-			    }catch(UnsatisfiedLinkError ule){
-			        throw new RuntimeException(ule);
-			    }
-			}else{
-				throw new RuntimeException("Unknown OS. Unable to load libraries for SGLR Invoker.");
-			}
+		}else{ // Look in the given absolute path for 'completeLib'.
+			try{
+		        System.load(baseLibraryPath+"completeLib");
+		    }catch(UnsatisfiedLinkError ule){
+		        throw new RuntimeException(ule);
+		    }
 		}
 	}
 	
