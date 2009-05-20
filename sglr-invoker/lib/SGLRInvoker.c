@@ -38,7 +38,7 @@ static ATerm parse(const unsigned char *inputString, unsigned int inputStringLen
 		return ERR_SummaryToTerm(ERR_getManagerSummary());
 	}
 	
-	if(!SGLR_isParseTableLoaded(parseTableName)){
+	if(1 && !SGLR_isParseTableLoaded(parseTableName)){
 		if(SG_AddParseTable(parseTableName) == NULL){
 			/*ERR_displaySummary(ERR_getManagerSummary());*/
 			return ERR_SummaryToTerm(ERR_getManagerSummary());
