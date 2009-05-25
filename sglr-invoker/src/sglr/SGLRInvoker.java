@@ -60,12 +60,30 @@ public class SGLRInvoker implements Runnable{
 		    }catch(UnsatisfiedLinkError ule){
 		        throw new RuntimeException(ule);
 		    }
-		}else{ // Look in the given absolute path for 'completeLib'.
-			try{
-		        System.load(baseLibraryPath+"completeLib");
-		    }catch(UnsatisfiedLinkError ule){
-		        throw new RuntimeException(ule);
-		    }
+		}else{ // Look in the given absolute path (OS specific).
+			String osName = System.getProperty("os.name");
+			
+			if(osName.equals("Linux")){ // Linux.
+				try{
+			        System.load(baseLibraryPath+"libCompleteSGLR.so");
+			    }catch(UnsatisfiedLinkError ule){
+			        throw new RuntimeException(ule);
+			    }
+			}else if(osName.startsWith("Mac")){ // Mac.
+				try{
+			        System.load(baseLibraryPath+"libCompleteSGLR.dylib");
+			    }catch(UnsatisfiedLinkError ule){
+			        throw new RuntimeException(ule);
+			    }
+			}else if(osName.startsWith("Win")){ // Windows.
+				try{
+			        System.load(baseLibraryPath+"CompleteSGLR.dll");
+			    }catch(UnsatisfiedLinkError ule){
+			        throw new RuntimeException(ule);
+			    }
+			}else{
+				throw new RuntimeException("Unknown OS. Unable to load libraries for SGLR Invoker.");
+			}
 		}
 	}
 	
