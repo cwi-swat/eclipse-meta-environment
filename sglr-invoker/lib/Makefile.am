@@ -19,7 +19,7 @@ INCLUDES= \
         $(C_LIBRARY_CFLAGS)
 
 libSGLRInvoker_la_LIBADD = \
-        -L$(top_builddir)/lib \
+        -L$(top_srcdir)/lib \
 	$(JDK_LIBS) \
         $(ATERM_LIBS) \
         $(ERROR_SUPPORT_LIBS) \
@@ -29,7 +29,7 @@ libSGLRInvoker_la_LIBADD = \
         $(C_LIBRARY_LIBS)
 
 SGLRInvoker_LDADD = \
-        -L$(top_builddir)/lib -lSGLRInvoker \
+        -L$(top_srcdir)/lib -lSGLRInvoker \
 	$(JDK_LIBS) \
         $(ATERM_LIBS) \
         $(ERROR_SUPPORT_LIBS) \
@@ -37,3 +37,18 @@ SGLRInvoker_LDADD = \
         $(PTABLE_SUPPORT_LIBS) \
         $(SGLR_LIBS) \
         $(C_LIBRARY_LIBS)
+
+lib_LTLIBRARIES += libCompleteSGLR.la
+libCompleteSGLR_la_LIBADD = $(shell \
+                        export TOP_DIR="$(top_srcdir)"; \
+                        export ALL_DEPS="$(PACKAGE_ALL_DEPS)"; \
+                        export PREFIX="$(prefix)"; \
+                        . $(top_srcdir)/buildCompleteLib.sh)
+libCompleteSGLR_la_SOURCES =
+CompleteSGLR_LDADD = $(shell \
+                        export TOP_DIR="$(top_srcdir)"; \
+                        export ALL_DEPS="$(PACKAGE_ALL_DEPS)"; \
+                        export PREFIX="$(prefix)"; \
+                        . $(top_srcdir)/buildCompleteLib.sh)
+
+CLEANFILES += ../libbuild/*.o
