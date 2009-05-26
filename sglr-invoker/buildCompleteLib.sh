@@ -18,6 +18,6 @@ for archive in ${ALL_ARCHIVES}; do
    ar -x ${archive}
 done
 cd -
-ALL_OBJECTS="`find ../libbuild/*.o`"
+ALL_OBJECTS="`find ../libbuild/*.o | grep -v SGLRInvoker`"
 
 echo $ALL_OBJECTS
