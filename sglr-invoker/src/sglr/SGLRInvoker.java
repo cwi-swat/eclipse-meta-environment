@@ -63,13 +63,13 @@ public class SGLRInvoker implements Runnable{
 		}else{ // Look in the given absolute path (OS specific).
 			String osName = System.getProperty("os.name");
 			
-			if(osName.equals("Linux")){ // Linux.
+			if(osName.indexOf("Linux") != -1){ // Linux.
 				try{
 			        System.load(baseLibraryPath+"libCompleteSGLR.so");
 			    }catch(UnsatisfiedLinkError ule){
 			        throw new RuntimeException(ule);
 			    }
-			}else if(osName.startsWith("Mac")){ // Mac.
+			}else if(osName.indexOf("Mac") != -1 || osName.indexOf("Darwin") != -1){ // Mac.
 				try{
 			        System.load(baseLibraryPath+"libCompleteSGLR.dylib");
 			    }catch(UnsatisfiedLinkError ule){
