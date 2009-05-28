@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.meta
 
-lib_LTLIBRARIES = libSGLRInvoker.la
+lib_LTLIBRARIES = libSGLRInvoker.la libCompleteSGLR.la
 
 AM_CPPFLAGS = -I$(srcdir)
 
@@ -29,12 +29,12 @@ libSGLRInvoker_la_LIBADD = \
         $(SGLR_LIBS) \
         $(C_LIBRARY_LIBS)
 
-lib_LTLIBRARIES += libCompleteSGLR.la
 libCompleteSGLR_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libCompleteSGLR_la_LIBADD = $(shell \
                         export TOP_DIR="$(top_srcdir)"; \
                         export ALL_DEPS="$(PACKAGE_ALL_DEPS)"; \
                         export PREFIX="$(prefix)"; \
+			export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"; \
                         . $(top_srcdir)/buildCompleteLib.sh)
 libCompleteSGLR_la_SOURCES = SGLRInvoker.c
 

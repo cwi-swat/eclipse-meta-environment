@@ -4,7 +4,7 @@
 ALL_ARCHIVES=""
 for dep in ${ALL_DEPS}; do
    prefix=`pkg-config --variable prefix ${dep}`
-   for library in `find ${PREFIX}/lib/lib*.a`; do
+   for library in `find ${prefix}/lib/lib*.a`; do
       if [ "`echo '${ALL_ARCHIVES}' | grep ${library}`" == "" ]; then
          ALL_ARCHIVES="${ALL_ARCHIVES} ${library}"
       fi
