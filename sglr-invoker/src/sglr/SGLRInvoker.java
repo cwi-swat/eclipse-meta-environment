@@ -77,18 +77,18 @@ public class SGLRInvoker implements Runnable{
 			    }
 			}else if(osName.startsWith("Win")){ // Windows.
 				try{
-					System.loadLibrary(baseLibraryPath+"ATerm.dll");
-			        System.loadLibrary(baseLibraryPath+"ConfigAPI.dll");
-			        System.loadLibrary(baseLibraryPath+"ErrorAPI.dll");
-			        System.loadLibrary(baseLibraryPath+"LocationAPI.dll");
-			        System.loadLibrary(baseLibraryPath+"ATB.dll");
-			        System.loadLibrary(baseLibraryPath+"mept.dll");
-			        System.loadLibrary(baseLibraryPath+"PTMEPT.dll");
-			        System.loadLibrary(baseLibraryPath+"ptable.dll");
-			        System.loadLibrary(baseLibraryPath+"logging.dll");
-			        System.loadLibrary(baseLibraryPath+"statistics.dll");
-			        System.loadLibrary(baseLibraryPath+"sglr.dll");
-			        System.loadLibrary(baseLibraryPath+"SGLRInvoker.dll");
+					System.loadLibrary(baseLibraryPath+"libATerm.dll");
+			        System.loadLibrary(baseLibraryPath+"libConfigAPI.dll");
+			        System.loadLibrary(baseLibraryPath+"libErrorAPI.dll");
+			        System.loadLibrary(baseLibraryPath+"libLocationAPI.dll");
+			        System.loadLibrary(baseLibraryPath+"libATB.dll");
+			        System.loadLibrary(baseLibraryPath+"libmept.dll");
+			        System.loadLibrary(baseLibraryPath+"libPTMEPT.dll");
+			        System.loadLibrary(baseLibraryPath+"libptable.dll");
+			        System.loadLibrary(baseLibraryPath+"liblogging.dll");
+			        System.loadLibrary(baseLibraryPath+"libstatistics.dll");
+			        System.loadLibrary(baseLibraryPath+"libsglr.dll");
+			        System.loadLibrary(baseLibraryPath+"libSGLRInvoker.dll");
 			    }catch(UnsatisfiedLinkError ule){
 			        throw new RuntimeException(ule);
 			    }
