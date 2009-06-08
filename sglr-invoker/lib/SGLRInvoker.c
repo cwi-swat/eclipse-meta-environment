@@ -30,11 +30,13 @@ static ATerm result = NULL;
 
 static ATerm parse(const unsigned char *inputString, unsigned int inputStringLength, const char *inputPath, const char *parseTableName){
 	PT_ParseTree parseTree;
+	InputString sglrInputString;
 	
-	InputString sglrInputString = IS_allocateString(inputPath, inputString, inputStringLength);
+	ERR_resetErrorManager();
+	
+	sglrInputString = IS_allocateString(inputPath, inputString, inputStringLength);
 	
 	if(inputString == NULL){
-		/*ERR_displaySummary(ERR_getManagerSummary());*/
 		return ERR_SummaryToTerm(ERR_getManagerSummary());
 	}
 	
