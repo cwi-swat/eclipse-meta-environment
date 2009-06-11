@@ -4,9 +4,9 @@ META_C_SETUP
 META_JAVA_SETUP
 
 META_REQUIRE_SOFTWARE([jdk])
-JDK_INCLUDES="-I${JDK_PREFIX}/include -I${JDK_PREFIX}/include/`uname -s | tr '[A-Z]' '[a-z]'`"
+JDK_INCLUDES="-I${JDK_PREFIX}/include -I${JDK_PREFIX}/include/`uname -s | tr '[A-Z]' '[a-z]'` -I{JDK_PREFIX}/Headers -I${JDK_PREFIX}/Headers/`uname -s | tr '[A-Z]' '[a-z]'`"
 AC_SUBST(JDK_INCLUDES)
-JDK_LIBS="-L${JDK_PREFIX}/lib"
+JDK_LIBS="-L${JDK_PREFIX}/lib -L${JDK_PREFIX}/Libraries"
 AC_SUBST(JDK_LIBS)
 
 AC_PROG_LIBTOOL
