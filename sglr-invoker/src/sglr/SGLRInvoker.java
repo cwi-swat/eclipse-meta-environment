@@ -107,6 +107,7 @@ public class SGLRInvoker implements Runnable{
 					instance = new SGLRInvoker();
 					
 					Thread parserThread = new Thread(instance);
+					parserThread.setName("SGLRInvoker");
 					parserThread.setDaemon(true);
 					parserThread.start();
 				}
