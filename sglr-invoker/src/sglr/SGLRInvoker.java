@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-public class SGLRInvoker implements Runnable{
+public class SGLRInvoker implements Runnable, IInvoker{
 	private final static String NO_INPUT_PATH = "_noPath_";
 	
 	private volatile static SGLRInvoker instance = null;
