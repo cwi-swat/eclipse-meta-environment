@@ -24,6 +24,10 @@ public class LegacySGLRInvoker implements IInvoker{
 	
 	public LegacySGLRInvoker(){
 		super();
+		
+		if(binaryPath == null){ // Crap code.
+			LegacySGLRInvoker.setBaseBinaryPath(System.getProperty("rascal.base.binary.path", "."));
+		}
 	}
 	
 	public synchronized byte[] parseFromString(String inputString, String parseTableName){
