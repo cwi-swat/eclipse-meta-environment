@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 public class LegacySGLRInvoker implements IInvoker{
-	private volatile static String binaryPath = "";
+	private volatile static String binaryPath = null;
 	
 	public static void setBaseBinaryPath(String basePath){
 		if(basePath == null){
