@@ -82,7 +82,9 @@ public class LegacySGLRInvoker implements IInvoker{
 	private byte[] reallyParse(byte[] data, String parseTable) throws IOException{
 		Process p = null;
 		try{
-			p = Runtime.getRuntime().exec(binaryPath+"sglr -t -p "+parseTable, null, new File(binaryPath));
+			String absolutePTFile = new File(parseTable).getAbsolutePath(); // Windows compatibility crap
+			
+			p = Runtime.getRuntime().exec(binaryPath+"sglr -t -p "+absolutePTFile, null, new File(binaryPath));
 			
 			OutputReader outputReader = new OutputReader(p.getInputStream());
 			Thread outputReaderThread = new Thread(outputReader);
@@ -92,7 +94,7 @@ public class LegacySGLRInvoker implements IInvoker{
 			inputWriter.write(data, 0, data.length);
 			inputWriter.close();
 			
-			if(p.waitFor() != 0) throw new RuntimeException("Parsing failed.");
+			p.waitFor();
 			
 			return outputReader.waitForResult();
 		}catch(InterruptedException irex){
