@@ -1,2 +1,2 @@
 Wed Feb  4 11:00:37 CET 2009 <{jurgenv,lankamp}@cwi.nl>
- * configure.ac,Makefile.am's: added --with-jdk configure option
+ * configure.ac, Makefile.am's: added --with-jdk configure option
