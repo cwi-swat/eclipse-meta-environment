@@ -31,7 +31,7 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject met
 		ATerm x;
 		ATinit(0, NULL, &x);
 		SGLR_initialize();
-		FLT_initalize();
+		FLT_initialize();
 		initialized = 1;
 	}
 }
