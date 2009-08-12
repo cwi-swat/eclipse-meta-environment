@@ -31,11 +31,23 @@ public class LegacySGLRInvoker implements IInvoker{
 	}
 	
 	public synchronized byte[] parseFromString(String inputString, String parseTableName){
+		return parseFromString(inputString, parseTableName, 0);
+	}
+	
+	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName) throws IOException{
+		return parseFromStream(inputStringStream, parseTableName);
+	}
+	
+	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
+		return parseFromFile(inputFile, parseTableName);
+	}
+	
+	public synchronized byte[] parseFromString(String inputString, String parseTableName, int filterFlags){
 		if(inputString == null) throw new IllegalArgumentException("InputString must not be null.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
 		try{
-			return reallyParse(inputString.getBytes(), parseTableName);
+			return reallyParse(inputString.getBytes(), parseTableName, filterFlags);
 		}catch(IOException ioex){
 			throw new RuntimeException("Failed to parse.");
 		}
@@ -43,7 +55,7 @@ public class LegacySGLRInvoker implements IInvoker{
 	
 	private byte[] buffer = new byte[8192]; // Shared & locked.
 	
-	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName) throws IOException{
+	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName, int filterFlags) throws IOException{
 		if(inputStringStream == null) throw new IllegalArgumentException("InputStringStream must not be null.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
@@ -54,15 +66,15 @@ public class LegacySGLRInvoker implements IInvoker{
 			inputStringData.write(buffer, 0, bytesRead);
 		}
 		
-		return reallyParse(inputStringData.toByteArray(), parseTableName);
+		return reallyParse(inputStringData.toByteArray(), parseTableName, filterFlags);
 	}
 	
-	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
+	public synchronized byte[] parseFromFile(File inputFile, String parseTableName, int filterFlags) throws IOException{
 		if(inputFile == null) throw new IllegalArgumentException("InputFile must not be null.");
 		if(!inputFile.exists()) throw new IllegalArgumentException("InputFile "+inputFile+" does not exist.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
-		return reallyParse(fillInputStringBufferFromFile(inputFile), parseTableName);
+		return reallyParse(fillInputStringBufferFromFile(inputFile), parseTableName, filterFlags);
 	}
 	
 	private byte[] fillInputStringBufferFromFile(File inputFile) throws IOException{
@@ -79,12 +91,51 @@ public class LegacySGLRInvoker implements IInvoker{
 		return inputStringBuffer.array();
 	}
 	
-	private byte[] reallyParse(byte[] data, String parseTable) throws IOException{
+	private String generateFilterOptions(int filterFlags){
+		if(filterFlags == FILTERS_DEFAULT) return "";
+		
+		StringBuilder sb = new StringBuilder();
+		
+		if((filterFlags & FILTERS_REMOVE_CYCLES) == FILTERS_REMOVE_CYCLES){
+			sb.append("-fc");
+			sb.append(' ');
+		}
+		if((filterFlags & FILTERS_DIRECT_PREFERENCE) == FILTERS_DIRECT_PREFERENCE){
+			sb.append("-ft");
+			sb.append(' ');
+		}
+		if((filterFlags & FILTERS_INDIRECT_PREFERENCE) == FILTERS_INDIRECT_PREFERENCE){
+			sb.append("-fd");
+			sb.append(' ');
+		}
+		if((filterFlags & FILTERS_PREFERENCE_COUNT) == FILTERS_PREFERENCE_COUNT){
+			sb.append("-fe");
+			sb.append(' ');
+		}
+		if((filterFlags & FILTERS_INJECTION_COUNT) == FILTERS_INJECTION_COUNT){
+			sb.append("-fi");
+			sb.append(' ');
+		}
+		if((filterFlags & FILTERS_PRIORITY) == FILTERS_PRIORITY){
+			sb.append("-fp");
+			sb.append(' ');
+		}
+		if((filterFlags & FILTERS_REJECT) == FILTERS_REJECT){
+			sb.append("-fr");
+			sb.append(' ');
+		}
+		
+		return sb.toString();
+	}
+	
+	private byte[] reallyParse(byte[] data, String parseTable, int filterFlags) throws IOException{
 		Process p = null;
 		try{
 			String absolutePTFile = new File(parseTable).getAbsolutePath(); // Windows compatibility crap
 			
-			p = Runtime.getRuntime().exec(binaryPath+"sglr -t -p "+absolutePTFile, null, new File(binaryPath));
+			String filterOptions = generateFilterOptions(filterFlags);
+			
+			p = Runtime.getRuntime().exec(binaryPath+"sglr -t -p "+absolutePTFile+" "+filterOptions, null, new File(binaryPath));
 			
 			OutputReader outputReader = new OutputReader(p.getInputStream());
 			Thread outputReaderThread = new Thread(outputReader);

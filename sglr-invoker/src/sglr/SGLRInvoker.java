@@ -24,6 +24,8 @@ public class SGLRInvoker implements Runnable, IInvoker{
 	private String inputPath;
 	private String parseTableName;
 	
+	private int filterFlags;
+	
 	private byte[] result;
 	
 	private SGLRInvoker(){
@@ -164,15 +166,26 @@ public class SGLRInvoker implements Runnable, IInvoker{
 	}
 	
 	public synchronized byte[] parseFromString(String inputString, String parseTableName){
+		return parseFromString(inputString, parseTableName, 0);
+	}
+	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName) throws IOException{
+		return parseFromStream(inputStringStream, parseTableName, 0);
+	}
+	
+	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
+		return parseFromFile(inputFile, parseTableName, 0);
+	}
+	
+	public synchronized byte[] parseFromString(String inputString, String parseTableName, int filterFlags){
 		if(inputString == null) throw new IllegalArgumentException("InputString must not be null.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
-		return reallyParse(fillInputStringBufferFromBytes(inputString.getBytes()), NO_INPUT_PATH, parseTableName);
+		return reallyParse(fillInputStringBufferFromBytes(inputString.getBytes()), NO_INPUT_PATH, parseTableName, filterFlags);
 	}
 	
 	private byte[] buffer = new byte[8192]; // Shared & locked.
 	
-	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName) throws IOException{
+	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName, int filterFlags) throws IOException{
 		if(inputStringStream == null) throw new IllegalArgumentException("InputStringStream must not be null.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
@@ -183,15 +196,15 @@ public class SGLRInvoker implements Runnable, IInvoker{
 			inputStringData.write(buffer, 0, bytesRead);
 		}
 		
-		return reallyParse(fillInputStringBufferFromBytes(inputStringData.toByteArray()), NO_INPUT_PATH, parseTableName);
+		return reallyParse(fillInputStringBufferFromBytes(inputStringData.toByteArray()), NO_INPUT_PATH, parseTableName, filterFlags);
 	}
 	
-	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
+	public synchronized byte[] parseFromFile(File inputFile, String parseTableName, int filterFlags) throws IOException{
 		if(inputFile == null) throw new IllegalArgumentException("InputFile must not be null.");
 		if(!inputFile.exists()) throw new IllegalArgumentException("InputFile "+inputFile+" does not exist.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
-		return reallyParse(fillInputStringBufferFromFile(inputFile), inputFile.getAbsolutePath(), parseTableName);
+		return reallyParse(fillInputStringBufferFromFile(inputFile), inputFile.getAbsolutePath(), parseTableName, filterFlags);
 	}
 	
 	private ByteBuffer cachedInputStringBuffer = ByteBuffer.allocateDirect(65536);
@@ -229,12 +242,14 @@ public class SGLRInvoker implements Runnable, IInvoker{
 		return inputStringBuffer;
 	}
 	
-	private byte[] reallyParse(ByteBuffer inputStringBuffer, String inputPath, String parseTableName){
+	private byte[] reallyParse(ByteBuffer inputStringBuffer, String inputPath, String parseTableName, int filterFlags){
 		synchronized(parserDoneLock){
 			this.inputString = inputStringBuffer;
 			this.inputStringLength = inputStringBuffer.limit();
 			this.inputPath = inputPath;
 			this.parseTableName = parseTableName;
+			
+			this.filterFlags = filterFlags;
 			
 			synchronized(parserLock){
 				parserLock.notified = true;
@@ -273,6 +288,10 @@ public class SGLRInvoker implements Runnable, IInvoker{
 	
 	private String getParseTableName(){
 		return parseTableName;
+	}
+	
+	private int getFilterFlags(){
+		return filterFlags;
 	}
 	
 	private native void initialize();
