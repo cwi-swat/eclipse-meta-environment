@@ -15,14 +15,14 @@
 
 #include <sglr_SGLRInvoker.h>
 
-#define FILTERS_DEFAULT 0
-#define FILTERS_REMOVE_CYCLES 1
-#define FILTERS_DIRECT_PREFERENCE (1 << 1)
-#define FILTERS_INDIRECT_PREFERENCE (1 << 2)
-#define FILTERS_PREFERENCE_COUNT (1 << 3)
-#define FILTERS_INJECTION_COUNT (1 << 4)
-#define FILTERS_PRIORITY (1 << 5)
-#define FILTERS_REJECT (1 << 6)
+#define FILTERS_DEFAULT 0x00000000U
+#define FILTERS_REMOVE_CYCLES 0x00000001U
+#define FILTERS_DIRECT_PREFERENCE 0x00000002U
+#define FILTERS_INDIRECT_PREFERENCE 0x00000004U
+#define FILTERS_PREFERENCE_COUNT 0x00000008U
+#define FILTERS_INJECTION_COUNT 0x00000010U
+#define FILTERS_PRIORITY 0x00000020U
+#define FILTERS_REJECT 0x00000040U
 
 static int initialized = 0;
 
@@ -31,7 +31,6 @@ JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject met
 		ATerm x;
 		ATinit(0, NULL, &x);
 		SGLR_initialize();
-		FLT_initialize();
 		initialized = 1;
 	}
 }
