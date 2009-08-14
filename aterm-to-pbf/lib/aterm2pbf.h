@@ -4,6 +4,7 @@
 #include <idmappings.h>
 #include <byteencoding.h>
 #include <aterm2.h>
+#include <pdbtypes.h>
 
 #ifdef __cplusplus
 extern "C"
