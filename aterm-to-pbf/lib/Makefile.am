@@ -8,8 +8,8 @@ libaterm-to-pbf_la_SOURCES = $(ALLSRCS)
 libaterm-to-pbf_la_CFLAGS = 
 libaterm-to-pbf_la_LDFLAGS = -avoid-version -no-undefined
 
-ALLSRCS = aterm2pbf.c hashtable.c
+ALLSRCS = aterm2pbf.c hashtable.c pdbtypes.c
 
-PUBLIC_INCL = aterm2pbf.h
+PUBLIC_INCL = aterm2pbf.h pdbtypes.h
 
 PRIVATE_INCL = hashtable.h

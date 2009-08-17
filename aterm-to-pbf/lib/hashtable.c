@@ -269,6 +269,6 @@ void HTdestroy(Hashtable hashtable){
 	free(hashtable);
 }
 
-void defaultEquals(void* left, void* right){
+int defaultEquals(void* left, void* right){
 	return (left == right);
 }

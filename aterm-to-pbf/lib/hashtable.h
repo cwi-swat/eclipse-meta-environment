@@ -44,7 +44,7 @@ unsigned int HTsize(Hashtable hashtable);
 
 void HTdestroy(Hashtable hashtable);
 
-void defaultEquals(void* left, void* right);
+int defaultEquals(void* left, void* right);
 
 #ifdef __cplusplus
 }

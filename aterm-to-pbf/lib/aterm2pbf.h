@@ -31,15 +31,6 @@ extern "C"
 #define ANNOTATED_NODE_TYPE 0x12
 #define ANNOTATED_CONSTRUCTOR_TYPE 0x13
 
-struct A2PType;
-typedef struct A2PType A2PType;
-
-/* TODO The type stuff. */
-typedef struct _A2PType{
-	char *name;
-	Type *children;
-} *A2PType;
-
 struct A2PWriter{
         IDMappings valueSharingMap;
         IDMappings typeSharingMap;
