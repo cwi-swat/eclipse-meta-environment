@@ -27,11 +27,10 @@ extern "C"
 #endif/* __cplusplus */
 
 struct _A2PType;
-typedef struct _A2PType *A2PType;
-struct _A2PType{
-        A2PType theType;
+typedef struct _A2PType{
+        void *theType;
         unsigned int id;
-};
+} *A2PType;
 
 A2PType voidType();
 
