@@ -32,6 +32,8 @@ typedef struct _A2PType{
         unsigned int id;
 } *A2PType;
 
+void destroyType(A2PType type);
+
 void A2Pinitialize();
 
 A2PType voidType();
