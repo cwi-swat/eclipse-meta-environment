@@ -15,3 +15,7 @@ PUBLIC_INCL = aterm2pbf.h pdbtypes.h
 PRIVATE_INCL = hashtable.h byteencoding.h
 
 INCLUDES = $(ATERM_CFLAGS)
+
+libaterm2pbf_la_LIBADD = \
+	-L$(top_builddir)/src \
+        $(ATERM_LIBS)
