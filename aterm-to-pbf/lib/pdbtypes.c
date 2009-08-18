@@ -110,7 +110,9 @@ static A2PType *copyTypeArray(A2PType *arrayToCopy){
 	
 	newArray[i--] = 0;
         for(; i >= 0; i--){
-                newArray[i] = arrayToCopy[i];
+		A2PType t = arrayToCopy[i];
+		t->refCount++;
+                newArray[i] = t;
         }
 
         return newArray;
@@ -126,7 +128,6 @@ static A2PType stringTypeConstant;
 static A2PType sourceLocationTypeConstant;
 static A2PType nodeTypeConstant;
 
-/* TODO fix this destruction stuff by adding ref counts to A2PType. */
 void destroyType(A2PType type){
 	void *theType = type->theType;
 	switch(type->id){
@@ -138,7 +139,7 @@ void destroyType(A2PType type){
 		case PDB_STRING_TYPE_HEADER:
 		case PDB_SOURCE_LOCATION_TYPE_HEADER:
 		case PDB_NODE_TYPE_HEADER:
-			break;
+			return;
 		case PDB_TUPLE_TYPE_HEADER:
 		{
 			TupleType t = (TupleType) theType;
@@ -243,8 +244,10 @@ void destroyType(A2PType type){
 		}
 	}
 	
-	free(theType);
-	free(type);
+	if(type->refCount-- == 0){
+		free(theType);
+		free(type);
+	}
 }
 
 void A2Pinitialize(){
@@ -254,42 +257,49 @@ void A2Pinitialize(){
 		voidTypeConstant->theType =  malloc(sizeof(struct _VoidType));
 		if(voidTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for VoidType"); exit(1); }
 		voidTypeConstant->id = PDB_VOID_TYPE_HEADER;
+		voidTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		boolTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(boolTypeConstant == NULL){ fprintf(stderr, "Unable to allocate struct for BoolType."); exit(1); }
 		boolTypeConstant->theType = malloc(sizeof(struct _BoolType));
 		if(boolTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for BoolType"); exit(1); }
 		boolTypeConstant->id = PDB_BOOL_TYPE_HEADER;
+		boolTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		integerTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
                 if(integerTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType"); exit(1); }
 		integerTypeConstant->theType = malloc(sizeof(struct _IntegerType));
 		if(integerTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType"); exit(1); }
 		integerTypeConstant->id = PDB_INTEGER_TYPE_HEADER;
+		integerTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		realTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(realTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType"); exit(1); }
 		realTypeConstant->theType = malloc(sizeof(struct _RealType));
 		if(realTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType"); exit(1); }
 		realTypeConstant->id = PDB_DOUBLE_TYPE_HEADER;
+		realTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		stringTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(stringTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType"); exit(1); }
 		stringTypeConstant->theType = malloc(sizeof(struct _StringType));
 		if(stringTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType"); exit(1); }
 		stringTypeConstant->id = PDB_STRING_TYPE_HEADER;
+		stringTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		sourceLocationTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(sourceLocationTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType"); exit(1); }
 		sourceLocationTypeConstant->theType = malloc(sizeof(struct _SourceLocationType));
 		if(sourceLocationTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType"); exit(1); }
 		sourceLocationTypeConstant->id = PDB_SOURCE_LOCATION_TYPE_HEADER;
+		sourceLocationTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		nodeTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(nodeTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType"); exit(1); }
 		nodeTypeConstant->theType = malloc(sizeof(struct _NodeType));
 		if(nodeTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType"); exit(1); }
 		nodeTypeConstant->id = PDB_NODE_TYPE_HEADER;
+		nodeTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		initialized = 1;
 	}
@@ -331,6 +341,7 @@ A2PType tupleType(A2PType *fieldTypes, char **fieldNames){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for TupleType"); exit(1);}
 	tupletype->theType = t;
 	tupletype->id = PDB_TUPLE_TYPE_HEADER;
+	tupletype->refCount = 0;
 	
 	t->fieldTypes = copyTypeArray(fieldTypes);
 	t->fieldNames = NULL;
@@ -349,7 +360,9 @@ A2PType listType(A2PType elementType){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for ListType"); exit(1); }
 	listtype->theType = t;
 	listtype->id = PDB_LIST_TYPE_HEADER;
+	listtype->refCount = 0;
 	
+	elementType->refCount++;
 	t->elementType = elementType;
 	
 	return listtype;
@@ -363,7 +376,9 @@ A2PType setType(A2PType elementType){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for SetType"); exit(1); }
         settype->theType = t;
         settype->id = PDB_SET_TYPE_HEADER;
-
+	settype->refCount = 0;
+	
+	elementType->refCount++;
         t->elementType = elementType;
 	
 	return settype;
@@ -377,7 +392,9 @@ A2PType relationType(A2PType tupleType){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for RelationType"); exit(1); }
         relationtype->theType = t;
         relationtype->id = PDB_RELATION_TYPE_HEADER;
-
+	relationtype->refCount = 0;
+	
+	tupleType->refCount++;
         t->tupleType = tupleType;
 	
 	return relationtype;
@@ -391,8 +408,11 @@ A2PType mapType(A2PType keyType, A2PType valueType){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for MapType"); exit(1); }
         maptype->theType = t;
         maptype->id = PDB_MAP_TYPE_HEADER;
-
+	maptype->refCount = 0;
+	
+	keyType->refCount++;
         t->keyType = keyType;
+	valueType->refCount++;
 	t->valueType = valueType;
 	
 	return maptype;
@@ -406,8 +426,10 @@ A2PType parameterType(char *name, A2PType bound){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for ParameterType"); exit(1); }
 	parametertype->theType = t;
 	parametertype->id = PDB_PARAMETER_TYPE_HEADER;
+	parametertype->refCount = 0;
 	
 	t->name = copyString(name);
+	bound->refCount++;
 	t->bound = bound;
 	
 	return parametertype;
@@ -421,6 +443,7 @@ A2PType abstractDataType(char *name, A2PType *parameters){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AbstractDataType"); exit(1); }
 	abstractDatatype->theType = t;
 	abstractDatatype->id = PDB_ADT_TYPE_HEADER;
+	abstractDatatype->refCount = 0;
 	
 	t->name = copyString(name);
 	t->parameters = copyTypeArray(parameters);
@@ -436,8 +459,10 @@ A2PType constructorType(char *name, A2PType adt, A2PType *children){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for ConstructorType"); exit(1); }
 	constructortype->theType = t;
 	constructortype->id = PDB_CONSTRUCTOR_TYPE_HEADER;
+	constructortype->refCount = 0;
 	
 	t->name = copyString(name);
+	adt->refCount++;
 	t->adt = adt;
 	t->children = copyTypeArray(children);
 	
@@ -452,8 +477,10 @@ A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AliasType"); exit(1); }
 	aliastype->theType = t;
 	aliastype->id = PDB_ALIAS_TYPE_HEADER;
+	aliastype->refCount = 0;
 	
 	t->name = copyString(name);
+	aliased->refCount++;
 	t->aliased = aliased;
 	t->parametersTuple = voidTypeConstant;
 	if(parameters != NULL){
@@ -471,6 +498,7 @@ A2PType annotatedNodeType(A2PType *annotationTypes){
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AnnotatedNodeType"); exit(1); }
 	annotatedNodetype->theType = t;
 	annotatedNodetype->id = PDB_ANNOTATED_NODE_TYPE_HEADER;
+	annotatedNodetype->refCount = 0;
 	
 	t->annotationTypes = copyTypeArray(annotationTypes);
 	
@@ -485,8 +513,10 @@ A2PType annotatedConstructorType(char *name, A2PType adt, A2PType *children, A2P
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AnnotatedConstructorType"); exit(1); }
 	annotatedConstructortype->theType = t;
 	annotatedConstructortype->id = PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER;
+	annotatedConstructortype->refCount = 0;
 	
 	t->name = copyString(name);
+	adt->refCount++;
 	t->adt = adt;
 	t->children = copyTypeArray(children);
 	t->annotationTypes = copyTypeArray(annotationTypes);

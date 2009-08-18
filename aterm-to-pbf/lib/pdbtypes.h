@@ -30,6 +30,7 @@ struct _A2PType;
 typedef struct _A2PType{
         void *theType;
         unsigned int id;
+	unsigned int refCount;
 } *A2PType;
 
 void destroyType(A2PType type);
