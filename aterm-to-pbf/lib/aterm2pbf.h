@@ -2,7 +2,6 @@
 #define ATERM2PBF_H
 
 #include <idmappings.h>
-#include <byteencoding.h>
 #include <aterm2.h>
 #include <pdbtypes.h>
 

@@ -1,4 +1,5 @@
 #include <aterm2pbf.h>
+#include <byteencoding.h>
 
 #include <stdlib.h>
 #include <string.h>
