@@ -31,11 +31,19 @@ extern "C"
 #define PDB_ANNOTATED_NODE_TYPE 0x12
 #define PDB_ANNOTATED_CONSTRUCTOR_TYPE 0x13
 
+typedef struct _ByteBuffer{
+        char *buffer;
+        unsigned int capacity;
+
+        char *currentPos;
+} *ByteBuffer;
+
 typedef struct A2PWriter{
         IDMappings valueSharingMap;
         IDMappings typeSharingMap;
 	IDMappings pathSharingMap;
 	IDMappings nameSharingMap;
+	ByteBuffer buffer;
 } *A2PWriter;
 
 A2PWriter A2PcreateWriter();
