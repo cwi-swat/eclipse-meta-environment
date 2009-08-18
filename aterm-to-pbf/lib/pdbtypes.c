@@ -1,4 +1,4 @@
-#include "pdbtypes.h"
+#include <pdbtypes.h>
 
 #include <stdlib.h>
 
@@ -83,7 +83,7 @@ static A2PType stringTypeConstant;
 static A2PType sourceLocationTypeConstant;
 static A2PType nodeTypeConstant;
 
-A2Pinitialize(){
+void A2Pinitialize(){
 	if(!initialized){
 		voidTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		voidTypeConstant->theType =  malloc(sizeof(struct _VoidType));

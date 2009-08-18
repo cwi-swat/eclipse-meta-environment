@@ -32,6 +32,8 @@ typedef struct _A2PType{
         unsigned int id;
 } *A2PType;
 
+void A2Pinitialize();
+
 A2PType voidType();
 
 A2PType boolType();

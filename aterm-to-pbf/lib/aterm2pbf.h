@@ -11,38 +11,40 @@ extern "C"
 {
 #endif/* __cplusplus */
 
-#define VALUE_TYPE 0x01
-#define VOID_TYPE 0x02
-#define BOOL_TYPE 0x03
-#define INTERGER_TYPE 0x04
-#define DOUBLE_TYPE 0x05
-#define STRING_TYPE_HEADER 0x06
-#define SOURCE_LOCATION_TYPE 0x07
-#define NODE_TYPE 0x08
-#define TUPLE_TYPE 0x09
-#define LIST_TYPE 0x0a
-#define SET_TYPE 0x0b
-#define RELATION_TYPE 0x0c
-#define MAP_TYPE 0x0d
-#define PARAMETER_TYPE 0x0e
-#define ADT_TYPE 0x0f
-#define CONSTRUCTOR_TYPE 0x10
-#define ALIAS_TYPE 0x11
-#define ANNOTATED_NODE_TYPE 0x12
-#define ANNOTATED_CONSTRUCTOR_TYPE 0x13
+#define PDB_VALUE_TYPE 0x01
+#define PDB_VOID_TYPE 0x02
+#define PDB_BOOL_TYPE 0x03
+#define PDB_INTERGER_TYPE 0x04
+#define PDB_DOUBLE_TYPE 0x05
+#define PDB_STRING_TYPE_HEADER 0x06
+#define PDB_SOURCE_LOCATION_TYPE 0x07
+#define PDB_NODE_TYPE 0x08
+#define PDB_TUPLE_TYPE 0x09
+#define PDB_LIST_TYPE 0x0a
+#define PDB_SET_TYPE 0x0b
+#define PDB_RELATION_TYPE 0x0c
+#define PDB_MAP_TYPE 0x0d
+#define PDB_PARAMETER_TYPE 0x0e
+#define PDB_ADT_TYPE 0x0f
+#define PDB_CONSTRUCTOR_TYPE 0x10
+#define PDB_ALIAS_TYPE 0x11
+#define PDB_ANNOTATED_NODE_TYPE 0x12
+#define PDB_ANNOTATED_CONSTRUCTOR_TYPE 0x13
 
-struct A2PWriter{
+typedef struct A2PWriter{
         IDMappings valueSharingMap;
         IDMappings typeSharingMap;
 	IDMappings pathSharingMap;
 	IDMappings nameSharingMap;
-};
+} *A2PWriter;
 
 A2PWriter A2PcreateWriter();
 void A2PdestroyWriter(A2PWriter writer);
 
-char *A2Pserialize(ATerm term);
+char *A2Pserialize(ATerm term, A2PType topType);
 
 #ifdef __cplusplus
 }
 #endif/* __cplusplus */
+
+#endif/* ATERM2PBF_H*/
