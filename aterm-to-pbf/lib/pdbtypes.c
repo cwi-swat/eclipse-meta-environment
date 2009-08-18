@@ -26,7 +26,7 @@ typedef struct _AbstractDataType{
 typedef struct _AliasType{
 	char *name;
 	A2PType aliased;
-	A2PType *parameters;
+	A2PType parametersTuple;
 } *AliasType;
 
 typedef struct _ConstructorType{
@@ -208,11 +208,7 @@ void destroyType(A2PType type){
 		case ALIAS_TYPE_HEADER:
 		{
 			AliasType t = (AliasType) theType;
-			A2PType *parameters = t->parameters;
-			int i = arraySize((void*) parameters) - 1;
-			for(; i >= 0; i--){
-				destroyType(parameters[i]);
-			}
+			destroyType(t->parametersTuple);
 			destroyType(t->aliased);
 			free(t->name);
 			break;
@@ -443,9 +439,9 @@ A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
 	
 	t->name = copyString(name);
 	t->aliased = aliased;
-	t->parameters = NULL;
+	t->parametersTuple = voidTypeConstant;
 	if(parameters != NULL){
-		t->parameters = copyTypeArray(parameters);
+		t->parametersTuple = tupleType(parameters, NULL);
 	}
 	
 	return aliastype;
