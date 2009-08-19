@@ -180,35 +180,35 @@ static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 }
 
 static void writeValueType(A2PWriter writer){
-	
+	writeByteToBuffer(writer->buffer, PDB_VALUE_TYPE_HEADER);
 }
 
 static void writeVoidType(A2PWriter writer){
-	
+	writeByteToBuffer(writer->buffer, PDB_VOID_TYPE_HEADER);
 }
 
 static void writeBoolType(A2PWriter writer){
-	
+	writeByteToBuffer(writer->buffer, PDB_BOOL_TYPE_HEADER);
 }
 
 static void writeIntegerType(A2PWriter writer){
-	
+	writeByteToBuffer(writer->buffer, PDB_INTEGER_TYPE_HEADER);
 }
 
 static void writeDoubleType(A2PWriter writer){
-	
+	writeByteToBuffer(writer->buffer, PDB_DOUBLE_TYPE_HEADER);
 }
 
 static void writeStringType(A2PWriter writer){
-	
+	writeByteToBuffer(writer->buffer, PDB_STRING_TYPE_HEADER);
 }
 
 static void writeSourceLocationType(A2PWriter writer){
-	
+	writeByteToBuffer(writer->buffer, PDB_SOURCE_LOCATION_TYPE_HEADER);
 }
 
 static void writeNodeType(A2PWriter writer, A2PType nodeType){
-	
+	writeByteToBuffer(writer->buffer, PDB_NODE_TYPE_HEADER);
 }
 
 static void writeTupleType(A2PWriter writer, A2PType tupleType){
@@ -286,6 +286,8 @@ A2PWriter A2PcreateWriter(){
 	writer->pathSharingMap = IMcreateIDMappings(2.0f);
 	writer->nameSharingMap = IMcreateIDMappings(2.0f);
 	
+	writer->buffer = createByteBuffer(65536);
+	
 	return writer;
 }
 
@@ -294,6 +296,8 @@ void A2PdestroyWriter(A2PWriter writer){
 	IMdestroyIDMappings(writer->typeSharingMap);
 	IMdestroyIDMappings(writer->pathSharingMap);
 	IMdestroyIDMappings(writer->nameSharingMap);
+	
+	destroyByteBuffer(writer->buffer);
 	
 	free(writer);
 }
