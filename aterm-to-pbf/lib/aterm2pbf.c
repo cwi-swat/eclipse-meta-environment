@@ -216,23 +216,49 @@ static void writeTupleType(A2PWriter writer, A2PType tupleType){
 }
 
 static void writeListType(A2PWriter writer, A2PType listType){
+	A2PlistType t = (A2PlistType) listType->theType;
 	
+	writeByteToBuffer(writer->buffer, PDB_LIST_TYPE_HEADER);
+	
+	writeType(writer, t->elementType);
 }
 
 static void writeSetType(A2PWriter writer, A2PType setType){
+	A2PsetType t = (A2PsetType) setType->theType;
 	
+	writeByteToBuffer(writer->buffer, PDB_SET_TYPE_HEADER);
+	
+	writeType(writer, t->elementType);
 }
 
 static void writeRelationType(A2PWriter writer, A2PType relationType){
+	A2PrelationType t = (A2PrelationType) relationType->theType;
 	
+	writeByteToBuffer(writer->buffer, PDB_RELATION_TYPE_HEADER);
+	
+	writeType(writer, t->tupleType);
 }
 
 static void writeMapType(A2PWriter writer, A2PType mapType){
+	A2PmapType t = (A2PmapType) mapType->theType;
 	
+	writeByteToBuffer(writer->buffer, PDB_MAP_TYPE_HEADER);
+	
+	writeType(writer, t->keyType);
+	writeType(writer, t->valueType);
 }
 
 static void writeParameterType(A2PWriter writer, A2PType parameterType){
+	A2PparameterType t = (A2PparameterType) parameterType->theType;
+	char *name = t->name;
+	int nameLength = dataArraySize(name);
 	
+	writeByteToBuffer(writer->buffer, PDB_PARAMETER_TYPE_HEADER);
+	
+	printInteger(writer->buffer, nameLength);
+	writeDataToBuffer(writer->buffer, name);
+	
+	writeType(writer, t->bound);
 }
 
 static void writeADTType(A2PWriter writer, A2PType adtType){
@@ -240,7 +266,7 @@ static void writeADTType(A2PWriter writer, A2PType adtType){
 }
 
 static void writeConstructorType(A2PWriter writer, A2PType constructorType){
-	A2PconstructorType t = constructorType->theType;
+	A2PconstructorType t = (A2PconstructorType) constructorType->theType;
 	char *name = t->name;
 	int nameLength = dataArraySize(name);
 	
@@ -255,7 +281,7 @@ static void writeConstructorType(A2PWriter writer, A2PType constructorType){
 }
 
 static void writeAliasType(A2PWriter writer, A2PType aliasType){
-	A2PaliasType t = aliasType->theType;
+	A2PaliasType t = (A2PaliasType) aliasType->theType;
 	char *name = t->name;
 	int nameLength = dataArraySize(name);
 	
