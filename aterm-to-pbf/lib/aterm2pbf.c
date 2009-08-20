@@ -284,7 +284,7 @@ static void writeAnnotatedNode(A2PWriter writer, A2PannotatedNodeType expected, 
 		currentAnno = ATgetFirst(annotations);
 		annotations = ATgetNext(annotations);
 		
-		if(ATgetType(currentAnnoLabelTerm) != AT_APPL){ fprintf(stderr, "Detected corrupted annotations (broken label)"); exit(1); }
+		if(ATgetType(currentAnnoLabelTerm) != AT_APPL){ fprintf(stderr, "Detected corrupted annotations (broken label)\n"); exit(1); }
 		currentAnnoLabel = ATgetName(ATgetAFun((ATermAppl) currentAnnoLabelTerm));
 		
 		
