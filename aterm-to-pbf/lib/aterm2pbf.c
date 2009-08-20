@@ -114,6 +114,13 @@ static void printInteger(ByteBuffer byteBuffer, int integer){
 	writeDataToBuffer(byteBuffer, c);
 }
 
+static void printDouble(ByteBuffer byteBuffer, double doubleValue){
+	char c[9];
+	BEserializeDouble(doubleValue, c);
+	c[8] = '\0';
+	writeDataToBuffer(byteBuffer, c);
+}
+
 /* Under construction. */
 
 static char *doSerialize(A2PWriter writer, A2PType expected, ATerm value){
@@ -130,15 +137,31 @@ static void writeType(A2PWriter writer, A2PType type){
 }
 
 static void writeBool(A2PWriter writer, ATermAppl boolean){
+	char *boolName = ATgetName(ATgetAFun(boolean));
 	
+	writeByteToBuffer(writer->buffer, PDB_BOOL_HEADER);
+	
+	if(strcmp(boolName, "true") == 0){
+		printInteger(writer->buffer, 1);
+	}else{
+		printInteger(writer->buffer, 0);
+	}
 }
 
 static void writeInteger(A2PWriter writer, ATermInt integer){
+	int intValue = ATgetInt(integer);
 	
+	writeByteToBuffer(writer->buffer, PDB_INTEGER_HEADER);
+	
+	printInteger(writer->buffer, intValue);
 }
 
 static void writeDouble(A2PWriter writer, ATermReal real){
+	double doubleValue = ATgetReal(real);
 	
+	writeByteToBuffer(writer->buffer, PDB_IEEE754_ENCODED_DOUBLE_HEADER);
+	
+	printDouble(writer->buffer, doubleValue);
 }
 
 static void writeString(A2PWriter writer, AFun string){
