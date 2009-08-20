@@ -34,8 +34,12 @@ static unsigned int hashString(char *string){
 }
 
 static int equalString(void *str1, void *str2){
-        /* TODO implement. */
-        return 0; /* Temp. */
+	int length1 = strlen(str1);
+	int length2 = strlen(str2);
+	
+	if(length1 != length2) return 0;
+	
+	return (strncmp(str1, str2, length1) == 0) ? 1 : 0;
 }
 
 static ByteBuffer createByteBuffer(unsigned int capacity){
@@ -148,7 +152,7 @@ static void writeBool(A2PWriter writer, ATermAppl boolean){
 	
 	writeByteToBuffer(writer->buffer, PDB_BOOL_HEADER);
 	
-	if(strcmp(boolName, "true") == 0){
+	if(strncmp(boolName, "true", 4) == 0){
 		printInteger(writer->buffer, 1);
 	}else{
 		printInteger(writer->buffer, 0);
@@ -231,7 +235,67 @@ static void writeNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
 }
 
 static void writeAnnotatedNode(A2PWriter writer, A2PannotatedNodeType expected, ATermAppl node){
+	AFun fun = ATgetAFun(node);
+	int arity = ATgetArity(fun);
+	char *name = ATgetName(fun);
+	char **annotationLabels = expected->annotationLabels;
+	A2PType *annotationTypes = expected->annotationTypes;
+	int nrOfAnnotationTypes = typeArraySize(annotationTypes);
+	ATermList annotations = ATgetAnnotations((ATerm) node);
+	int annotationsListLength = ATgetLength(annotations);
+	int nrOfAnnotations;
+	int i;
 	
+	if((annotationsListLength & 0x01U) == 0x01U){ fprintf(stderr, "Detected corrupted annotations (unbalanced).\n"); exit(1); }
+	
+	nrOfAnnotations = annotationsListLength >> 1;
+	
+	unsigned int hash = hashString(name);
+	int nodeNameId = ISstore(writer->nameSharingMap, (void*) name, hash);
+	if(nodeNameId == -1){
+		int nameLength = dataArraySize(name);
+		
+		writeByteToBuffer(writer->buffer, PDB_NODE_HEADER);
+		
+		printInteger(writer->buffer, nameLength);
+		writeDataToBuffer(writer->buffer, name, nameLength);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_NODE_HEADER | PDB_NAME_SHARED_FLAG);
+		
+		printInteger(writer->buffer, nodeNameId);
+	}
+	
+	printInteger(writer->buffer, arity);
+	
+	for(i = 0; i < arity; i++){
+		doSerialize(writer, valueType(), ATgetArgument(node, i));
+	}
+	
+	printInteger(writer->buffer, nrOfAnnotations);
+	
+	for(i = 0; i < nrOfAnnotationTypes; i++){
+		ATerm currentAnnoLabelTerm = ATgetFirst(annotations);
+		ATerm currentAnno;
+		A2PType currentAnnoType;
+		char *currentAnnoLabel;
+		int annoLabelLength;
+		
+		annotations = ATgetNext(annotations);
+		currentAnno = ATgetFirst(annotations);
+		annotations = ATgetNext(annotations);
+		
+		if(ATgetType(currentAnnoLabelTerm) != AT_APPL){ fprintf(stderr, "Detected corrupted annotations (broken label)"); exit(1); }
+		currentAnnoLabel = ATgetName(ATgetAFun((ATermAppl) currentAnnoLabelTerm));
+		
+		
+		
+		/* TODO Get annotation type. */
+		
+		printInteger(writer->buffer, annoLabelLength);
+		writeDataToBuffer(writer->buffer, currentAnnoLabel, annoLabelLength);
+		
+		doSerialize(writer, currentAnnoType, currentAnno);
+	}
 }
 
 static void writeConstructor(A2PWriter writer, A2PconstructorType expected, ATermAppl constructor){
