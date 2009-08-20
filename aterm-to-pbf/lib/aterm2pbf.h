@@ -1,7 +1,7 @@
 #ifndef ATERM2PBF_H
 #define ATERM2PBF_H
 
-#include <idmappings.h>
+#include <indexedset.h>
 #include <aterm2.h>
 #include <pdbtypes.h>
 
@@ -38,10 +38,10 @@ typedef struct _ByteBuffer{
 } *ByteBuffer;
 
 typedef struct A2PWriter{
-        IDMappings valueSharingMap;
-        IDMappings typeSharingMap;
-	IDMappings pathSharingMap;
-	IDMappings nameSharingMap;
+        ISindexedSet valueSharingMap;
+        ISindexedSet typeSharingMap;
+	ISindexedSet pathSharingMap;
+	ISindexedSet nameSharingMap;
 	ByteBuffer buffer;
 } *A2PWriter;
 

@@ -4,6 +4,16 @@
 #include <stdio.h>
 #include <string.h>
 
+static int hashString(char *string){
+	/* TODO Implement. */
+	return 0; /* Temp. */
+}
+
+static int equalString(void *str1, void *str2){
+	/* TODO implement. */
+	return 0; /* Temp. */
+}
+
 static int arraySize(void **array){
 	int entries = -1;
 	do{}while(array[++entries] != NULL);
@@ -49,13 +59,14 @@ static A2PType *copyTypeArray(A2PType *arrayToCopy){
 
 static int initialized = 0;
 
-static A2PType voidTypeConstant;
-static A2PType boolTypeConstant;
-static A2PType integerTypeConstant;
-static A2PType realTypeConstant;
-static A2PType stringTypeConstant;
-static A2PType sourceLocationTypeConstant;
-static A2PType nodeTypeConstant;
+static A2PType valueType;
+static A2PType voidType;
+static A2PType boolType;
+static A2PType integerType;
+static A2PType realType;
+static A2PType stringType;
+static A2PType sourceLocationType;
+static A2PType nodeType;
 
 void destroyType(A2PType type){
 	void *theType = type->theType;
@@ -181,6 +192,13 @@ void destroyType(A2PType type){
 
 void A2Pinitialize(){
 	if(!initialized){
+		valueType = (A2PType) malloc(sizeof(struct _A2PType));
+                if(valueType == NULL){ fprintf(stderr, "Unable to allocate struct for valueType."); exit(1); }
+                valueType->theType = (void*) malloc(sizeof(struct _A2PvalueType));
+                if(valueType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for ValueType"); exit(1); }
+                valueType->id = PDB_VALUE_TYPE_HEADER;
+                valueType->refCount = 0; /* Constant, so don't care. */
+		
 		voidType = (A2PType) malloc(sizeof(struct _A2PType));
 		if(voidType == NULL){ fprintf(stderr, "Unable to allocate struct for voidType."); exit(1); }
 		voidType->theType = (void*) malloc(sizeof(struct _A2PvoidType));

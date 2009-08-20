@@ -33,6 +33,8 @@ typedef struct _A2PType{
 	unsigned int refCount;
 } *A2PType;
 
+typedef struct _A2PvalueType{} *A2PvalueType;
+
 typedef struct _A2PvoidType{} *A2PvoidType;
 
 typedef struct _A2PboolType{} *A2PboolType;
@@ -107,6 +109,8 @@ typedef struct _A2PannotatedConstructorType{
 void destroyType(A2PType type);
 
 void A2Pinitialize();
+
+A2PType valueType();
 
 A2PType voidType();
 

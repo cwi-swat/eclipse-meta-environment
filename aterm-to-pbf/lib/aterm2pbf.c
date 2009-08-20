@@ -28,6 +28,16 @@
 
 #define PDB_HAS_FIELD_NAMES 0x20U
 
+static unsigned int hashString(char *string){
+        /* TODO Implement. */
+        return 0; /* Temp. */
+}
+
+static int equalString(void *str1, void *str2){
+        /* TODO implement. */
+        return 0; /* Temp. */
+}
+
 static ByteBuffer createByteBuffer(unsigned int capacity){
         char *buffer;
 
@@ -165,47 +175,86 @@ static void writeString(A2PWriter writer, ATermAppl string){
 	char *stringValue = ATgetName(ATgetAFun(string));
 	int stringValueLength = dataArraySize(stringValue);
 	
+	writeByteToBuffer(writer->buffer, PDB_STRING_HEADER);
+	
 	printInteger(writer->buffer, stringValueLength);
 	writeDataToBuffer(writer->buffer, stringValue, stringValueLength);
 }
 
 static void writeSourceLocation(A2PWriter writer, ATermAppl sourceLocation){
+	/* Figure out how to do this. */
+}
+
+static void writeTuple(A2PWriter writer, A2PtupleType expected, ATermAppl tuple){
+	A2PType *fieldTypes = expected->fieldTypes;
+	int numberOfFieldTypes = typeArraySize(fieldTypes);
+	int arity = ATgetArity(ATgetAFun(tuple));
+	int i;
+	
+	if(numberOfFieldTypes != arity){ fprintf(stderr, "The number of children specified in the type is not equal to the arity of this tuple.\n"); exit(1); }
+	
+	writeByteToBuffer(writer->buffer, PDB_TUPLE_HEADER);
+	
+	printInteger(writer->buffer, arity);
+	
+	for(i = 0; i < arity; i++){
+		doSerialize(writer, fieldTypes[i], ATgetArgument(tuple, i));
+	}
+}
+
+static void writeNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
+	AFun fun = ATgetAFun(node);
+	int arity = ATgetArity(fun);
+	char *name = ATgetName(fun);
+	int i;
+	
+	unsigned int hash = hashString(name);
+	int nodeNameId = ISstore(writer->nameSharingMap, (void*) name, hash);
+	if(nodeNameId == -1){
+		int nameLength = dataArraySize(name);
+		
+		writeByteToBuffer(writer->buffer, PDB_NODE_HEADER);
+		
+		printInteger(writer->buffer, nameLength);
+		writeDataToBuffer(writer->buffer, name, nameLength);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_NODE_HEADER | PDB_NAME_SHARED_FLAG);
+		
+		printInteger(writer->buffer, nodeNameId);
+	}
+	
+	printInteger(writer->buffer, arity);
+	
+	for(i = 0; i < arity; i++){
+		doSerialize(writer, valueType(), ATgetArgument(node, i));
+	}
+}
+
+static void writeAnnotatedNode(A2PWriter writer, A2PannotatedNodeType expected, ATermAppl node){
 	
 }
 
-static void writeTuple(A2PWriter writer, A2PType expected, ATermAppl tuple){
+static void writeConstructor(A2PWriter writer, A2PconstructorType expected, ATermAppl constructor){
 	
 }
 
-static void writeNode(A2PWriter writer, A2PType expected, ATermAppl node){
+static void writeAnnotatedConstructor(A2PWriter writer, A2PannotatedConstructorType expected, ATermAppl constructor){
 	
 }
 
-static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl node){
+static void writeList(A2PWriter writer, A2PlistType expected, ATermList list){
 	
 }
 
-static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
+static void writeSet(A2PWriter writer, A2PsetType expected, ATermList set){
 	
 }
 
-static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
+static void writeRelation(A2PWriter writer, A2PrelationType expected, ATermList relation){
 	
 }
 
-static void writeList(A2PWriter writer, A2PType expected, ATermList list){
-	
-}
-
-static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
-	
-}
-
-static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation){
-	
-}
-
-static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
+static void writeMap(A2PWriter writer, A2PmapType expected, ATermList map){
 	
 }
 
@@ -426,10 +475,10 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType annotatedCon
 
 A2PWriter A2PcreateWriter(){
 	A2PWriter writer = (A2PWriter) malloc(sizeof(struct A2PWriter));
-	writer->valueSharingMap = IMcreateIDMappings(2.0f);
-	writer->typeSharingMap = IMcreateIDMappings(2.0f);
-	writer->pathSharingMap = IMcreateIDMappings(2.0f);
-	writer->nameSharingMap = IMcreateIDMappings(2.0f);
+	writer->valueSharingMap = IScreate(&equalString, 2.0f);
+	writer->typeSharingMap = IScreate(&equalString, 2.0f);
+	writer->pathSharingMap = IScreate(&equalString, 2.0f);
+	writer->nameSharingMap = IScreate(&equalString, 2.0f);
 	
 	writer->buffer = createByteBuffer(65536);
 	
@@ -437,10 +486,10 @@ A2PWriter A2PcreateWriter(){
 }
 
 void A2PdestroyWriter(A2PWriter writer){
-	IMdestroyIDMappings(writer->valueSharingMap);
-	IMdestroyIDMappings(writer->typeSharingMap);
-	IMdestroyIDMappings(writer->pathSharingMap);
-	IMdestroyIDMappings(writer->nameSharingMap);
+	ISdestroy(writer->valueSharingMap);
+	ISdestroy(writer->typeSharingMap);
+	ISdestroy(writer->pathSharingMap);
+	ISdestroy(writer->nameSharingMap);
 	
 	destroyByteBuffer(writer->buffer);
 	
