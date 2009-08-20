@@ -82,14 +82,13 @@ static int dataArraySize(char *data){
 	return result;
 }
 
-static void writeDataToBuffer(ByteBuffer byteBuffer, char *data){
-	int size = dataArraySize(data);
-	if(getRemainingBufferSpace(byteBuffer) < size){
+static void writeDataToBuffer(ByteBuffer byteBuffer, char *data, int dataLength){
+	if(getRemainingBufferSpace(byteBuffer) < dataLength){
 		enlargeByteBuffer(byteBuffer);
 	}
 	
-	memcpy(data, byteBuffer->currentPos, size);
-	byteBuffer->currentPos += size;
+	memcpy(data, byteBuffer->currentPos, dataLength);
+	byteBuffer->currentPos += dataLength;
 }
 
 static void writeByteToBuffer(ByteBuffer byteBuffer, char byte){
@@ -108,17 +107,15 @@ static void destroyByteBuffer(ByteBuffer byteBuffer){
 }
 
 static void printInteger(ByteBuffer byteBuffer, int integer){
-	char c[6];
+	char c[5];
 	int size = BEserializeMultiByteInt(integer, c);
-	c[size] = '\0';
-	writeDataToBuffer(byteBuffer, c);
+	writeDataToBuffer(byteBuffer, c, size);
 }
 
 static void printDouble(ByteBuffer byteBuffer, double doubleValue){
-	char c[9];
+	char c[8];
 	BEserializeDouble(doubleValue, c);
-	c[8] = '\0';
-	writeDataToBuffer(byteBuffer, c);
+	writeDataToBuffer(byteBuffer, c, 8);
 }
 
 /* Under construction. */
@@ -164,8 +161,12 @@ static void writeDouble(A2PWriter writer, ATermReal real){
 	printDouble(writer->buffer, doubleValue);
 }
 
-static void writeString(A2PWriter writer, AFun string){
+static void writeString(A2PWriter writer, ATermAppl string){
+	char *stringValue = ATgetName(ATgetAFun(string));
+	int stringValueLength = dataArraySize(stringValue);
 	
+	printInteger(writer->buffer, stringValueLength);
+	writeDataToBuffer(writer->buffer, stringValue, stringValueLength);
 }
 
 static void writeSourceLocation(A2PWriter writer, ATermAppl sourceLocation){
@@ -268,7 +269,7 @@ static void writeTupleType(A2PWriter writer, A2PType tupleType){
 			writeType(writer, t->fieldTypes[i]);
 			
 			printInteger(writer->buffer, fieldNameLength);
-			writeDataToBuffer(writer->buffer, fieldName);
+			writeDataToBuffer(writer->buffer, fieldName, fieldNameLength);
 		}
 	}
 }
@@ -314,7 +315,7 @@ static void writeParameterType(A2PWriter writer, A2PType parameterType){
 	writeByteToBuffer(writer->buffer, PDB_PARAMETER_TYPE_HEADER);
 	
 	printInteger(writer->buffer, nameLength);
-	writeDataToBuffer(writer->buffer, name);
+	writeDataToBuffer(writer->buffer, name, nameLength);
 	
 	writeType(writer, t->bound);
 }
@@ -330,7 +331,7 @@ static void writeADTType(A2PWriter writer, A2PType adtType){
 	writeByteToBuffer(writer->buffer, PDB_ADT_TYPE_HEADER);
 	
 	printInteger(writer->buffer, nameLength);
-	writeDataToBuffer(writer->buffer, name);
+	writeDataToBuffer(writer->buffer, name, nameLength);
 	
 	for(i = 0; i < nrOfParameters; i++){
 		writeType(writer, parameters[i]);
@@ -345,7 +346,7 @@ static void writeConstructorType(A2PWriter writer, A2PType constructorType){
 	writeByteToBuffer(writer->buffer, PDB_CONSTRUCTOR_TYPE_HEADER);
 	
 	printInteger(writer->buffer, nameLength);
-	writeDataToBuffer(writer->buffer, name);
+	writeDataToBuffer(writer->buffer, name, nameLength);
 	
 	writeType(writer, t->children);
 	
@@ -360,7 +361,7 @@ static void writeAliasType(A2PWriter writer, A2PType aliasType){
 	writeByteToBuffer(writer->buffer, PDB_ALIAS_TYPE_HEADER);
 	
 	printInteger(writer->buffer, nameLength);
-	writeDataToBuffer(writer->buffer, name);
+	writeDataToBuffer(writer->buffer, name, nameLength);
 	
 	writeType(writer, t->aliased);
 	
@@ -383,7 +384,7 @@ static void writeAnnotatedNodeType(A2PWriter writer, A2PType annotatedNodeType){
                 int labelLength = dataArraySize(label);
 
                 printInteger(writer->buffer, labelLength);
-                writeDataToBuffer(writer->buffer, label);
+                writeDataToBuffer(writer->buffer, label, labelLength);
 
                 writeType(writer, annotationTypes[i]);
         }
@@ -401,7 +402,7 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType annotatedCon
         writeByteToBuffer(writer->buffer, PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER);
 
         printInteger(writer->buffer, nameLength);
-        writeDataToBuffer(writer->buffer, name);
+        writeDataToBuffer(writer->buffer, name, nameLength);
 
         writeType(writer, t->children);
 
@@ -415,7 +416,7 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType annotatedCon
 		int labelLength = dataArraySize(label);
 		
 		printInteger(writer->buffer, labelLength);
-		writeDataToBuffer(writer->buffer, label);
+		writeDataToBuffer(writer->buffer, label, labelLength);
 		
 		writeType(writer, annotationTypes[i]);
 	}
