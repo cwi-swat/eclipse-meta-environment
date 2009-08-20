@@ -50,7 +50,7 @@ typedef struct _A2PnodeType{} *A2PnodeType;
 typedef struct _A2PabstractDataType{
         char *name;
         A2PType *parameters;
-} *AbstractDataType;
+} *A2PabstractDataType;
 
 typedef struct _A2PaliasType{
         char *name;
@@ -92,6 +92,7 @@ typedef struct _A2PtupleType{
 } *A2PtupleType;
 
 typedef struct _A2PannotatedNodeType{
+	char **annotationLabels;
         A2PType *annotationTypes;
 } *A2PannotatedNodeType;
 
@@ -99,6 +100,7 @@ typedef struct _A2PannotatedConstructorType{
         char *name;
         A2PType adt;
         A2PType children;
+	char **annotationLabels;
         A2PType *annotationTypes;
 } *A2PannotatedConstructorType;
 

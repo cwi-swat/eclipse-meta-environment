@@ -70,6 +70,12 @@ static void enlargeByteBuffer(ByteBuffer byteBuffer){
 	free(oldBuffer);
 }
 
+static int typeArraySize(A2PType *types){
+	int result = -1;
+	do{}while(types[++result] != NULL);
+	return result;
+}
+
 static int dataArraySize(char *data){
 	int result = -1;
 	do{}while(data[++result] != '\0');
@@ -212,7 +218,36 @@ static void writeNodeType(A2PWriter writer, A2PType nodeType){
 }
 
 static void writeTupleType(A2PWriter writer, A2PType tupleType){
+	A2PtupleType t = (A2PtupleType) tupleType->theType;
+	A2PType *fieldTypes = t->fieldTypes;
+	char **fieldNames = t->fieldNames;
+	int nrOfFields = typeArraySize(fieldTypes);
+	int hasFieldNames = (fieldNames == NULL) ? 0 : 1;
+	int i;
 	
+	if(hasFieldNames == 0){
+		writeByteToBuffer(writer->buffer, PDB_TUPLE_TYPE_HEADER);
+		
+		printInteger(writer->buffer, nrOfFields);
+		
+		for(i = 0; i < nrOfFields; i++){
+			writeType(writer, t->fieldTypes[i]);
+		}
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_TUPLE_TYPE_HEADER | PDB_HAS_FIELD_NAMES);
+		
+		printInteger(writer->buffer, nrOfFields);
+		
+		for(i = 0; i < nrOfFields; i++){
+			char *fieldName = fieldNames[i];
+			int fieldNameLength = dataArraySize(fieldName);
+			
+			writeType(writer, t->fieldTypes[i]);
+			
+			printInteger(writer->buffer, fieldNameLength);
+			writeDataToBuffer(writer->buffer, fieldName);
+		}
+	}
 }
 
 static void writeListType(A2PWriter writer, A2PType listType){
@@ -262,7 +297,21 @@ static void writeParameterType(A2PWriter writer, A2PType parameterType){
 }
 
 static void writeADTType(A2PWriter writer, A2PType adtType){
+	A2PabstractDataType t = (A2PabstractDataType) adtType->theType;
+	char *name = t->name;
+	int nameLength = dataArraySize(name);
+	A2PType *parameters = t->parameters;
+	int nrOfParameters = typeArraySize(parameters);
+	int i;
 	
+	writeByteToBuffer(writer->buffer, PDB_ADT_TYPE_HEADER);
+	
+	printInteger(writer->buffer, nameLength);
+	writeDataToBuffer(writer->buffer, name);
+	
+	for(i = 0; i < nrOfParameters; i++){
+		writeType(writer, parameters[i]);
+	}
 }
 
 static void writeConstructorType(A2PWriter writer, A2PType constructorType){
@@ -296,11 +345,57 @@ static void writeAliasType(A2PWriter writer, A2PType aliasType){
 }
 
 static void writeAnnotatedNodeType(A2PWriter writer, A2PType annotatedNodeType){
+	A2PannotatedNodeType t = (A2PannotatedNodeType) annotatedNodeType->theType;
+	char **annotationLabels = t->annotationLabels;
+        A2PType *annotationTypes = t->annotationTypes;
+        int nrOfAnnotations = typeArraySize(annotationTypes);
+        int i;
+	
+	writeByteToBuffer(writer->buffer, PDB_ANNOTATED_NODE_TYPE_HEADER);
+	
+	printInteger(writer->buffer, nrOfAnnotations);
 
+        for(i = 0; i < nrOfAnnotations; i++){
+                char *label = annotationLabels[i];
+                int labelLength = dataArraySize(label);
+
+                printInteger(writer->buffer, labelLength);
+                writeDataToBuffer(writer->buffer, label);
+
+                writeType(writer, annotationTypes[i]);
+        }
 }
 
 static void writeAnnotatedConstructorType(A2PWriter writer, A2PType annotatedConstructorType){
+	A2PannotatedConstructorType t = (A2PannotatedConstructorType) annotatedConstructorType->theType;
+	char *name = t->name;
+        int nameLength = dataArraySize(name);
+	char **annotationLabels = t->annotationLabels;
+	A2PType *annotationTypes = t->annotationTypes;
+	int nrOfAnnotations = typeArraySize(annotationTypes);
+	int i;
 
+        writeByteToBuffer(writer->buffer, PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER);
+
+        printInteger(writer->buffer, nameLength);
+        writeDataToBuffer(writer->buffer, name);
+
+        writeType(writer, t->children);
+
+        writeType(writer, t->adt);
+	
+	/* Annotations. */
+	printInteger(writer->buffer, nrOfAnnotations);
+	
+	for(i = 0; i < nrOfAnnotations; i++){
+		char *label = annotationLabels[i];
+		int labelLength = dataArraySize(label);
+		
+		printInteger(writer->buffer, labelLength);
+		writeDataToBuffer(writer->buffer, label);
+		
+		writeType(writer, annotationTypes[i]);
+	}
 }
 
 /* End under construction. */
