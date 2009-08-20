@@ -210,7 +210,7 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	
 	table[bucketPos] = entry;
 	
-	return indexedSet->id++;
+	return indexedSet->load++;
 }
 
 void ISdestroy(IndexedSet indexedSet){
