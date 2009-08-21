@@ -1,5 +1,6 @@
-#include "aterm2pbf.h"
-#include "byteencoding.h"
+#include <aterm2pbf.h>
+#include <byteencoding.h>
+#include <stringutils.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -28,18 +29,8 @@
 
 #define PDB_HAS_FIELD_NAMES 0x20U
 
-static unsigned int hashString(char *string){
-        /* TODO Implement. */
-        return 0; /* Temp. */
-}
-
 static int equalString(void *str1, void *str2){
-	int length1 = strlen(str1);
-	int length2 = strlen(str2);
-	
-	if(length1 != length2) return 0;
-	
-	return (strncmp(str1, str2, length1) == 0) ? 1 : 0;
+	return stringIsEqual((char*) str1, (char*) str2);
 }
 
 static ByteBuffer createByteBuffer(unsigned int capacity){

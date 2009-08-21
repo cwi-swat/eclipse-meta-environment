@@ -1,9 +1,10 @@
 #ifndef ATERM2PBF_H
 #define ATERM2PBF_H
 
-#include "indexedset.h"
+#include <indexedset.h>
+#include <pdbtypes.h>
+
 #include <aterm2.h>
-#include "pdbtypes.h"
 
 #ifdef __cplusplus
 extern "C"

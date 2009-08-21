@@ -8,11 +8,11 @@ libaterm2pbf_la_SOURCES = $(ALLSRCS)
 libaterm2pbf_la_CFLAGS = 
 libaterm2pbf_la_LDFLAGS = -avoid-version -no-undefined
 
-ALLSRCS = byteencoding.c indexedset.c hashtable.c pdbtypes.c aterm2pbf.c
+ALLSRCS = byteencoding.c indexedset.c hashtable.c stringutils.h pdbtypes.c aterm2pbf.c
 
 PUBLIC_INCL = pdbtypes.h aterm2pbf.h
 
-PRIVATE_INCL = indexedset.h byteencoding.h hashtable.h
+PRIVATE_INCL = indexedset.h byteencoding.h hashtable.h stringutils.h
 
 INCLUDES = $(ATERM_CFLAGS)
 

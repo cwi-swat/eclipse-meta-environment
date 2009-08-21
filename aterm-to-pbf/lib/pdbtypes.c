@@ -1,21 +1,12 @@
 #include <pdbtypes.h>
+#include <stringutils.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-static int hashString(char *str){
-	/* TODO Implement. */
-	return 0; /* Temp. */
-}
-
 static int equalString(void *str1, void *str2){
-        int length1 = strlen(str1);
-        int length2 = strlen(str2);
-
-        if(length1 != length2) return 0;
-
-        return (strncmp(str1, str2, length1) == 0) ? 1 : 0;
+	return stringIsEqual((char*) str1, (char*) str2);
 }
 
 static int arraySize(void **array){
