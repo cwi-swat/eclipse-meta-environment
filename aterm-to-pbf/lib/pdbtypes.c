@@ -9,6 +9,15 @@ static int hashString(char *str){
 	return 0; /* Temp. */
 }
 
+static int equalString(void *str1, void *str2){
+        int length1 = strlen(str1);
+        int length2 = strlen(str2);
+
+        if(length1 != length2) return 0;
+
+        return (strncmp(str1, str2, length1) == 0) ? 1 : 0;
+}
+
 static int arraySize(void **array){
 	int entries = -1;
 	do{}while(array[++entries] != NULL);
@@ -320,6 +329,10 @@ A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
 void declareAnnotationOnNodeType(char *label, A2PType valueType){
 	A2PnodeType t = nodeTypeConstant->theType;
 	HThashtable declaredAnnotations = t->declaredAnnotations;
+	if(declaredAnnotations == NULL){
+		declaredAnnotations = HTcreate(equalString, 2.0f);
+		t->declaredAnnotations = declaredAnnotations;
+	}
 	
 	HTput(declaredAnnotations, (void*) label, hashString(label), (void*) valueType);
 }
@@ -327,6 +340,10 @@ void declareAnnotationOnNodeType(char *label, A2PType valueType){
 void declareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType){
 	A2PconstructorType t = constructorType->theType;
 	HThashtable declaredAnnotations = t->declaredAnnotations;
+	if(declaredAnnotations == NULL){
+		declaredAnnotations = HTcreate(equalString, 2.0f);
+		t->declaredAnnotations = declaredAnnotations;
+	}
 	
 	HTput(declaredAnnotations, (void*) label, hashString(label), (void*) valueType);
 }
