@@ -32,7 +32,6 @@ struct _A2PType;
 typedef struct _A2PType{
         void *theType;
         unsigned int id;
-	unsigned int refCount;
 } *A2PType;
 
 typedef struct _A2PvalueType{} *A2PvalueType;
@@ -51,7 +50,6 @@ typedef struct _A2PsourceLocationType{} *A2PsourceLocationType;
 
 typedef struct _A2PnodeType{
 	HThashtable declaredAnnotations;
-	int hasAnnotations;
 } *A2PnodeType;
 
 typedef struct _A2PabstractDataType{
@@ -71,7 +69,6 @@ typedef struct _A2PconstructorType{
         A2PType adt;
 	
 	HThashtable declaredAnnotations;
-	int hasAnnotations;
 } *A2PconstructorType;
 
 typedef struct _A2PlistType{
