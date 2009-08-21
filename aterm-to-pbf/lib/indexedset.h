@@ -1,30 +1,30 @@
-#ifndef HASHTABLE_H_
-#define HASHTABLE_H_
+#ifndef INDEXEDSET_H_
+#define INDEXEDSET_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
-struct Entry;
-typedef struct Entry Entry;
+struct ISEntry;
+typedef struct ISEntry ISEntry;
 
-typedef struct _EntryCache{
-	Entry **blocks;
+typedef struct _ISEntryCache{
+	ISEntry **blocks;
 	unsigned int nrOfBlocks;
 	
-	Entry *nextEntry;
+	ISEntry *nextEntry;
 	unsigned int spaceLeft;
 	
-	Entry *freeList;
-} *EntryCache;
+	ISEntry *freeList;
+} *ISEntryCache;
 
 typedef struct _ISindexedSet{
-	EntryCache entryCache;
+	ISEntryCache entryCache;
 	
 	int (*equals)(void*, void*);
 	
-	Entry **table;
+	ISEntry **table;
 	unsigned int tableSize;
 	unsigned int hashMask;
 	
@@ -44,4 +44,4 @@ int defaultEquals(void* left, void* right);
 }
 #endif /* __cplusplus */
 
-#endif /* HASHTABLE_H_ */
+#endif /* INDEXEDSET_H_ */

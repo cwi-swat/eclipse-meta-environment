@@ -8,32 +8,32 @@
 #define PREALLOCATEDENTRYBLOCKSINCREMENTMASK 0x0000000fU
 #define PREALLOCATEDENTRYBLOCKSIZE 256
 
-struct Entry{
+struct ISEntry{
 	void *key;
 	unsigned int hash;
 	
 	int id;
 	
-	Entry *next;
+	ISEntry *next;
 };
 
-static EntryCache createEntryCache(){
-	Entry *block;
+static ISEntryCache createEntryCache(){
+	ISEntry *block;
 	
-	EntryCache entryCache = (EntryCache) malloc(sizeof(struct _EntryCache));
+	ISEntryCache entryCache = (ISEntryCache) malloc(sizeof(struct _ISEntryCache));
 	if(entryCache == NULL){
 		printf("Failed to allocate memory for entry cache.\n");
 		exit(1);
 	}
 	
-	entryCache->blocks = (Entry**) malloc(PREALLOCATEDENTRYBLOCKSINCREMENT * sizeof(Entry*));
+	entryCache->blocks = (ISEntry**) malloc(PREALLOCATEDENTRYBLOCKSINCREMENT * sizeof(ISEntry*));
 	if(entryCache->blocks == NULL){
 		printf("Failed to allocate array for storing references to pre-allocated entries.\n");
 		exit(1);
 	}
 	entryCache->nrOfBlocks = 1;
 	
-	block = (Entry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct Entry));
+	block = (ISEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct ISEntry));
 	if(block == NULL){
 		printf("Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
@@ -48,7 +48,7 @@ static EntryCache createEntryCache(){
 	return entryCache;
 }
 
-static void destroyEntryCache(EntryCache entryCache){
+static void destroyEntryCache(ISEntryCache entryCache){
 	int i = entryCache->nrOfBlocks;
 	do{
 		free(entryCache->blocks[--i]);
@@ -58,15 +58,15 @@ static void destroyEntryCache(EntryCache entryCache){
 	free(entryCache);
 }
 
-static void expandEntryCache(EntryCache entryCache){
-	Entry *block = (Entry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct Entry));
+static void expandEntryCache(ISEntryCache entryCache){
+	ISEntry *block = (ISEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct ISEntry));
 	if(block == NULL){
 		printf("Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
 	}
 	
 	if((entryCache->nrOfBlocks & PREALLOCATEDENTRYBLOCKSINCREMENTMASK) == 0){
-		entryCache->blocks = (Entry**) realloc(entryCache->blocks, (entryCache->nrOfBlocks + PREALLOCATEDENTRYBLOCKSINCREMENT) * sizeof(Entry*));
+		entryCache->blocks = (ISEntry**) realloc(entryCache->blocks, (entryCache->nrOfBlocks + PREALLOCATEDENTRYBLOCKSINCREMENT) * sizeof(ISEntry*));
 		if(entryCache->blocks == NULL){
 			printf("Failed to allocate array for storing references to pre-allocated entries.\n");
 			exit(1);
@@ -79,8 +79,8 @@ static void expandEntryCache(EntryCache entryCache){
 	entryCache->nextEntry = block;
 }
 
-static Entry* getEntry(EntryCache entryCache){
-	Entry *entry = entryCache->freeList;
+static ISEntry* getEntry(ISEntryCache entryCache){
+	ISEntry *entry = entryCache->freeList;
 	
 	if(entry != NULL){
 		entryCache->freeList = entry->next;
@@ -94,17 +94,12 @@ static Entry* getEntry(EntryCache entryCache){
 	return entry;
 }
 
-static void releaseEntry(EntryCache entryCache, Entry *entry){
-	entry->next = entryCache->freeList;
-	entryCache->freeList = entry;
-}
-
 static unsigned int supplementalHash(unsigned int h){
 	return ((h << 7) - h + (h >> 9) + (h >> 17));
 }
 
 static void ensureTableCapacity(ISindexedSet indexedSet){
-	Entry **oldTable = hashtable->table;
+	ISEntry **oldTable = indexedSet->table;
 	
 	unsigned int currentTableSize = indexedSet->tableSize;
 	if(indexedSet->load >= indexedSet->threshold){
@@ -112,7 +107,7 @@ static void ensureTableCapacity(ISindexedSet indexedSet){
 		int i = currentTableSize - 1;
 		
 		unsigned int newTableSize = currentTableSize << 1;
-		Entry **table = (Entry**) calloc(newTableSize, sizeof(Entry*));
+		ISEntry **table = (ISEntry**) calloc(newTableSize, sizeof(ISEntry*));
 		if(table == NULL){
 			printf("The hashtable was unable to allocate memory for extending the entry table.\n");
 			exit(1);
@@ -125,14 +120,14 @@ static void ensureTableCapacity(ISindexedSet indexedSet){
 		indexedSet->threshold <<= 1;
 		
 		do{
-			Entry *e = oldTable[i];
+			ISEntry *e = oldTable[i];
 			while(e != NULL){
 				unsigned int bucketPos = e->hash & hashMask;
 				
-				Entry *currentEntry = table[bucketPos];
+				ISEntry *currentEntry = table[bucketPos];
 				
 				/* Find the next entry in the old table. */
-				Entry *nextEntry = e->next;
+				ISEntry *nextEntry = e->next;
 				
 				/* Add the entry in the new table. */
 				e->next = currentEntry;
@@ -160,7 +155,7 @@ ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
 	
 	indexedSet->entryCache = createEntryCache();
 	
-	indexedSet->table = (Entry**) calloc(tableSize, sizeof(Entry*));
+	indexedSet->table = (ISEntry**) calloc(tableSize, sizeof(ISEntry*));
 	if(indexedSet->table == NULL){
 		printf("The hashtable was unable to allocate memory for the entry table.\n");
 		exit(1);
@@ -177,8 +172,9 @@ ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
 
 int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	unsigned int bucketPos;
-	Entry **table;
-	Entry *currentEntry, *entry;
+	ISEntry **table;
+	ISEntry *currentEntry, *entry;
+	int id;
 	
 	unsigned int hash = supplementalHash(h);
 	
@@ -190,31 +186,29 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	
 	entry = currentEntry;
 	while(entry != NULL){
-		if(entry->key == key || (entry->hash == hash && (*indexedSet->equals)(entry->key, key))){
-			void *oldValue = entry->value;
-			
-			entry->value = value;
-			
-			return oldValue;
+		if(entry->key == element || (entry->hash == hash && (*indexedSet->equals)(entry->key, element))){
+			return entry->id;
 		}
 		
 		entry = entry->next;
 	}
 	
+	id = indexedSet->load++;
+	
 	/* Insert the new entry at the start of the bucket and link it with the colliding entries (if present). */
-	entry = getEntry(hashtable->entryCache);
+	entry = getEntry(indexedSet->entryCache);
 	entry->hash = hash;
-	entry->key = key;
-	entry->value = value;
+	entry->key = element;
+	entry->id = id;
 	entry->next = currentEntry;
 	
 	table[bucketPos] = entry;
 	
-	return indexedSet->load++;
+	return id;
 }
 
-void ISdestroy(IndexedSet indexedSet){
-	Entry **table = indexedSet->table;
+void ISdestroy(ISindexedSet indexedSet){
+	ISEntry **table = indexedSet->table;
 	
 	destroyEntryCache(indexedSet->entryCache);
 	

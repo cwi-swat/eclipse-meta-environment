@@ -1,5 +1,5 @@
-#include <aterm2pbf.h>
-#include <byteencoding.h>
+#include "aterm2pbf.h"
+#include "byteencoding.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -234,75 +234,15 @@ static void writeNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
 	}
 }
 
-static void writeAnnotatedNode(A2PWriter writer, A2PannotatedNodeType expected, ATermAppl node){
-	AFun fun = ATgetAFun(node);
-	int arity = ATgetArity(fun);
-	char *name = ATgetName(fun);
-	char **annotationLabels = expected->annotationLabels;
-	A2PType *annotationTypes = expected->annotationTypes;
-	int nrOfAnnotationTypes = typeArraySize(annotationTypes);
-	ATermList annotations = ATgetAnnotations((ATerm) node);
-	int annotationsListLength = ATgetLength(annotations);
-	int nrOfAnnotations;
-	int i;
+static void writeAnnotatedNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
 	
-	if((annotationsListLength & 0x01U) == 0x01U){ fprintf(stderr, "Detected corrupted annotations (unbalanced).\n"); exit(1); }
-	
-	nrOfAnnotations = annotationsListLength >> 1;
-	
-	unsigned int hash = hashString(name);
-	int nodeNameId = ISstore(writer->nameSharingMap, (void*) name, hash);
-	if(nodeNameId == -1){
-		int nameLength = dataArraySize(name);
-		
-		writeByteToBuffer(writer->buffer, PDB_NODE_HEADER);
-		
-		printInteger(writer->buffer, nameLength);
-		writeDataToBuffer(writer->buffer, name, nameLength);
-	}else{
-		writeByteToBuffer(writer->buffer, PDB_NODE_HEADER | PDB_NAME_SHARED_FLAG);
-		
-		printInteger(writer->buffer, nodeNameId);
-	}
-	
-	printInteger(writer->buffer, arity);
-	
-	for(i = 0; i < arity; i++){
-		doSerialize(writer, valueType(), ATgetArgument(node, i));
-	}
-	
-	printInteger(writer->buffer, nrOfAnnotations);
-	
-	for(i = 0; i < nrOfAnnotationTypes; i++){
-		ATerm currentAnnoLabelTerm = ATgetFirst(annotations);
-		ATerm currentAnno;
-		A2PType currentAnnoType;
-		char *currentAnnoLabel;
-		int annoLabelLength;
-		
-		annotations = ATgetNext(annotations);
-		currentAnno = ATgetFirst(annotations);
-		annotations = ATgetNext(annotations);
-		
-		if(ATgetType(currentAnnoLabelTerm) != AT_APPL){ fprintf(stderr, "Detected corrupted annotations (broken label)\n"); exit(1); }
-		currentAnnoLabel = ATgetName(ATgetAFun((ATermAppl) currentAnnoLabelTerm));
-		
-		
-		
-		/* TODO Get annotation type. */
-		
-		printInteger(writer->buffer, annoLabelLength);
-		writeDataToBuffer(writer->buffer, currentAnnoLabel, annoLabelLength);
-		
-		doSerialize(writer, currentAnnoType, currentAnno);
-	}
 }
 
 static void writeConstructor(A2PWriter writer, A2PconstructorType expected, ATermAppl constructor){
 	
 }
 
-static void writeAnnotatedConstructor(A2PWriter writer, A2PannotatedConstructorType expected, ATermAppl constructor){
+static void writeAnnotatedConstructor(A2PWriter writer, A2PconstructorType expected, ATermAppl constructor){
 	
 }
 
@@ -481,8 +421,8 @@ static void writeAliasType(A2PWriter writer, A2PType aliasType){
 	writeType(writer, t->parametersTuple);
 }
 
-static void writeAnnotatedNodeType(A2PWriter writer, A2PType annotatedNodeType){
-	A2PannotatedNodeType t = (A2PannotatedNodeType) annotatedNodeType->theType;
+static void writeAnnotatedNodeType(A2PWriter writer, A2PType nodeType){ /* TODO Fix. */
+	/*A2PannotatedNodeType t = (A2PannotatedNodeType) annotatedNodeType->theType;
 	char **annotationLabels = t->annotationLabels;
         A2PType *annotationTypes = t->annotationTypes;
         int nrOfAnnotations = typeArraySize(annotationTypes);
@@ -500,11 +440,11 @@ static void writeAnnotatedNodeType(A2PWriter writer, A2PType annotatedNodeType){
                 writeDataToBuffer(writer->buffer, label, labelLength);
 
                 writeType(writer, annotationTypes[i]);
-        }
+        }*/
 }
 
-static void writeAnnotatedConstructorType(A2PWriter writer, A2PType annotatedConstructorType){
-	A2PannotatedConstructorType t = (A2PannotatedConstructorType) annotatedConstructorType->theType;
+static void writeAnnotatedConstructorType(A2PWriter writer, A2PType constructorType){ /* TODO Fix. */
+	/*A2PannotatedConstructorType t = (A2PannotatedConstructorType) annotatedConstructorType->theType;
 	char *name = t->name;
         int nameLength = dataArraySize(name);
 	char **annotationLabels = t->annotationLabels;
@@ -521,7 +461,6 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType annotatedCon
 
         writeType(writer, t->adt);
 	
-	/* Annotations. */
 	printInteger(writer->buffer, nrOfAnnotations);
 	
 	for(i = 0; i < nrOfAnnotations; i++){
@@ -532,7 +471,7 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType annotatedCon
 		writeDataToBuffer(writer->buffer, label, labelLength);
 		
 		writeType(writer, annotationTypes[i]);
-	}
+	}*/
 }
 
 /* End under construction. */

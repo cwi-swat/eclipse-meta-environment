@@ -1,18 +1,8 @@
-#include <pdbtypes.h>
+#include "pdbtypes.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-static int hashString(char *string){
-	/* TODO Implement. */
-	return 0; /* Temp. */
-}
-
-static int equalString(void *str1, void *str2){
-	/* TODO implement. */
-	return 0; /* Temp. */
-}
 
 static int arraySize(void **array){
 	int entries = -1;
@@ -59,225 +49,108 @@ static A2PType *copyTypeArray(A2PType *arrayToCopy){
 
 static int initialized = 0;
 
-static A2PType valueType;
-static A2PType voidType;
-static A2PType boolType;
-static A2PType integerType;
-static A2PType realType;
-static A2PType stringType;
-static A2PType sourceLocationType;
-static A2PType nodeType;
-
-void destroyType(A2PType type){
-	void *theType = type->theType;
-	switch(type->id){
-		case PDB_VALUE_TYPE_HEADER:
-		case PDB_VOID_TYPE_HEADER:
-		case PDB_BOOL_TYPE_HEADER:
-		case PDB_INTEGER_TYPE_HEADER:
-		case PDB_DOUBLE_TYPE_HEADER:
-		case PDB_STRING_TYPE_HEADER:
-		case PDB_SOURCE_LOCATION_TYPE_HEADER:
-		case PDB_NODE_TYPE_HEADER:
-			return;
-		case PDB_TUPLE_TYPE_HEADER:
-		{
-			A2PtupleType t = (A2PtupleType) theType;
-			A2PType *fieldTypes = t->fieldTypes;
-			char **fieldNames = t->fieldNames;
-			int i = arraySize((void*) fieldTypes) - 1;
-			for(; i >= 0; i--){
-				destroyType(fieldTypes[i]);
-				free(fieldNames[i]);
-			}
-			break;
-		}
-		case PDB_LIST_TYPE_HEADER:
-		{
-			A2PlistType t = (A2PlistType) theType;
-			destroyType(t->elementType);
-			break;
-		}
-		case PDB_SET_TYPE_HEADER:
-		{
-			A2PsetType t = (A2PsetType) theType;
-			destroyType(t->elementType);
-			break;
-		}
-		case PDB_RELATION_TYPE_HEADER:
-		{
-			A2PrelationType t = (A2PrelationType) theType;
-			destroyType(t->tupleType);
-			break;
-		}
-		case PDB_MAP_TYPE_HEADER:
-		{
-			A2PmapType t = (A2PmapType) theType;
-			destroyType(t->keyType);
-			destroyType(t->valueType);
-			break;
-		}
-		case PDB_PARAMETER_TYPE_HEADER:
-		{
-			A2PparameterType t = (A2PparameterType) theType;
-			free(t->name);
-			destroyType(t->bound);
-			break;
-		}
-		case PDB_ADT_TYPE_HEADER:
-		{
-			A2PabstractDataType t = (A2PabstractDataType) theType;
-			A2PType *parameters = t->parameters;
-			int i = arraySize((void*) parameters) - 1;
-			for(; i >= 0; i--){
-				destroyType(parameters[i]);
-			}
-			free(t->name);
-			break;
-		}
-		case PDB_CONSTRUCTOR_TYPE_HEADER:
-		{
-			A2PconstructorType t = (A2PconstructorType) theType;
-			A2PType *children = t->children;
-			int i = arraySize((void*) children) - 1;
-			for(; i >= 0; i--){
-				destroyType(children[i]);
-			}
-			destroyType(t->adt);
-			free(t->name);
-			break;
-		}
-		case PDB_ALIAS_TYPE_HEADER:
-		{
-			A2PaliasType t = (A2PaliasType) theType;
-			destroyType(t->parametersTuple);
-			destroyType(t->aliased);
-			free(t->name);
-			break;
-		}
-		case PDB_ANNOTATED_NODE_TYPE_HEADER:
-		{
-			A2PannotatedNodeType t = (A2PannotatedNodeType) theType;
-			A2PType *annotationTypes = t->annotationTypes;
-			int j = arraySize((void*) annotationTypes);
-			for(; j >= 0; j--){
-				destroyType(annotationTypes[j]);
-			}
-			break;
-		}
-		case PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER:
-		{
-			A2PannotatedConstructorType t = (A2PannotatedConstructorType) theType;
-			A2PType *children = t->children;
-			int i = arraySize((void*) children) - 1;
-			A2PType *annotationTypes = t->annotationTypes;
-			int j = arraySize((void*) annotationTypes);
-			for(; i >= 0; i--){
-				destroyType(children[i]);
-			}
-			for(; j >= 0; j--){
-				destroyType(annotationTypes[j]);
-			}
-			destroyType(t->adt);
-			free(t->name);
-			break;
-		}
-	}
-	
-	if(type->refCount-- == 0){
-		free(theType);
-		free(type);
-	}
-}
+static A2PType valueTypeConstant;
+static A2PType voidTypeConstant;
+static A2PType boolTypeConstant;
+static A2PType integerTypeConstant;
+static A2PType realTypeConstant;
+static A2PType stringTypeConstant;
+static A2PType sourceLocationTypeConstant;
+static A2PType nodeTypeConstant;
 
 void A2Pinitialize(){
 	if(!initialized){
-		valueType = (A2PType) malloc(sizeof(struct _A2PType));
-                if(valueType == NULL){ fprintf(stderr, "Unable to allocate struct for valueType.\n"); exit(1); }
-                valueType->theType = (void*) malloc(sizeof(struct _A2PvalueType));
-                if(valueType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for ValueType.\n"); exit(1); }
-                valueType->id = PDB_VALUE_TYPE_HEADER;
-                valueType->refCount = 0; /* Constant, so don't care. */
+		A2PnodeType nt;
 		
-		voidType = (A2PType) malloc(sizeof(struct _A2PType));
-		if(voidType == NULL){ fprintf(stderr, "Unable to allocate struct for voidType.\n"); exit(1); }
-		voidType->theType = (void*) malloc(sizeof(struct _A2PvoidType));
-		if(voidType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for VoidType.\n"); exit(1); }
-		voidType->id = PDB_VOID_TYPE_HEADER;
-		voidType->refCount = 0; /* Constant, so don't care. */
+		valueTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+                if(valueTypeConstant == NULL){ fprintf(stderr, "Unable to allocate struct for ValueType.\n"); exit(1); }
+                valueTypeConstant->theType = (void*) malloc(sizeof(struct _A2PvalueType));
+                if(valueTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for ValueType.\n"); exit(1); }
+                valueTypeConstant->id = PDB_VALUE_TYPE_HEADER;
+                valueTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
-		boolType = (A2PType) malloc(sizeof(struct _A2PType));
-		if(boolType == NULL){ fprintf(stderr, "Unable to allocate struct for BoolType.\n"); exit(1); }
-		boolType->theType = (void*) malloc(sizeof(struct _A2PboolType));
-		if(boolType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for BoolType.\n"); exit(1); }
-		boolType->id = PDB_BOOL_TYPE_HEADER;
-		boolType->refCount = 0; /* Constant, so don't care. */
+		voidTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+		if(voidTypeConstant == NULL){ fprintf(stderr, "Unable to allocate struct for VoidType.\n"); exit(1); }
+		voidTypeConstant->theType = (void*) malloc(sizeof(struct _A2PvoidType));
+		if(voidTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for VoidType.\n"); exit(1); }
+		voidTypeConstant->id = PDB_VOID_TYPE_HEADER;
+		voidTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
-		integerType = (A2PType) malloc(sizeof(struct _A2PType));
-                if(integerType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
-		integerType->theType = (void*) malloc(sizeof(struct _A2PintegerType));
-		if(integerType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
-		integerType->id = PDB_INTEGER_TYPE_HEADER;
-		integerType->refCount = 0; /* Constant, so don't care. */
+		boolTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+		if(boolTypeConstant == NULL){ fprintf(stderr, "Unable to allocate struct for BoolType.\n"); exit(1); }
+		boolTypeConstant->theType = (void*) malloc(sizeof(struct _A2PboolType));
+		if(boolTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for BoolType.\n"); exit(1); }
+		boolTypeConstant->id = PDB_BOOL_TYPE_HEADER;
+		boolTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
-		realType = (A2PType) malloc(sizeof(struct _A2PType));
-		if(realType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
-		realType->theType = (void*) malloc(sizeof(struct _A2PrealType));
-		if(realType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
-		realType->id = PDB_DOUBLE_TYPE_HEADER;
-		realType->refCount = 0; /* Constant, so don't care. */
+		integerTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+                if(integerTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
+		integerTypeConstant->theType = (void*) malloc(sizeof(struct _A2PintegerType));
+		if(integerTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
+		integerTypeConstant->id = PDB_INTEGER_TYPE_HEADER;
+		integerTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
-		stringType = (A2PType) malloc(sizeof(struct _A2PType));
-		if(stringType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
-		stringType->theType = (void*) (A2P) malloc(sizeof(struct _A2PstringType));
-		if(stringType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
-		stringType->id = PDB_STRING_TYPE_HEADER;
-		stringType->refCount = 0; /* Constant, so don't care. */
+		realTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+		if(realTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
+		realTypeConstant->theType = (void*) malloc(sizeof(struct _A2PrealType));
+		if(realTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
+		realTypeConstant->id = PDB_DOUBLE_TYPE_HEADER;
+		realTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
-		sourceLocationType = (A2PType) malloc(sizeof(struct _A2PType));
-		if(sourceLocationType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
-		sourceLocationType->theType = (void*) malloc(sizeof(struct _A2PsourceLocationType));
-		if(sourceLocationType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
-		sourceLocationType->id = PDB_SOURCE_LOCATION_TYPE_HEADER;
-		sourceLocationType->refCount = 0; /* Constant, so don't care. */
+		stringTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+		if(stringTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
+		stringTypeConstant->theType = (void*) malloc(sizeof(struct _A2PstringType));
+		if(stringTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
+		stringTypeConstant->id = PDB_STRING_TYPE_HEADER;
+		stringTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
-		nodeType = (A2PType) malloc(sizeof(struct _A2PType));
-		if(nodeType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
-		nodeType->theType = (void*) malloc(sizeof(struct _A2PnodeType));
-		if(nodeType->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
-		nodeType->id = PDB_NODE_TYPE_HEADER;
-		nodeType->refCount = 0; /* Constant, so don't care. */
+		sourceLocationTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+		if(sourceLocationTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
+		sourceLocationTypeConstant->theType = (void*) malloc(sizeof(struct _A2PsourceLocationType));
+		if(sourceLocationTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
+		sourceLocationTypeConstant->id = PDB_SOURCE_LOCATION_TYPE_HEADER;
+		sourceLocationTypeConstant->refCount = 0; /* Constant, so don't care. */
+		
+		nodeTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
+		if(nodeTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
+		nt = (A2PnodeType) malloc(sizeof(struct _A2PnodeType));
+		if(nodeTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
+		nt->hasAnnotations = 0;
+		nt->declaredAnnotations = NULL;
+		nodeTypeConstant->theType = (void*) nt;
+		nodeTypeConstant->id = PDB_NODE_TYPE_HEADER;
+		nodeTypeConstant->refCount = 0; /* Constant, so don't care. */
 		
 		initialized = 1;
 	}
 }
 
 A2PType voidType(){
-	return voidType;
+	return voidTypeConstant;
 }
 
 A2PType boolType(){
-	return boolType;
+	return boolTypeConstant;
 }
 
 A2PType integerType(){
-	return integerType;
+	return integerTypeConstant;
 }
 
 A2PType realType(){
-	return realType;
+	return realTypeConstant;
 }
 
 A2PType stringType(){
-	return stringType;
+	return stringTypeConstant;
 }
 
 A2PType sourceLocationType(){
-	return sourceLocationType;
+	return sourceLocationTypeConstant;
 }
 
 A2PType nodeType(){
-	return nodeType;
+	return nodeTypeConstant;
 }
 
 A2PType tupleType(A2PType *fieldTypes, char **fieldNames){
@@ -328,7 +201,7 @@ A2PType setType(A2PType elementType){
 	elementType->refCount++;
         t->elementType = elementType;
 	
-	return settype;
+	return setType;
 }
 
 A2PType relationType(A2PType tupleType){
@@ -379,7 +252,7 @@ A2PType parameterType(char *name, A2PType bound){
 	bound->refCount++;
 	t->bound = bound;
 	
-	return parametertype;
+	return parameterType;
 }
 
 A2PType abstractDataType(char *name, A2PType *parameters){
@@ -412,13 +285,15 @@ A2PType constructorType(char *name, A2PType adt, A2PType *children){
 	adt->refCount++;
 	t->adt = adt;
 	t->children = tupleType(children, NULL);
+	t->hasAnnotations = 0;
+	t->declaredAnnotations = NULL;
 	
 	return constructorType;
 }
 
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
-	A2PType aliastype = (A2PType) malloc(sizeof(struct _A2PType));
-	if(aliastype == NULL){ fprintf(stderr, "Unable to allocate memory for AliasType.\n"); exit(1); }
+	A2PType aliasType = (A2PType) malloc(sizeof(struct _A2PType));
+	if(aliasType == NULL){ fprintf(stderr, "Unable to allocate memory for AliasType.\n"); exit(1); }
 	
 	A2PaliasType t = (A2PaliasType) malloc(sizeof(struct _A2PaliasType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AliasType.\n"); exit(1); }
@@ -434,40 +309,14 @@ A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
 		t->parametersTuple = tupleType(parameters, NULL);
 	}
 	
-	return aliastype;
+	return aliasType;
 }
 
-A2PType annotatedNodeType(A2PType *annotationTypes){
-	A2PType annotatedNodeType = (A2PType) malloc(sizeof(struct _A2PType));
-	if(annotatedNodeType == NULL){ fprintf(stderr, "Unable to allocate memory for AnnotatedNodeType.\n"); exit(1); }
-	
-	A2PannotatedNodeType t = (A2PannotatedNodeType) malloc(sizeof(struct _A2PannotatedNodeType));
-	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AnnotatedNodeType.\n"); exit(1); }
-	annotatedNodeType->theType = t;
-	annotatedNodeType->id = PDB_ANNOTATED_NODE_TYPE_HEADER;
-	annotatedNodeType->refCount = 0;
-	
-	t->annotationTypes = copyTypeArray(annotationTypes);
-	
-	return annotatedNodeType;
+void declareAnnotationOnNodeType(A2PType nodeType, char *label, A2PType valueType){
+	/* TODO Implement. */
 }
 
-A2PType annotatedConstructorType(char *name, A2PType adt, A2PType *children, A2PType *annotationTypes){
-	A2PType annotatedConstructorType = (A2PType) malloc(sizeof(struct _A2PType));
-	if(annotatedConstructorType == NULL){ fprintf(stderr, "Unable to allocate memory for AnnotatedConstructorType.\n"); exit(1); }
-	
-	A2PannotatedConstructorType t = (A2PannotatedConstructorType) malloc(sizeof(struct _A2PannotatedConstructorType));
-	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AnnotatedConstructorType.\n"); exit(1); }
-	annotatedConstructorType->theType = t;
-	annotatedConstructorType->id = PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER;
-	annotatedConstructorType->refCount = 0;
-	
-	t->name = copyString(name);
-	adt->refCount++;
-	t->adt = adt;
-	t->children = tupleType(children, NULL);
-	t->annotationTypes = copyTypeArray(annotationTypes);
-	
-	return annotatedConstructorType;
+void declareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType){
+	/* TODO Implement. */
 }
 

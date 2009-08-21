@@ -1,6 +1,8 @@
 #ifndef PDBTYPES_H
 #define PDBTYPES_H
 
+#include "hashtable.h"
+
 #define PDB_VALUE_TYPE_HEADER 0x01U
 #define PDB_VOID_TYPE_HEADER 0x02U
 #define PDB_BOOL_TYPE_HEADER 0x03U
@@ -47,7 +49,10 @@ typedef struct _A2PstringType{} *A2PstringType;
 
 typedef struct _A2PsourceLocationType{} *A2PsourceLocationType;
 
-typedef struct _A2PnodeType{} *A2PnodeType;
+typedef struct _A2PnodeType{
+	HThashtable declaredAnnotations;
+	int hasAnnotations;
+} *A2PnodeType;
 
 typedef struct _A2PabstractDataType{
         char *name;
@@ -64,6 +69,9 @@ typedef struct _A2PconstructorType{
         char *name;
         A2PType children;
         A2PType adt;
+	
+	HThashtable declaredAnnotations;
+	int hasAnnotations;
 } *A2PconstructorType;
 
 typedef struct _A2PlistType{
@@ -92,21 +100,6 @@ typedef struct _A2PtupleType{
         A2PType *fieldTypes;
         char **fieldNames;
 } *A2PtupleType;
-
-typedef struct _A2PannotatedNodeType{
-	char **annotationLabels;
-        A2PType *annotationTypes;
-} *A2PannotatedNodeType;
-
-typedef struct _A2PannotatedConstructorType{
-        char *name;
-        A2PType adt;
-        A2PType children;
-	char **annotationLabels;
-        A2PType *annotationTypes;
-} *A2PannotatedConstructorType;
-
-void destroyType(A2PType type);
 
 void A2Pinitialize();
 
@@ -142,9 +135,9 @@ A2PType constructorType(char *name, A2PType adt, A2PType *children);
 
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters);
 
-A2PType annotatedNodeType(A2PType *annotationTypes);
+void declareAnnotationOnNodeType(A2PType nodeType, char *label, A2PType valueType);
 
-A2PType annotatedConstructorType(char *name, A2PType adt, A2PType *children, A2PType *annotationTypes);
+void declareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType);
 
 #ifdef __cplusplus
 }
