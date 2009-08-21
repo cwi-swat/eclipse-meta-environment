@@ -1,8 +1,13 @@
-#include "pdbtypes.h"
+#include <pdbtypes.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+static int hashString(char *str){
+	/* TODO Implement. */
+	return 0; /* Temp. */
+}
 
 static int arraySize(void **array){
 	int entries = -1;
@@ -312,11 +317,17 @@ A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
 	return aliasType;
 }
 
-void declareAnnotationOnNodeType(A2PType nodeType, char *label, A2PType valueType){
-	/* TODO Implement. */
+void declareAnnotationOnNodeType(char *label, A2PType valueType){
+	A2PnodeType t = nodeTypeConstant->theType;
+	HThashtable declaredAnnotations = t->declaredAnnotations;
+	
+	HTput(declaredAnnotations, (void*) label, hashString(label), (void*) valueType);
 }
 
 void declareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType){
-	/* TODO Implement. */
+	A2PconstructorType t = constructorType->theType;
+	HThashtable declaredAnnotations = t->declaredAnnotations;
+	
+	HTput(declaredAnnotations, (void*) label, hashString(label), (void*) valueType);
 }
 
