@@ -412,36 +412,36 @@ static void writeAliasType(A2PWriter writer, A2PType aliasType){
 	writeType(writer, t->parametersTuple);
 }
 
-static void writeAnnotatedNodeType(A2PWriter writer, A2PType nodeType){ /* TODO Fix. */
-	/*A2PannotatedNodeType t = (A2PannotatedNodeType) annotatedNodeType->theType;
-	char **annotationLabels = t->annotationLabels;
-        A2PType *annotationTypes = t->annotationTypes;
-        int nrOfAnnotations = typeArraySize(annotationTypes);
-        int i;
+static void writeAnnotatedNodeType(A2PWriter writer, A2PType nodeType){
+	A2PnodeType t = (A2PnodeType) nodeType->theType;
+	HThashtable hashtable = t->declaredAnnotations;
+	HTiterator iterator = HTcreateIterator(hashtable);
+        int nrOfAnnotations = HTsize(hashtable);
+	HTEntry *nextAnnotation;
 	
 	writeByteToBuffer(writer->buffer, PDB_ANNOTATED_NODE_TYPE_HEADER);
 	
 	printInteger(writer->buffer, nrOfAnnotations);
 
-        for(i = 0; i < nrOfAnnotations; i++){
-                char *label = annotationLabels[i];
+        while((nextAnnotation = HTgetNext(iterator)) != NULL){
+                char *label = (char*) nextAnnotation->key;
                 int labelLength = dataArraySize(label);
 
                 printInteger(writer->buffer, labelLength);
                 writeDataToBuffer(writer->buffer, label, labelLength);
 
-                writeType(writer, annotationTypes[i]);
-        }*/
+                writeType(writer, (A2PType) nextAnnotation->value);
+        }
 }
 
-static void writeAnnotatedConstructorType(A2PWriter writer, A2PType constructorType){ /* TODO Fix. */
-	/*A2PannotatedConstructorType t = (A2PannotatedConstructorType) annotatedConstructorType->theType;
+static void writeAnnotatedConstructorType(A2PWriter writer, A2PType constructorType){
+	A2PconstructorType t = (A2PconstructorType) constructorType->theType;
 	char *name = t->name;
         int nameLength = dataArraySize(name);
-	char **annotationLabels = t->annotationLabels;
-	A2PType *annotationTypes = t->annotationTypes;
-	int nrOfAnnotations = typeArraySize(annotationTypes);
-	int i;
+	HThashtable hashtable = t->declaredAnnotations;
+	HTiterator iterator = HTcreateIterator(hashtable);
+	int nrOfAnnotations = HTsize(hashtable);
+	HTEntry *nextAnnotation;
 
         writeByteToBuffer(writer->buffer, PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER);
 
@@ -454,15 +454,15 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType constructorT
 	
 	printInteger(writer->buffer, nrOfAnnotations);
 	
-	for(i = 0; i < nrOfAnnotations; i++){
-		char *label = annotationLabels[i];
+	while((nextAnnotation = HTgetNext(iterator)) != NULL){
+		char *label = (char*) nextAnnotation->key;
 		int labelLength = dataArraySize(label);
 		
 		printInteger(writer->buffer, labelLength);
 		writeDataToBuffer(writer->buffer, label, labelLength);
 		
-		writeType(writer, annotationTypes[i]);
-	}*/
+		writeType(writer, (A2PType) nextAnnotation->value);
+	}
 }
 
 /* End under construction. */
