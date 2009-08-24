@@ -226,7 +226,62 @@ static void writeNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
 }
 
 static void writeAnnotatedNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
+	AFun fun = ATgetAFun(node);
+	int arity = ATgetArity(fun);
+	char *name = ATgetName(fun);
+	ATermList annotations = (ATermList) ATgetAnnotations((ATerm) node);
+	int nrOfAnnotations = ATgetLength(annotations);
+	int i;
+	ATerm annotationLabel;
+	ATerm annotationValue;
 	
+	unsigned int hash = hashString(name);
+	int nodeNameId = ISstore(writer->nameSharingMap, (void*) name, hash);
+	if(nodeNameId == -1){
+		int nameLength = dataArraySize(name);
+		
+		writeByteToBuffer(writer->buffer, PDB_ANNOTATED_NODE_HEADER);
+		
+		printInteger(writer->buffer, nameLength);
+		writeDataToBuffer(writer->buffer, name, nameLength);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_ANNOTATED_NODE_HEADER | PDB_NAME_SHARED_FLAG);
+	
+		printInteger(writer->buffer, nodeNameId);
+	}
+	
+	printInteger(writer->buffer, arity);
+	
+	for(i = 0; i < arity; i++){
+		doSerialize(writer, valueType(), ATgetArgument(node, i));
+	}
+	
+	/* Annotations. */
+	if((nrOfAnnotations % 2) == 1){ fprintf(stderr, "Detected corrupt annotations (Unbalanced).\n"); exit(1); }
+	
+	printInteger(writer->buffer, nrOfAnnotations);
+	
+	do{
+		char *label;
+		int labelLength;
+		A2PType annotationType;
+		
+		annotationLabel = ATgetFirst(annotations);
+		annotations = ATgetNext(annotations);
+		annotationValue = ATgetFirst(annotations);
+		annotations = ATgetNext(annotations);
+		
+		if(ATgetType(annotationLabel) != AT_APPL){ fprintf(stderr, "Detected corrupt annotation; label term is not a 'string'.\n"); exit(1);}
+		
+		label = ATgetName(ATgetAFun((ATermAppl) annotationLabel));
+		labelLength = dataArraySize(label);
+		
+		printInteger(writer->buffer, labelLength);
+		writeDataToBuffer(writer->buffer, label, labelLength);
+		
+		annotationType = (A2PType) HTget(expected->declaredAnnotations, (void*) label, hashString(label));
+		doSerialize(writer, annotationType, annotationValue);
+	}while(!ATisEmpty(annotations));
 }
 
 static void writeConstructor(A2PWriter writer, A2PconstructorType expected, ATermAppl constructor){
@@ -252,6 +307,8 @@ static void writeRelation(A2PWriter writer, A2PrelationType expected, ATermList 
 static void writeMap(A2PWriter writer, A2PmapType expected, ATermList map){
 	
 }
+
+/* End under construction. */
 
 static void writeValueType(A2PWriter writer){
 	writeByteToBuffer(writer->buffer, PDB_VALUE_TYPE_HEADER);
@@ -464,8 +521,6 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType constructorT
 		writeType(writer, (A2PType) nextAnnotation->value);
 	}
 }
-
-/* End under construction. */
 
 A2PWriter A2PcreateWriter(){
 	A2PWriter writer = (A2PWriter) malloc(sizeof(struct A2PWriter));
