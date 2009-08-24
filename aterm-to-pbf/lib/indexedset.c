@@ -1,4 +1,5 @@
 #include <indexedset.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -135,8 +136,7 @@ static void ensureTableCapacity(ISindexedSet indexedSet){
 				
 				e = nextEntry;
 			}
-			i--;
-		}while(i >= 0);
+		}while(--i >= 0);
 		
 		free(oldTable);
 	}

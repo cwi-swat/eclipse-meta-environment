@@ -9,6 +9,15 @@ extern "C"
 struct HTEntry;
 typedef struct HTEntry HTEntry;
 
+struct HTEntry{
+        void *key;
+        unsigned int hash;
+
+        void *value;
+
+        HTEntry *next;
+};
+
 typedef struct _HTEntryCache{
 	HTEntry **blocks;
 	unsigned int nrOfBlocks;
@@ -32,6 +41,13 @@ typedef struct _HThashtable{
 	unsigned int threshold;
 } *HThashtable;
 
+typedef struct _HTiterator{
+	HThashtable hashtable;
+	
+	int position;
+	HTEntry *currentEntry;
+} *HTiterator;
+
 HThashtable HTcreate(int (*equals)(void*, void*), float loadPercentage);
 
 void *HTput(HThashtable hashtable, void *key, unsigned int h, void *value);
@@ -44,7 +60,9 @@ unsigned int HTsize(HThashtable hashtable);
 
 void HTdestroy(HThashtable hashtable);
 
-int defaultEquals(void* left, void* right);
+HTiterator HTcreateIterator(HThashtable hashtable);
+
+HTEntry *HTgetNext(HTiterator iterator);
 
 #ifdef __cplusplus
 }

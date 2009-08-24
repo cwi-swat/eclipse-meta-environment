@@ -1,4 +1,5 @@
-#include "hashtable.h"
+#include <hashtable.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -7,15 +8,6 @@
 #define PREALLOCATEDENTRYBLOCKSINCREMENT 16
 #define PREALLOCATEDENTRYBLOCKSINCREMENTMASK 0x0000000fU
 #define PREALLOCATEDENTRYBLOCKSIZE 256
-
-struct HTEntry{
-	void *key;
-	unsigned int hash;
-	
-	void *value;
-	
-	HTEntry *next;
-};
 
 static HTEntryCache createEntryCache(){
 	HTEntry *block;
@@ -140,8 +132,7 @@ static void ensureTableCapacity(HThashtable hashtable){
 				
 				e = nextEntry;
 			}
-			i--;
-		}while(i >= 0);
+		}while(--i >= 0);
 		
 		free(oldTable);
 	}
@@ -269,6 +260,38 @@ void HTdestroy(HThashtable hashtable){
 	free(hashtable);
 }
 
-int defaultEquals(void* left, void* right){
-	return (left == right);
+HTiterator HTcreateIterator(HThashtable hashtable){
+	HTiterator iterator = (HTiterator) malloc(sizeof(struct _HTiterator));
+	if(iterator == NULL){
+		fprintf(stderr, "The hashtable was unable to allocate memory for an iterator.");
+		exit(1);
+	}
+	
+	iterator->hashtable = hashtable;
+	iterator->position = -1;
+	iterator->currentEntry = NULL;
+	
+	return iterator;
 }
+
+HTEntry *HTgetNext(HTiterator iterator){
+	HTEntry *currentEntry = iterator->currentEntry;
+	
+	HTEntry *nextEntry = NULL;
+        if(currentEntry != NULL){
+                nextEntry = currentEntry->next;
+        }
+	
+        if(nextEntry == NULL){
+                HThashtable hashtable = iterator->hashtable;
+                do{
+                        nextEntry = hashtable->table[++iterator->position];
+                }while(nextEntry == NULL && iterator->position < hashtable->tableSize);
+
+                if(nextEntry == NULL) return NULL; /* End of hashtable. */
+        }
+	
+	iterator->currentEntry = nextEntry;
+	return nextEntry;
+}
+
