@@ -36,6 +36,8 @@ ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage);
 
 int ISstore(ISindexedSet indexedSet, void *element, unsigned int h);
 
+int ISget(ISindexedSet indexedSet, void *element, unsigned int h);
+
 void ISdestroy(ISindexedSet indexedSet);
 
 int defaultEquals(void* left, void* right);

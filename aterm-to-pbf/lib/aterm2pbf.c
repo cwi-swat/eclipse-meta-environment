@@ -33,6 +33,11 @@ static int equalString(void *str1, void *str2){
 	return stringIsEqual((char*) str1, (char*) str2);
 }
 
+static unsigned int hashType(A2PType type){
+	/* TODO Implement. */
+	return 0; /* Temp. */
+}
+
 static ByteBuffer createByteBuffer(unsigned int capacity){
         char *buffer;
 
@@ -180,8 +185,10 @@ static void writeSourceLocation(A2PWriter writer, ATermAppl sourceLocation){
 	/* Figure out how to do this. */
 }
 
-static void writeTuple(A2PWriter writer, A2PtupleType expected, ATermAppl tuple){
-	A2PType *fieldTypes = expected->fieldTypes;
+static void writeTuple(A2PWriter writer, A2PType expected, ATermAppl tuple){
+	A2PtupleType t = expected->theType;
+	
+	A2PType *fieldTypes = t->fieldTypes;
 	int numberOfFieldTypes = typeArraySize(fieldTypes);
 	int arity = ATgetArity(ATgetAFun(tuple));
 	int i;
@@ -197,7 +204,7 @@ static void writeTuple(A2PWriter writer, A2PtupleType expected, ATermAppl tuple)
 	}
 }
 
-static void writeNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
+static void writeNode(A2PWriter writer, A2PType expected, ATermAppl node){
 	AFun fun = ATgetAFun(node);
 	int arity = ATgetArity(fun);
 	char *name = ATgetName(fun);
@@ -225,7 +232,9 @@ static void writeNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
 	}
 }
 
-static void writeAnnotatedNode(A2PWriter writer, A2PnodeType expected, ATermAppl node){
+static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl node){
+	A2PnodeType t = expected->theType;
+	
 	AFun fun = ATgetAFun(node);
 	int arity = ATgetArity(fun);
 	char *name = ATgetName(fun);
@@ -271,7 +280,7 @@ static void writeAnnotatedNode(A2PWriter writer, A2PnodeType expected, ATermAppl
 		annotationValue = ATgetFirst(annotations);
 		annotations = ATgetNext(annotations);
 		
-		if(ATgetType(annotationLabel) != AT_APPL){ fprintf(stderr, "Detected corrupt annotation; label term is not a 'string'.\n"); exit(1);}
+		if(ATgetType(annotationLabel) != AT_APPL){ fprintf(stderr, "Detected corrupt annotation; label term is not a 'string'.\n"); exit(1); }
 		
 		label = ATgetName(ATgetAFun((ATermAppl) annotationLabel));
 		labelLength = dataArraySize(label);
@@ -279,32 +288,56 @@ static void writeAnnotatedNode(A2PWriter writer, A2PnodeType expected, ATermAppl
 		printInteger(writer->buffer, labelLength);
 		writeDataToBuffer(writer->buffer, label, labelLength);
 		
-		annotationType = (A2PType) HTget(expected->declaredAnnotations, (void*) label, hashString(label));
+		annotationType = (A2PType) HTget(t->declaredAnnotations, (void*) label, hashString(label));
 		doSerialize(writer, annotationType, annotationValue);
 	}while(!ATisEmpty(annotations));
 }
 
-static void writeConstructor(A2PWriter writer, A2PconstructorType expected, ATermAppl constructor){
+static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
+	A2PconstructorType t = expected->theType;
+	
+	ISindexedSet sharedTypes = writer->typeSharingMap;
+	int typeHash = hashType(expected);
+	int constructorTypeId = ISget(sharedTypes, expected, typeHash);
+	int arity = ATgetArity(ATgetAFun(constructor));
+	int i;
+	
+	if(constructorTypeId == -1){
+		writeByteToBuffer(writer->buffer, PDB_CONSTRUCTOR_HEADER);
+		
+		doWriteType(writer, expected);
+		
+		ISstore(sharedTypes, expected, typeHash);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_CONSTRUCTOR_HEADER | PDB_TYPE_SHARED_FLAG);
+		
+		printInteger(writer->buffer, constructorTypeId);
+	}
+	
+	printInteger(writer->buffer, arity);
+	
+	for(i = 0; i < arity; i++){
+		doSerialize(writer, ((A2PtupleType) t->children->theType)->fieldTypes[i], ATgetArgument(constructor, i));
+	}
+}
+
+static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
 	
 }
 
-static void writeAnnotatedConstructor(A2PWriter writer, A2PconstructorType expected, ATermAppl constructor){
+static void writeList(A2PWriter writer, A2PType expected, ATermList list){
 	
 }
 
-static void writeList(A2PWriter writer, A2PlistType expected, ATermList list){
+static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
 	
 }
 
-static void writeSet(A2PWriter writer, A2PsetType expected, ATermList set){
+static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation){
 	
 }
 
-static void writeRelation(A2PWriter writer, A2PrelationType expected, ATermList relation){
-	
-}
-
-static void writeMap(A2PWriter writer, A2PmapType expected, ATermList map){
+static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 	
 }
 

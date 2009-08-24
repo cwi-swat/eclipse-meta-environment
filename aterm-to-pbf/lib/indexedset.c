@@ -207,6 +207,29 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	return id;
 }
 
+int ISget(ISindexedSet indexedSet, void *element, unsigned int h){
+	unsigned int bucketPos;
+	ISEntry **table;
+	ISEntry *currentEntry, *entry;
+	
+	unsigned int hash = supplementalHash(h);
+	
+	bucketPos = hash & indexedSet->hashMask;
+	table = indexedSet->table;
+	currentEntry = table[bucketPos];
+	
+	entry = currentEntry;
+	while(entry != NULL){
+		if(entry->key == element || (entry->hash == hash && (*indexedSet->equals)(entry->key, element))){
+			return entry->id;
+		}
+		
+		entry = entry->next;
+	}
+	
+	return -1;
+}
+
 void ISdestroy(ISindexedSet indexedSet){
 	ISEntry **table = indexedSet->table;
 	
