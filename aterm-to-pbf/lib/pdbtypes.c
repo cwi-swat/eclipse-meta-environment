@@ -51,7 +51,18 @@ static A2PType *copyTypeArray(A2PType *arrayToCopy){
         return newArray;
 }
 
+int equalType(void *type1, void *type2){
+	/* TODO Implement. */
+	return 0; /* Temp. */
+}
+
+unsigned int hashType(A2PType type){
+	/* TODO  Implement. */
+	return 0; /* Temp. */
+}
+
 static int initialized = 0;
+static HThashtable typeStore;
 
 static A2PType valueTypeConstant;
 static A2PType voidTypeConstant;
@@ -62,8 +73,24 @@ static A2PType stringTypeConstant;
 static A2PType sourceLocationTypeConstant;
 static A2PType nodeTypeConstant;
 
+static A2PType handleCaching(A2PType type){
+	int typeHash = hashType(type);
+	A2PType cached = HTget(typeStore, type, typeHash);
+	if(cached != NULL){
+		free(type->theType);
+		free(type);
+		return cached;
+	}
+	
+	HTput(typeStore, type, typeHash, type);
+	
+	return type;
+}
+
 void A2Pinitialize(){
 	if(!initialized){
+		typeStore = HTcreate(&equalType, 2.0f);
+		
 		A2PnodeType nt;
 		
 		valueTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
@@ -163,7 +190,7 @@ A2PType tupleType(A2PType *fieldTypes, char **fieldNames){
 		t->fieldNames = copyStringArray(fieldNames);
 	}
 	
-	return tupleType;
+	return handleCaching(tupleType);
 }
 
 A2PType listType(A2PType elementType){
@@ -177,7 +204,7 @@ A2PType listType(A2PType elementType){
 	
 	t->elementType = elementType;
 	
-	return listType;
+	return handleCaching(listType);
 }
 
 A2PType setType(A2PType elementType){
@@ -191,7 +218,7 @@ A2PType setType(A2PType elementType){
 	
         t->elementType = elementType;
 	
-	return setType;
+	return handleCaching(setType);
 }
 
 A2PType relationType(A2PType tupleType){
@@ -205,7 +232,7 @@ A2PType relationType(A2PType tupleType){
 	
         t->tupleType = tupleType;
 	
-	return relationType;
+	return handleCaching(relationType);
 }
 
 A2PType mapType(A2PType keyType, A2PType valueType){
@@ -220,7 +247,7 @@ A2PType mapType(A2PType keyType, A2PType valueType){
         t->keyType = keyType;
 	t->valueType = valueType;
 	
-	return mapType;
+	return handleCaching(mapType);
 }
 
 A2PType parameterType(char *name, A2PType bound){
@@ -235,7 +262,7 @@ A2PType parameterType(char *name, A2PType bound){
 	t->name = copyString(name);
 	t->bound = bound;
 	
-	return parameterType;
+	return handleCaching(parameterType);
 }
 
 A2PType abstractDataType(char *name, A2PType *parameters){
@@ -250,7 +277,7 @@ A2PType abstractDataType(char *name, A2PType *parameters){
 	t->name = copyString(name);
 	t->parameters = copyTypeArray(parameters);
 	
-	return abstractDataType;
+	return handleCaching(abstractDataType);
 }
 
 A2PType constructorType(char *name, A2PType adt, A2PType *children){
@@ -267,7 +294,7 @@ A2PType constructorType(char *name, A2PType adt, A2PType *children){
 	t->children = tupleType(children, NULL);
 	t->declaredAnnotations = NULL;
 	
-	return constructorType;
+	return handleCaching(constructorType);
 }
 
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
@@ -286,7 +313,7 @@ A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
 		t->parametersTuple = tupleType(parameters, NULL);
 	}
 	
-	return aliasType;
+	return handleCaching(aliasType);
 }
 
 void declareAnnotationOnNodeType(char *label, A2PType valueType){
