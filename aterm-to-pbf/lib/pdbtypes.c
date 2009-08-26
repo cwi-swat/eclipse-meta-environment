@@ -1,5 +1,6 @@
 #include <pdbtypes.h>
 #include <stringutils.h>
+#include <typeutils.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -52,13 +53,7 @@ static A2PType *copyTypeArray(A2PType *arrayToCopy){
 }
 
 int equalType(void *type1, void *type2){
-	/* TODO Implement. */
-	return 0; /* Temp. */
-}
-
-unsigned int hashType(A2PType type){
-	/* TODO  Implement. */
-	return 0; /* Temp. */
+	return typeIsEqual((A2PType) type1, (A2PType) type2);
 }
 
 static int initialized = 0;

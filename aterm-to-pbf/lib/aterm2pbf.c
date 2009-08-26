@@ -492,7 +492,7 @@ static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 	int size = ATgetLength(map);
 	ATermList next;
 	
-	if(size % 2 == 1){ fprintf(stderr, "Number of elements in the map is unbalanced."); exit(1); }
+	if(size % 2 == 1){ fprintf(stderr, "Number of elements in the map is unbalanced.\n"); exit(1); }
 	
 	if(mapTypeId == -1){
 		writeByteToBuffer(writer->buffer, PDB_MAP_HEADER);
