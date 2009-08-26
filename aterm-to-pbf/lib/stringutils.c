@@ -1,8 +1,18 @@
 #include <stringutils.h>
 
+#include <string.h>
+
 unsigned int hashString(char *string){
-        /* TODO Implement. */
-        return 0; /* Temp. */
+	unsigned int h = 0;
+	
+	int i = 0;
+	char c;
+	while((c = string[i++]) != '\0'){
+		h *= -127;
+		h += c;
+	}
+	
+	return h;
 }
 
 int stringIsEqual(char *str1, char *str2){
