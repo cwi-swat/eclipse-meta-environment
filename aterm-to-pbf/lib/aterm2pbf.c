@@ -298,7 +298,7 @@ static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl const
 	
 	ISindexedSet sharedTypes = writer->typeSharingMap;
 	int typeHash = hashType(expected);
-	int constructorTypeId = ISget(sharedTypes, expected, typeHash);
+	int constructorTypeId = ISget(sharedTypes, (void*) expected, typeHash);
 	int arity = ATgetArity(ATgetAFun(constructor));
 	int i;
 	
@@ -307,7 +307,7 @@ static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl const
 		
 		doWriteType(writer, expected);
 		
-		ISstore(sharedTypes, expected, typeHash);
+		ISstore(sharedTypes, (void*) expected, typeHash);
 	}else{
 		writeByteToBuffer(writer->buffer, PDB_CONSTRUCTOR_HEADER | PDB_TYPE_SHARED_FLAG);
 		
@@ -326,7 +326,7 @@ static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermA
 	
 	ISindexedSet sharedTypes = writer->typeSharingMap;
 	int typeHash = hashType(expected);
-	int constructorTypeId = ISget(sharedTypes, expected, typeHash);
+	int constructorTypeId = ISget(sharedTypes, (void*) expected, typeHash);
 	int arity = ATgetArity(ATgetAFun(constructor));
 	ATermList annotations = (ATermList) ATgetAnnotations((ATerm) constructor);
 	int nrOfAnnotations = ATgetLength(annotations);
@@ -339,7 +339,7 @@ static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermA
 		
 		doWriteType(writer, expected);
 		
-		ISstore(sharedTypes, expected, typeHash);
+		ISstore(sharedTypes, (void*) expected, typeHash);
 	}else{
 		writeByteToBuffer(writer->buffer, PDB_ANNOTATED_CONSTRUCTOR_HEADER | PDB_TYPE_SHARED_FLAG);
 		
@@ -381,7 +381,35 @@ static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermA
 }
 
 static void writeList(A2PWriter writer, A2PType expected, ATermList list){
+	A2PlistType listType = (A2PlistType) expected->theType;
 	
+	A2PType elementType = listType->elementType;
+	ISindexedSet sharedTypes = writer->typeSharingMap;
+	int elementHash = hashType(elementType);
+	int elementTypeId = ISget(sharedTypes, (void*) elementType, elementHash);
+	int length = ATgetLength(list);
+	ATermList next;
+	
+	if(elementTypeId == -1){
+		writeByteToBuffer(writer->buffer, PDB_LIST_HEADER);
+		
+		doWriteType(writer, elementType);
+		
+		ISstore(sharedTypes, elementType, elementHash);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_LIST_HEADER | PDB_TYPE_SHARED_FLAG);
+		
+		printInteger(writer->buffer, elementTypeId);
+	}
+	
+	printInteger(writer->buffer, length);
+	next = list;
+	while(!ATisEmpty(list)){
+		ATerm current = ATgetFirst(next);
+		next = ATgetNext(next);
+		
+		doSerialize(writer, elementType, current);
+	}
 }
 
 static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
