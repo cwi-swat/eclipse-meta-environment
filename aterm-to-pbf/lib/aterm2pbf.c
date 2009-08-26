@@ -34,9 +34,26 @@ static int equalString(void *str1, void *str2){
 }
 
 static unsigned int hashType(A2PType type){
-	/* TODO Implement. */
-	return 0; /* Temp. */
+	return (unsigned int) type;
 }
+
+static unsigned int hashValue(ATerm value){
+	return (unsigned int) value;
+}
+
+
+static int typeArraySize(A2PType *types){
+	int result = -1;
+	do{}while(types[++result] != NULL);
+	return result;
+}
+
+static int dataArraySize(char *data){
+	int result = -1;
+	do{}while(data[++result] != '\0');
+	return result;
+}
+
 
 static ByteBuffer createByteBuffer(unsigned int capacity){
         char *buffer;
@@ -80,18 +97,6 @@ static void enlargeByteBuffer(ByteBuffer byteBuffer){
 	free(oldBuffer);
 }
 
-static int typeArraySize(A2PType *types){
-	int result = -1;
-	do{}while(types[++result] != NULL);
-	return result;
-}
-
-static int dataArraySize(char *data){
-	int result = -1;
-	do{}while(data[++result] != '\0');
-	return result;
-}
-
 static void writeDataToBuffer(ByteBuffer byteBuffer, char *data, int dataLength){
 	if(getRemainingBufferSpace(byteBuffer) < dataLength){
 		enlargeByteBuffer(byteBuffer);
@@ -132,9 +137,17 @@ static void printDouble(ByteBuffer byteBuffer, double doubleValue){
 
 static void doWriteType(A2PWriter writer, A2PType type);
 
-static char *doSerialize(A2PWriter writer, A2PType expected, ATerm value){
+static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
+	ISindexedSet sharedValues = writer->valueSharingMap;
+	int valueHash = hashValue(value);
+	int valueId = ISget(sharedValues, (void*) value, valueHash);
+	if(valueId != -1){
+		writeByteToBuffer(writer->buffer, PDB_SHARED_FLAG);
+		printInteger(writer->buffer, valueId);
+		return;
+	}
 	
-	return NULL; // Temp.
+	
 }
 
 /* End under construction. */
@@ -803,8 +816,8 @@ static void doWriteType(A2PWriter writer, A2PType type){
 
 A2PWriter A2PcreateWriter(){
 	A2PWriter writer = (A2PWriter) malloc(sizeof(struct A2PWriter));
-	writer->valueSharingMap = IScreate(&equalString, 2.0f);
-	writer->typeSharingMap = IScreate(&equalString, 2.0f);
+	writer->valueSharingMap = IScreate(&defaultEquals, 2.0f);
+	writer->typeSharingMap = IScreate(&defaultEquals, 2.0f);
 	writer->pathSharingMap = IScreate(&equalString, 2.0f);
 	writer->nameSharingMap = IScreate(&equalString, 2.0f);
 	
@@ -826,8 +839,13 @@ void A2PdestroyWriter(A2PWriter writer){
 
 char *A2Pserialize(ATerm term, A2PType topType){
 	A2PWriter writer = A2PcreateWriter();
+	ByteBuffer buffer = writer->buffer;
+	char *result;
 	
-	char *result = doSerialize(writer, topType, term);
+	doSerialize(writer, topType, term);
+	
+	result = (char*) malloc(getCurrentByteBufferSize(buffer));
+	memcpy(buffer->buffer, result, 0);
 	
 	A2PdestroyWriter(writer);
 	
