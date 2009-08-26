@@ -130,20 +130,29 @@ static void printDouble(ByteBuffer byteBuffer, double doubleValue){
 
 /* Under construction. */
 
+static void doWriteType(A2PWriter writer, A2PType type);
+
 static char *doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 	
 	return NULL; // Temp.
 }
 
-static void doWriteType(A2PWriter writer, A2PType type){
-	
-}
+/* End under construction. */
 
 static void writeType(A2PWriter writer, A2PType type){
+	ISindexedSet sharedTypes = writer->typeSharingMap;
+	int typeHash = hashType(type);
+	int typeId = ISget(sharedTypes, type, typeHash);
+	if(typeId != -1){
+		writeByteToBuffer(writer->buffer, PDB_SHARED_FLAG);
+		printInteger(writer->buffer, typeId);
+		return;
+	}
 	
+	doWriteType(writer, type);
+	
+	ISstore(sharedTypes, type, typeHash);
 }
-
-/* End under construction. */
 
 static void writeBool(A2PWriter writer, ATermAppl boolean){
 	char *boolName = ATgetName(ATgetAFun(boolean));
@@ -724,6 +733,71 @@ static void writeAnnotatedConstructorType(A2PWriter writer, A2PType constructorT
 		writeDataToBuffer(writer->buffer, label, labelLength);
 		
 		writeType(writer, (A2PType) nextAnnotation->value);
+	}
+}
+
+static void doWriteType(A2PWriter writer, A2PType type){
+	switch(type->id){
+		case PDB_VALUE_TYPE_HEADER:
+			writeValueType(writer);
+			break;
+		case PDB_VOID_TYPE_HEADER:
+			writeVoidType(writer);
+			break;
+		case PDB_BOOL_TYPE_HEADER:
+			writeBoolType(writer);
+			break;
+		case PDB_INTEGER_TYPE_HEADER:
+			writeIntegerType(writer);
+			break;
+		case PDB_DOUBLE_TYPE_HEADER:
+			writeDoubleType(writer);
+			break;
+		case PDB_STRING_TYPE_HEADER:
+			writeStringType(writer);
+			break;
+		case PDB_SOURCE_LOCATION_TYPE_HEADER:
+			writeSourceLocationType(writer);
+			break;
+		case PDB_NODE_TYPE_HEADER:
+			writeNodeType(writer, type);
+			break;
+		case PDB_TUPLE_TYPE_HEADER:
+			writeTupleType(writer, type);
+			break;
+		case PDB_LIST_TYPE_HEADER:
+			writeListType(writer, type);
+			break;
+		case PDB_SET_TYPE_HEADER:
+			writeSetType(writer, type);
+			break;
+		case PDB_RELATION_TYPE_HEADER:
+			writeRelationType(writer, type);
+			break;
+		case PDB_MAP_TYPE_HEADER:
+			writeMapType(writer, type);
+			break;
+		case PDB_PARAMETER_TYPE_HEADER:
+			writeParameterType(writer, type);
+			break;
+		case PDB_ADT_TYPE_HEADER:
+			writeADTType(writer, type);
+			break;
+		case PDB_CONSTRUCTOR_TYPE_HEADER:
+			writeConstructorType(writer, type);
+			break;
+		case PDB_ALIAS_TYPE_HEADER:
+			writeAliasType(writer, type);
+			break;
+		case PDB_ANNOTATED_NODE_TYPE_HEADER:
+			writeAnnotatedNodeType(writer, type);
+			break;
+		case PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER:
+			writeAnnotatedConstructorType(writer, type);
+			break;
+		default:
+			fprintf(stderr, "Unknown type: %d\n.", type->id);
+			exit(1);
 	}
 }
 
