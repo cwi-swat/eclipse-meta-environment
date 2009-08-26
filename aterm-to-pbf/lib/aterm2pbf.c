@@ -322,7 +322,62 @@ static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl const
 }
 
 static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
+	A2PconstructorType t = expected->theType;
 	
+	ISindexedSet sharedTypes = writer->typeSharingMap;
+	int typeHash = hashType(expected);
+	int constructorTypeId = ISget(sharedTypes, expected, typeHash);
+	int arity = ATgetArity(ATgetAFun(constructor));
+	ATermList annotations = (ATermList) ATgetAnnotations((ATerm) constructor);
+	int nrOfAnnotations = ATgetLength(annotations);
+	int i;
+	ATerm annotationLabel;
+	ATerm annotationValue;
+	
+	if(constructorTypeId == -1){
+		writeByteToBuffer(writer->buffer, PDB_ANNOTATED_CONSTRUCTOR_HEADER);
+		
+		doWriteType(writer, expected);
+		
+		ISstore(sharedTypes, expected, typeHash);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_ANNOTATED_CONSTRUCTOR_HEADER | PDB_TYPE_SHARED_FLAG);
+		
+		printInteger(writer->buffer, constructorTypeId);
+	}
+	
+	printInteger(writer->buffer, arity);
+	
+	for(i = 0; i < arity; i++){
+		doSerialize(writer, ((A2PtupleType) t->children->theType)->fieldTypes[i], ATgetArgument(constructor, i));
+	}
+	
+	/* Annotations. */
+	if((nrOfAnnotations % 2) == 1){ fprintf(stderr, "Detected corrupt annotations (Unbalanced).\n"); exit(1); }
+	
+	printInteger(writer->buffer, nrOfAnnotations);
+	
+	do{
+		char *label;
+		int labelLength;
+		A2PType annotationType;
+		
+		annotationLabel = ATgetFirst(annotations);
+		annotations = ATgetNext(annotations);
+		annotationValue = ATgetFirst(annotations);
+		annotations = ATgetNext(annotations);
+		
+		if(ATgetType(annotationLabel) != AT_APPL){ fprintf(stderr, "Detected corrupt annotation; label term is not a 'string'.\n"); exit(1); }
+		
+		label = ATgetName(ATgetAFun((ATermAppl) annotationLabel));
+		labelLength = dataArraySize(label);
+		
+		printInteger(writer->buffer, labelLength);
+		writeDataToBuffer(writer->buffer, label, labelLength);
+		
+		annotationType = (A2PType) HTget(t->declaredAnnotations, (void*) label, hashString(label));
+		doSerialize(writer, annotationType, annotationValue);
+	}while(!ATisEmpty(annotations));
 }
 
 static void writeList(A2PWriter writer, A2PType expected, ATermList list){
