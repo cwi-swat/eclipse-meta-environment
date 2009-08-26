@@ -17,5 +17,5 @@ PRIVATE_INCL = indexedset.h byteencoding.h hashtable.h stringutils.h
 INCLUDES = $(ATERM_CFLAGS)
 
 libaterm2pbf_la_LIBADD = \
-	-L$(top_builddir)/src \
+	-L$(top_builddir)/lib \
         $(ATERM_LIBS)

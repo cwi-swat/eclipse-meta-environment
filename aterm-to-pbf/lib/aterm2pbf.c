@@ -41,7 +41,6 @@ static unsigned int hashValue(ATerm value){
 	return (unsigned int) value;
 }
 
-
 static int typeArraySize(A2PType *types){
 	int result = -1;
 	do{}while(types[++result] != NULL);
@@ -53,7 +52,6 @@ static int dataArraySize(char *data){
 	do{}while(data[++result] != '\0');
 	return result;
 }
-
 
 static ByteBuffer createByteBuffer(unsigned int capacity){
         char *buffer;
@@ -133,24 +131,9 @@ static void printDouble(ByteBuffer byteBuffer, double doubleValue){
 	writeDataToBuffer(byteBuffer, c, 8);
 }
 
-/* Under construction. */
-
 static void doWriteType(A2PWriter writer, A2PType type);
 
-static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
-	ISindexedSet sharedValues = writer->valueSharingMap;
-	int valueHash = hashValue(value);
-	int valueId = ISget(sharedValues, (void*) value, valueHash);
-	if(valueId != -1){
-		writeByteToBuffer(writer->buffer, PDB_SHARED_FLAG);
-		printInteger(writer->buffer, valueId);
-		return;
-	}
-	
-	
-}
-
-/* End under construction. */
+static void doSerialize(A2PWriter writer, A2PType expected, ATerm value);
 
 static void writeType(A2PWriter writer, A2PType type){
 	ISindexedSet sharedTypes = writer->typeSharingMap;
@@ -773,7 +756,11 @@ static void doWriteType(A2PWriter writer, A2PType type){
 			writeSourceLocationType(writer);
 			break;
 		case PDB_NODE_TYPE_HEADER:
-			writeNodeType(writer, type);
+			if(((A2PnodeType) type->theType)->declaredAnnotations == NULL){
+				writeNodeType(writer, type);
+			}else{
+				writeAnnotatedNodeType(writer, type);
+			}
 			break;
 		case PDB_TUPLE_TYPE_HEADER:
 			writeTupleType(writer, type);
@@ -797,21 +784,82 @@ static void doWriteType(A2PWriter writer, A2PType type){
 			writeADTType(writer, type);
 			break;
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
-			writeConstructorType(writer, type);
+			if(((A2PconstructorType) type->theType)->declaredAnnotations == NULL){
+				writeConstructorType(writer, type);
+			}else{
+				writeAnnotatedConstructorType(writer, type);
+			}
 			break;
 		case PDB_ALIAS_TYPE_HEADER:
 			writeAliasType(writer, type);
-			break;
-		case PDB_ANNOTATED_NODE_TYPE_HEADER:
-			writeAnnotatedNodeType(writer, type);
-			break;
-		case PDB_ANNOTATED_CONSTRUCTOR_TYPE_HEADER:
-			writeAnnotatedConstructorType(writer, type);
 			break;
 		default:
 			fprintf(stderr, "Unknown type: %d\n.", type->id);
 			exit(1);
 	}
+}
+
+static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
+        ISindexedSet sharedValues = writer->valueSharingMap;
+        int valueHash = hashValue(value);
+        int valueId = ISget(sharedValues, (void*) value, valueHash);
+        if(valueId != -1){
+                writeByteToBuffer(writer->buffer, PDB_SHARED_FLAG);
+                printInteger(writer->buffer, valueId);
+                return;
+        }
+
+	switch(expected->id){
+		case PDB_BOOL_TYPE_HEADER:
+			writeBool(writer, (ATermAppl) value);
+			break;
+		case PDB_INTEGER_TYPE_HEADER:
+			writeInteger(writer, (ATermInt) value);
+			break;
+		case PDB_DOUBLE_TYPE_HEADER:
+			writeDouble(writer, (ATermReal) value);
+			break;
+		case PDB_STRING_TYPE_HEADER:
+			writeString(writer, (ATermAppl) value);
+			break;
+		case PDB_SOURCE_LOCATION_TYPE_HEADER:
+			writeSourceLocation(writer, (ATermAppl) value);
+			break;
+		case PDB_NODE_TYPE_HEADER:
+			if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){
+				writeNode(writer, expected, (ATermAppl) value);
+			}else{
+				writeAnnotatedNode(writer, expected, (ATermAppl) value);
+			}
+			break;
+		case PDB_TUPLE_TYPE_HEADER:
+			writeTuple(writer, expected, (ATermAppl) value);
+			break;
+		case PDB_LIST_TYPE_HEADER:
+			writeList(writer, expected, (ATermList) value);
+			break;
+		case PDB_SET_TYPE_HEADER:
+			writeSet(writer, expected, (ATermList) value);
+			break;
+		case PDB_RELATION_TYPE_HEADER:
+			writeRelation(writer, expected, (ATermList) value);
+			break;
+		case PDB_MAP_TYPE_HEADER:
+			writeMap(writer, expected, (ATermList) value);
+			break;
+		case PDB_CONSTRUCTOR_TYPE_HEADER:
+			if(((A2PconstructorType) expected->theType)->declaredAnnotations == NULL){
+				writeConstructor(writer, expected, (ATermAppl) value);
+			}else{
+				writeAnnotatedConstructor(writer, expected, (ATermAppl) value);
+			}
+			break;
+		default:
+			fprintf(stderr, "Unserializable type: %d\n.", expected->id);
+			exit(1);
+	}
+	
+	ISstore(sharedValues, (void*) value, valueHash);
 }
 
 A2PWriter A2PcreateWriter(){
