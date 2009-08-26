@@ -413,7 +413,35 @@ static void writeList(A2PWriter writer, A2PType expected, ATermList list){
 }
 
 static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
+	A2PsetType setType = (A2PsetType) expected->theType;
 	
+	A2PType elementType = setType->elementType;
+	ISindexedSet sharedTypes = writer->typeSharingMap;
+	int elementHash = hashType(elementType);
+	int elementTypeId = ISget(sharedTypes, (void*) elementType, elementHash);
+	int size = ATgetLength(set);
+	ATermList next;
+	
+	if(elementTypeId == -1){
+		writeByteToBuffer(writer->buffer, PDB_SET_TYPE);
+		
+		doWriteType(writer, elementType);
+		
+		ISstore(sharedTypes, elementType, elementHash);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_SET_TYPE | PDB_TYPE_SHARED_FLAG);
+		
+		printInteger(writer->buffer, elementTypeId);
+	}
+	
+	printInteger(writer->buffer, size);
+	next = set;
+	while(!ATisEmpty(next)){
+		ATerm current = ATgetFirst(next);
+		next = ATgetNext(next);
+		
+		doSerialize(writer, elementType, current);
+	}
 }
 
 static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation){
