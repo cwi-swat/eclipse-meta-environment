@@ -143,6 +143,8 @@ static void writeType(A2PWriter writer, A2PType type){
 	
 }
 
+/* End under construction. */
+
 static void writeBool(A2PWriter writer, ATermAppl boolean){
 	char *boolName = ATgetName(ATgetAFun(boolean));
 	
@@ -477,10 +479,41 @@ static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation
 }
 
 static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
+	A2PmapType mapType = (A2PmapType) expected->theType;
 	
+	ISindexedSet sharedTypes = writer->typeSharingMap;
+	int mapHash = hashType(expected);
+	int mapTypeId = ISget(sharedTypes, (void*) expected, mapHash);
+	int size = ATgetLength(map);
+	ATermList next;
+	
+	if(size % 2 == 1){ fprintf(stderr, "Number of elements in the map is unbalanced."); exit(1); }
+	
+	if(mapTypeId == -1){
+		writeByteToBuffer(writer->buffer, PDB_MAP_HEADER);
+		
+		doWriteType(writer, expected);
+		
+		ISstore(sharedTypes, (void*) expected, mapHash);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_MAP_HEADER | PDB_TYPE_SHARED_FLAG);
+		
+		printInteger(writer->buffer, mapTypeId);
+	}
+	
+	printInteger(writer->buffer, size >> 1);
+	next = map;
+	while(!ATisEmpty(next)){
+		ATerm key = ATgetFirst(map);
+		ATerm value;
+		next = ATgetNext(map);
+		value = ATgetFirst(map);
+		next = ATgetNext(map);
+		
+		doSerialize(writer, mapType->keyType, key);
+		doSerialize(writer, mapType->valueType, value);
+	}
 }
-
-/* End under construction. */
 
 static void writeValueType(A2PWriter writer){
 	writeByteToBuffer(writer->buffer, PDB_VALUE_TYPE_HEADER);
