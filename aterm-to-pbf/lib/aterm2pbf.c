@@ -427,7 +427,7 @@ static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
 		
 		doWriteType(writer, elementType);
 		
-		ISstore(sharedTypes, elementType, elementHash);
+		ISstore(sharedTypes, (void*) elementType, elementHash);
 	}else{
 		writeByteToBuffer(writer->buffer, PDB_SET_TYPE | PDB_TYPE_SHARED_FLAG);
 		
@@ -445,7 +445,35 @@ static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
 }
 
 static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation){
+	A2PrelationType relationType = (A2PrelationType) expected->theType;
 	
+	A2PType tupleType = relationType->tupleType;
+	ISindexedSet sharedTypes = writer->typeSharingMap;
+	int tupleHash = hashType(tupleType);
+	int tupleTypeId = ISget(sharedTypes, (void*) tupleType, tupleHash);
+	int size = ATgetLength(relation);
+	ATermList next;
+	
+	if(tupleTypeId == -1){
+		writeByteToBuffer(writer->buffer, PDB_RELATION_TYPE);
+		
+		doWriteType(writer, tupleType);
+		
+		ISstore(sharedTypes, (void*) tupleType, tupleHash);
+	}else{
+		writeByteToBuffer(writer->buffer, PDB_RELATION_TYPE | PDB_TYPE_SHARED_FLAG);
+		
+		printInteger(writer->buffer, tupleTypeId);
+	}
+	
+	printInteger(writer->buffer, size);
+	next = relation;
+	while(!ATisEmpty(next)){
+		ATerm current = ATgetFirst(next);
+		next = ATgetNext(next);
+		
+		doSerialize(writer, tupleType, current);
+	}
 }
 
 static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
