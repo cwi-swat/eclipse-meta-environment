@@ -107,33 +107,33 @@ void A2Pinitialize(){
 		boolTypeConstant->id = PDB_BOOL_TYPE_HEADER;
 		
 		integerTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
-                if(integerTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
+                if(integerTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
 		integerTypeConstant->theType = (void*) malloc(sizeof(struct _A2PintegerType));
 		if(integerTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
 		integerTypeConstant->id = PDB_INTEGER_TYPE_HEADER;
 		
 		realTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
-		if(realTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
+		if(realTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
 		realTypeConstant->theType = (void*) malloc(sizeof(struct _A2PrealType));
 		if(realTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
 		realTypeConstant->id = PDB_DOUBLE_TYPE_HEADER;
 		
 		stringTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
-		if(stringTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
+		if(stringTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
 		stringTypeConstant->theType = (void*) malloc(sizeof(struct _A2PstringType));
 		if(stringTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
 		stringTypeConstant->id = PDB_STRING_TYPE_HEADER;
 		
 		sourceLocationTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
-		if(sourceLocationTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
+		if(sourceLocationTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
 		sourceLocationTypeConstant->theType = (void*) malloc(sizeof(struct _A2PsourceLocationType));
 		if(sourceLocationTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
 		sourceLocationTypeConstant->id = PDB_SOURCE_LOCATION_TYPE_HEADER;
 		
 		nodeTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
-		if(nodeTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
+		if(nodeTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
 		nt = (A2PnodeType) malloc(sizeof(struct _A2PnodeType));
-		if(nodeTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
+		if(nt == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
 		nt->declaredAnnotations = NULL;
 		nodeTypeConstant->theType = (void*) nt;
 		nodeTypeConstant->id = PDB_NODE_TYPE_HEADER;

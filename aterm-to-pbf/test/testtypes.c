@@ -16,6 +16,8 @@ int main(int argc, char **argv){
 	ATerm bottomOfStack;
 	ATinit(argc, argv, &bottomOfStack);
 	
+	A2Pinitialize();
+	
 	testInt();
 	
 	return 0;
