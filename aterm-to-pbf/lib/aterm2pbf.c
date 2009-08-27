@@ -101,7 +101,7 @@ static void enlargeByteBuffer(ByteBuffer byteBuffer){
 	
 	buffer = (char*) malloc(newCapacity * sizeof(char));
 	if(buffer == NULL){ fprintf(stderr, "Unable to allocate backing array for the byte buffer.\n"); exit(1);}
-	memcpy(oldBuffer, buffer, size);
+	memcpy(buffer, oldBuffer, size);
 	byteBuffer->buffer = buffer;
 	byteBuffer->currentPos = buffer + size;
 	
@@ -115,7 +115,7 @@ static void writeDataToBuffer(ByteBuffer byteBuffer, char *data, int dataLength)
 		enlargeByteBuffer(byteBuffer);
 	}
 	
-	memcpy(data, byteBuffer->currentPos, dataLength);
+	memcpy(byteBuffer->currentPos, data, dataLength);
 	byteBuffer->currentPos += dataLength;
 }
 
@@ -900,15 +900,18 @@ static void destroyWriter(A2PWriter writer){
 	free(writer);
 }
 
-char *A2Pserialize(ATerm term, A2PType topType){
+char *A2Pserialize(ATerm term, A2PType topType, int *length){
 	A2PWriter writer = createWriter();
 	ByteBuffer buffer = writer->buffer;
 	char *result;
+	int bufferSize;
 	
 	doSerialize(writer, topType, term);
 	
-	result = (char*) malloc(getCurrentByteBufferSize(buffer));
-	memcpy(buffer->buffer, result, 0);
+	bufferSize = getCurrentByteBufferSize(buffer);
+	result = (char*) malloc(bufferSize);
+	memcpy(result, buffer->buffer, bufferSize);
+	*length = bufferSize;
 	
 	destroyWriter(writer);
 	
