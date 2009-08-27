@@ -54,12 +54,17 @@ static A2PType *copyTypeArray(A2PType *arrayToCopy){
         return newArray;
 }
 
-int equalType(void *type1, void *type2){
+static int equalType(void *type1, void *type2){
 	return typeIsEqual((A2PType) type1, (A2PType) type2);
+}
+
+static int pointerEqual(void *first, void *second){
+	return (first == second);
 }
 
 static int initialized = 0;
 static HThashtable typeStore;
+static HThashtable typeMappings;
 
 static A2PType valueTypeConstant;
 static A2PType voidTypeConstant;
@@ -87,6 +92,7 @@ static A2PType handleCaching(A2PType type){
 void A2Pinitialize(){
 	if(!initialized){
 		typeStore = HTcreate(&equalType, 2.0f);
+		typeMappings = HTcreate(&equalType, 2.0f);
 		
 		A2PnodeType nt;
 		
@@ -282,6 +288,8 @@ A2PType abstractDataType(char *name, A2PType *parameters){
 }
 
 A2PType constructorType(char *name, A2PType adt, A2PType *children){
+	A2PType result;
+	
 	A2PType constructorType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(constructorType == NULL){ fprintf(stderr, "Unable to allocate memory for ConstructorType.\n"); exit(1); }
 	
@@ -295,7 +303,19 @@ A2PType constructorType(char *name, A2PType adt, A2PType *children){
 	t->children = tupleType(children, NULL);
 	t->declaredAnnotations = NULL;
 	
-	return handleCaching(constructorType);
+	result = handleCaching(constructorType);
+	
+	{
+		int adtHash = hashType(adt);
+		HShashset constructors = HTget(typeMappings, adt, adtHash);
+		if(constructors == NULL){
+			constructors = HScreate(&pointerEqual, 2.0f);
+			HTput(typeMappings, adt, adtHash, constructors);
+		}
+		HSput(constructors, result, hashType(result));
+	}
+	
+	return result;
 }
 
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
