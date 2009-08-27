@@ -254,13 +254,12 @@ static void writeNode(A2PWriter writer, A2PType expected, ATermAppl node){
 	}
 }
 
-static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl node){
+static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl node, ATermList annotations){
 	A2PnodeType t = expected->theType;
 	
 	AFun fun = ATgetAFun(node);
 	int arity = ATgetArity(fun);
 	char *name = ATgetName(fun);
-	ATermList annotations = (ATermList) ATgetAnnotations((ATerm) node);
 	int nrOfAnnotations = ATgetLength(annotations);
 	int i;
 	ATerm annotationLabel;
@@ -343,14 +342,13 @@ static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl const
 	}
 }
 
-static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
+static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor, ATermList annotations){
 	A2PconstructorType t = expected->theType;
 	
 	ISindexedSet sharedTypes = writer->typeSharingMap;
 	int typeHash = hashType(expected);
 	int constructorTypeId = ISget(sharedTypes, (void*) expected, typeHash);
 	int arity = ATgetArity(ATgetAFun(constructor));
-	ATermList annotations = (ATermList) ATgetAnnotations((ATerm) constructor);
 	int nrOfAnnotations = ATgetLength(annotations);
 	int i;
 	ATerm annotationLabel;
@@ -533,6 +531,10 @@ static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 		doSerialize(writer, mapType->keyType, key);
 		doSerialize(writer, mapType->valueType, value);
 	}
+}
+
+static void writeADT(A2PWriter writer, A2PType expected, ATermAppl value){
+	/* TODO Implement. */
 }
 
 static void writeValueType(A2PWriter writer){
@@ -841,10 +843,15 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 			writeSourceLocation(writer, (ATermAppl) value);
 			break;
 		case PDB_NODE_TYPE_HEADER:
-			if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){
-				writeNode(writer, expected, (ATermAppl) value);
-			}else{
-				writeAnnotatedNode(writer, expected, (ATermAppl) value);
+			{
+				ATermList annotations = (ATermList) ATgetAnnotations(value);
+				if(ATgetLength(annotations) == 0){
+					writeNode(writer, expected, (ATermAppl) value);
+				}else{
+					if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
+					
+					writeAnnotatedNode(writer, expected, (ATermAppl) value, annotations);
+				}
 			}
 			break;
 		case PDB_TUPLE_TYPE_HEADER:
@@ -863,11 +870,19 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 			writeMap(writer, expected, (ATermList) value);
 			break;
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
-			if(((A2PconstructorType) expected->theType)->declaredAnnotations == NULL){
-				writeConstructor(writer, expected, (ATermAppl) value);
-			}else{
-				writeAnnotatedConstructor(writer, expected, (ATermAppl) value);
+			{
+				ATermList annotations = (ATermList) ATgetAnnotations(value);
+				if(ATgetLength(annotations) == 0){
+					writeConstructor(writer, expected, (ATermAppl) value);
+				}else{
+					if(((A2PconstructorType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Constructor term has annotations, but none are declared.\n"); exit(1); }
+					
+					writeAnnotatedConstructor(writer, expected, (ATermAppl) value, annotations);
+				}
 			}
+			break;
+		case PDB_ADT_TYPE_HEADER:
+			writeADT(writer, expected, (ATermAppl) value);
 			break;
 		default:
 			fprintf(stderr, "Unserializable type: %d\n.", expected->id);

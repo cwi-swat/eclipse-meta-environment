@@ -26,9 +26,11 @@ static void runTest(ATerm term, A2PType type){
 
 static void testBool(){
 	A2PType bType = boolType();
-	ATerm boolean = (ATerm) ATmakeAppl0(ATmakeAFun("true", ATfalse, 0));
+	ATerm trueBool = (ATerm) ATmakeAppl0(ATmakeAFun("true", ATfalse, 0));
+	ATerm falseBool = (ATerm) ATmakeAppl0(ATmakeAFun("false", ATfalse, 0));
 	
-	runTest(boolean, bType);
+	runTest(trueBool, bType);
+	runTest(falseBool, bType);
 }
 
 static void testInt(){
