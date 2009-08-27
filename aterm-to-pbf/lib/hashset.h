@@ -55,4 +55,4 @@ void HSdestroy(HShashset hashset);
 }
 #endif /* __cplusplus */
 
-#endif /* HASHTABLE_H_ */
+#endif /* HASHSET_H_ */

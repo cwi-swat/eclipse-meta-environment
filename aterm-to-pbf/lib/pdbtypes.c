@@ -2,6 +2,8 @@
 #include <stringutils.h>
 #include <typeutils.h>
 
+#include <hashset.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
