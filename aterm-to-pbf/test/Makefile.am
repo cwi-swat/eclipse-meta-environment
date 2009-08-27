@@ -10,7 +10,6 @@ INCLUDES = $(ATERM_CFLAGS)
 AM_LDFLAGS  += -L$(top_builddir)/lib 
 LDADD       += -laterm2pbf
 AM_CPPFLAGS += \
-  -I$(top_srcdir) \
   -I$(top_srcdir)/lib \
   -DSRCDIR="\"$(top_srcdir)/test/\""
 
