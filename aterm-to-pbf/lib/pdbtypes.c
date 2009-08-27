@@ -142,6 +142,10 @@ void A2Pinitialize(){
 	}
 }
 
+A2PType valueType(){
+	return valueTypeConstant;
+}
+
 A2PType voidType(){
 	return voidTypeConstant;
 }
