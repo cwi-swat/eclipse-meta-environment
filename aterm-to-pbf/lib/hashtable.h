@@ -44,8 +44,8 @@ typedef struct _HThashtable{
 typedef struct _HTiterator{
 	HThashtable hashtable;
 	
-	int position;
 	HTEntry *currentEntry;
+	unsigned int position;
 } *HTiterator;
 
 HThashtable HTcreate(int (*equals)(void*, void*), float loadPercentage);

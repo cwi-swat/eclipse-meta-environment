@@ -252,3 +252,38 @@ void HSdestroy(HShashset hashset){
 	free(hashset);
 }
 
+HSiterator HScreateIterator(HShashset hashset){
+	HSiterator iterator = (HSiterator) malloc(sizeof(struct _HSiterator));
+	if(iterator == NULL){
+		fprintf(stderr, "The hashtable was unable to allocate memory for an iterator.");
+		exit(1);
+	}
+	
+	iterator->hashset = hashset;
+	iterator->position = -1;
+	iterator->currentEntry = NULL;
+	
+	return iterator;
+}
+
+HSEntry *HSgetNext(HSiterator iterator){
+	HSEntry *currentEntry = iterator->currentEntry;
+	
+	HSEntry *nextEntry = NULL;
+	if(currentEntry != NULL){
+		nextEntry = currentEntry->next;
+	}
+	
+	if(nextEntry == NULL){
+		HShashset hashset = iterator->hashset;
+		do{
+			nextEntry = hashset->table[++iterator->position];
+		}while(nextEntry == NULL && iterator->position < hashset->tableSize);
+		
+		if(nextEntry == NULL) return NULL; /* End of hashtable. */
+	}
+	
+	iterator->currentEntry = nextEntry;
+	
+	return nextEntry;
+}

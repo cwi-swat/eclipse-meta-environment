@@ -292,6 +292,7 @@ HTEntry *HTgetNext(HTiterator iterator){
         }
 	
 	iterator->currentEntry = nextEntry;
+	
 	return nextEntry;
 }
 

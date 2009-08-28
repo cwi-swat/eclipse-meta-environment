@@ -39,6 +39,13 @@ typedef struct _HShashset{
 	unsigned int threshold;
 } *HShashset;
 
+typedef struct _HSiterator{
+	HShashset hashset;
+	
+	HSEntry *currentEntry;
+	unsigned int position;
+} *HSiterator;
+
 HShashset HScreate(int (*equals)(void*, void*), float loadPercentage);
 
 int HSput(HShashset hashset, void *key, unsigned int h);
@@ -50,6 +57,10 @@ int HSremove(HShashset hashset, void *key, unsigned int h);
 unsigned int HSsize(HShashset hashset);
 
 void HSdestroy(HShashset hashset);
+
+HSiterator HScreateIterator(HShashset hashset);
+
+HSEntry *HSgetNext(HSiterator iterator);
 
 #ifdef __cplusplus
 }
