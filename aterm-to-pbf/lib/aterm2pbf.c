@@ -534,7 +534,11 @@ static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 }
 
 static void writeADT(A2PWriter writer, A2PType expected, ATermAppl value){
-	/* TODO Implement. */
+	AFun fun = ATgetAFun(value);
+	A2PType constructorType = lookupConstructorType(expected, ATgetName(fun), ATgetArity(fun));
+	if(constructorType == NULL){ fprintf(stderr, "Unable to find a constructor that matches the given ADT type.\n"); exit(1); }
+	
+	writeConstructor(writer, constructorType, value);
 }
 
 static void writeValueType(A2PWriter writer){

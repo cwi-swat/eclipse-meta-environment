@@ -19,6 +19,12 @@ static int arraySize(void **array){
 	return entries;
 }
 
+static int typeArraySize(A2PType *types){
+	int result = -1;
+	do{}while(types[++result] != NULL);
+	return result;
+}
+
 static char *copyString(char *stringToCopy){
 	char *newString = strdup(stringToCopy);
 	if(newString == NULL){ fprintf(stderr, "Unable to duplicate string.\n"); exit(1); }
@@ -87,6 +93,23 @@ static A2PType handleCaching(A2PType type){
 	HTput(typeStore, type, typeHash, type);
 	
 	return type;
+}
+
+A2PType lookupConstructorType(A2PType adtType, char *name, int arity){
+	int adtHash = hashType(adtType);
+	HShashset constructors = HTget(typeMappings, adtType, adtHash);
+	
+	HSiterator consIterator = HScreateIterator(constructors);
+	A2PType constructorType;
+	while((constructorType = (A2PType) HSgetNext(consIterator)) != NULL){
+		A2PconstructorType consType = constructorType->theType;
+		char *consName = consType->name;
+		int nrOfChildren = typeArraySize(((A2PtupleType) consType->children->theType)->fieldTypes);
+		
+		if(stringIsEqual(name, consName) && nrOfChildren == arity) return constructorType;
+	}
+	
+	return NULL;
 }
 
 void A2Pinitialize(){

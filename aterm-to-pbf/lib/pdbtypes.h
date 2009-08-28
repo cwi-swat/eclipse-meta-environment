@@ -98,6 +98,8 @@ typedef struct _A2PtupleType{
         char **fieldNames;
 } *A2PtupleType;
 
+A2PType lookupConstructorType(A2PType adtType, char *name, int arity);
+
 void A2Pinitialize();
 
 A2PType valueType();
