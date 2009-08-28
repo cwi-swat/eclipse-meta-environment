@@ -54,7 +54,6 @@ typedef struct _A2PnodeType{
 
 typedef struct _A2PabstractDataType{
         char *name;
-        A2PType *parameters;
 } *A2PabstractDataType;
 
 typedef struct _A2PaliasType{
@@ -128,7 +127,7 @@ A2PType relationType(A2PType tupleType);
 
 A2PType mapType(A2PType keyType, A2PType valueType);
 
-A2PType abstractDataType(char *name, A2PType *parameters);
+A2PType abstractDataType(char *name);
 
 A2PType constructorType(char *name, A2PType adt, A2PType *children);
 

@@ -295,7 +295,7 @@ A2PType parameterType(char *name, A2PType bound){
 	return handleCaching(parameterType);
 }
 
-A2PType abstractDataType(char *name, A2PType *parameters){
+A2PType abstractDataType(char *name){
 	A2PType abstractDataType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(abstractDataType == NULL){ fprintf(stderr, "Unable to allocate memory for AbstractDataType.\n"); exit(1); }
 	
@@ -305,7 +305,6 @@ A2PType abstractDataType(char *name, A2PType *parameters){
 	abstractDataType->id = PDB_ADT_TYPE_HEADER;
 	
 	t->name = copyString(name);
-	t->parameters = copyTypeArray(parameters);
 	
 	return handleCaching(abstractDataType);
 }

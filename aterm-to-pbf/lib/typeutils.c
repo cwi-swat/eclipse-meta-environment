@@ -98,21 +98,7 @@ int typeIsEqual(A2PType type1, A2PType type2){
 				A2PabstractDataType adtType1 = (A2PabstractDataType) type1->theType;
 				A2PabstractDataType adtType2 = (A2PabstractDataType) type2->theType;
 				
-				A2PType *parameters1 = adtType1->parameters;
-				A2PType *parameters2 = adtType2->parameters;
-				int nrOfParameters1 = typeArraySize(parameters1);
-				int nrOfParameters2 = typeArraySize(parameters2);
-				int i;
-				
-				if(nrOfParameters1 != nrOfParameters2) return 0;
-								
-				if(!stringIsEqual(adtType1->name, adtType2->name)) return 0;
-				
-				for(i = nrOfParameters1 - 1; i >= 0; i--){
-					if(parameters1[i] != parameters2[i]) return 0;
-				}
-				
-				return 1;
+				return (stringIsEqual(adtType1->name, adtType2->name));
 			}
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
 			{
@@ -219,16 +205,7 @@ unsigned int hashType(A2PType type){
 			{
 				A2PabstractDataType adtType = (A2PabstractDataType) type->theType;
 				
-				int hash = hashString(adtType->name) * 31;
-				A2PType *parameters = adtType->parameters;
-				int nrOfParameters = typeArraySize(parameters);
-				int i;
-				for(i = nrOfParameters - 1; i >= 0; i--){
-					hash ^= hashType(parameters[i]);
-					hash *= -127;
-				}
-				
-				return hash;
+				return hashString(adtType->name) * 31;
 			}
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
 			{

@@ -58,7 +58,7 @@ static void testString(){
 
 static void testConstructor(){
 	A2PType emptyTypeArray[1] = {NULL};
-	A2PType adtType = abstractDataType("adt", emptyTypeArray);
+	A2PType adtType = abstractDataType("adt");
 	constructorType("cons", adtType, emptyTypeArray);
 	constructorType("dons", adtType, emptyTypeArray);
 	
@@ -71,7 +71,7 @@ static void testConstructor(){
 
 static void testParameterizedConstructor(){
 	A2PType emptyTypeArray[1] = {NULL};
-	A2PType booleanADTType = abstractDataType("Boolean", emptyTypeArray);
+	A2PType booleanADTType = abstractDataType("Boolean");
 	A2PType operatorChildren[3] = {booleanADTType, booleanADTType, NULL};
 	
 	ATerm trueTerm = (ATerm) ATmakeAppl0(ATmakeAFun("true", 0, ATfalse));

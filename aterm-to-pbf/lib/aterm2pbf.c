@@ -656,18 +656,13 @@ static void writeADTType(A2PWriter writer, A2PType adtType){
 	A2PabstractDataType t = (A2PabstractDataType) adtType->theType;
 	char *name = t->name;
 	int nameLength = dataArraySize(name);
-	A2PType *parameters = t->parameters;
-	int nrOfParameters = typeArraySize(parameters);
-	int i;
 	
 	writeByteToBuffer(writer->buffer, PDB_ADT_TYPE_HEADER);
 	
 	printInteger(writer->buffer, nameLength);
 	writeDataToBuffer(writer->buffer, name, nameLength);
 	
-	for(i = 0; i < nrOfParameters; i++){
-		writeType(writer, parameters[i]);
-	}
+	writeType(writer, voidType());
 }
 
 static void writeConstructorType(A2PWriter writer, A2PType constructorType){
