@@ -6,6 +6,8 @@
 
 #include <stdio.h>
 
+/* Not really a real test; as long as it doesn't segfault it should be fine :P. */
+
 static void printBinaryResult(char *result, int length){
 	int i;
 	for(i = 0; i < length; i++){
@@ -55,16 +57,33 @@ static void testString(){
 }
 
 static void testConstructor(){
-	A2PType parameters[1] = {NULL};
-	A2PType adtType = abstractDataType("adt", parameters);
-	constructorType("cons", adtType, parameters);
-	constructorType("dons", adtType, parameters);
+	A2PType emptyTypeArray[1] = {NULL};
+	A2PType adtType = abstractDataType("adt", emptyTypeArray);
+	constructorType("cons", adtType, emptyTypeArray);
+	constructorType("dons", adtType, emptyTypeArray);
 	
 	ATerm cons = (ATerm) ATmakeAppl0(ATmakeAFun("cons", ATfalse, 0));
 	ATerm dons = (ATerm) ATmakeAppl0(ATmakeAFun("dons", ATfalse, 0));
 	
 	runTest(cons, adtType);
 	runTest(dons, adtType);
+}
+
+static void testParameterizedConstructor(){
+	A2PType emptyTypeArray[1] = {NULL};
+	A2PType booleanADTType = abstractDataType("Boolean", emptyTypeArray);
+	A2PType andChildren[3] = {booleanADTType, booleanADTType, NULL};
+	
+	ATerm trueTerm = (ATerm) ATmakeAppl0(ATmakeAFun("true", 0, ATfalse));
+	ATerm falseTerm = (ATerm) ATmakeAppl0(ATmakeAFun("false", 0, ATfalse));
+	ATerm andTerm = (ATerm) ATmakeAppl2(ATmakeAFun("and", 2, ATfalse), trueTerm, falseTerm);
+	
+	constructorType("true", booleanADTType, emptyTypeArray);
+	constructorType("false", booleanADTType, emptyTypeArray);
+	
+	constructorType("and", booleanADTType, andChildren);
+	
+	runTest(andTerm, booleanADTType);
 }
 
 int main(int argc, char **argv){
@@ -78,6 +97,7 @@ int main(int argc, char **argv){
 	testReal();
 	testString();
 	testConstructor();
+	testParameterizedConstructor();
 	
 	return 0;
 }
