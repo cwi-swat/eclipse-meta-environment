@@ -72,18 +72,21 @@ static void testConstructor(){
 static void testParameterizedConstructor(){
 	A2PType emptyTypeArray[1] = {NULL};
 	A2PType booleanADTType = abstractDataType("Boolean", emptyTypeArray);
-	A2PType andChildren[3] = {booleanADTType, booleanADTType, NULL};
+	A2PType operatorChildren[3] = {booleanADTType, booleanADTType, NULL};
 	
 	ATerm trueTerm = (ATerm) ATmakeAppl0(ATmakeAFun("true", 0, ATfalse));
 	ATerm falseTerm = (ATerm) ATmakeAppl0(ATmakeAFun("false", 0, ATfalse));
 	ATerm andTerm = (ATerm) ATmakeAppl2(ATmakeAFun("and", 2, ATfalse), trueTerm, falseTerm);
+	ATerm orTerm = (ATerm) ATmakeAppl2(ATmakeAFun("or", 2, ATfalse), trueTerm, falseTerm);
 	
 	constructorType("true", booleanADTType, emptyTypeArray);
 	constructorType("false", booleanADTType, emptyTypeArray);
 	
-	constructorType("and", booleanADTType, andChildren);
+	constructorType("and", booleanADTType, operatorChildren);
+	constructorType("or", booleanADTType, operatorChildren);
 	
 	runTest(andTerm, booleanADTType);
+	runTest(orTerm, booleanADTType);
 }
 
 int main(int argc, char **argv){

@@ -43,8 +43,8 @@ int typeIsEqual(A2PType type1, A2PType type2){
 				int nrOfFieldTypes2 = typeArraySize(fieldTypes2);
 				if(nrOfFieldTypes1 != nrOfFieldTypes2) return 0;
 				
-				if(fieldNames1 == NULL || fieldNames2 == NULL){
-					if(fieldNames1 != fieldNames2) return 0;
+				if(fieldNames1 != NULL){
+					if(fieldNames2 == NULL) return 0;
 					
 					hasFieldNames = 1;
 				}
