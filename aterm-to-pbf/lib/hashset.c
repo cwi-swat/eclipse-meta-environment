@@ -266,7 +266,7 @@ HSiterator HScreateIterator(HShashset hashset){
 	return iterator;
 }
 
-HSEntry *HSgetNext(HSiterator iterator){
+void *HSgetNext(HSiterator iterator){
 	HSEntry *currentEntry = iterator->currentEntry;
 	
 	HSEntry *nextEntry = NULL;
@@ -285,5 +285,5 @@ HSEntry *HSgetNext(HSiterator iterator){
 	
 	iterator->currentEntry = nextEntry;
 	
-	return nextEntry;
+	return nextEntry->key;
 }

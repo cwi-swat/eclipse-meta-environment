@@ -60,7 +60,7 @@ void HSdestroy(HShashset hashset);
 
 HSiterator HScreateIterator(HShashset hashset);
 
-HSEntry *HSgetNext(HSiterator iterator);
+void *HSgetNext(HSiterator iterator);
 
 #ifdef __cplusplus
 }

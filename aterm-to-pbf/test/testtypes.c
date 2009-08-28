@@ -54,6 +54,19 @@ static void testString(){
 	runTest(string, sType);
 }
 
+static void testConstructor(){
+	A2PType parameters[1] = {NULL};
+	A2PType adtType = abstractDataType("adt", parameters);
+	constructorType("cons", adtType, parameters);
+	constructorType("dons", adtType, parameters);
+	
+	ATerm cons = (ATerm) ATmakeAppl0(ATmakeAFun("cons", ATfalse, 0));
+	ATerm dons = (ATerm) ATmakeAppl0(ATmakeAFun("dons", ATfalse, 0));
+	
+	runTest(cons, adtType);
+	runTest(dons, adtType);
+}
+
 int main(int argc, char **argv){
 	ATerm bottomOfStack;
 	ATinit(argc, argv, &bottomOfStack);
@@ -64,6 +77,7 @@ int main(int argc, char **argv){
 	testInt();
 	testReal();
 	testString();
+	testConstructor();
 	
 	return 0;
 }
