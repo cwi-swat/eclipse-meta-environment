@@ -14,20 +14,20 @@ static HSEntryCache createEntryCache(){
 	
 	HSEntryCache entryCache = (HSEntryCache) malloc(sizeof(struct _HSEntryCache));
 	if(entryCache == NULL){
-		printf("Failed to allocate memory for entry cache.\n");
+		fprintf(stderr, "Failed to allocate memory for entry cache.\n");
 		exit(1);
 	}
 	
 	entryCache->blocks = (HSEntry**) malloc(PREALLOCATEDENTRYBLOCKSINCREMENT * sizeof(HSEntry*));
 	if(entryCache->blocks == NULL){
-		printf("Failed to allocate array for storing references to pre-allocated entries.\n");
+		fprintf(stderr, "Failed to allocate array for storing references to pre-allocated entries.\n");
 		exit(1);
 	}
 	entryCache->nrOfBlocks = 1;
 	
 	block = (HSEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct HSEntry));
 	if(block == NULL){
-		printf("Failed to allocate block of memory for pre-allocated entries.\n");
+		fprintf(stderr, "Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
 	}
 	entryCache->nextEntry = block;
@@ -53,14 +53,14 @@ static void destroyEntryCache(HSEntryCache entryCache){
 static void expandEntryCache(HSEntryCache entryCache){
 	HSEntry *block = (HSEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct HSEntry));
 	if(block == NULL){
-		printf("Failed to allocate block of memory for pre-allocated entries.\n");
+		fprintf(stderr, "Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
 	}
 	
 	if((entryCache->nrOfBlocks & PREALLOCATEDENTRYBLOCKSINCREMENTMASK) == 0){
 		entryCache->blocks = (HSEntry**) realloc(entryCache->blocks, (entryCache->nrOfBlocks + PREALLOCATEDENTRYBLOCKSINCREMENT) * sizeof(HSEntry*));
 		if(entryCache->blocks == NULL){
-			printf("Failed to allocate array for storing references to pre-allocated entries.\n");
+			fprintf(stderr, "Failed to allocate array for storing references to pre-allocated entries.\n");
 			exit(1);
 		}
 	}
@@ -106,7 +106,7 @@ static void ensureTableCapacity(HShashset hashset){
 		unsigned int newTableSize = currentTableSize << 1;
 		HSEntry **table = (HSEntry**) calloc(newTableSize, sizeof(HSEntry*));
 		if(table == NULL){
-			printf("The hashset was unable to allocate memory for extending the entry table.\n");
+			fprintf(stderr, "The hashset was unable to allocate memory for extending the entry table.\n");
 			exit(1);
 		}
 		hashset->table = table;
@@ -143,7 +143,7 @@ HShashset HScreate(int (*equals)(void*, void*), float loadPercentage){
 	
 	HShashset hashset = (HShashset) malloc(sizeof(struct _HShashset));
 	if(hashset == NULL){
-		printf("Unable to allocate memory for creating a hashset.\n");
+		fprintf(stderr, "Unable to allocate memory for creating a hashset.\n");
 		exit(1);
 	}
 	
@@ -153,7 +153,7 @@ HShashset HScreate(int (*equals)(void*, void*), float loadPercentage){
 	
 	hashset->table = (HSEntry**) calloc(tableSize, sizeof(HSEntry*));
 	if(hashset->table == NULL){
-		printf("The hashset was unable to allocate memory for the entry table.\n");
+		fprintf(stderr, "The hashset was unable to allocate memory for the entry table.\n");
 		exit(1);
 	}
 	hashset->tableSize = tableSize;

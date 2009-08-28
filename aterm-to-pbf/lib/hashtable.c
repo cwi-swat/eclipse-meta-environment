@@ -14,20 +14,20 @@ static HTEntryCache createEntryCache(){
 	
 	HTEntryCache entryCache = (HTEntryCache) malloc(sizeof(struct _HTEntryCache));
 	if(entryCache == NULL){
-		printf("Failed to allocate memory for entry cache.\n");
+		fprintf(stderr, "Failed to allocate memory for entry cache.\n");
 		exit(1);
 	}
 	
 	entryCache->blocks = (HTEntry**) malloc(PREALLOCATEDENTRYBLOCKSINCREMENT * sizeof(HTEntry*));
 	if(entryCache->blocks == NULL){
-		printf("Failed to allocate array for storing references to pre-allocated entries.\n");
+		fprintf(stderr, "Failed to allocate array for storing references to pre-allocated entries.\n");
 		exit(1);
 	}
 	entryCache->nrOfBlocks = 1;
 	
 	block = (HTEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct HTEntry));
 	if(block == NULL){
-		printf("Failed to allocate block of memory for pre-allocated entries.\n");
+		fprintf(stderr, "Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
 	}
 	entryCache->nextEntry = block;
@@ -53,14 +53,14 @@ static void destroyEntryCache(HTEntryCache entryCache){
 static void expandEntryCache(HTEntryCache entryCache){
 	HTEntry *block = (HTEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct HTEntry));
 	if(block == NULL){
-		printf("Failed to allocate block of memory for pre-allocated entries.\n");
+		fprintf(stderr, "Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
 	}
 	
 	if((entryCache->nrOfBlocks & PREALLOCATEDENTRYBLOCKSINCREMENTMASK) == 0){
 		entryCache->blocks = (HTEntry**) realloc(entryCache->blocks, (entryCache->nrOfBlocks + PREALLOCATEDENTRYBLOCKSINCREMENT) * sizeof(HTEntry*));
 		if(entryCache->blocks == NULL){
-			printf("Failed to allocate array for storing references to pre-allocated entries.\n");
+			fprintf(stderr, "Failed to allocate array for storing references to pre-allocated entries.\n");
 			exit(1);
 		}
 	}
@@ -106,7 +106,7 @@ static void ensureTableCapacity(HThashtable hashtable){
 		unsigned int newTableSize = currentTableSize << 1;
 		HTEntry **table = (HTEntry**) calloc(newTableSize, sizeof(HTEntry*));
 		if(table == NULL){
-			printf("The hashtable was unable to allocate memory for extending the entry table.\n");
+			fprintf(stderr, "The hashtable was unable to allocate memory for extending the entry table.\n");
 			exit(1);
 		}
 		hashtable->table = table;
@@ -143,7 +143,7 @@ HThashtable HTcreate(int (*equals)(void*, void*), float loadPercentage){
 	
 	HThashtable hashtable = (HThashtable) malloc(sizeof(struct _HThashtable));
 	if(hashtable == NULL){
-		printf("Unable to allocate memory for creating a hashtable.\n");
+		fprintf(stderr, "Unable to allocate memory for creating a hashtable.\n");
 		exit(1);
 	}
 	
@@ -153,7 +153,7 @@ HThashtable HTcreate(int (*equals)(void*, void*), float loadPercentage){
 	
 	hashtable->table = (HTEntry**) calloc(tableSize, sizeof(HTEntry*));
 	if(hashtable->table == NULL){
-		printf("The hashtable was unable to allocate memory for the entry table.\n");
+		fprintf(stderr, "The hashtable was unable to allocate memory for the entry table.\n");
 		exit(1);
 	}
 	hashtable->tableSize = tableSize;
