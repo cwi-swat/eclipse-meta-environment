@@ -93,6 +93,12 @@ static void testUntyped(){
 	runTest(untypedTerm, nodeType());
 }
 
+static void testSharing(){
+	ATerm sharedTerm = ATreadFromString("test(bla, bla)");
+	
+	runTest(sharedTerm, nodeType());
+}
+
 int main(int argc, char **argv){
 	ATerm bottomOfStack;
 	ATinit(argc, argv, &bottomOfStack);
@@ -106,6 +112,7 @@ int main(int argc, char **argv){
 	testConstructor();
 	testParameterizedConstructor();
 	testUntyped();
+	testSharing();
 	
 	return 0;
 }
