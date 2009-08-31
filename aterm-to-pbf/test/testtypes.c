@@ -28,8 +28,8 @@ static void runTest(ATerm term, A2PType type){
 
 static void testBool(){
 	A2PType bType = boolType();
-	ATerm trueBool = (ATerm) ATmakeAppl0(ATmakeAFun("true", ATfalse, 0));
-	ATerm falseBool = (ATerm) ATmakeAppl0(ATmakeAFun("false", ATfalse, 0));
+	ATerm trueBool = ATreadFromString("true");
+	ATerm falseBool = ATreadFromString("false");
 	
 	runTest(trueBool, bType);
 	runTest(falseBool, bType);
@@ -51,7 +51,7 @@ static void testReal(){
 
 static void testString(){
 	A2PType sType = stringType();
-	ATerm string = (ATerm) ATmakeAppl0(ATmakeAFun("string", ATtrue, 0));
+	ATerm string = ATreadFromString("string");
 	
 	runTest(string, sType);
 }
@@ -62,8 +62,8 @@ static void testConstructor(){
 	constructorType("cons", adtType, emptyTypeArray);
 	constructorType("dons", adtType, emptyTypeArray);
 	
-	ATerm cons = (ATerm) ATmakeAppl0(ATmakeAFun("cons", ATfalse, 0));
-	ATerm dons = (ATerm) ATmakeAppl0(ATmakeAFun("dons", ATfalse, 0));
+	ATerm cons = (ATerm) ATreadFromString("cons");
+	ATerm dons = (ATerm) ATreadFromString("dons");
 	
 	runTest(cons, adtType);
 	runTest(dons, adtType);
@@ -74,10 +74,8 @@ static void testParameterizedConstructor(){
 	A2PType booleanADTType = abstractDataType("Boolean");
 	A2PType operatorChildren[3] = {booleanADTType, booleanADTType, NULL};
 	
-	ATerm trueTerm = (ATerm) ATmakeAppl0(ATmakeAFun("true", 0, ATfalse));
-	ATerm falseTerm = (ATerm) ATmakeAppl0(ATmakeAFun("false", 0, ATfalse));
-	ATerm andTerm = (ATerm) ATmakeAppl2(ATmakeAFun("and", 2, ATfalse), trueTerm, falseTerm);
-	ATerm orTerm = (ATerm) ATmakeAppl2(ATmakeAFun("or", 2, ATfalse), trueTerm, falseTerm);
+	ATerm andTerm = (ATerm) ATreadFromString("and(true, false)");
+	ATerm orTerm = (ATerm) ATreadFromString("or(true, false)");
 	
 	constructorType("true", booleanADTType, emptyTypeArray);
 	constructorType("false", booleanADTType, emptyTypeArray);
@@ -87,6 +85,12 @@ static void testParameterizedConstructor(){
 	
 	runTest(andTerm, booleanADTType);
 	runTest(orTerm, booleanADTType);
+}
+
+static void testUntyped(){
+	ATerm untypedTerm = ATreadFromString("and(true, false)");
+	
+	runTest(untypedTerm, nodeType());
 }
 
 int main(int argc, char **argv){
@@ -101,6 +105,7 @@ int main(int argc, char **argv){
 	testString();
 	testConstructor();
 	testParameterizedConstructor();
+	testUntyped();
 	
 	return 0;
 }

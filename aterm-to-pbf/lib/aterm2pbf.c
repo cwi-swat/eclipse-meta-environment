@@ -832,7 +832,7 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 			{
 				A2PType expected = nodeType();
 				ATermList annotations = (ATermList) ATgetAnnotations(value);
-				if(ATgetLength(annotations) == 0){
+				if(annotations == NULL){
 					writeNode(writer, expected, (ATermAppl) value);
 				}else{
 					if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
@@ -884,7 +884,7 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 		case PDB_NODE_TYPE_HEADER:
 			{
 				ATermList annotations = (ATermList) ATgetAnnotations(value);
-				if(ATgetLength(annotations) == 0){
+				if(annotations == NULL){
 					writeNode(writer, expected, (ATermAppl) value);
 				}else{
 					if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
@@ -911,7 +911,7 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
 			{
 				ATermList annotations = (ATermList) ATgetAnnotations(value);
-				if(ATgetLength(annotations) == 0){
+				if(annotations == NULL){
 					writeConstructor(writer, expected, (ATermAppl) value);
 				}else{
 					if(((A2PconstructorType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Constructor term has annotations, but none are declared.\n"); exit(1); }
