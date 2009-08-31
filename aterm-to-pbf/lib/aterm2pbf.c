@@ -866,6 +866,7 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 	switch(expected->id){
 		case PDB_VALUE_TYPE_HEADER:
 			serializeUntypedTerm(writer, value);
+			break;
 		case PDB_BOOL_TYPE_HEADER:
 			writeBool(writer, (ATermAppl) value);
 			break;
