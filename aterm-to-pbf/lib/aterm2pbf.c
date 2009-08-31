@@ -815,6 +815,44 @@ static void doWriteType(A2PWriter writer, A2PType type){
 	}
 }
 
+static void serializeUntypedTerm(A2PWriter writer, ATerm value){
+	int type = ATgetType(value);
+	switch(type){
+		case AT_INT:
+			{
+				writeInteger(writer, (ATermInt) value);
+				break;
+			}
+		case AT_REAL:
+			{
+				writeDouble(writer, (ATermReal) value);
+				break;
+			}
+		case AT_APPL:
+			{
+				A2PType expected = nodeType();
+				ATermList annotations = (ATermList) ATgetAnnotations(value);
+				if(ATgetLength(annotations) == 0){
+					writeNode(writer, expected, (ATermAppl) value);
+				}else{
+					if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
+					
+					writeAnnotatedNode(writer, expected, (ATermAppl) value, annotations);
+				}
+				break;
+			}
+		case AT_LIST:
+			{
+				A2PType expected = listType(valueType());
+				writeList(writer, expected, (ATermList) value);
+				break;
+			}
+		default:
+			fprintf(stderr, "Encountered unwriteable type: %d.\n", type);
+			exit(1);
+	}
+}
+
 static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
         ISindexedSet sharedValues = writer->valueSharingMap;
         int valueHash = hashValue(value);
@@ -826,6 +864,8 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
         }
 
 	switch(expected->id){
+		case PDB_VALUE_TYPE_HEADER:
+			serializeUntypedTerm(writer, value);
 		case PDB_BOOL_TYPE_HEADER:
 			writeBool(writer, (ATermAppl) value);
 			break;
