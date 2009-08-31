@@ -204,7 +204,7 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	
 	table[bucketPos] = entry;
 	
-	return id;
+	return -1;
 }
 
 int ISget(ISindexedSet indexedSet, void *element, unsigned int h){
