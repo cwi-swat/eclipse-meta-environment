@@ -10,9 +10,9 @@ libaterm2pbf_la_LDFLAGS = -avoid-version -no-undefined
 
 ALLSRCS = byteencoding.c indexedset.c hashtable.c hashset.c stringutils.c typeutils.c pdbtypes.c aterm2pbf.c
 
-PUBLIC_INCL = pdbtypes.h aterm2pbf.h
+PUBLIC_INCL = pdbtypes.h aterm2pbf.h hashtable.h
 
-PRIVATE_INCL = indexedset.h byteencoding.h hashtable.h hashset.h stringutils.h typeutils.h
+PRIVATE_INCL = indexedset.h byteencoding.h hashset.h stringutils.h typeutils.h
 
 INCLUDES = $(ATERM_CFLAGS)
 

@@ -1,6 +1,7 @@
 #include <aterm2pbf.h>
 #include <byteencoding.h>
 #include <stringutils.h>
+#include <indexedset.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -136,13 +137,13 @@ static void destroyByteBuffer(ByteBuffer byteBuffer){
 
 static void printInteger(ByteBuffer byteBuffer, int integer){
 	char c[5];
-	int size = BEserializeMultiByteInt(integer, c);
+	int size = A2PserializeMultiByteInt(integer, c);
 	writeDataToBuffer(byteBuffer, c, size);
 }
 
 static void printDouble(ByteBuffer byteBuffer, double doubleValue){
 	char c[8];
-	BEserializeDouble(doubleValue, c);
+	A2PserializeDouble(doubleValue, c);
 	writeDataToBuffer(byteBuffer, c, 8);
 }
 

@@ -6,14 +6,14 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-int BEserializeMultiByteInt(int i, char *c);
+int A2PserializeMultiByteInt(int i, char *c);
 
-void BEserializeDouble(double d, char *c);
+void A2PserializeDouble(double d, char *c);
 
 
-int BEdeserializeMultiByteInt(char *c, unsigned int *i);
+int A2PdeserializeMultiByteInt(char *c, unsigned int *i);
 
-double BEdeserializeDouble(char *c);
+double A2PdeserializeDouble(char *c);
 
 #ifdef __cplusplus
 }

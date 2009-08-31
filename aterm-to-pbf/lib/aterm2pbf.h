@@ -1,7 +1,6 @@
 #ifndef ATERM2PBF_H
 #define ATERM2PBF_H
 
-#include <indexedset.h>
 #include <pdbtypes.h>
 
 #include <aterm2.h>

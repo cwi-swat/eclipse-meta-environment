@@ -81,7 +81,7 @@ static int unsignedToSignedInt(unsigned int unsignedInt){
  * This will save space when encoding small values (which are most frequent);
  * the down side is that encoding large and negative values will require one extra byte.
  */
-int BEserializeMultiByteInt(int i, char *c){
+int A2PserializeMultiByteInt(int i, char *c){
 	unsigned int ui = signedToUnsignedInt(i);
 	
 	if((ui & 0xffffff80U) == 0){
@@ -115,7 +115,7 @@ int BEserializeMultiByteInt(int i, char *c){
 /**
  * Serializes a double value using IEEE 754 encoding.
  */
-void BEserializeDouble(double d, char *c){
+void A2PserializeDouble(double d, char *c){
 	unsigned int negative, exponent, mantissa0, mantissa1;
 	union DoubleEncoding de;
 	
@@ -142,7 +142,7 @@ void BEserializeDouble(double d, char *c){
  * Deserializes a 'multi-byte' encoded integer from a sequence of bytes.
  * When this function returns the parameter 'unsigned int *count' will hold how many bytes where read during the decoding process.
  */
-int BEdeserializeMultiByteInt(char *c, unsigned int *count){
+int A2PdeserializeMultiByteInt(char *c, unsigned int *count){
 	unsigned char part = (unsigned char) c[0];
 	unsigned int result = (part & SEVENBITS);
 	
@@ -181,7 +181,7 @@ int BEdeserializeMultiByteInt(char *c, unsigned int *count){
 /**
  * Deserializes a double in IEEE 754 encoding from the given sequence of bytes.
  */
-double BEdeserializeDouble(char *c){
+double A2PdeserializeDouble(char *c){
 	union DoubleEncoding de;
 	
 	unsigned int mantissa1 = 	(c[0] & 0x000000ffU) |
