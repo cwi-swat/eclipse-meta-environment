@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-/* TODO Add summay. */
+/* TODO Add summary. */
 
 /* NOTE: This stuff is not declared in the 'proper' order, so old compilers may have problems with it (so people should upgrade them and stop using ancient junk). */
 A2PType generateAsfixSpec(){
@@ -87,19 +87,19 @@ A2PType generateAsfixSpec(){
 	
 	/* Production */
 	A2PType production = abstractDataType("Production");
-	A2PType symbolSymbolAttributesChildren[4] = {symbol, symbol, attributes, NULL};
-	constructorType("prod", production, symbolSymbolAttributesChildren); /* Default */
+	A2PType symbolsSymbolAttributesChildren[4] = {symbols, symbol, attributes, NULL};
+	constructorType("prod", production, symbolsSymbolAttributesChildren); /* Default */
 	constructorType("list", production, symbolChild); /* List */
 	
 	/* Tree */
 	A2PType tree = abstractDataType("Tree"); /* Tree */
-	A2PType args = listType(tree); /* Args */
+	A2PType args = setType(tree); /* Args */
 	A2PType productionArgsChildren[3] = {production, args, NULL};
 	constructorType("appl", tree, productionArgsChildren); /* appl*/
 	constructorType("cycle", tree, symbolIntChildren); /* cycle */
 	A2PType argsChild[2] = {args, NULL};
 	constructorType("amb", tree, argsChild); /* amb */
-	constructorType("character", tree, intChild); /* char */                /* TODO Fix this. */
+	constructorType("char", tree, intChild); /* char */                /* TODO Fix this. */
 	
 	/* ParseTree */
 	A2PType top = abstractDataType("top"); /* top */
