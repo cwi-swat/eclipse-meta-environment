@@ -310,6 +310,10 @@ A2PType abstractDataType(char *name){
 }
 
 A2PType constructorType(char *name, A2PType adt, A2PType *children){
+	return constructorTypeWithLabels(name, adt, children, NULL);
+}
+
+A2PType constructorTypeWithLabels(char *name, A2PType adt, A2PType *children, char **labels){
 	A2PType result;
 	
 	A2PType constructorType = (A2PType) malloc(sizeof(struct _A2PType));
@@ -322,7 +326,7 @@ A2PType constructorType(char *name, A2PType adt, A2PType *children){
 	
 	t->name = copyString(name);
 	t->adt = adt;
-	t->children = tupleType(children, NULL);
+	t->children = tupleType(children, labels);
 	t->declaredAnnotations = NULL;
 	
 	result = handleCaching(constructorType);
@@ -336,8 +340,8 @@ A2PType constructorType(char *name, A2PType adt, A2PType *children){
 		}
 		HSput(constructors, result, hashType(result));
 	}
-	
-	return result;
+
+return result;
 }
 
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){

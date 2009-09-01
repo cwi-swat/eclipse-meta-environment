@@ -131,6 +131,8 @@ A2PType abstractDataType(char *name);
 
 A2PType constructorType(char *name, A2PType adt, A2PType *children);
 
+A2PType constructorTypeWithLabels(char *name, A2PType adt, A2PType *children, char **labels);
+
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters);
 
 void declareAnnotationOnNodeType(char *label, A2PType valueType);
