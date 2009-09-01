@@ -534,14 +534,19 @@ static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 	}
 }
 
-static void writeADT(A2PWriter writer, A2PType expected, ATermAppl value){
-	AFun fun = ATgetAFun(value);
-	char *name = ATgetName(fun);
-	int arity = ATgetArity(fun);
-	A2PType constructorType = lookupConstructorType(expected, name, arity);
-	if(constructorType == NULL){ fprintf(stderr, "Unable to find a constructor that matches the given ADT type. Name: %s, arity: %d, ADT name: %s.\n", name, arity, ((A2PabstractDataType) expected->theType)->name); ATabort("Unable to find constructor.\n"); exit(1); }
-	
-	writeConstructor(writer, constructorType, value);
+static void writeADT(A2PWriter writer, A2PType expected, ATerm value){
+	if(ATgetType(value) == AT_APPL){
+		ATermAppl appl = (ATermAppl) value;
+		AFun fun = ATgetAFun(appl);
+		char *name = ATgetName(fun);
+		int arity = ATgetArity(fun);
+		A2PType constructorType = lookupConstructorType(expected, name, arity);
+		if(constructorType == NULL){ fprintf(stderr, "Unable to find a constructor that matches the given ADT type. Name: %s, arity: %d, ADT name: %s.\n", name, arity, ((A2PabstractDataType) expected->theType)->name); exit(1); }
+		
+		writeConstructor(writer, constructorType, appl);
+	}else{
+		/* TODO Implement. */
+	}
 }
 
 static void writeValueType(A2PWriter writer){
@@ -871,21 +876,27 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 			serializeUntypedTerm(writer, value);
 			break;
 		case PDB_BOOL_TYPE_HEADER:
+			if(ATgetType(value) != AT_APPL){ fprintf(stderr, "Boolean didn't have AT_APPL type.\n"); exit(1); }
 			writeBool(writer, (ATermAppl) value);
 			break;
 		case PDB_INTEGER_TYPE_HEADER:
+			if(ATgetType(value) != AT_INT){ fprintf(stderr, "Integer didn't have AT_INT type.\n"); exit(1); }
 			writeInteger(writer, (ATermInt) value);
 			break;
 		case PDB_DOUBLE_TYPE_HEADER:
+			if(ATgetType(value) != AT_REAL){ fprintf(stderr, "Double didn't have AT_REAL type.\n"); exit(1); }
 			writeDouble(writer, (ATermReal) value);
 			break;
 		case PDB_STRING_TYPE_HEADER:
+			if(ATgetType(value) != AT_APPL || ATisQuoted(ATgetAFun(value)) == ATfalse){ fprintf(stderr, "String didn't have 'quoted' AT_APPL type.\n"); ATabort(""); exit(1); }
 			writeString(writer, (ATermAppl) value);
 			break;
 		case PDB_SOURCE_LOCATION_TYPE_HEADER:
+			if(ATgetType(value) != AT_APPL){ fprintf(stderr, "Source location didn't have AT_APPL type.\n"); exit(1); }
 			writeSourceLocation(writer, (ATermAppl) value);
 			break;
 		case PDB_NODE_TYPE_HEADER:
+			if(ATgetType(value) != AT_APPL){ fprintf(stderr, "Node didn't have AT_APPL type.\n"); exit(1); }
 			{
 				ATermList annotations = (ATermList) ATgetAnnotations(value);
 				if(annotations == NULL){
@@ -898,21 +909,27 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 			}
 			break;
 		case PDB_TUPLE_TYPE_HEADER:
+			if(ATgetType(value) != AT_APPL){ fprintf(stderr, "Tuple didn't have AT_APPL type.\n"); exit(1); }
 			writeTuple(writer, expected, (ATermAppl) value);
 			break;
 		case PDB_LIST_TYPE_HEADER:
+			if(ATgetType(value) != AT_LIST){ fprintf(stderr, "List didn't have AT_LIST type.\n"); exit(1); }
 			writeList(writer, expected, (ATermList) value);
 			break;
 		case PDB_SET_TYPE_HEADER:
+			if(ATgetType(value) != AT_LIST){ fprintf(stderr, "Set didn't have AT_LIST type.\n"); exit(1); }
 			writeSet(writer, expected, (ATermList) value);
 			break;
 		case PDB_RELATION_TYPE_HEADER:
+			if(ATgetType(value) != AT_LIST){ fprintf(stderr, "Relation didn't have AT_LIST type.\n"); exit(1); }
 			writeRelation(writer, expected, (ATermList) value);
 			break;
 		case PDB_MAP_TYPE_HEADER:
+			if(ATgetType(value) != AT_LIST){ fprintf(stderr, "Map didn't have AT_LIST type.\n"); exit(1); }
 			writeMap(writer, expected, (ATermList) value);
 			break;
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
+			if(ATgetType(value) != AT_APPL){ fprintf(stderr, "Constructor didn't have AT_APPL type.\n"); exit(1); }
 			{
 				ATermList annotations = (ATermList) ATgetAnnotations(value);
 				if(annotations == NULL){
@@ -925,7 +942,7 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 			}
 			break;
 		case PDB_ADT_TYPE_HEADER:
-			writeADT(writer, expected, (ATermAppl) value);
+			writeADT(writer, expected, value);
 			break;
 		default:
 			fprintf(stderr, "Unserializable type: %d\n.", expected->id);
