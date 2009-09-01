@@ -20,7 +20,7 @@ A2PType generateAsfixSpec(){
 	A2PType charRange = abstractDataType("CharRange"); /* CharRange */
 	A2PType startChild[2] = {iType, NULL};
 	char *startLabel[2] = {"start", NULL};
-	constructorTypeWithLabels("char", charRange, startChild, startLabel); /* character */           /* TODO Fix this. */
+	constructorTypeWithLabels("single", charRange, startChild, startLabel); /* character */           /* TODO Fix this. */
 	A2PType startEndChildren[3] = {iType, iType, NULL};
 	char *startEndLabels[3] = {"start", "end", NULL};
 	constructorTypeWithLabels("range", charRange, startEndChildren, startEndLabels); /* range */
