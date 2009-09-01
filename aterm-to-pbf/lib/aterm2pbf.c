@@ -425,7 +425,7 @@ static void writeList(A2PWriter writer, A2PType expected, ATermList list){
 	
 	printInteger(writer->buffer, length);
 	next = list;
-	while(!ATisEmpty(list)){
+	while(!ATisEmpty(next)){
 		ATerm current = ATgetFirst(next);
 		next = ATgetNext(next);
 		
@@ -536,8 +536,10 @@ static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 
 static void writeADT(A2PWriter writer, A2PType expected, ATermAppl value){
 	AFun fun = ATgetAFun(value);
-	A2PType constructorType = lookupConstructorType(expected, ATgetName(fun), ATgetArity(fun));
-	if(constructorType == NULL){ fprintf(stderr, "Unable to find a constructor that matches the given ADT type.\n"); exit(1); }
+	char *name = ATgetName(fun);
+	int arity = ATgetArity(fun);
+	A2PType constructorType = lookupConstructorType(expected, name, arity);
+	if(constructorType == NULL){ fprintf(stderr, "Unable to find a constructor that matches the given ADT type. Name: %s, arity: %d, ADT name: %s.\n", name, arity, ((A2PabstractDataType) expected->theType)->name); ATabort("Unable to find constructor.\n"); exit(1); }
 	
 	writeConstructor(writer, constructorType, value);
 }
