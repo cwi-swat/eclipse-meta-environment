@@ -326,12 +326,16 @@ static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl nod
 
 static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
 	A2PconstructorType t = expected->theType;
+	A2PtupleType children = ((A2PtupleType) t->children->theType);
+	int nrOfChildren = typeArraySize(children->fieldTypes);
 	
 	ISindexedSet sharedTypes = writer->typeSharingMap;
 	int typeHash = hashType(expected);
 	int constructorTypeId = ISget(sharedTypes, (void*) expected, typeHash);
 	int arity = ATgetArity(ATgetAFun(constructor));
 	int i;
+	
+	if(arity != nrOfChildren){ fprintf(stderr, "Arity (%d) is unequal to the number of children (%d); term was:\n%s\n", arity, nrOfChildren, ATwriteToString((ATerm) constructor)); exit(1);}
 	
 	if(constructorTypeId == -1){
 		writeByteToBuffer(writer->buffer, PDB_CONSTRUCTOR_HEADER);
@@ -348,7 +352,7 @@ static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl const
 	printInteger(writer->buffer, arity);
 	
 	for(i = 0; i < arity; i++){
-		doSerialize(writer, ((A2PtupleType) t->children->theType)->fieldTypes[i], ATgetArgument(constructor, i));
+		doSerialize(writer, children->fieldTypes[i], ATgetArgument(constructor, i));
 	}
 }
 
