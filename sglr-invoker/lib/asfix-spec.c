@@ -7,7 +7,7 @@
 /* TODO Add summary. */
 
 /* NOTE: This stuff is not declared in the 'proper' order, so old compilers may have problems with it (so people should upgrade them and stop using ancient junk). */
-A2PType generateAsfixSpec(){
+A2PType generateParseTreeSpec(){
 	A2PType emptyTypeArray[1] = {NULL};
 	
 	A2PType iType = integerType();
@@ -24,7 +24,8 @@ A2PType generateAsfixSpec(){
 	A2PType charRange = abstractDataType("CharRange"); /* CharRange */
 	A2PType startChild[2] = {iType, NULL};
 	char *startLabel[2] = {"start", NULL};
-	constructorTypeWithLabels("single", charRange, startChild, startLabel); /* character */           /* TODO Fix this. */
+	A2PType single = constructorTypeWithLabels("single", charRange, startChild, startLabel); /* character */
+	linkNativeTypeToADT(charRange, iType, single);
 	A2PType startEndChildren[3] = {iType, iType, NULL};
 	char *startEndLabels[3] = {"start", "end", NULL};
 	constructorTypeWithLabels("range", charRange, startEndChildren, startEndLabels); /* range */
@@ -131,7 +132,8 @@ A2PType generateAsfixSpec(){
 	constructorTypeWithLabels("amb", tree, alternativesChild, alternativesLabel); /* amb */
 	A2PType characterChild[2] = {iType, NULL};
 	char *characterLabel[2] = {"character", NULL};
-	constructorTypeWithLabels("char", tree, characterChild, characterLabel); /* char */                /* TODO Fix this. */
+	A2PType character = constructorTypeWithLabels("char", tree, characterChild, characterLabel); /* char */
+	linkNativeTypeToADT(tree, iType, character);
 	
 	/* ParseTree */
 	A2PType parseTree = abstractDataType("ParseTree"); /* ParseTree */

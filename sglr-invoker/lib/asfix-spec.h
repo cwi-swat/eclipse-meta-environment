@@ -8,7 +8,7 @@ extern "C"
 {
 #endif/* __cplusplus */
 
-A2PType generateAsfixSpec();
+A2PType generateParseTreeSpec();
 
 #ifdef __cplusplus
 }
