@@ -909,7 +909,7 @@ valueId = -1; /* Temp. */
 			writeDouble(writer, (ATermReal) value);
 			break;
 		case PDB_STRING_TYPE_HEADER:
-			if(ATgetType(value) != AT_APPL || ATisQuoted(ATgetAFun(value)) == ATfalse){ fprintf(stderr, "String didn't have 'quoted' AT_APPL type.\n"); ATabort(""); exit(1); }
+			if(ATgetType(value) != AT_APPL || ATisQuoted(ATgetAFun((ATermAppl) value)) == ATfalse){ fprintf(stderr, "String didn't have 'quoted' AT_APPL type.\n"); ATabort(""); exit(1); }
 			writeString(writer, (ATermAppl) value);
 			break;
 		case PDB_SOURCE_LOCATION_TYPE_HEADER:
