@@ -100,6 +100,20 @@ static void testParameterizedConstructor(){
 	runTest(orTerm, booleanADTType);
 }
 
+static void testNativeTypeConstructor(){
+	A2PType booleanADTType = abstractDataType("Boolean");
+	A2PType operatorChildren[3] = {booleanADTType, booleanADTType, NULL};
+	
+	ATerm andTerm = ATreadFromString("and(1, 1)");
+	
+	A2PType integerChild[2] = {integerType(), NULL};
+	A2PType trueCons = constructorType("true", booleanADTType, integerChild);
+	linkNativeTypeToADT(booleanADTType, integerType(), trueCons);
+	constructorType("and", booleanADTType, operatorChildren);
+	
+	runTest(andTerm, booleanADTType);
+}
+
 static void testUntyped(){
 	ATerm untypedTerm = ATreadFromString("and(true, false)");
 	
@@ -125,6 +139,7 @@ int main(int argc, char **argv){
 	testConstructor();
 	testLabeledConstructor();
 	testParameterizedConstructor();
+	testNativeTypeConstructor();
 	testUntyped();
 	testSharing();
 	
