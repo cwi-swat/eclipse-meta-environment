@@ -16,6 +16,10 @@ A2PType generateAsfixSpec(){
 	A2PType stringChild[2] = {sType, NULL};
 	char *stringLabel[2] = {"string", NULL};
 	
+	/* --------------------- */
+	/* ----- ParseTree ----- */
+	/* --------------------- */
+	
 	/* Char */
 	A2PType charRange = abstractDataType("CharRange"); /* CharRange */
 	A2PType startChild[2] = {iType, NULL};
@@ -130,10 +134,57 @@ A2PType generateAsfixSpec(){
 	constructorTypeWithLabels("char", tree, characterChild, characterLabel); /* char */                /* TODO Fix this. */
 	
 	/* ParseTree */
-	A2PType top = abstractDataType("top"); /* top */
+	A2PType parseTree = abstractDataType("ParseTree"); /* ParseTree */
 	A2PType topAmbcntChildren[3] = {tree, iType, NULL};
 	char *topAmbcntLabels[3] = {"top", "amb_cnt", NULL};
-	A2PType parseTree = constructorTypeWithLabels("parsetree", top, topAmbcntChildren, topAmbcntLabels); /* ParseTree */
+	constructorTypeWithLabels("parsetree", parseTree, topAmbcntChildren, topAmbcntLabels); /* ParseTree */
+	
+	/* --------------------- */
+	/* ------ Summary ------ */
+	/* --------------------- */
+	
+	/* Area */
+	A2PType area = abstractDataType("Area"); /* Area */
+	A2PType blBcElEcOLChildren[7] = {iType, iType, iType, iType, iType, iType, NULL};
+	char *blBcElEcOLLabels[7] = {"beginLine", "beginColumn", "endLine", "endColumn", "offset", "length", NULL};
+	constructorTypeWithLabels("area", area, blBcElEcOLChildren, blBcElEcOLLabels); /* area */
+	
+	/* Location */
+	A2PType location = abstractDataType("Location"); /* Location */
+	A2PType filenameChild[2] = {sType, NULL};
+	char *filenameLabel[2] = {"filename", NULL};
+	constructorTypeWithLabels("file", location, filenameChild, filenameLabel); /* file */
+	A2PType areaChild[2] = {area, NULL};
+	char *areaLabel[2] = {"area", NULL};
+	constructorTypeWithLabels("area", location, areaChild, areaLabel); /* area */
+	A2PType filenameAreaChildren[3] = {sType, area, NULL};
+	char *filenameAreaLabels[3] = {"filename", "area", NULL};
+	constructorTypeWithLabels("area-in-file", location, filenameAreaChildren, filenameAreaLabels); /* area-in-file */
+	
+	/* Subject */
+	A2PType subject = abstractDataType("Subject"); /* Subject */
+	A2PType descriptionChild[2] = {sType, NULL};
+	char *descriptionLabel[2] = {"description", NULL};
+	constructorTypeWithLabels("subject", subject, descriptionChild, descriptionLabel); /* subject */
+	A2PType descriptionLocationChildren[3] = {sType, location, NULL};
+	char *descriptionLocationLabels[3] = {"description", "location", NULL};
+	constructorTypeWithLabels("localized", subject, descriptionLocationChildren, descriptionLocationLabels); /* localized */
+	A2PType subjects = listType(subject);
+	
+	/* Error */
+	A2PType error = abstractDataType("Error"); /* Error */
+	A2PType descriptionSubjectsChildren[3] = {sType, subjects, NULL};
+	char *descriptionSubjectsLabels[3] = {"description", "subjects", NULL};
+	constructorTypeWithLabels("info", error, descriptionSubjectsChildren, descriptionSubjectsLabels); /* info */
+	constructorTypeWithLabels("warning", error, descriptionSubjectsChildren, descriptionSubjectsLabels); /* warning */
+	constructorTypeWithLabels("error", error, descriptionSubjectsChildren, descriptionSubjectsLabels); /* error */
+	constructorTypeWithLabels("fatal", error, descriptionSubjectsChildren, descriptionSubjectsLabels); /* fatal */
+	A2PType errors = listType(error); /* Errors */
+	
+	/* Summary */
+	A2PType producerIdErrorsChildren[4] = {sType, sType, errors, NULL};
+	char *producerIdErrorsLabels[4] = {"producer", "id", "errors", NULL};
+	constructorTypeWithLabels("summary", parseTree, producerIdErrorsChildren, producerIdErrorsLabels);
 	
 	return parseTree;
 }
