@@ -40,8 +40,6 @@ int ISget(ISindexedSet indexedSet, void *element, unsigned int h);
 
 void ISdestroy(ISindexedSet indexedSet);
 
-int defaultEquals(void* left, void* right);
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

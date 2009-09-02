@@ -1,4 +1,4 @@
-#include <indexedset.h>
+#include <doublekeyedindexedset.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -9,32 +9,33 @@
 #define PREALLOCATEDENTRYBLOCKSINCREMENTMASK 0x0000000fU
 #define PREALLOCATEDENTRYBLOCKSIZE 256
 
-struct ISEntry{
+struct DKISEntry{
 	void *key;
+	void *restriction;
 	unsigned int hash;
 	
 	int id;
 	
-	ISEntry *next;
+	DKISEntry *next;
 };
 
-static ISEntryCache createEntryCache(){
-	ISEntry *block;
+static DKISEntryCache createEntryCache(){
+	DKISEntry *block;
 	
-	ISEntryCache entryCache = (ISEntryCache) malloc(sizeof(struct _ISEntryCache));
+	DKISEntryCache entryCache = (DKISEntryCache) malloc(sizeof(struct _DKISEntryCache));
 	if(entryCache == NULL){
 		fprintf(stderr, "Failed to allocate memory for entry cache.\n");
 		exit(1);
 	}
 	
-	entryCache->blocks = (ISEntry**) malloc(PREALLOCATEDENTRYBLOCKSINCREMENT * sizeof(ISEntry*));
+	entryCache->blocks = (DKISEntry**) malloc(PREALLOCATEDENTRYBLOCKSINCREMENT * sizeof(DKISEntry*));
 	if(entryCache->blocks == NULL){
 		fprintf(stderr, "Failed to allocate array for storing references to pre-allocated entries.\n");
 		exit(1);
 	}
 	entryCache->nrOfBlocks = 1;
 	
-	block = (ISEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct ISEntry));
+	block = (DKISEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct DKISEntry));
 	if(block == NULL){
 		fprintf(stderr, "Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
@@ -49,7 +50,7 @@ static ISEntryCache createEntryCache(){
 	return entryCache;
 }
 
-static void destroyEntryCache(ISEntryCache entryCache){
+static void destroyEntryCache(DKISEntryCache entryCache){
 	int i = entryCache->nrOfBlocks;
 	do{
 		free(entryCache->blocks[--i]);
@@ -59,15 +60,15 @@ static void destroyEntryCache(ISEntryCache entryCache){
 	free(entryCache);
 }
 
-static void expandEntryCache(ISEntryCache entryCache){
-	ISEntry *block = (ISEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct ISEntry));
+static void expandEntryCache(DKISEntryCache entryCache){
+	DKISEntry *block = (DKISEntry*) malloc(PREALLOCATEDENTRYBLOCKSIZE * sizeof(struct DKISEntry));
 	if(block == NULL){
 		fprintf(stderr, "Failed to allocate block of memory for pre-allocated entries.\n");
 		exit(1);
 	}
 	
 	if((entryCache->nrOfBlocks & PREALLOCATEDENTRYBLOCKSINCREMENTMASK) == 0){
-		entryCache->blocks = (ISEntry**) realloc(entryCache->blocks, (entryCache->nrOfBlocks + PREALLOCATEDENTRYBLOCKSINCREMENT) * sizeof(ISEntry*));
+		entryCache->blocks = (DKISEntry**) realloc(entryCache->blocks, (entryCache->nrOfBlocks + PREALLOCATEDENTRYBLOCKSINCREMENT) * sizeof(DKISEntry*));
 		if(entryCache->blocks == NULL){
 			fprintf(stderr, "Failed to allocate array for storing references to pre-allocated entries.\n");
 			exit(1);
@@ -80,8 +81,8 @@ static void expandEntryCache(ISEntryCache entryCache){
 	entryCache->nextEntry = block;
 }
 
-static ISEntry* getEntry(ISEntryCache entryCache){
-	ISEntry *entry = entryCache->freeList;
+static DKISEntry* getEntry(DKISEntryCache entryCache){
+	DKISEntry *entry = entryCache->freeList;
 	
 	if(entry != NULL){
 		entryCache->freeList = entry->next;
@@ -99,8 +100,8 @@ static unsigned int supplementalHash(unsigned int h){
 	return ((h << 7) - h + (h >> 9) + (h >> 17));
 }
 
-static void ensureTableCapacity(ISindexedSet indexedSet){
-	ISEntry **oldTable = indexedSet->table;
+static void ensureTableCapacity(DKISindexedSet indexedSet){
+	DKISEntry **oldTable = indexedSet->table;
 	
 	unsigned int currentTableSize = indexedSet->tableSize;
 	if(indexedSet->load >= indexedSet->threshold){
@@ -108,7 +109,7 @@ static void ensureTableCapacity(ISindexedSet indexedSet){
 		int i = currentTableSize - 1;
 		
 		unsigned int newTableSize = currentTableSize << 1;
-		ISEntry **table = (ISEntry**) calloc(newTableSize, sizeof(ISEntry*));
+		DKISEntry **table = (DKISEntry**) calloc(newTableSize, sizeof(DKISEntry*));
 		if(table == NULL){
 			fprintf(stderr, "The hashtable was unable to allocate memory for extending the entry table.\n");
 			exit(1);
@@ -121,14 +122,14 @@ static void ensureTableCapacity(ISindexedSet indexedSet){
 		indexedSet->threshold <<= 1;
 		
 		do{
-			ISEntry *e = oldTable[i];
+			DKISEntry *e = oldTable[i];
 			while(e != NULL){
 				unsigned int bucketPos = e->hash & hashMask;
 				
-				ISEntry *currentEntry = table[bucketPos];
+				DKISEntry *currentEntry = table[bucketPos];
 				
 				/* Find the next entry in the old table. */
-				ISEntry *nextEntry = e->next;
+				DKISEntry *nextEntry = e->next;
 				
 				/* Add the entry in the new table. */
 				e->next = currentEntry;
@@ -142,10 +143,10 @@ static void ensureTableCapacity(ISindexedSet indexedSet){
 	}
 }
 
-ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
+DKISindexedSet DKIScreate(int (*equals)(void*, void*, void*, void*), float loadPercentage){
 	unsigned int tableSize = 1 << DEFAULTTABLEBITSIZE;
 	
-	ISindexedSet indexedSet = (ISindexedSet) malloc(sizeof(struct _ISindexedSet));
+	DKISindexedSet indexedSet = (DKISindexedSet) malloc(sizeof(struct _DKISindexedSet));
 	if(indexedSet == NULL){
 		fprintf(stderr, "Unable to allocate memory for creating a hashtable.\n");
 		exit(1);
@@ -155,7 +156,7 @@ ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
 	
 	indexedSet->entryCache = createEntryCache();
 	
-	indexedSet->table = (ISEntry**) calloc(tableSize, sizeof(ISEntry*));
+	indexedSet->table = (DKISEntry**) calloc(tableSize, sizeof(DKISEntry*));
 	if(indexedSet->table == NULL){
 		fprintf(stderr, "The hashtable was unable to allocate memory for the entry table.\n");
 		exit(1);
@@ -170,10 +171,10 @@ ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
 	return indexedSet;
 }
 
-int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
+int DKISstore(DKISindexedSet indexedSet, void *element, void *restriction, unsigned int h){
 	unsigned int bucketPos;
-	ISEntry **table;
-	ISEntry *currentEntry, *entry;
+	DKISEntry **table;
+	DKISEntry *currentEntry, *entry;
 	int id;
 	
 	unsigned int hash = supplementalHash(h);
@@ -186,7 +187,7 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	
 	entry = currentEntry;
 	while(entry != NULL){
-		if(entry->key == element || (entry->hash == hash && (*indexedSet->equals)(entry->key, element))){
+		if((entry->key == element && entry->restriction == restriction) || (entry->hash == hash && (*indexedSet->equals)(entry->key, entry->restriction, element, restriction))){
 			return entry->id;
 		}
 		
@@ -199,6 +200,7 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	entry = getEntry(indexedSet->entryCache);
 	entry->hash = hash;
 	entry->key = element;
+	entry->restriction = restriction;
 	entry->id = id;
 	entry->next = currentEntry;
 	
@@ -207,10 +209,10 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	return -1;
 }
 
-int ISget(ISindexedSet indexedSet, void *element, unsigned int h){
+int DKISget(DKISindexedSet indexedSet, void *element, void *restriction, unsigned int h){
 	unsigned int bucketPos;
-	ISEntry **table;
-	ISEntry *currentEntry, *entry;
+	DKISEntry **table;
+	DKISEntry *currentEntry, *entry;
 	
 	unsigned int hash = supplementalHash(h);
 	
@@ -220,7 +222,7 @@ int ISget(ISindexedSet indexedSet, void *element, unsigned int h){
 	
 	entry = currentEntry;
 	while(entry != NULL){
-		if(entry->key == element || (entry->hash == hash && (*indexedSet->equals)(entry->key, element))){
+		if((entry->key == element && entry->restriction == restriction) || (entry->hash == hash && (*indexedSet->equals)(entry->key, entry->restriction, element, restriction))){
 			return entry->id;
 		}
 		
@@ -230,8 +232,8 @@ int ISget(ISindexedSet indexedSet, void *element, unsigned int h){
 	return -1;
 }
 
-void ISdestroy(ISindexedSet indexedSet){
-	ISEntry **table = indexedSet->table;
+void DKISdestroy(DKISindexedSet indexedSet){
+	DKISEntry **table = indexedSet->table;
 	
 	destroyEntryCache(indexedSet->entryCache);
 	

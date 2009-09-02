@@ -2,6 +2,7 @@
 #include <byteencoding.h>
 #include <stringutils.h>
 #include <indexedset.h>
+#include <doublekeyedindexedset.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -38,15 +39,23 @@ typedef struct _ByteBuffer{
 } *ByteBuffer;
 
 typedef struct A2PWriter{
-        ISindexedSet valueSharingMap;
+        DKISindexedSet valueSharingMap;
         ISindexedSet typeSharingMap;
         ISindexedSet pathSharingMap;
         ISindexedSet nameSharingMap;
         ByteBuffer buffer;
 } *A2PWriter;
 
+static int pointerEquals(void *first, void *second){
+	return (first == second);
+}
+
 static int equalString(void *str1, void *str2){
 	return stringIsEqual((char*) str1, (char*) str2);
+}
+
+static int valueEquals(void *term1, void *type1, void *term2, void *type2){
+	return (term1 == term2 && type1 == type2);
 }
 
 static unsigned int hashType(A2PType type){
@@ -870,10 +879,7 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 			}
 			break;
 		case AT_LIST:
-			{
-				A2PType expected = listType(valueType());
-				writeList(writer, expected, (ATermList) value);
-			}
+			writeList(writer, listType(valueType()), (ATermList) value);
 			break;
 		default:
 			fprintf(stderr, "Encountered unwriteable type: %d.\n", type);
@@ -882,10 +888,9 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 }
 
 static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
-        ISindexedSet sharedValues = writer->valueSharingMap;
+        DKISindexedSet sharedValues = writer->valueSharingMap;
         int valueHash = hashValue(value);
-        int valueId = ISget(sharedValues, (void*) value, valueHash); /* TODO: Fix sharing (check types). */
-valueId = -1; /* Temp. */
+        int valueId = DKISget(sharedValues, (void*) value, (void*) expected, valueHash); /* TODO: Fix sharing (check types). */
         if(valueId != -1){
                 writeByteToBuffer(writer->buffer, PDB_SHARED_FLAG);
                 printInteger(writer->buffer, valueId);
@@ -970,13 +975,13 @@ valueId = -1; /* Temp. */
 			exit(1);
 	}
 	
-	ISstore(sharedValues, (void*) value, valueHash);
+	DKISstore(sharedValues, (void*) value, (void*) expected, valueHash);
 }
 
 static A2PWriter createWriter(){
 	A2PWriter writer = (A2PWriter) malloc(sizeof(struct A2PWriter));
-	writer->valueSharingMap = IScreate(&defaultEquals, 2.0f);
-	writer->typeSharingMap = IScreate(&defaultEquals, 2.0f);
+	writer->valueSharingMap = DKIScreate(&valueEquals, 2.0f);
+	writer->typeSharingMap = IScreate(&pointerEquals, 2.0f);
 	writer->pathSharingMap = IScreate(&equalString, 2.0f);
 	writer->nameSharingMap = IScreate(&equalString, 2.0f);
 	
@@ -986,7 +991,7 @@ static A2PWriter createWriter(){
 }
 
 static void destroyWriter(A2PWriter writer){
-	ISdestroy(writer->valueSharingMap);
+	DKISdestroy(writer->valueSharingMap);
 	ISdestroy(writer->typeSharingMap);
 	ISdestroy(writer->pathSharingMap);
 	ISdestroy(writer->nameSharingMap);
