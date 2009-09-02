@@ -429,7 +429,7 @@ static void writeList(A2PWriter writer, A2PType expected, ATermList list){
 		
 		doWriteType(writer, elementType);
 		
-		ISstore(sharedTypes, elementType, elementHash);
+		ISstore(sharedTypes, (void*) elementType, elementHash);
 	}else{
 		writeByteToBuffer(writer->buffer, PDB_LIST_HEADER | PDB_TYPE_SHARED_FLAG);
 		
@@ -457,13 +457,13 @@ static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
 	ATermList next;
 	
 	if(elementTypeId == -1){
-		writeByteToBuffer(writer->buffer, PDB_SET_TYPE_HEADER);
+		writeByteToBuffer(writer->buffer, PDB_SET_HEADER);
 		
 		doWriteType(writer, elementType);
 		
 		ISstore(sharedTypes, (void*) elementType, elementHash);
 	}else{
-		writeByteToBuffer(writer->buffer, PDB_SET_TYPE_HEADER | PDB_TYPE_SHARED_FLAG);
+		writeByteToBuffer(writer->buffer, PDB_SET_HEADER | PDB_TYPE_SHARED_FLAG);
 		
 		printInteger(writer->buffer, elementTypeId);
 	}
@@ -489,13 +489,13 @@ static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation
 	ATermList next;
 	
 	if(tupleTypeId == -1){
-		writeByteToBuffer(writer->buffer, PDB_RELATION_TYPE_HEADER);
+		writeByteToBuffer(writer->buffer, PDB_RELATION_HEADER);
 		
 		doWriteType(writer, tupleType);
 		
 		ISstore(sharedTypes, (void*) tupleType, tupleHash);
 	}else{
-		writeByteToBuffer(writer->buffer, PDB_RELATION_TYPE_HEADER | PDB_TYPE_SHARED_FLAG);
+		writeByteToBuffer(writer->buffer, PDB_RELATION_HEADER | PDB_TYPE_SHARED_FLAG);
 		
 		printInteger(writer->buffer, tupleTypeId);
 	}
