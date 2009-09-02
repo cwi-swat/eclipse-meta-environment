@@ -843,34 +843,38 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 	int type = ATgetType(value);
 	switch(type){
 		case AT_INT:
-			{
-				writeInteger(writer, (ATermInt) value);
-				break;
-			}
+			writeInteger(writer, (ATermInt) value);
+			break;
 		case AT_REAL:
-			{
-				writeDouble(writer, (ATermReal) value);
-				break;
-			}
+			writeDouble(writer, (ATermReal) value);
+			break;
 		case AT_APPL:
 			{
-				A2PType expected = nodeType();
-				ATermList annotations = (ATermList) ATgetAnnotations(value);
-				if(annotations == NULL){
-					writeNode(writer, expected, (ATermAppl) value);
+				ATermAppl appl = (ATermAppl) value;
+				AFun fun = ATgetAFun(appl);
+				if(ATisQuoted(fun) == ATfalse){
+					A2PType expected = nodeType();
+					ATermList annotations = (ATermList) ATgetAnnotations(value);
+					if(annotations == NULL){
+						writeNode(writer, expected, appl);
+					}else{
+						if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
+						
+						writeAnnotatedNode(writer, expected, appl, annotations);
+					}
 				}else{
-					if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
+					if(ATgetArity(fun) != 0){ fprintf(stderr, "Quoted appl (assumed to be a string) has a non-zero arity.\n"); exit(1);}
 					
-					writeAnnotatedNode(writer, expected, (ATermAppl) value, annotations);
+					writeString(writer, appl);
 				}
-				break;
 			}
+			break;
 		case AT_LIST:
 			{
 				A2PType expected = listType(valueType());
 				writeList(writer, expected, (ATermList) value);
-				break;
 			}
+			break;
 		default:
 			fprintf(stderr, "Encountered unwriteable type: %d.\n", type);
 			exit(1);
@@ -880,7 +884,8 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
         ISindexedSet sharedValues = writer->valueSharingMap;
         int valueHash = hashValue(value);
-        int valueId = ISget(sharedValues, (void*) value, valueHash);
+        int valueId = ISget(sharedValues, (void*) value, valueHash); /* TODO: Fix sharing (check types). */
+valueId = -1; /* Temp. */
         if(valueId != -1){
                 writeByteToBuffer(writer->buffer, PDB_SHARED_FLAG);
                 printInteger(writer->buffer, valueId);
