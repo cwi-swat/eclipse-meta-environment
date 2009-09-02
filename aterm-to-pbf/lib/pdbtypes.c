@@ -71,6 +71,7 @@ static int pointerEqual(void *first, void *second){
 static int initialized = 0;
 static HThashtable typeStore;
 static HThashtable typeMappings;
+static HThashtable valueTypeMappings;
 
 static A2PType valueTypeConstant;
 static A2PType voidTypeConstant;
@@ -96,8 +97,7 @@ static A2PType handleCaching(A2PType type){
 }
 
 A2PType lookupConstructorType(A2PType adtType, char *name, int arity){
-	int adtHash = hashType(adtType);
-	HShashset constructors = HTget(typeMappings, adtType, adtHash);
+	HShashset constructors = HTget(typeMappings, adtType, hashType(adtType));
 	
 	HSiterator consIterator = HScreateIterator(constructors);
 	A2PType constructorType;
@@ -112,10 +112,17 @@ A2PType lookupConstructorType(A2PType adtType, char *name, int arity){
 	return NULL;
 }
 
+A2PType lookupConstructorWrapper(A2PType adtType, A2PType nativeType){
+	HThashtable wrappers = HTget(valueTypeMappings, adtType, hashType(adtType));
+	
+	return HTget(wrappers, nativeType, hashType(nativeType));
+}
+
 void A2Pinitialize(){
 	if(!initialized){
 		typeStore = HTcreate(&equalType, 2.0f);
 		typeMappings = HTcreate(&equalType, 2.0f);
+		valueTypeMappings = HTcreate(&equalType, 2.0f);
 		
 		A2PnodeType nt;
 		
@@ -341,7 +348,17 @@ A2PType constructorTypeWithLabels(char *name, A2PType adt, A2PType *children, ch
 		HSput(constructors, result, hashType(result));
 	}
 
-return result;
+	return result;
+}
+
+void linkNativeTypeToADT(A2PType adt, A2PType nativeType, A2PType wrapper){
+	int adtHash = hashType(adt);
+	HThashtable wrappers = HTget(typeMappings, adt, adtHash);
+	if(wrappers == NULL){
+		wrappers = HTcreate(&pointerEqual, 2.0f);
+		HTput(valueTypeMappings, adt, adtHash, wrappers);
+	}
+	HTput(wrappers, nativeType, hashType(nativeType), wrapper);
 }
 
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){

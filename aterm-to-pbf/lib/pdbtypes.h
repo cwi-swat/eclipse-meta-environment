@@ -99,6 +99,8 @@ typedef struct _A2PtupleType{
 
 A2PType lookupConstructorType(A2PType adtType, char *name, int arity);
 
+A2PType lookupConstructorWrapper(A2PType adtType, A2PType nativeType);
+
 void A2Pinitialize();
 
 A2PType valueType();
@@ -132,6 +134,8 @@ A2PType abstractDataType(char *name);
 A2PType constructorType(char *name, A2PType adt, A2PType *children);
 
 A2PType constructorTypeWithLabels(char *name, A2PType adt, A2PType *children, char **labels);
+
+void linkNativeTypeToADT(A2PType adtType, A2PType nativeType, A2PType wrapper);
 
 A2PType aliasType(char *name, A2PType aliased, A2PType *parameters);
 

@@ -51,7 +51,7 @@ static void testReal(){
 
 static void testString(){
 	A2PType sType = stringType();
-	ATerm string = ATreadFromString("string");
+	ATerm string = ATreadFromString("\"string\"");
 	
 	runTest(string, sType);
 }
@@ -62,11 +62,24 @@ static void testConstructor(){
 	constructorType("cons", adtType, emptyTypeArray);
 	constructorType("dons", adtType, emptyTypeArray);
 	
-	ATerm cons = (ATerm) ATreadFromString("cons");
-	ATerm dons = (ATerm) ATreadFromString("dons");
+	ATerm cons = ATreadFromString("cons");
+	ATerm dons = ATreadFromString("dons");
 	
 	runTest(cons, adtType);
 	runTest(dons, adtType);
+}
+
+static void testLabeledConstructor(){
+        A2PType emptyTypeArray[1] = {NULL};
+	A2PType adtType = abstractDataType("Boolean");
+	A2PType trueCons = constructorType("true", adtType, emptyTypeArray);
+	A2PType andChildren[2] = {trueCons, NULL};
+	char *andLabels[2] = {"trueValue", NULL};
+	A2PType andCons = constructorTypeWithLabels("and", adtType, andChildren, andLabels);
+	
+	ATerm and = ATreadFromString("and(true)");
+	
+	runTest(and, andCons);
 }
 
 static void testParameterizedConstructor(){
@@ -74,8 +87,8 @@ static void testParameterizedConstructor(){
 	A2PType booleanADTType = abstractDataType("Boolean");
 	A2PType operatorChildren[3] = {booleanADTType, booleanADTType, NULL};
 	
-	ATerm andTerm = (ATerm) ATreadFromString("and(true, false)");
-	ATerm orTerm = (ATerm) ATreadFromString("or(true, false)");
+	ATerm andTerm = ATreadFromString("and(true, false)");
+	ATerm orTerm = ATreadFromString("or(true, false)");
 	
 	constructorType("true", booleanADTType, emptyTypeArray);
 	constructorType("false", booleanADTType, emptyTypeArray);
@@ -110,6 +123,7 @@ int main(int argc, char **argv){
 	testReal();
 	testString();
 	testConstructor();
+	testLabeledConstructor();
 	testParameterizedConstructor();
 	testUntyped();
 	testSharing();

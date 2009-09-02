@@ -535,7 +535,8 @@ static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
 }
 
 static void writeADT(A2PWriter writer, A2PType expected, ATerm value){
-	if(ATgetType(value) == AT_APPL){
+	int termType = ATgetType(value);
+	if(termType == AT_APPL){
 		ATermAppl appl = (ATermAppl) value;
 		AFun fun = ATgetAFun(appl);
 		char *name = ATgetName(fun);
@@ -545,7 +546,22 @@ static void writeADT(A2PWriter writer, A2PType expected, ATerm value){
 		
 		writeConstructor(writer, constructorType, appl);
 	}else{
-		/* TODO Implement. */
+		A2PType wrapper;
+		switch(termType){
+			case AT_INT:
+				wrapper = lookupConstructorWrapper(expected, integerType());
+				break;
+			case AT_REAL:
+				wrapper = lookupConstructorWrapper(expected, realType());
+				break;
+			default:
+				fprintf(stderr, "The given ATerm of type: %d, can not be a constructor.\n", termType);
+				exit(1);
+		}
+		
+		if(wrapper == NULL){ fprintf(stderr, "Unable to find constructor wrapper for ATerm with type : %d.\n", termType); exit(1);}
+		
+		writeConstructor(writer, wrapper, ATmakeAppl1(ATmakeAFun(((A2PconstructorType) wrapper->theType)->name, 1, ATfalse), value));
 	}
 }
 
@@ -888,7 +904,7 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 			writeDouble(writer, (ATermReal) value);
 			break;
 		case PDB_STRING_TYPE_HEADER:
-			if(ATgetType(value) != AT_APPL || ATisQuoted(ATgetAFun(value)) == ATfalse){ fprintf(stderr, "String didn't have 'quoted' AT_APPL type.\n"); exit(1); }
+			if(ATgetType(value) != AT_APPL || ATisQuoted(ATgetAFun(value)) == ATfalse){ fprintf(stderr, "String didn't have 'quoted' AT_APPL type.\n"); ATabort(""); exit(1); }
 			writeString(writer, (ATermAppl) value);
 			break;
 		case PDB_SOURCE_LOCATION_TYPE_HEADER:
