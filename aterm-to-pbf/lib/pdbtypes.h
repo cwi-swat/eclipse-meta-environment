@@ -1,5 +1,5 @@
-#ifndef PDBTYPES_H
-#define PDBTYPES_H
+#ifndef A2P_PDBTYPES_H
+#define A2P_PDBTYPES_H
 
 #include <a2p-hashtable.h>
 
