@@ -1,8 +1,8 @@
 #include <aterm2pbf.h>
-#include <byteencoding.h>
-#include <stringutils.h>
-#include <indexedset.h>
-#include <doublekeyedindexedset.h>
+#include <a2p-byteencoding.h>
+#include <a2p-stringutils.h>
+#include <a2p-indexedset.h>
+#include <a2p-doublekeyedindexedset.h>
 
 #include <stdlib.h>
 #include <string.h>

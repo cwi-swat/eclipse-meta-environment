@@ -1,5 +1,5 @@
-#ifndef DOUBLEKEYEDINDEXEDSET_H_
-#define DOUBLEKEYEDINDEXEDSET_H_
+#ifndef A2P_DOUBLEKEYEDINDEXEDSET_H_
+#define A2P_DOUBLEKEYEDINDEXEDSET_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -44,4 +44,4 @@ void DKISdestroy(DKISIndexedSet indexedSet);
 }
 #endif /* __cplusplus */
 
-#endif /* DOUBLEKEYEDINDEXEDSET_H_ */
+#endif /* A2P_DOUBLEKEYEDINDEXEDSET_H_ */

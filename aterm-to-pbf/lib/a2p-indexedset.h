@@ -1,5 +1,5 @@
-#ifndef INDEXEDSET_H_
-#define INDEXEDSET_H_
+#ifndef A2P_INDEXEDSET_H_
+#define A2P_INDEXEDSET_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -44,4 +44,4 @@ void ISdestroy(ISIndexedSet indexedSet);
 }
 #endif /* __cplusplus */
 
-#endif /* INDEXEDSET_H_ */
+#endif /* A2P_INDEXEDSET_H_ */

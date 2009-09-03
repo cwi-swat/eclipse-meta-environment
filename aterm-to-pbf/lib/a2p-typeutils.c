@@ -1,5 +1,5 @@
-#include <typeutils.h>
-#include <stringutils.h>
+#include <a2p-typeutils.h>
+#include <a2p-stringutils.h>
 
 #include <stdlib.h>
 #include <stdio.h>

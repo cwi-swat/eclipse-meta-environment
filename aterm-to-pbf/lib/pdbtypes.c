@@ -1,6 +1,6 @@
 #include <pdbtypes.h>
-#include <stringutils.h>
-#include <typeutils.h>
+#include <a2p-stringutils.h>
+#include <a2p-typeutils.h>
 
 #include <a2p-hashset.h>
 

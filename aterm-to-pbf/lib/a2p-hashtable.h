@@ -68,4 +68,4 @@ HTEntry *HTgetNext(HTIterator iterator);
 }
 #endif /* __cplusplus */
 
-#endif /* HASHTABLE_H_ */
+#endif /* A2P_HASHTABLE_H_ */

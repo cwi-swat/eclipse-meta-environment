@@ -1,5 +1,5 @@
-#ifndef HASHSET_H_
-#define HASHSET_H_
+#ifndef A2P_HASHSET_H_
+#define A2P_HASHSET_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -66,4 +66,4 @@ void *HSgetNext(HSiterator iterator);
 }
 #endif /* __cplusplus */
 
-#endif /* HASHSET_H_ */
+#endif /* A2P_HASHSET_H_ */
