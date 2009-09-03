@@ -15,6 +15,10 @@
 
 #include <sglr_SGLRInvoker.h>
 
+#include <parsetree-spec.h>
+#include <pdbtypes.h>
+#include <aterm2pbf.h>
+
 #define FILTERS_DEFAULT 0x00000000U
 #define FILTERS_REMOVE_CYCLES 0x00000001U
 #define FILTERS_DIRECT_PREFERENCE 0x00000002U
@@ -25,12 +29,15 @@
 #define FILTERS_REJECT 0x00000040U
 
 static int initialized = 0;
+static A2PType parseTreeSpec;
 
 JNIEXPORT void JNICALL Java_sglr_SGLRInvoker_initialize(JNIEnv* env, jobject method){
 	if(!initialized){
 		ATerm x;
 		ATinit(0, NULL, &x);
 		SGLR_initialize();
+		A2Pinitialize();
+		parseTreeSpec = generateParseTreeSpec();
 		initialized = 1;
 	}
 }
@@ -102,6 +109,7 @@ static void setFilters(unsigned int filterFlags){
 
 JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject method){
 	char *resultData;
+	int resultLength;
 	
 	jclass clazz = (*env)->GetObjectClass(env, method);
 	
@@ -137,7 +145,7 @@ JNIEXPORT jobject JNICALL Java_sglr_SGLRInvoker_parse(JNIEnv* env, jobject metho
 	(*env)->ReleaseStringUTFChars(env, parseTableNameString, parseTableName);
 	(*env)->ReleaseStringUTFChars(env, inputPathString, inputPath);
 	
-	resultData = ATwriteToString(result); /* ResultData doesn't need to be freed, since it's managed by the aterm library. */
+	resultData = A2Pserialize(result, parseTreeSpec, &resultLength);
 	
-	return (*env)->NewDirectByteBuffer(env, resultData, strlen(resultData));
+	return (*env)->NewDirectByteBuffer(env, resultData, resultLength);
 }
