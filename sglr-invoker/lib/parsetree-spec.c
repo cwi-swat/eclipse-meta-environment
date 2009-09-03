@@ -1,4 +1,4 @@
-#include <parsetable-spec.h>
+#include <parsetree-spec.h>
 
 #include <pdbtypes.h>
 

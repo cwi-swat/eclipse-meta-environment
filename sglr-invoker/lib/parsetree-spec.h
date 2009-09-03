@@ -1,5 +1,5 @@
-#ifndef ASFIX_SPEC_H
-#define ASFIX_SPEC_H
+#ifndef PARSETREE_SPEC_H
+#define PARSETREE_SPEC_H
 
 #include <pdbtypes.h>
 
@@ -14,4 +14,4 @@ A2PType generateParseTreeSpec();
 }
 #endif/* __cplusplus */
 
-#endif/* ASFIX_SPEC_H */
+#endif/* PARSETREE_SPEC_H */
