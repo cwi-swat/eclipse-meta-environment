@@ -1,7 +1,7 @@
 #ifndef PDBTYPES_H
 #define PDBTYPES_H
 
-#include <hashtable.h>
+#include <a2p-hashtable.h>
 
 #define PDB_VALUE_TYPE_HEADER 0x01U
 #define PDB_VOID_TYPE_HEADER 0x02U
