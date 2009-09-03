@@ -100,7 +100,7 @@ static unsigned int supplementalHash(unsigned int h){
 	return ((h << 7) - h + (h >> 9) + (h >> 17));
 }
 
-static void ensureTableCapacity(DKISindexedSet indexedSet){
+static void ensureTableCapacity(DKISIndexedSet indexedSet){
 	DKISEntry **oldTable = indexedSet->table;
 	
 	unsigned int currentTableSize = indexedSet->tableSize;
@@ -143,10 +143,10 @@ static void ensureTableCapacity(DKISindexedSet indexedSet){
 	}
 }
 
-DKISindexedSet DKIScreate(int (*equals)(void*, void*, void*, void*), float loadPercentage){
+DKISIndexedSet DKIScreate(int (*equals)(void*, void*, void*, void*), float loadPercentage){
 	unsigned int tableSize = 1 << DEFAULTTABLEBITSIZE;
 	
-	DKISindexedSet indexedSet = (DKISindexedSet) malloc(sizeof(struct _DKISindexedSet));
+	DKISIndexedSet indexedSet = (DKISIndexedSet) malloc(sizeof(struct _DKISIndexedSet));
 	if(indexedSet == NULL){
 		fprintf(stderr, "Unable to allocate memory for creating a hashtable.\n");
 		exit(1);
@@ -171,7 +171,7 @@ DKISindexedSet DKIScreate(int (*equals)(void*, void*, void*, void*), float loadP
 	return indexedSet;
 }
 
-int DKISstore(DKISindexedSet indexedSet, void *element, void *restriction, unsigned int h){
+int DKISstore(DKISIndexedSet indexedSet, void *element, void *restriction, unsigned int h){
 	unsigned int bucketPos;
 	DKISEntry **table;
 	DKISEntry *currentEntry, *entry;
@@ -209,7 +209,7 @@ int DKISstore(DKISindexedSet indexedSet, void *element, void *restriction, unsig
 	return -1;
 }
 
-int DKISget(DKISindexedSet indexedSet, void *element, void *restriction, unsigned int h){
+int DKISget(DKISIndexedSet indexedSet, void *element, void *restriction, unsigned int h){
 	unsigned int bucketPos;
 	DKISEntry **table;
 	DKISEntry *currentEntry, *entry;
@@ -232,7 +232,7 @@ int DKISget(DKISindexedSet indexedSet, void *element, void *restriction, unsigne
 	return -1;
 }
 
-void DKISdestroy(DKISindexedSet indexedSet){
+void DKISdestroy(DKISIndexedSet indexedSet){
 	DKISEntry **table = indexedSet->table;
 	
 	destroyEntryCache(indexedSet->entryCache);

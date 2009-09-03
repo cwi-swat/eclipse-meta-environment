@@ -34,114 +34,114 @@ typedef struct _A2PType{
         unsigned int id;
 } *A2PType;
 
-typedef struct _A2PvalueType{} *A2PvalueType;
+typedef struct _A2PValueType{} *A2PValueType;
 
-typedef struct _A2PvoidType{} *A2PvoidType;
+typedef struct _A2PVoidType{} *A2PVoidType;
 
-typedef struct _A2PboolType{} *A2PboolType;
+typedef struct _A2PBoolType{} *A2PBoolType;
 
-typedef struct _A2PintegerType{} *A2PintegerType;
+typedef struct _A2PIntegerType{} *A2PIntegerType;
 
-typedef struct _A2PrealType{} *A2PrealType;
+typedef struct _A2PRealType{} *A2PRealType;
 
-typedef struct _A2PstringType{} *A2PstringType;
+typedef struct _A2PStringType{} *A2PStringType;
 
-typedef struct _A2PsourceLocationType{} *A2PsourceLocationType;
+typedef struct _A2PSourceLocationType{} *A2PSourceLocationType;
 
-typedef struct _A2PnodeType{
-	HThashtable declaredAnnotations;
-} *A2PnodeType;
+typedef struct _A2PNodeType{
+	HTHashtable declaredAnnotations;
+} *A2PNodeType;
 
-typedef struct _A2PabstractDataType{
+typedef struct _A2PAbstractDataType{
         char *name;
-} *A2PabstractDataType;
+} *A2PAbstractDataType;
 
-typedef struct _A2PaliasType{
+typedef struct _A2PAliasType{
         char *name;
         A2PType aliased;
         A2PType parametersTuple;
-} *A2PaliasType;
+} *A2PAliasType;
 
-typedef struct _A2PconstructorType{
+typedef struct _A2PConstructorType{
         char *name;
         A2PType children;
         A2PType adt;
 	
-	HThashtable declaredAnnotations;
-} *A2PconstructorType;
+	HTHashtable declaredAnnotations;
+} *A2PConstructorType;
 
-typedef struct _A2PlistType{
+typedef struct _A2PListType{
         A2PType elementType;
-} *A2PlistType;
+} *A2PListType;
 
-typedef struct _A2PmapType{
+typedef struct _A2PMapType{
         A2PType keyType;
         A2PType valueType;
-} *A2PmapType;
+} *A2PMapType;
 
-typedef struct _A2PparameterType{
+typedef struct _A2PParameterType{
         char *name;
         A2PType bound;
-} *A2PparameterType;
+} *A2PParameterType;
 
-typedef struct _A2PrelationType{
+typedef struct _A2PRelationType{
         A2PType tupleType;
-} *A2PrelationType;
+} *A2PRelationType;
 
-typedef struct _A2PsetType{
+typedef struct _A2PSetType{
         A2PType elementType;
-} *A2PsetType;
+} *A2PSetType;
 
-typedef struct _A2PtupleType{
+typedef struct _A2PTupleType{
         A2PType *fieldTypes;
         char **fieldNames;
-} *A2PtupleType;
+} *A2PTupleType;
 
-A2PType lookupConstructorType(A2PType adtType, char *name, int arity);
+A2PType A2PlookupConstructorType(A2PType adtType, char *name, int arity);
 
-A2PType lookupConstructorWrapper(A2PType adtType, A2PType nativeType);
+A2PType A2PlookupConstructorWrapper(A2PType adtType, A2PType nativeType);
 
 void A2Pinitialize();
 
-A2PType valueType();
+A2PType A2PvalueType();
 
-A2PType voidType();
+A2PType A2PvoidType();
 
-A2PType boolType();
+A2PType A2PboolType();
 
-A2PType integerType();
+A2PType A2PintegerType();
 
-A2PType realType();
+A2PType A2PrealType();
 
-A2PType stringType();
+A2PType A2PstringType();
 
-A2PType sourceLocationType();
+A2PType A2PsourceLocationType();
 
-A2PType nodeType();
+A2PType A2PnodeType();
 
-A2PType tupleType(A2PType *fieldTypes, char **fieldNames);
+A2PType A2PtupleType(A2PType *fieldTypes, char **fieldNames);
 
-A2PType listType(A2PType elementType);
+A2PType A2PlistType(A2PType elementType);
 
-A2PType setType(A2PType elementType);
+A2PType A2PsetType(A2PType elementType);
 
-A2PType relationType(A2PType tupleType);
+A2PType A2PrelationType(A2PType tupleType);
 
-A2PType mapType(A2PType keyType, A2PType valueType);
+A2PType A2PmapType(A2PType keyType, A2PType valueType);
 
-A2PType abstractDataType(char *name);
+A2PType A2PabstractDataType(char *name);
 
-A2PType constructorType(char *name, A2PType adt, A2PType *children);
+A2PType A2PconstructorType(char *name, A2PType adt, A2PType *children);
 
-A2PType constructorTypeWithLabels(char *name, A2PType adt, A2PType *children, char **labels);
+A2PType A2PconstructorTypeWithLabels(char *name, A2PType adt, A2PType *children, char **labels);
 
-void linkNativeTypeToADT(A2PType adtType, A2PType nativeType, A2PType wrapper);
+void A2PlinkNativeTypeToADT(A2PType adtType, A2PType nativeType, A2PType wrapper);
 
-A2PType aliasType(char *name, A2PType aliased, A2PType *parameters);
+A2PType A2PaliasType(char *name, A2PType aliased, A2PType *parameters);
 
-void declareAnnotationOnNodeType(char *label, A2PType valueType);
+void A2PdeclareAnnotationOnNodeType(char *label, A2PType valueType);
 
-void declareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType);
+void A2PdeclareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType);
 
 #ifdef __cplusplus
 }

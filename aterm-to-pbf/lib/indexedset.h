@@ -19,7 +19,7 @@ typedef struct _ISEntryCache{
 	ISEntry *freeList;
 } *ISEntryCache;
 
-typedef struct _ISindexedSet{
+typedef struct _ISIndexedSet{
 	ISEntryCache entryCache;
 	
 	int (*equals)(void*, void*);
@@ -30,15 +30,15 @@ typedef struct _ISindexedSet{
 	
 	unsigned int load;
 	unsigned int threshold;
-} *ISindexedSet;
+} *ISIndexedSet;
 
-ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage);
+ISIndexedSet IScreate(int (*equals)(void*, void*), float loadPercentage);
 
-int ISstore(ISindexedSet indexedSet, void *element, unsigned int h);
+int ISstore(ISIndexedSet indexedSet, void *element, unsigned int h);
 
-int ISget(ISindexedSet indexedSet, void *element, unsigned int h);
+int ISget(ISIndexedSet indexedSet, void *element, unsigned int h);
 
-void ISdestroy(ISindexedSet indexedSet);
+void ISdestroy(ISIndexedSet indexedSet);
 
 #ifdef __cplusplus
 }

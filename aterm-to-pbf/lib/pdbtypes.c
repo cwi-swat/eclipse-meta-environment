@@ -69,9 +69,9 @@ static int pointerEqual(void *first, void *second){
 }
 
 static int initialized = 0;
-static HThashtable typeStore;
-static HThashtable typeMappings;
-static HThashtable valueTypeMappings;
+static HTHashtable typeStore;
+static HTHashtable typeMappings;
+static HTHashtable valueTypeMappings;
 
 static A2PType valueTypeConstant;
 static A2PType voidTypeConstant;
@@ -96,15 +96,15 @@ static A2PType handleCaching(A2PType type){
 	return type;
 }
 
-A2PType lookupConstructorType(A2PType adtType, char *name, int arity){
+A2PType A2PlookupConstructorType(A2PType adtType, char *name, int arity){
 	HShashset constructors = HTget(typeMappings, adtType, hashType(adtType));
 	
 	HSiterator consIterator = HScreateIterator(constructors);
 	A2PType constructorType;
 	while((constructorType = (A2PType) HSgetNext(consIterator)) != NULL){
-		A2PconstructorType consType = constructorType->theType;
+		A2PConstructorType consType = constructorType->theType;
 		char *consName = consType->name;
-		int nrOfChildren = typeArraySize(((A2PtupleType) consType->children->theType)->fieldTypes);
+		int nrOfChildren = typeArraySize(((A2PTupleType) consType->children->theType)->fieldTypes);
 		
 		if(stringIsEqual(name, consName) && nrOfChildren == arity) return constructorType;
 	}
@@ -112,8 +112,8 @@ A2PType lookupConstructorType(A2PType adtType, char *name, int arity){
 	return NULL;
 }
 
-A2PType lookupConstructorWrapper(A2PType adtType, A2PType nativeType){
-	HThashtable wrappers = HTget(valueTypeMappings, (void*) adtType, hashType(adtType));
+A2PType A2PlookupConstructorWrapper(A2PType adtType, A2PType nativeType){
+	HTHashtable wrappers = HTget(valueTypeMappings, (void*) adtType, hashType(adtType));
 	if(wrappers == NULL) return NULL;
 	
 	return HTget(wrappers, (void*) nativeType, hashType(nativeType));
@@ -125,53 +125,53 @@ void A2Pinitialize(){
 		typeMappings = HTcreate(&equalType, 2.0f);
 		valueTypeMappings = HTcreate(&equalType, 2.0f);
 		
-		A2PnodeType nt;
+		A2PNodeType nt;
 		
 		valueTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
                 if(valueTypeConstant == NULL){ fprintf(stderr, "Unable to allocate struct for ValueType.\n"); exit(1); }
-                valueTypeConstant->theType = (void*) malloc(sizeof(struct _A2PvalueType));
+                valueTypeConstant->theType = (void*) malloc(sizeof(struct _A2PValueType));
                 if(valueTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for ValueType.\n"); exit(1); }
                 valueTypeConstant->id = PDB_VALUE_TYPE_HEADER;
 		
 		voidTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(voidTypeConstant == NULL){ fprintf(stderr, "Unable to allocate struct for VoidType.\n"); exit(1); }
-		voidTypeConstant->theType = (void*) malloc(sizeof(struct _A2PvoidType));
+		voidTypeConstant->theType = (void*) malloc(sizeof(struct _A2PVoidType));
 		if(voidTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for VoidType.\n"); exit(1); }
 		voidTypeConstant->id = PDB_VOID_TYPE_HEADER;
 		
 		boolTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(boolTypeConstant == NULL){ fprintf(stderr, "Unable to allocate struct for BoolType.\n"); exit(1); }
-		boolTypeConstant->theType = (void*) malloc(sizeof(struct _A2PboolType));
+		boolTypeConstant->theType = (void*) malloc(sizeof(struct _A2PBoolType));
 		if(boolTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for BoolType.\n"); exit(1); }
 		boolTypeConstant->id = PDB_BOOL_TYPE_HEADER;
 		
 		integerTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
                 if(integerTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
-		integerTypeConstant->theType = (void*) malloc(sizeof(struct _A2PintegerType));
+		integerTypeConstant->theType = (void*) malloc(sizeof(struct _A2PIntegerType));
 		if(integerTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for IntegerType.\n"); exit(1); }
 		integerTypeConstant->id = PDB_INTEGER_TYPE_HEADER;
 		
 		realTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(realTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
-		realTypeConstant->theType = (void*) malloc(sizeof(struct _A2PrealType));
+		realTypeConstant->theType = (void*) malloc(sizeof(struct _A2PRealType));
 		if(realTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for RealType.\n"); exit(1); }
 		realTypeConstant->id = PDB_DOUBLE_TYPE_HEADER;
 		
 		stringTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(stringTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
-		stringTypeConstant->theType = (void*) malloc(sizeof(struct _A2PstringType));
+		stringTypeConstant->theType = (void*) malloc(sizeof(struct _A2PStringType));
 		if(stringTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for StringType.\n"); exit(1); }
 		stringTypeConstant->id = PDB_STRING_TYPE_HEADER;
 		
 		sourceLocationTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(sourceLocationTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
-		sourceLocationTypeConstant->theType = (void*) malloc(sizeof(struct _A2PsourceLocationType));
+		sourceLocationTypeConstant->theType = (void*) malloc(sizeof(struct _A2PSourceLocationType));
 		if(sourceLocationTypeConstant->theType == NULL){ fprintf(stderr, "Unable to allocate memory for SourceLocationType.\n"); exit(1); }
 		sourceLocationTypeConstant->id = PDB_SOURCE_LOCATION_TYPE_HEADER;
 		
 		nodeTypeConstant = (A2PType) malloc(sizeof(struct _A2PType));
 		if(nodeTypeConstant == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
-		nt = (A2PnodeType) malloc(sizeof(struct _A2PnodeType));
+		nt = (A2PNodeType) malloc(sizeof(struct _A2PNodeType));
 		if(nt == NULL){ fprintf(stderr, "Unable to allocate memory for NodeType.\n"); exit(1); }
 		nt->declaredAnnotations = NULL;
 		nodeTypeConstant->theType = (void*) nt;
@@ -181,43 +181,43 @@ void A2Pinitialize(){
 	}
 }
 
-A2PType valueType(){
+A2PType A2PvalueType(){
 	return valueTypeConstant;
 }
 
-A2PType voidType(){
+A2PType A2PvoidType(){
 	return voidTypeConstant;
 }
 
-A2PType boolType(){
+A2PType A2PboolType(){
 	return boolTypeConstant;
 }
 
-A2PType integerType(){
+A2PType A2PintegerType(){
 	return integerTypeConstant;
 }
 
-A2PType realType(){
+A2PType A2PrealType(){
 	return realTypeConstant;
 }
 
-A2PType stringType(){
+A2PType A2PstringType(){
 	return stringTypeConstant;
 }
 
-A2PType sourceLocationType(){
+A2PType A2PsourceLocationType(){
 	return sourceLocationTypeConstant;
 }
 
-A2PType nodeType(){
+A2PType A2PnodeType(){
 	return nodeTypeConstant;
 }
 
-A2PType tupleType(A2PType *fieldTypes, char **fieldNames){
+A2PType A2PtupleType(A2PType *fieldTypes, char **fieldNames){
 	A2PType tupleType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(tupleType == NULL){ fprintf(stderr, "Unable to allocate memory for TupleType.\n"); exit(1); }
 	
-	A2PtupleType t = (A2PtupleType) malloc(sizeof(struct _A2PtupleType));
+	A2PTupleType t = (A2PTupleType) malloc(sizeof(struct _A2PTupleType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for TupleType.\n"); exit(1);}
 	tupleType->theType = t;
 	tupleType->id = PDB_TUPLE_TYPE_HEADER;
@@ -231,11 +231,11 @@ A2PType tupleType(A2PType *fieldTypes, char **fieldNames){
 	return handleCaching(tupleType);
 }
 
-A2PType listType(A2PType elementType){
+A2PType A2PlistType(A2PType elementType){
 	A2PType listType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(listType == NULL){ fprintf(stderr, "Unable to allocate memory for ListType.\n"); exit(1); }
 	
-	A2PlistType t = (A2PlistType) malloc(sizeof(struct _A2PlistType));
+	A2PListType t = (A2PListType) malloc(sizeof(struct _A2PListType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for ListType.\n"); exit(1); }
 	listType->theType = t;
 	listType->id = PDB_LIST_TYPE_HEADER;
@@ -245,11 +245,11 @@ A2PType listType(A2PType elementType){
 	return handleCaching(listType);
 }
 
-A2PType setType(A2PType elementType){
+A2PType A2PsetType(A2PType elementType){
 	A2PType setType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(setType == NULL){ fprintf(stderr, "Unable to allocate memory for SetType.\n"); exit(1); }
         
-	A2PsetType t = (A2PsetType) malloc(sizeof(struct _A2PsetType));
+	A2PSetType t = (A2PSetType) malloc(sizeof(struct _A2PSetType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for SetType.\n"); exit(1); }
         setType->theType = t;
         setType->id = PDB_SET_TYPE_HEADER;
@@ -259,11 +259,11 @@ A2PType setType(A2PType elementType){
 	return handleCaching(setType);
 }
 
-A2PType relationType(A2PType tupleType){
+A2PType A2PrelationType(A2PType tupleType){
 	A2PType relationType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(relationType == NULL){ fprintf(stderr, "Unable to allocate memory for RelationType.\n"); exit(1); }
         
-	A2PrelationType t = (A2PrelationType) malloc(sizeof(struct _A2PrelationType));
+	A2PRelationType t = (A2PRelationType) malloc(sizeof(struct _A2PRelationType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for RelationType.\n"); exit(1); }
         relationType->theType = t;
         relationType->id = PDB_RELATION_TYPE_HEADER;
@@ -273,11 +273,11 @@ A2PType relationType(A2PType tupleType){
 	return handleCaching(relationType);
 }
 
-A2PType mapType(A2PType keyType, A2PType valueType){
+A2PType A2PmapType(A2PType keyType, A2PType valueType){
 	A2PType mapType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(mapType == NULL){ fprintf(stderr, "Unable to allocate memory for MapType.\n"); exit(1); }
         
-	A2PmapType t = (A2PmapType) malloc(sizeof(struct _A2PmapType));
+	A2PMapType t = (A2PMapType) malloc(sizeof(struct _A2PMapType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for MapType.\n"); exit(1); }
         mapType->theType = t;
         mapType->id = PDB_MAP_TYPE_HEADER;
@@ -288,11 +288,11 @@ A2PType mapType(A2PType keyType, A2PType valueType){
 	return handleCaching(mapType);
 }
 
-A2PType parameterType(char *name, A2PType bound){
+A2PType A2PparameterType(char *name, A2PType bound){
 	A2PType parameterType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(parameterType == NULL){ fprintf(stderr, "Unable to allocate memory for ParameterType.\n"); exit(1); }
 	
-	A2PparameterType t = (A2PparameterType) malloc(sizeof(struct _A2PparameterType));
+	A2PParameterType t = (A2PParameterType) malloc(sizeof(struct _A2PParameterType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for ParameterType.\n"); exit(1); }
 	parameterType->theType = t;
 	parameterType->id = PDB_PARAMETER_TYPE_HEADER;
@@ -303,11 +303,11 @@ A2PType parameterType(char *name, A2PType bound){
 	return handleCaching(parameterType);
 }
 
-A2PType abstractDataType(char *name){
+A2PType A2PabstractDataType(char *name){
 	A2PType abstractDataType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(abstractDataType == NULL){ fprintf(stderr, "Unable to allocate memory for AbstractDataType.\n"); exit(1); }
 	
-	A2PabstractDataType t = (A2PabstractDataType) malloc(sizeof(struct _A2PabstractDataType));
+	A2PAbstractDataType t = (A2PAbstractDataType) malloc(sizeof(struct _A2PAbstractDataType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AbstractDataType.\n"); exit(1); }
 	abstractDataType->theType = t;
 	abstractDataType->id = PDB_ADT_TYPE_HEADER;
@@ -317,24 +317,24 @@ A2PType abstractDataType(char *name){
 	return handleCaching(abstractDataType);
 }
 
-A2PType constructorType(char *name, A2PType adt, A2PType *children){
-	return constructorTypeWithLabels(name, adt, children, NULL);
+A2PType A2PconstructorType(char *name, A2PType adt, A2PType *children){
+	return A2PconstructorTypeWithLabels(name, adt, children, NULL);
 }
 
-A2PType constructorTypeWithLabels(char *name, A2PType adt, A2PType *children, char **labels){
+A2PType A2PconstructorTypeWithLabels(char *name, A2PType adt, A2PType *children, char **labels){
 	A2PType result;
 	
 	A2PType constructorType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(constructorType == NULL){ fprintf(stderr, "Unable to allocate memory for ConstructorType.\n"); exit(1); }
 	
-	A2PconstructorType t = (A2PconstructorType) malloc(sizeof(struct _A2PconstructorType));
+	A2PConstructorType t = (A2PConstructorType) malloc(sizeof(struct _A2PConstructorType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for ConstructorType.\n"); exit(1); }
 	constructorType->theType = t;
 	constructorType->id = PDB_CONSTRUCTOR_TYPE_HEADER;
 	
 	t->name = copyString(name);
 	t->adt = adt;
-	t->children = tupleType(children, labels);
+	t->children = A2PtupleType(children, labels);
 	t->declaredAnnotations = NULL;
 	
 	result = handleCaching(constructorType);
@@ -352,9 +352,9 @@ A2PType constructorTypeWithLabels(char *name, A2PType adt, A2PType *children, ch
 	return result;
 }
 
-void linkNativeTypeToADT(A2PType adt, A2PType nativeType, A2PType wrapper){
+void A2PlinkNativeTypeToADT(A2PType adt, A2PType nativeType, A2PType wrapper){
 	int adtHash = hashType(adt);
-	HThashtable wrappers = HTget(valueTypeMappings, adt, adtHash);
+	HTHashtable wrappers = HTget(valueTypeMappings, adt, adtHash);
 	if(wrappers == NULL){
 		wrappers = HTcreate(&pointerEqual, 2.0f);
 		HTput(valueTypeMappings, (void*) adt, adtHash, (void*) wrappers);
@@ -362,11 +362,11 @@ void linkNativeTypeToADT(A2PType adt, A2PType nativeType, A2PType wrapper){
 	HTput(wrappers, (void*) nativeType, hashType(nativeType), (void*) wrapper);
 }
 
-A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
+A2PType A2PaliasType(char *name, A2PType aliased, A2PType *parameters){
 	A2PType aliasType = (A2PType) malloc(sizeof(struct _A2PType));
 	if(aliasType == NULL){ fprintf(stderr, "Unable to allocate memory for AliasType.\n"); exit(1); }
 	
-	A2PaliasType t = (A2PaliasType) malloc(sizeof(struct _A2PaliasType));
+	A2PAliasType t = (A2PAliasType) malloc(sizeof(struct _A2PAliasType));
 	if(t == NULL){ fprintf(stderr, "Unable to allocate memory for AliasType.\n"); exit(1); }
 	aliasType->theType = t;
 	aliasType->id = PDB_ALIAS_TYPE_HEADER;
@@ -375,15 +375,15 @@ A2PType aliasType(char *name, A2PType aliased, A2PType *parameters){
 	t->aliased = aliased;
 	t->parametersTuple = voidTypeConstant;
 	if(parameters != NULL){
-		t->parametersTuple = tupleType(parameters, NULL);
+		t->parametersTuple = A2PtupleType(parameters, NULL);
 	}
 	
 	return handleCaching(aliasType);
 }
 
-void declareAnnotationOnNodeType(char *label, A2PType valueType){
-	A2PnodeType t = nodeTypeConstant->theType;
-	HThashtable declaredAnnotations = t->declaredAnnotations;
+void A2PdeclareAnnotationOnNodeType(char *label, A2PType valueType){
+	A2PNodeType t = nodeTypeConstant->theType;
+	HTHashtable declaredAnnotations = t->declaredAnnotations;
 	if(declaredAnnotations == NULL){
 		declaredAnnotations = HTcreate(equalString, 2.0f);
 		t->declaredAnnotations = declaredAnnotations;
@@ -392,9 +392,9 @@ void declareAnnotationOnNodeType(char *label, A2PType valueType){
 	HTput(declaredAnnotations, (void*) label, hashString(label), (void*) valueType);
 }
 
-void declareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType){
-	A2PconstructorType t = constructorType->theType;
-	HThashtable declaredAnnotations = t->declaredAnnotations;
+void A2PdeclareAnnotationOnConstructorType(A2PType constructorType, char *label, A2PType valueType){
+	A2PConstructorType t = constructorType->theType;
+	HTHashtable declaredAnnotations = t->declaredAnnotations;
 	if(declaredAnnotations == NULL){
 		declaredAnnotations = HTcreate(equalString, 2.0f);
 		t->declaredAnnotations = declaredAnnotations;

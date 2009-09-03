@@ -19,7 +19,7 @@ typedef struct _DKISEntryCache{
 	DKISEntry *freeList;
 } *DKISEntryCache;
 
-typedef struct _DKISindexedSet{
+typedef struct _DKISIndexedSet{
 	DKISEntryCache entryCache;
 	
 	int (*equals)(void*, void*, void*, void*);
@@ -30,15 +30,15 @@ typedef struct _DKISindexedSet{
 	
 	unsigned int load;
 	unsigned int threshold;
-} *DKISindexedSet;
+} *DKISIndexedSet;
 
-DKISindexedSet DKIScreate(int (*equals)(void*, void*, void*, void*), float loadPercentage);
+DKISIndexedSet DKIScreate(int (*equals)(void*, void*, void*, void*), float loadPercentage);
 
-int DKISstore(DKISindexedSet indexedSet, void *element, void *restriction, unsigned int h);
+int DKISstore(DKISIndexedSet indexedSet, void *element, void *restriction, unsigned int h);
 
-int DKISget(DKISindexedSet indexedSet, void *element, void *restriction, unsigned int h);
+int DKISget(DKISIndexedSet indexedSet, void *element, void *restriction, unsigned int h);
 
-void DKISdestroy(DKISindexedSet indexedSet);
+void DKISdestroy(DKISIndexedSet indexedSet);
 
 #ifdef __cplusplus
 }

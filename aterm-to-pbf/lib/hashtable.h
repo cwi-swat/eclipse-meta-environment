@@ -28,7 +28,7 @@ typedef struct _HTEntryCache{
 	HTEntry *freeList;
 } *HTEntryCache;
 
-typedef struct _HThashtable{
+typedef struct _HTHashtable{
 	HTEntryCache entryCache;
 	
 	int (*equals)(void*, void*);
@@ -39,30 +39,30 @@ typedef struct _HThashtable{
 	
 	unsigned int load;
 	unsigned int threshold;
-} *HThashtable;
+} *HTHashtable;
 
-typedef struct _HTiterator{
-	HThashtable hashtable;
+typedef struct _HTIterator{
+	HTHashtable hashtable;
 	
 	HTEntry *currentEntry;
 	unsigned int position;
-} *HTiterator;
+} *HTIterator;
 
-HThashtable HTcreate(int (*equals)(void*, void*), float loadPercentage);
+HTHashtable HTcreate(int (*equals)(void*, void*), float loadPercentage);
 
-void *HTput(HThashtable hashtable, void *key, unsigned int h, void *value);
+void *HTput(HTHashtable hashtable, void *key, unsigned int h, void *value);
 
-void *HTget(HThashtable hashtable, void *key, unsigned int h);
+void *HTget(HTHashtable hashtable, void *key, unsigned int h);
 
-void *HTremove(HThashtable hashtable, void *key, unsigned int h);
+void *HTremove(HTHashtable hashtable, void *key, unsigned int h);
 
-unsigned int HTsize(HThashtable hashtable);
+unsigned int HTsize(HTHashtable hashtable);
 
-void HTdestroy(HThashtable hashtable);
+void HTdestroy(HTHashtable hashtable);
 
-HTiterator HTcreateIterator(HThashtable hashtable);
+HTIterator HTcreateIterator(HTHashtable hashtable);
 
-HTEntry *HTgetNext(HTiterator iterator);
+HTEntry *HTgetNext(HTIterator iterator);
 
 #ifdef __cplusplus
 }

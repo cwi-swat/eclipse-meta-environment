@@ -39,10 +39,10 @@ typedef struct _ByteBuffer{
 } *ByteBuffer;
 
 typedef struct A2PWriter{
-        DKISindexedSet valueSharingMap;
-        ISindexedSet typeSharingMap;
-        ISindexedSet pathSharingMap;
-        ISindexedSet nameSharingMap;
+        DKISIndexedSet valueSharingMap;
+        ISIndexedSet typeSharingMap;
+        ISIndexedSet pathSharingMap;
+        ISIndexedSet nameSharingMap;
         ByteBuffer buffer;
 } *A2PWriter;
 
@@ -161,7 +161,7 @@ static void doWriteType(A2PWriter writer, A2PType type);
 static void doSerialize(A2PWriter writer, A2PType expected, ATerm value);
 
 static void writeType(A2PWriter writer, A2PType type){
-	ISindexedSet sharedTypes = writer->typeSharingMap;
+	ISIndexedSet sharedTypes = writer->typeSharingMap;
 	int typeHash = hashType(type);
 	int typeId = ISget(sharedTypes, type, typeHash);
 	if(typeId != -1){
@@ -218,7 +218,7 @@ static void writeSourceLocation(A2PWriter writer, ATermAppl sourceLocation){
 }
 
 static void writeTuple(A2PWriter writer, A2PType expected, ATermAppl tuple){
-	A2PtupleType t = expected->theType;
+	A2PTupleType t = (A2PTupleType) expected->theType;
 	
 	A2PType *fieldTypes = t->fieldTypes;
 	int numberOfFieldTypes = typeArraySize(fieldTypes);
@@ -260,12 +260,12 @@ static void writeNode(A2PWriter writer, A2PType expected, ATermAppl node){
 	printInteger(writer->buffer, arity);
 	
 	for(i = 0; i < arity; i++){
-		doSerialize(writer, valueType(), ATgetArgument(node, i));
+		doSerialize(writer, A2PvalueType(), ATgetArgument(node, i));
 	}
 }
 
 static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl node, ATermList annotations){
-	A2PnodeType t = expected->theType;
+	A2PNodeType t = (A2PNodeType) expected->theType;
 	
 	AFun fun = ATgetAFun(node);
 	int arity = ATgetArity(fun);
@@ -293,7 +293,7 @@ static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl nod
 	printInteger(writer->buffer, arity);
 	
 	for(i = 0; i < arity; i++){
-		doSerialize(writer, valueType(), ATgetArgument(node, i));
+		doSerialize(writer, A2PvalueType(), ATgetArgument(node, i));
 	}
 	
 	/* Annotations. */
@@ -325,11 +325,11 @@ static void writeAnnotatedNode(A2PWriter writer, A2PType expected, ATermAppl nod
 }
 
 static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor){
-	A2PconstructorType t = expected->theType;
-	A2PtupleType children = ((A2PtupleType) t->children->theType);
+	A2PConstructorType t = (A2PConstructorType) expected->theType;
+	A2PTupleType children = ((A2PTupleType) t->children->theType);
 	int nrOfChildren = typeArraySize(children->fieldTypes);
 	
-	ISindexedSet sharedTypes = writer->typeSharingMap;
+	ISIndexedSet sharedTypes = writer->typeSharingMap;
 	int typeHash = hashType(expected);
 	int constructorTypeId = ISget(sharedTypes, (void*) expected, typeHash);
 	int arity = ATgetArity(ATgetAFun(constructor));
@@ -357,9 +357,9 @@ static void writeConstructor(A2PWriter writer, A2PType expected, ATermAppl const
 }
 
 static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermAppl constructor, ATermList annotations){
-	A2PconstructorType t = expected->theType;
+	A2PConstructorType t = (A2PConstructorType) expected->theType;
 	
-	ISindexedSet sharedTypes = writer->typeSharingMap;
+	ISIndexedSet sharedTypes = writer->typeSharingMap;
 	int typeHash = hashType(expected);
 	int constructorTypeId = ISget(sharedTypes, (void*) expected, typeHash);
 	int arity = ATgetArity(ATgetAFun(constructor));
@@ -383,7 +383,7 @@ static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermA
 	printInteger(writer->buffer, arity);
 	
 	for(i = 0; i < arity; i++){
-		doSerialize(writer, ((A2PtupleType) t->children->theType)->fieldTypes[i], ATgetArgument(constructor, i));
+		doSerialize(writer, ((A2PTupleType) t->children->theType)->fieldTypes[i], ATgetArgument(constructor, i));
 	}
 	
 	/* Annotations. */
@@ -415,10 +415,10 @@ static void writeAnnotatedConstructor(A2PWriter writer, A2PType expected, ATermA
 }
 
 static void writeList(A2PWriter writer, A2PType expected, ATermList list){
-	A2PlistType listType = (A2PlistType) expected->theType;
+	A2PListType listType = (A2PListType) expected->theType;
 	
 	A2PType elementType = listType->elementType;
-	ISindexedSet sharedTypes = writer->typeSharingMap;
+	ISIndexedSet sharedTypes = writer->typeSharingMap;
 	int elementHash = hashType(elementType);
 	int elementTypeId = ISget(sharedTypes, (void*) elementType, elementHash);
 	int length = ATgetLength(list);
@@ -447,10 +447,10 @@ static void writeList(A2PWriter writer, A2PType expected, ATermList list){
 }
 
 static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
-	A2PsetType setType = (A2PsetType) expected->theType;
+	A2PSetType setType = (A2PSetType) expected->theType;
 	
 	A2PType elementType = setType->elementType;
-	ISindexedSet sharedTypes = writer->typeSharingMap;
+	ISIndexedSet sharedTypes = writer->typeSharingMap;
 	int elementHash = hashType(elementType);
 	int elementTypeId = ISget(sharedTypes, (void*) elementType, elementHash);
 	int size = ATgetLength(set);
@@ -479,10 +479,10 @@ static void writeSet(A2PWriter writer, A2PType expected, ATermList set){
 }
 
 static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation){
-	A2PrelationType relationType = (A2PrelationType) expected->theType;
+	A2PRelationType relationType = (A2PRelationType) expected->theType;
 	
 	A2PType tupleType = relationType->tupleType;
-	ISindexedSet sharedTypes = writer->typeSharingMap;
+	ISIndexedSet sharedTypes = writer->typeSharingMap;
 	int tupleHash = hashType(tupleType);
 	int tupleTypeId = ISget(sharedTypes, (void*) tupleType, tupleHash);
 	int size = ATgetLength(relation);
@@ -511,9 +511,9 @@ static void writeRelation(A2PWriter writer, A2PType expected, ATermList relation
 }
 
 static void writeMap(A2PWriter writer, A2PType expected, ATermList map){
-	A2PmapType mapType = (A2PmapType) expected->theType;
+	A2PMapType mapType = (A2PMapType) expected->theType;
 	
-	ISindexedSet sharedTypes = writer->typeSharingMap;
+	ISIndexedSet sharedTypes = writer->typeSharingMap;
 	int mapHash = hashType(expected);
 	int mapTypeId = ISget(sharedTypes, (void*) expected, mapHash);
 	int size = ATgetLength(map);
@@ -554,18 +554,18 @@ static void writeADT(A2PWriter writer, A2PType expected, ATerm value){
 		AFun fun = ATgetAFun(appl);
 		char *name = ATgetName(fun);
 		int arity = ATgetArity(fun);
-		A2PType constructorType = lookupConstructorType(expected, name, arity);
-		if(constructorType == NULL){ fprintf(stderr, "Unable to find a constructor that matches the given ADT type. Name: %s, arity: %d, ADT name: %s.\n", name, arity, ((A2PabstractDataType) expected->theType)->name); exit(1); }
+		A2PType constructorType = A2PlookupConstructorType(expected, name, arity);
+		if(constructorType == NULL){ fprintf(stderr, "Unable to find a constructor that matches the given ADT type. Name: %s, arity: %d, ADT name: %s.\n", name, arity, ((A2PAbstractDataType) expected->theType)->name); exit(1); }
 		
 		writeConstructor(writer, constructorType, appl);
 	}else{
 		A2PType wrapper;
 		switch(termType){
 			case AT_INT:
-				wrapper = lookupConstructorWrapper(expected, integerType());
+				wrapper = A2PlookupConstructorWrapper(expected, A2PintegerType());
 				break;
 			case AT_REAL:
-				wrapper = lookupConstructorWrapper(expected, realType());
+				wrapper = A2PlookupConstructorWrapper(expected, A2PrealType());
 				break;
 			default:
 				fprintf(stderr, "The given ATerm of type: %d, can not be a constructor.\n", termType);
@@ -574,7 +574,7 @@ static void writeADT(A2PWriter writer, A2PType expected, ATerm value){
 		
 		if(wrapper == NULL){ fprintf(stderr, "Unable to find constructor wrapper for ATerm with type : %d.\n", termType); exit(1);}
 		
-		writeConstructor(writer, wrapper, ATmakeAppl1(ATmakeAFun(((A2PconstructorType) wrapper->theType)->name, 1, ATfalse), value));
+		writeConstructor(writer, wrapper, ATmakeAppl1(ATmakeAFun(((A2PConstructorType) wrapper->theType)->name, 1, ATfalse), value));
 	}
 }
 
@@ -611,7 +611,7 @@ static void writeNodeType(A2PWriter writer, A2PType nodeType){
 }
 
 static void writeTupleType(A2PWriter writer, A2PType tupleType){
-	A2PtupleType t = (A2PtupleType) tupleType->theType;
+	A2PTupleType t = (A2PTupleType) tupleType->theType;
 	A2PType *fieldTypes = t->fieldTypes;
 	char **fieldNames = t->fieldNames;
 	int nrOfFields = typeArraySize(fieldTypes);
@@ -644,7 +644,7 @@ static void writeTupleType(A2PWriter writer, A2PType tupleType){
 }
 
 static void writeListType(A2PWriter writer, A2PType listType){
-	A2PlistType t = (A2PlistType) listType->theType;
+	A2PListType t = (A2PListType) listType->theType;
 	
 	writeByteToBuffer(writer->buffer, PDB_LIST_TYPE_HEADER);
 	
@@ -652,7 +652,7 @@ static void writeListType(A2PWriter writer, A2PType listType){
 }
 
 static void writeSetType(A2PWriter writer, A2PType setType){
-	A2PsetType t = (A2PsetType) setType->theType;
+	A2PSetType t = (A2PSetType) setType->theType;
 	
 	writeByteToBuffer(writer->buffer, PDB_SET_TYPE_HEADER);
 	
@@ -660,7 +660,7 @@ static void writeSetType(A2PWriter writer, A2PType setType){
 }
 
 static void writeRelationType(A2PWriter writer, A2PType relationType){
-	A2PrelationType t = (A2PrelationType) relationType->theType;
+	A2PRelationType t = (A2PRelationType) relationType->theType;
 	
 	writeByteToBuffer(writer->buffer, PDB_RELATION_TYPE_HEADER);
 	
@@ -668,7 +668,7 @@ static void writeRelationType(A2PWriter writer, A2PType relationType){
 }
 
 static void writeMapType(A2PWriter writer, A2PType mapType){
-	A2PmapType t = (A2PmapType) mapType->theType;
+	A2PMapType t = (A2PMapType) mapType->theType;
 	
 	writeByteToBuffer(writer->buffer, PDB_MAP_TYPE_HEADER);
 	
@@ -677,7 +677,7 @@ static void writeMapType(A2PWriter writer, A2PType mapType){
 }
 
 static void writeParameterType(A2PWriter writer, A2PType parameterType){
-	A2PparameterType t = (A2PparameterType) parameterType->theType;
+	A2PParameterType t = (A2PParameterType) parameterType->theType;
 	char *name = t->name;
 	int nameLength = dataArraySize(name);
 	
@@ -690,7 +690,7 @@ static void writeParameterType(A2PWriter writer, A2PType parameterType){
 }
 
 static void writeADTType(A2PWriter writer, A2PType adtType){
-	A2PabstractDataType t = (A2PabstractDataType) adtType->theType;
+	A2PAbstractDataType t = (A2PAbstractDataType) adtType->theType;
 	char *name = t->name;
 	int nameLength = dataArraySize(name);
 	
@@ -699,11 +699,11 @@ static void writeADTType(A2PWriter writer, A2PType adtType){
 	printInteger(writer->buffer, nameLength);
 	writeDataToBuffer(writer->buffer, name, nameLength);
 	
-	writeType(writer, voidType());
+	writeType(writer, A2PvoidType());
 }
 
 static void writeConstructorType(A2PWriter writer, A2PType constructorType){
-	A2PconstructorType t = (A2PconstructorType) constructorType->theType;
+	A2PConstructorType t = (A2PConstructorType) constructorType->theType;
 	char *name = t->name;
 	int nameLength = dataArraySize(name);
 	
@@ -718,7 +718,7 @@ static void writeConstructorType(A2PWriter writer, A2PType constructorType){
 }
 
 static void writeAliasType(A2PWriter writer, A2PType aliasType){
-	A2PaliasType t = (A2PaliasType) aliasType->theType;
+	A2PAliasType t = (A2PAliasType) aliasType->theType;
 	char *name = t->name;
 	int nameLength = dataArraySize(name);
 	
@@ -733,9 +733,9 @@ static void writeAliasType(A2PWriter writer, A2PType aliasType){
 }
 
 static void writeAnnotatedNodeType(A2PWriter writer, A2PType nodeType){
-	A2PnodeType t = (A2PnodeType) nodeType->theType;
-	HThashtable hashtable = t->declaredAnnotations;
-	HTiterator iterator = HTcreateIterator(hashtable);
+	A2PNodeType t = (A2PNodeType) nodeType->theType;
+	HTHashtable hashtable = t->declaredAnnotations;
+	HTIterator iterator = HTcreateIterator(hashtable);
         int nrOfAnnotations = HTsize(hashtable);
 	HTEntry *nextAnnotation;
 	
@@ -755,11 +755,11 @@ static void writeAnnotatedNodeType(A2PWriter writer, A2PType nodeType){
 }
 
 static void writeAnnotatedConstructorType(A2PWriter writer, A2PType constructorType){
-	A2PconstructorType t = (A2PconstructorType) constructorType->theType;
+	A2PConstructorType t = (A2PConstructorType) constructorType->theType;
 	char *name = t->name;
         int nameLength = dataArraySize(name);
-	HThashtable hashtable = t->declaredAnnotations;
-	HTiterator iterator = HTcreateIterator(hashtable);
+	HTHashtable hashtable = t->declaredAnnotations;
+	HTIterator iterator = HTcreateIterator(hashtable);
 	int nrOfAnnotations = HTsize(hashtable);
 	HTEntry *nextAnnotation;
 
@@ -809,7 +809,7 @@ static void doWriteType(A2PWriter writer, A2PType type){
 			writeSourceLocationType(writer);
 			break;
 		case PDB_NODE_TYPE_HEADER:
-			if(((A2PnodeType) type->theType)->declaredAnnotations == NULL){
+			if(((A2PNodeType) type->theType)->declaredAnnotations == NULL){
 				writeNodeType(writer, type);
 			}else{
 				writeAnnotatedNodeType(writer, type);
@@ -837,7 +837,7 @@ static void doWriteType(A2PWriter writer, A2PType type){
 			writeADTType(writer, type);
 			break;
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
-			if(((A2PconstructorType) type->theType)->declaredAnnotations == NULL){
+			if(((A2PConstructorType) type->theType)->declaredAnnotations == NULL){
 				writeConstructorType(writer, type);
 			}else{
 				writeAnnotatedConstructorType(writer, type);
@@ -866,12 +866,12 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 				ATermAppl appl = (ATermAppl) value;
 				AFun fun = ATgetAFun(appl);
 				if(ATisQuoted(fun) == ATfalse){
-					A2PType expected = nodeType();
+					A2PType expected = A2PnodeType();
 					ATermList annotations = (ATermList) ATgetAnnotations(value);
 					if(annotations == NULL){
 						writeNode(writer, expected, appl);
 					}else{
-						if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
+						if(((A2PNodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
 						
 						writeAnnotatedNode(writer, expected, appl, annotations);
 					}
@@ -883,7 +883,7 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 			}
 			break;
 		case AT_LIST:
-			writeList(writer, listType(valueType()), (ATermList) value);
+			writeList(writer, A2PlistType(A2PvalueType()), (ATermList) value);
 			break;
 		default:
 			fprintf(stderr, "Encountered unwriteable type: %d.\n", type);
@@ -892,7 +892,7 @@ static void serializeUntypedTerm(A2PWriter writer, ATerm value){
 }
 
 static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
-        DKISindexedSet sharedValues = writer->valueSharingMap;
+        DKISIndexedSet sharedValues = writer->valueSharingMap;
         int valueHash = hashValue(value);
         int valueId = DKISget(sharedValues, (void*) value, (void*) expected, valueHash); /* TODO: Fix sharing (check types). */
         if(valueId != -1){
@@ -932,7 +932,7 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 				if(annotations == NULL){
 					writeNode(writer, expected, (ATermAppl) value);
 				}else{
-					if(((A2PnodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
+					if(((A2PNodeType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Node term has annotations, but none are declared.\n"); exit(1); }
 					
 					writeAnnotatedNode(writer, expected, (ATermAppl) value, annotations);
 				}
@@ -965,7 +965,7 @@ static void doSerialize(A2PWriter writer, A2PType expected, ATerm value){
 				if(annotations == NULL){
 					writeConstructor(writer, expected, (ATermAppl) value);
 				}else{
-					if(((A2PconstructorType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Constructor term has annotations, but none are declared.\n"); exit(1); }
+					if(((A2PConstructorType) expected->theType)->declaredAnnotations == NULL){ fprintf(stderr, "Constructor term has annotations, but none are declared.\n"); exit(1); }
 					
 					writeAnnotatedConstructor(writer, expected, (ATermAppl) value, annotations);
 				}

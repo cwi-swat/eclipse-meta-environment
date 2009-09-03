@@ -28,8 +28,8 @@ int typeIsEqual(A2PType type1, A2PType type2){
 			return 1;
 		case PDB_TUPLE_TYPE_HEADER:
 			{
-				A2PtupleType tupleType1 = (A2PtupleType) type1->theType;
-				A2PtupleType tupleType2 = (A2PtupleType) type2->theType;
+				A2PTupleType tupleType1 = (A2PTupleType) type1->theType;
+				A2PTupleType tupleType2 = (A2PTupleType) type2->theType;
 				
 				A2PType *fieldTypes1 = tupleType1->fieldTypes;
 				A2PType *fieldTypes2 = tupleType2->fieldTypes;
@@ -60,50 +60,50 @@ int typeIsEqual(A2PType type1, A2PType type2){
 			}
 		case PDB_LIST_TYPE_HEADER:
 			{
-				A2PlistType listType1 = (A2PlistType) type1->theType;
-				A2PlistType listType2 = (A2PlistType) type2->theType;
+				A2PListType listType1 = (A2PListType) type1->theType;
+				A2PListType listType2 = (A2PListType) type2->theType;
 				
 				return (listType1->elementType == listType2->elementType);
 			}
 		case PDB_SET_TYPE_HEADER:
 			{
-				A2PsetType setType1 = (A2PsetType) type1->theType;
-				A2PsetType setType2 = (A2PsetType) type2->theType;
+				A2PSetType setType1 = (A2PSetType) type1->theType;
+				A2PSetType setType2 = (A2PSetType) type2->theType;
 				
 				return (setType1->elementType == setType2->elementType);
 			}
 		case PDB_RELATION_TYPE_HEADER:
 			{
-				A2PrelationType relationType1 = (A2PrelationType) type1->theType;
-				A2PrelationType relationType2 = (A2PrelationType) type2->theType;
+				A2PRelationType relationType1 = (A2PRelationType) type1->theType;
+				A2PRelationType relationType2 = (A2PRelationType) type2->theType;
 				
 				return (relationType1->tupleType == relationType2->tupleType);
 			}
 		case PDB_MAP_TYPE_HEADER:
 			{
-				A2PmapType mapType1 = (A2PmapType) type1->theType;
-				A2PmapType mapType2 = (A2PmapType) type2->theType;
+				A2PMapType mapType1 = (A2PMapType) type1->theType;
+				A2PMapType mapType2 = (A2PMapType) type2->theType;
 				
 				return (mapType1->keyType == mapType2->keyType && mapType1->valueType == mapType2->valueType);
 			}
 		case PDB_PARAMETER_TYPE_HEADER:
 			{
-				A2PparameterType parameterType1 = (A2PparameterType) type1->theType;
-				A2PparameterType parameterType2 = (A2PparameterType) type2->theType;
+				A2PParameterType parameterType1 = (A2PParameterType) type1->theType;
+				A2PParameterType parameterType2 = (A2PParameterType) type2->theType;
 				
 				return (stringIsEqual(parameterType1->name, parameterType2->name) && parameterType1->bound == parameterType2->bound);
 			}
 		case PDB_ADT_TYPE_HEADER:
 			{
-				A2PabstractDataType adtType1 = (A2PabstractDataType) type1->theType;
-				A2PabstractDataType adtType2 = (A2PabstractDataType) type2->theType;
+				A2PAbstractDataType adtType1 = (A2PAbstractDataType) type1->theType;
+				A2PAbstractDataType adtType2 = (A2PAbstractDataType) type2->theType;
 				
 				return (stringIsEqual(adtType1->name, adtType2->name));
 			}
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
 			{
-				A2PconstructorType constructorType1 = (A2PconstructorType) type1->theType;
-				A2PconstructorType constructorType2 = (A2PconstructorType) type2->theType;
+				A2PConstructorType constructorType1 = (A2PConstructorType) type1->theType;
+				A2PConstructorType constructorType2 = (A2PConstructorType) type2->theType;
 				
 				return (stringIsEqual(constructorType1->name, constructorType2->name) 
 					&& constructorType1->children == constructorType2->children 
@@ -111,8 +111,8 @@ int typeIsEqual(A2PType type1, A2PType type2){
 			}
 		case PDB_ALIAS_TYPE_HEADER:
 			{
-				A2PaliasType aliasType1 = (A2PaliasType) type1->theType;
-				A2PaliasType aliasType2 = (A2PaliasType) type2->theType;
+				A2PAliasType aliasType1 = (A2PAliasType) type1->theType;
+				A2PAliasType aliasType2 = (A2PAliasType) type2->theType;
 				
 				return (stringIsEqual(aliasType1->name, aliasType2->name) 
 					&& aliasType1->aliased == aliasType2->aliased 
@@ -148,7 +148,7 @@ unsigned int hashType(A2PType type){
 		case PDB_TUPLE_TYPE_HEADER:
 			{
 				int hash = 0;
-				A2PtupleType tupleType = (A2PtupleType) type->theType;
+				A2PTupleType tupleType = (A2PTupleType) type->theType;
 				
 				A2PType *fieldTypes = tupleType->fieldTypes;
 				char **fieldNames = tupleType->fieldNames;
@@ -170,31 +170,31 @@ unsigned int hashType(A2PType type){
 			}
 		case PDB_LIST_TYPE_HEADER:
 			{
-				A2PlistType listType = (A2PlistType) type->theType;
+				A2PListType listType = (A2PListType) type->theType;
 				
 				return (hashType(listType->elementType) * 3);
 			}
 		case PDB_SET_TYPE_HEADER:
 			{
-				A2PsetType setType = (A2PsetType) type->theType;
+				A2PSetType setType = (A2PSetType) type->theType;
 				
 				return (hashType(setType->elementType) * 5);
 			}
 		case PDB_RELATION_TYPE_HEADER:
 			{
-				A2PrelationType relationType = (A2PrelationType) type->theType;
+				A2PRelationType relationType = (A2PRelationType) type->theType;
 				
 				return (hashType(relationType->tupleType) * 7);
 			}
 		case PDB_MAP_TYPE_HEADER:
 			{
-				A2PmapType mapType = (A2PmapType) type->theType;
+				A2PMapType mapType = (A2PMapType) type->theType;
 				
 				return (((hashType(mapType->keyType) * 11) ^ (hashType(mapType->valueType) * 13)) * 17);
 			}
 		case PDB_PARAMETER_TYPE_HEADER:
 			{
-				A2PparameterType parameterType = (A2PparameterType) type->theType;
+				A2PParameterType parameterType = (A2PParameterType) type->theType;
 				
 				char *name = parameterType->name;
 				A2PType bound = parameterType->bound;
@@ -203,13 +203,13 @@ unsigned int hashType(A2PType type){
 			}
 		case PDB_ADT_TYPE_HEADER:
 			{
-				A2PabstractDataType adtType = (A2PabstractDataType) type->theType;
+				A2PAbstractDataType adtType = (A2PAbstractDataType) type->theType;
 				
 				return hashString(adtType->name) * 31;
 			}
 		case PDB_CONSTRUCTOR_TYPE_HEADER:
 			{
-				A2PconstructorType constructorType = (A2PconstructorType) type->theType;
+				A2PConstructorType constructorType = (A2PConstructorType) type->theType;
 				
 				int hash = hashString(constructorType->name);
 				hash *= 37;
@@ -221,7 +221,7 @@ unsigned int hashType(A2PType type){
 			}
 		case PDB_ALIAS_TYPE_HEADER:
 			{
-				A2PaliasType aliasType = (A2PaliasType) type->theType;
+				A2PAliasType aliasType = (A2PAliasType) type->theType;
 				
 				int hash = hashString(aliasType->name);
 				hash *= 3;

@@ -99,7 +99,7 @@ static unsigned int supplementalHash(unsigned int h){
 	return ((h << 7) - h + (h >> 9) + (h >> 17));
 }
 
-static void ensureTableCapacity(ISindexedSet indexedSet){
+static void ensureTableCapacity(ISIndexedSet indexedSet){
 	ISEntry **oldTable = indexedSet->table;
 	
 	unsigned int currentTableSize = indexedSet->tableSize;
@@ -142,10 +142,10 @@ static void ensureTableCapacity(ISindexedSet indexedSet){
 	}
 }
 
-ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
+ISIndexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
 	unsigned int tableSize = 1 << DEFAULTTABLEBITSIZE;
 	
-	ISindexedSet indexedSet = (ISindexedSet) malloc(sizeof(struct _ISindexedSet));
+	ISIndexedSet indexedSet = (ISIndexedSet) malloc(sizeof(struct _ISIndexedSet));
 	if(indexedSet == NULL){
 		fprintf(stderr, "Unable to allocate memory for creating a hashtable.\n");
 		exit(1);
@@ -170,7 +170,7 @@ ISindexedSet IScreate(int (*equals)(void*, void*), float loadPercentage){
 	return indexedSet;
 }
 
-int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
+int ISstore(ISIndexedSet indexedSet, void *element, unsigned int h){
 	unsigned int bucketPos;
 	ISEntry **table;
 	ISEntry *currentEntry, *entry;
@@ -207,7 +207,7 @@ int ISstore(ISindexedSet indexedSet, void *element, unsigned int h){
 	return -1;
 }
 
-int ISget(ISindexedSet indexedSet, void *element, unsigned int h){
+int ISget(ISIndexedSet indexedSet, void *element, unsigned int h){
 	unsigned int bucketPos;
 	ISEntry **table;
 	ISEntry *currentEntry, *entry;
@@ -230,7 +230,7 @@ int ISget(ISindexedSet indexedSet, void *element, unsigned int h){
 	return -1;
 }
 
-void ISdestroy(ISindexedSet indexedSet){
+void ISdestroy(ISIndexedSet indexedSet){
 	ISEntry **table = indexedSet->table;
 	
 	destroyEntryCache(indexedSet->entryCache);

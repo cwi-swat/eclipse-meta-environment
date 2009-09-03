@@ -95,7 +95,7 @@ static unsigned int supplementalHash(unsigned int h){
 	return ((h << 7) - h + (h >> 9) + (h >> 17));
 }
 
-static void ensureTableCapacity(HThashtable hashtable){
+static void ensureTableCapacity(HTHashtable hashtable){
 	HTEntry **oldTable = hashtable->table;
 	
 	unsigned int currentTableSize = hashtable->tableSize;
@@ -138,10 +138,10 @@ static void ensureTableCapacity(HThashtable hashtable){
 	}
 }
 
-HThashtable HTcreate(int (*equals)(void*, void*), float loadPercentage){
+HTHashtable HTcreate(int (*equals)(void*, void*), float loadPercentage){
 	unsigned int tableSize = 1 << DEFAULTTABLEBITSIZE;
 	
-	HThashtable hashtable = (HThashtable) malloc(sizeof(struct _HThashtable));
+	HTHashtable hashtable = (HTHashtable) malloc(sizeof(struct _HTHashtable));
 	if(hashtable == NULL){
 		fprintf(stderr, "Unable to allocate memory for creating a hashtable.\n");
 		exit(1);
@@ -166,7 +166,7 @@ HThashtable HTcreate(int (*equals)(void*, void*), float loadPercentage){
 	return hashtable;
 }
 
-void *HTput(HThashtable hashtable, void *key, unsigned int h, void *value){
+void *HTput(HTHashtable hashtable, void *key, unsigned int h, void *value){
 	unsigned int bucketPos;
 	HTEntry **table;
 	HTEntry *currentEntry, *entry;
@@ -205,7 +205,7 @@ void *HTput(HThashtable hashtable, void *key, unsigned int h, void *value){
 	return NULL;
 }
 
-void *HTget(HThashtable hashtable, void *key, unsigned int h){
+void *HTget(HTHashtable hashtable, void *key, unsigned int h){
 	unsigned int hash = supplementalHash(h);
 	
 	unsigned int bucketPos = hash & hashtable->hashMask;
@@ -218,7 +218,7 @@ void *HTget(HThashtable hashtable, void *key, unsigned int h){
 	return entry->value;
 }
 
-void *HTremove(HThashtable hashtable, void *key, unsigned int h){
+void *HTremove(HTHashtable hashtable, void *key, unsigned int h){
 	unsigned int hash = supplementalHash(h);
 	
 	unsigned int bucketPos = hash & hashtable->hashMask;
@@ -246,11 +246,11 @@ void *HTremove(HThashtable hashtable, void *key, unsigned int h){
 	return NULL;
 }
 
-unsigned int HTsize(HThashtable hashtable){
+unsigned int HTsize(HTHashtable hashtable){
 	return hashtable->load;
 }
 
-void HTdestroy(HThashtable hashtable){
+void HTdestroy(HTHashtable hashtable){
 	HTEntry **table = hashtable->table;
 	
 	destroyEntryCache(hashtable->entryCache);
@@ -260,8 +260,8 @@ void HTdestroy(HThashtable hashtable){
 	free(hashtable);
 }
 
-HTiterator HTcreateIterator(HThashtable hashtable){
-	HTiterator iterator = (HTiterator) malloc(sizeof(struct _HTiterator));
+HTIterator HTcreateIterator(HTHashtable hashtable){
+	HTIterator iterator = (HTIterator) malloc(sizeof(struct _HTIterator));
 	if(iterator == NULL){
 		fprintf(stderr, "The hashtable was unable to allocate memory for an iterator.");
 		exit(1);
@@ -274,7 +274,7 @@ HTiterator HTcreateIterator(HThashtable hashtable){
 	return iterator;
 }
 
-HTEntry *HTgetNext(HTiterator iterator){
+HTEntry *HTgetNext(HTIterator iterator){
 	HTEntry *currentEntry = iterator->currentEntry;
 	
 	HTEntry *nextEntry = NULL;
@@ -283,7 +283,7 @@ HTEntry *HTgetNext(HTiterator iterator){
         }
 	
         if(nextEntry == NULL){
-                HThashtable hashtable = iterator->hashtable;
+                HTHashtable hashtable = iterator->hashtable;
                 do{
                         nextEntry = hashtable->table[++iterator->position];
                 }while(nextEntry == NULL && iterator->position < hashtable->tableSize);
