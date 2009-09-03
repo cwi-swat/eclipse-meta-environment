@@ -1,5 +1,5 @@
-#ifndef HASHTABLE_H_
-#define HASHTABLE_H_
+#ifndef A2P_HASHTABLE_H_
+#define A2P_HASHTABLE_H_
 
 #ifdef __cplusplus
 extern "C"
