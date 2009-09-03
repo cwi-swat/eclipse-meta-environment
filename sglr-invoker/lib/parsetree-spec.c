@@ -80,7 +80,7 @@ A2PType generateParseTreeSpec(){
 	A2PconstructorType("left", associativity, emptyTypeArray); /* left */
 	A2PconstructorType("right", associativity, emptyTypeArray); /* right */
 	A2PconstructorType("assoc", associativity, emptyTypeArray); /* assoc */
-	A2PconstructorType("nonAssoc", associativity, emptyTypeArray); /* non- assoc */
+	A2PconstructorType("non-assoc", associativity, emptyTypeArray); /* non-assoc */
 	
 	/* Attr */
 	A2PType attr = A2PabstractDataType("Attr"); /* Attr */
