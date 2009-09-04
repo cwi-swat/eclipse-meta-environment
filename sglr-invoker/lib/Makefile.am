@@ -38,6 +38,6 @@ libCompleteSGLR_la_LIBADD = $(shell \
                         export PREFIX="$(prefix)"; \
                         export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"; \
                         . $(top_srcdir)/buildCompleteLib.sh)
-libCompleteSGLR_la_SOURCES = SGLRInvoker.c
+libCompleteSGLR_la_SOURCES = SGLRInvoker.c parsetree-spec.c
 
 CLEANFILES += ../libbuild/*.o
