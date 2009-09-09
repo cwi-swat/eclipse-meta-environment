@@ -43,9 +43,9 @@ A2PType generateParseTreeSpec(){
 	char *symbolsLabel[2] = {"symbols", NULL};
 	A2PconstructorTypeWithLabels("seq", symbol, symbolsChild, symbolsLabel); /* seq */
 	A2PconstructorTypeWithLabels("opt", symbol, symbolChild, symbolLabel); /* opt */
-	A2PType rhsLhsChildren[3] = {symbol, symbol, NULL};
-	char *rhsLhsLabels[3] = {"symbol", "symbol", NULL};
-	A2PconstructorTypeWithLabels("alt", symbol, rhsLhsChildren, rhsLhsLabels); /* alt */
+	A2PType lhsRhsChildren[3] = {symbol, symbol, NULL};
+	char *lhsRhsLabels[3] = {"lhs", "rhs", NULL};
+	A2PconstructorTypeWithLabels("alt", symbol, lhsRhsChildren, lhsRhsLabels); /* alt */
 	A2PType headRestChildren[3] = {symbol, symbols, NULL};
 	char *headRestLabels[3] = {"head", "rest", NULL};
 	A2PconstructorTypeWithLabels("tuple", symbol, headRestChildren, headRestLabels); /* tuple */
@@ -68,7 +68,7 @@ A2PType generateParseTreeSpec(){
 	A2PType sortParametersChildren[3] = {stringType, symbols, NULL};
 	char *sortParametersLabels[3] = {"sort", "parameters", NULL};
 	A2PconstructorTypeWithLabels("parameterized-sort", symbol, sortParametersChildren, sortParametersLabels); /* parameterized-sort */
-	A2PconstructorTypeWithLabels("strategy", symbol, rhsLhsChildren, rhsLhsLabels); /* strategy */
+	A2PconstructorTypeWithLabels("strategy", symbol, lhsRhsChildren, lhsRhsLabels); /* strategy */
 	A2PconstructorTypeWithLabels("varsym", symbol, symbolChild, symbolLabel); /* var-sym */
 	A2PconstructorType("layout", symbol, emptyTypeArray); /* layout */
 	A2PType rangesChild[2] = {charRanges, NULL};
