@@ -182,7 +182,7 @@ public class SGLRInvoker implements Runnable, IInvoker{
 	}
 	
 	public synchronized byte[] parseFromData(byte[] inputData, String parseTableName, int filterFlags){
-		if(inputString == null) throw new IllegalArgumentException("InputString must not be null.");
+		if(inputData == null) throw new IllegalArgumentException("InputData must not be null.");
 		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
 		
 		return reallyParse(fillInputStringBufferFromBytes(inputData), NO_INPUT_PATH, parseTableName, filterFlags);
