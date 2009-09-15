@@ -165,15 +165,27 @@ public class SGLRInvoker implements Runnable, IInvoker{
 		}
 	}
 	
+	public synchronized byte[] parseFromData(byte[] inputData, String parseTableName){
+		return parseFromData(inputData, parseTableName, 0);
+	}
+	
 	public synchronized byte[] parseFromString(String inputString, String parseTableName){
 		return parseFromString(inputString, parseTableName, 0);
 	}
+	
 	public synchronized byte[] parseFromStream(InputStream inputStringStream, String parseTableName) throws IOException{
 		return parseFromStream(inputStringStream, parseTableName, 0);
 	}
 	
 	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
 		return parseFromFile(inputFile, parseTableName, 0);
+	}
+	
+	public synchronized byte[] parseFromData(byte[] inputData, String parseTableName, int filterFlags){
+		if(inputString == null) throw new IllegalArgumentException("InputString must not be null.");
+		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
+		
+		return reallyParse(fillInputStringBufferFromBytes(inputData), NO_INPUT_PATH, parseTableName, filterFlags);
 	}
 	
 	public synchronized byte[] parseFromString(String inputString, String parseTableName, int filterFlags){

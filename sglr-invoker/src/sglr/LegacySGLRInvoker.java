@@ -30,6 +30,10 @@ public class LegacySGLRInvoker implements IInvoker{
 		}
 	}
 	
+	public synchronized byte[] parseFromData(byte[] inputData, String parseTableName){
+		return parseFromData(inputData, parseTableName, 0);
+	}
+	
 	public synchronized byte[] parseFromString(String inputString, String parseTableName){
 		return parseFromString(inputString, parseTableName, 0);
 	}
@@ -40,6 +44,17 @@ public class LegacySGLRInvoker implements IInvoker{
 	
 	public synchronized byte[] parseFromFile(File inputFile, String parseTableName) throws IOException{
 		return parseFromFile(inputFile, parseTableName);
+	}
+	
+	public synchronized byte[] parseFromData(byte[] inputData, String parseTableName, int filterFlags){
+		if(inputData == null) throw new IllegalArgumentException("InputData must not be null.");
+		if(parseTableName == null) throw new IllegalArgumentException("ParseTableName must not be null.");
+		
+		try{
+			return reallyParse(inputData, parseTableName, filterFlags);
+		}catch(IOException ioex){
+			throw new RuntimeException("Failed to parse.");
+		}
 	}
 	
 	public synchronized byte[] parseFromString(String inputString, String parseTableName, int filterFlags){
