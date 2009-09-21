@@ -1,6 +1,6 @@
 #include <pdbtypes.h>
 #include <aterm2pbf.h>
-#include <stringutils.h>
+#include <a2p-stringutils.h>
 
 #include <aterm2.h>
 
@@ -27,7 +27,7 @@ static void runTest(ATerm term, A2PType type){
 }
 
 static void testBool(){
-	A2PType bType = boolType();
+	A2PType bType = A2PboolType();
 	ATerm trueBool = ATreadFromString("true");
 	ATerm falseBool = ATreadFromString("false");
 	
@@ -36,21 +36,21 @@ static void testBool(){
 }
 
 static void testInt(){
-	A2PType intType = integerType();
+	A2PType intType = A2PintegerType();
 	ATerm integer = (ATerm) ATmakeInt(1);
 	
 	runTest(integer, intType);
 }
 
 static void testReal(){
-	A2PType rType = realType();
+	A2PType rType = A2PrealType();
 	ATerm real = (ATerm) ATmakeReal(1.5);
 	
 	runTest(real, rType);
 }
 
 static void testString(){
-	A2PType sType = stringType();
+	A2PType sType = A2PstringType();
 	ATerm string = ATreadFromString("\"string\"");
 	
 	runTest(string, sType);
@@ -58,9 +58,9 @@ static void testString(){
 
 static void testConstructor(){
 	A2PType emptyTypeArray[1] = {NULL};
-	A2PType adtType = abstractDataType("adt");
-	constructorType("cons", adtType, emptyTypeArray);
-	constructorType("dons", adtType, emptyTypeArray);
+	A2PType adtType = A2PabstractDataType("adt");
+	A2PconstructorType("cons", adtType, emptyTypeArray);
+	A2PconstructorType("dons", adtType, emptyTypeArray);
 	
 	ATerm cons = ATreadFromString("cons");
 	ATerm dons = ATreadFromString("dons");
@@ -71,11 +71,11 @@ static void testConstructor(){
 
 static void testLabeledConstructor(){
         A2PType emptyTypeArray[1] = {NULL};
-	A2PType adtType = abstractDataType("Boolean");
-	A2PType trueCons = constructorType("true", adtType, emptyTypeArray);
+	A2PType adtType = A2PabstractDataType("Boolean");
+	A2PType trueCons = A2PconstructorType("true", adtType, emptyTypeArray);
 	A2PType andChildren[2] = {trueCons, NULL};
 	char *andLabels[2] = {"trueValue", NULL};
-	A2PType andCons = constructorTypeWithLabels("and", adtType, andChildren, andLabels);
+	A2PType andCons = A2PconstructorTypeWithLabels("and", adtType, andChildren, andLabels);
 	
 	ATerm and = ATreadFromString("and(true)");
 	
@@ -84,32 +84,32 @@ static void testLabeledConstructor(){
 
 static void testParameterizedConstructor(){
 	A2PType emptyTypeArray[1] = {NULL};
-	A2PType booleanADTType = abstractDataType("Boolean");
+	A2PType booleanADTType = A2PabstractDataType("Boolean");
 	A2PType operatorChildren[3] = {booleanADTType, booleanADTType, NULL};
 	
 	ATerm andTerm = ATreadFromString("and(true, false)");
 	ATerm orTerm = ATreadFromString("or(true, false)");
 	
-	constructorType("true", booleanADTType, emptyTypeArray);
-	constructorType("false", booleanADTType, emptyTypeArray);
+	A2PconstructorType("true", booleanADTType, emptyTypeArray);
+	A2PconstructorType("false", booleanADTType, emptyTypeArray);
 	
-	constructorType("and", booleanADTType, operatorChildren);
-	constructorType("or", booleanADTType, operatorChildren);
+	A2PconstructorType("and", booleanADTType, operatorChildren);
+	A2PconstructorType("or", booleanADTType, operatorChildren);
 	
 	runTest(andTerm, booleanADTType);
 	runTest(orTerm, booleanADTType);
 }
 
 static void testNativeTypeConstructor(){
-	A2PType booleanADTType = abstractDataType("Boolean");
+	A2PType booleanADTType = A2PabstractDataType("Boolean");
 	A2PType operatorChildren[3] = {booleanADTType, booleanADTType, NULL};
 	
 	ATerm andTerm = ATreadFromString("and(1, 1)");
 	
-	A2PType integerChild[2] = {integerType(), NULL};
-	A2PType trueCons = constructorType("true", booleanADTType, integerChild);
-	linkNativeTypeToADT(booleanADTType, integerType(), trueCons);
-	constructorType("and", booleanADTType, operatorChildren);
+	A2PType integerChild[2] = {A2PintegerType(), NULL};
+	A2PType trueCons = A2PconstructorType("true", booleanADTType, integerChild);
+	A2PlinkNativeTypeToADT(booleanADTType, A2PintegerType(), trueCons);
+	A2PconstructorType("and", booleanADTType, operatorChildren);
 	
 	runTest(andTerm, booleanADTType);
 }
@@ -117,13 +117,13 @@ static void testNativeTypeConstructor(){
 static void testUntyped(){
 	ATerm untypedTerm = ATreadFromString("and(true, false)");
 	
-	runTest(untypedTerm, nodeType());
+	runTest(untypedTerm, A2PnodeType());
 }
 
 static void testSharing(){
 	ATerm sharedTerm = ATreadFromString("test(bla, bla)");
 	
-	runTest(sharedTerm, nodeType());
+	runTest(sharedTerm, A2PnodeType());
 }
 
 int main(int argc, char **argv){
