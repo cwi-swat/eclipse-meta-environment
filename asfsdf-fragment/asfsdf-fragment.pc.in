@@ -1,5 +1,5 @@
 prefix=@prefix@
-Maintainers=jurgenv@cwi.nl,storm@cwi.nl
+Maintainers=jurgenv@cwi.nl,storm@cwi.nl,lankamp@cwi.nl
 
 Name: asfsdf-fragment
 Version: 0.1
