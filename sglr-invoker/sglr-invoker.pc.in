@@ -2,7 +2,7 @@ prefix=@prefix@
 Maintainers=lankamp@cwi.nl
 Name: sglr-invoker
 Description: 
-Version: 0.1
+Version: 0.1.2
 EclipseRequires=org.eclipse.imp.pdb.values
 Requires: sglr,aterm,error-support,pt-support,ptable-support,aterm-to-pbf
 JarFile=sglr-invoker.jar
