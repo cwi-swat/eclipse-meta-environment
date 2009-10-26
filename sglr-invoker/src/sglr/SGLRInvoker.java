@@ -8,6 +8,12 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+/**
+ * Default SGLR invoker.
+ * Invokes SGLR through JNI and returns the result in PDB binary format.
+ * 
+ * @author Arnold Lankamp
+ */
 public class SGLRInvoker implements Runnable, IInvoker{
 	private final static String NO_INPUT_PATH = "_noPath_";
 	

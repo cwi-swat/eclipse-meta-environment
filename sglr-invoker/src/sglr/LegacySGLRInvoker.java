@@ -9,6 +9,12 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+/**
+ * Legacy version of the SGLR invoker.
+ * Invokes SGLR 'on the command line' and returns the parse result in plain ATerm text format.
+ * 
+ * @author Arnold Lankamp
+ */
 public class LegacySGLRInvoker implements IInvoker{
 	private volatile static String binaryPath = null;
 	
