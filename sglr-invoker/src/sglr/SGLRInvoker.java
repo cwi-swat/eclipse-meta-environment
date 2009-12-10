@@ -53,18 +53,7 @@ public class SGLRInvoker implements Runnable, IInvoker{
 	public static void loadLibraries(){
 		if(baseLibraryPath == null){ // Look in the library path to find the libraries.
 			try{
-		        System.loadLibrary("ATerm");
-		        System.loadLibrary("ConfigAPI");
-		        System.loadLibrary("ErrorAPI");
-		        System.loadLibrary("LocationAPI");
-		        System.loadLibrary("ATB");
-		        System.loadLibrary("mept");
-		        System.loadLibrary("PTMEPT");
-		        System.loadLibrary("ptable");
-		        System.loadLibrary("logging");
-		        System.loadLibrary("statistics");
-		        System.loadLibrary("sglr");
-		        System.loadLibrary("SGLRInvoker");
+		        System.loadLibrary("CompleteSGLR");
 		    }catch(UnsatisfiedLinkError ule){
 		        throw new RuntimeException(ule);
 		    }
