@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-/* NOTE: This stuff is not declared in the 'proper' order, so old compilers may have problems with it (so people should upgrade them and stop using ancient junk). */
+/* NOTE: This stuff is not declared in the 'proper' order, so old compilers may have problems with it */
 A2PType generateParseTreeSpec(){
 	A2PType emptyTypeArray[1] = {NULL};
 	
