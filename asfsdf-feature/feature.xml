@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="asfsdf_feature"
+      label="Asfsdf_feature Feature"
+      version="0.0.1"
+      provider-name="jurgen@vinju.org">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="com.ibm.wala.shrike"/>
+      <import plugin="lpg.runtime"/>
+      <import plugin="org.eclipse.imp.pdb"/>
+      <import plugin="org.eclipse.imp.pdb.ui"/>
+      <import plugin="org.eclipse.imp.runtime"/>
+      <import plugin="org.eclipse.imp.smapi"/>
+      <import plugin="org.eclipse.imp.smapifier"/>
+      <import plugin="org.eclipse.imp.xform"/>
+   </requires>
+
+   <plugin
+         id="asf_library"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="asfsdf_fragment_linux_x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="asfsdf_meta_eclipse_imp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="asfsdf_plugin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="aterm_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="config_support_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="error_support_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="graph_support_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="io_support_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="JJTraveler"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="meta_eclipse_imp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="module_support_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="pt_support_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="rstore_support_java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="sdf_library"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="shared_objects"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="toolbus_ng"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="toolbus_ng_eclipse_imp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="vis_plugin_graph_imp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>
