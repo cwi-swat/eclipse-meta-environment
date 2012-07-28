@@ -1,0 +1,13 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=jurgenv@cwi.nl
+
+Name: rstore-support
+Version: 0.2
+Description: API's for Rstores.
+Requires: aterm,toolbuslib
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lRStoreAPI
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/rstore-support/lib -lRStoreAPI
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/rstore-support/lib
+ToolBusFlags=-I${prefix}/share/rstore-support
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:

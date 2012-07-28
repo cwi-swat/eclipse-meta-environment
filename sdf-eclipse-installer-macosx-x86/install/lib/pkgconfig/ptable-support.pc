@@ -1,0 +1,11 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=jurgenv@cwi.nl,economop@cwi.nl
+Name: ptable-support
+Version: 1.1
+Description:
+Requires: aterm,pt-support
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lptable 
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/ptable-support/lib -lptable
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/ptable-support/lib
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:

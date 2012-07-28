@@ -1,0 +1,12 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=jurgenv@cwi.nl
+
+Name: asc-support
+Version: 2.5
+Description:
+Requires: asf-support,aterm,error-support,pt-support,sglr,tide-support,toolbuslib,c-library,config-support,ptable-support,rstore-support
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lasc-support-me
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/asc-support/lib -lasc-support-me
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/asc-support/lib
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:

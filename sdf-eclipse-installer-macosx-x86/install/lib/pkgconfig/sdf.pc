@@ -1,0 +1,8 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=economop@cwi.nl,jurgenv@cwi.nl
+Name: sdf
+Version: 2.6.1
+Description:
+Requires: pgen,sglr,pandora
+ToolBusFlags=
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:

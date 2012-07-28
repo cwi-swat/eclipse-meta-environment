@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sdf_eclipse_installer_macosx_x86 Fragment
+Bundle-SymbolicName: sdf_eclipse_installer_macosx_x86
+Bundle-Version: 1.0.10
+Bundle-Vendor: jurgenv@cwi.nl
+Fragment-Host: sdf_eclipse_installer;bundle-version="1.0.10"
+Bundle-Localization: plugin
+Eclipse-PlatformFilter: (& (osgi.os=macosx) (osgi.arch=x86))

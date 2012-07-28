@@ -1,0 +1,13 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=economop@cwi.nl,jurgenv@cwi.nl
+Name: sdf-support
+Version: 2.4
+Description:
+Requires: aterm,error-support,pt-support,toolbuslib
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lSDFME -lSDF2PT -lPT2SDF
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/sdf-support/lib -lSDFME -lSDF2PT -lPT2SDF
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/sdf-support/lib
+ToolBusFlags=-I${prefix}/share/sdf-support
+
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:

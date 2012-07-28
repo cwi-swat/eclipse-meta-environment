@@ -1,0 +1,11 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=jurgenv@cwi.nl,economop@cwi.nl
+Name: c-library
+Version: 1.1
+Description:
+Requires: aterm
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -llogging -lstatistics 
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/c-library/logging -llogging -L/Users/tvdstorm/Desktop/GLT/build/c-library/statistics -lstatistics
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/c-library/logging -I/Users/tvdstorm/Desktop/GLT/build/c-library/statistics
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:

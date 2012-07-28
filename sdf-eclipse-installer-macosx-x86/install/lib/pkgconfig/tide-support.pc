@@ -1,0 +1,13 @@
+prefix=/Users/tvdstorm/Desktop/GLT/install
+Maintainers=jurgenv@cwi.nl
+Name: tide-support
+Version: 1.3
+Description:
+Requires: aterm,toolbuslib
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -ltide-adapter
+#uninstalled Libs: -L/Users/tvdstorm/Desktop/GLT/build/tide-support/lib -ltide-adapter
+#uninstalled Cflags: -I/Users/tvdstorm/Desktop/GLT/build/tide-support/lib
+ToolBusFlags=-I${prefix}/share/tide-support
+
+PkgConfigPath=/Users/tvdstorm/Desktop/GLT/install/lib/pkgconfig:
