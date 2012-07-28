@@ -1,0 +1,11 @@
+prefix=/tmp/sisyphus-builds/install/c-library/23709/59536
+Maintainers=jurgenv@cwi.nl,economop@cwi.nl
+Name: c-library
+Version: 1.0
+Description:
+Requires: aterm
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -llogging -lstatistics 
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/c-library/logging -llogging -L/tmp/sisyphus-builds/build/c-library/statistics -lstatistics
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/c-library/logging -I/tmp/sisyphus-builds/build/c-library/statistics
+PkgConfigPath=/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

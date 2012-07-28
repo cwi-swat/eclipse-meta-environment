@@ -1,0 +1,27 @@
+/* $Id: unparser.isrc 23399 2007-08-22 12:12:27Z jurgenv $ */
+
+#ifndef UNPARSER_IDEF
+#define UNPARSER_IDEF
+
+tool unparser is { command = "/tmp/sisyphus-builds/install/pt-support/25048/59533/bin/unparsePT" }
+
+process Unparser is
+let
+  UNP : unparser,
+  Tree : term,
+  Text : str
+in
+  (
+    rec-msg(unparse(Tree?)).
+    execute(unparser, UNP?).
+    snd-eval(UNP, unparse-asfix(Tree)).
+    rec-value(UNP, unparsed-text(Text?)).
+    snd-terminate(UNP, "done") .
+    snd-msg(unparsed-text(Text))
+  ) *
+  delta
+endlet
+
+toolbus(Unparser)
+
+#endif

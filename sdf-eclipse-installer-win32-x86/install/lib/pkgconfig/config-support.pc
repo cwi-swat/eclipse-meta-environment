@@ -1,0 +1,12 @@
+prefix=/tmp/sisyphus-builds/install/config-support/25684/59537
+Maintainers=lankamp@cwi.nl
+Name: config-support
+Version: 1.1.1
+Description:
+Requires: aterm
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lConfigAPI
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/config-support/lib -lConfigAPI
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/config-support/lib
+Jars=${prefix}/share/configapi.jar
+PkgConfigPath=/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

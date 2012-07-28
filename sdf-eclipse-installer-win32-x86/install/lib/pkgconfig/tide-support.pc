@@ -1,0 +1,13 @@
+prefix=/tmp/sisyphus-builds/install/tide-support/25410/59540
+Maintainers=jurgenv@cwi.nl
+Name: tide-support
+Version: 1.2.1
+Description:
+Requires: aterm,toolbuslib
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -ltide-adapter
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/tide-support/lib -ltide-adapter
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/tide-support/lib
+ToolBusFlags=-I${prefix}/share/tide-support
+
+PkgConfigPath=/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

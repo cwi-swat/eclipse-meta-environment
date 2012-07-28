@@ -1,0 +1,12 @@
+prefix=/tmp/sisyphus-builds/install/toolbuslib/25676/59531
+Maintainers=paulk@cwi.nl,jurgenv@cwi.nl
+
+Name: toolbuslib
+Description: ToolBus adapter library
+Version: 0.9.1
+Libs: -L${prefix}/lib -lATB 
+Cflags: -I${prefix}/include
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/toolbuslib/src -lATB 
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/toolbuslib/src
+Requires: aterm
+PkgConfigPath=/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

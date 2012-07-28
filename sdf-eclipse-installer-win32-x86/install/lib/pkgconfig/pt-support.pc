@@ -1,0 +1,13 @@
+prefix=/tmp/sisyphus-builds/install/pt-support/25048/59533
+Maintainers=jurgenv@cwi.nl,economop@cwi.nl
+Name: pt-support
+Version: 2.2
+Description:
+Requires: aterm,error-support,toolbuslib
+Cflags: -I${prefix}/include -DFAST_API
+Libs: -L${prefix}/lib -lmept -lPTMEPT
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/pt-support/libmept -L/tmp/sisyphus-builds/build/pt-support/libptmept -lmept -lPTMEPT
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/pt-support/libmept -I/tmp/sisyphus-builds/build/pt-support/libptmept
+ToolBusFlags=-I${prefix}/share/pt-support
+
+PkgConfigPath=/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/error-support/25691/59532/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:

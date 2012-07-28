@@ -1,0 +1,13 @@
+prefix=/tmp/sisyphus-builds/install/error-support/25691/59532
+Maintainers=jurgenv@cwi.nl,lankamp@cwi.nl
+Name: error-support
+Description: Standard Error Representation
+Version: 1.4.5
+Libs: -L${prefix}/lib -lErrorAPI -lLocationAPI
+Cflags: -I${prefix}/include
+#uninstalled Libs: -L/tmp/sisyphus-builds/build/error-support/lib -lErrorAPI -lLocationAPI
+#uninstalled Cflags: -I/tmp/sisyphus-builds/build/error-support/lib
+Requires: aterm,toolbuslib
+Jars=${prefix}/share/error-support/errorapi.jar:${prefix}/share/error-support/locationapi.jar
+ToolBusFlags=-I${prefix}/share/error-support
+PkgConfigPath=/tmp/sisyphus-builds/install/toolbuslib/25676/59531/lib/pkgconfig:/tmp/sisyphus-builds/install/aterm/25525/59530/lib/pkgconfig:
