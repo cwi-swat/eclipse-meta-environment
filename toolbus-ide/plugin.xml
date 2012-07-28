@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="tb,idef,tb.src,idef.src,isrc"
+            description="ToolBus scripting language"
+            language="tscript">
+      </language>
+   </extension>
+   <extension
+         point="org.eclipse.imp.runtime.parser">
+      <parser
+            class="toolbus_ide.editor.ParseController"
+            language="tscript">
+      </parser>
+   </extension>
+   <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="toolbus_ide.editor.TokenColorer"
+            language="tscript">
+      </tokenColorer>
+   </extension>
+   <extension
+         id="builder"
+         name="ToolBus builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="toolbus_ide.Builder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="nature"
+         name="ToolBus Nature"
+         point="org.eclipse.core.resources.natures">
+      <builder
+            id="toolbus_ide.builder">
+      </builder>
+      <runtime>
+         <run
+               class="toolbus_ide.ToolBusNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         id="builder.problem"
+         name="ToolBus Error"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="toolbus_ide.enablenature"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="toolbus_ide.EnableBuilder"
+               id="toolbus_ide.enableBuilderAction"
+               label="Enable ToolBus builder">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
