@@ -1,0 +1,92 @@
+#ifndef __TERM__UTILS__
+#define __TERM__UTILS__
+
+#include <undefined.h>
+#include <term-namespace.h>
+#include <sdf-namespace.h>
+#include <cache-utils.tb>
+#include <attribute-changed-event.tb>
+#include <module-utils.tb>
+#include <sdf-utils.tb>
+#include <tree2relation.idef>
+
+#define NO_NONTERMINAL ""
+#define TERM_TREE_CACHE "term-annotated-tree"
+
+process GetTermParseTable(SdfModuleId: str, Table: term?) is
+    GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
+
+process GetTermParsetree(SdfModuleId: str, Path: str, Result: term?) is
+let
+  AmbPid: int,
+  ParseTable: term,
+  Pid: int,
+  Text: str,
+  Type: str,
+  Tree: term
+in
+  snd-msg(tm-request-transaction(term-parsing))
+  .
+    Type := TERM_NAMESPACE
+    . GetTermParseTable(SdfModuleId, ParseTable?)
+    .
+    if not-equal(ParseTable, UNDEFINED) then
+      ReadText(Path, Text?)
+      .
+      if not-equal(Text, "") then
+        create(ParseTreeHandler(SdfModuleId, Path), Pid?)
+	    . RemoveAmbiguitySummary(Path)
+        . ParseText(Pid, Text, ParseTable, NO_NONTERMINAL, off)
+        .
+        (
+          rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
+	      . create(AmbiguityHandler(Tree, Path), AmbPid?)
+          . AnnotateTree(Tree, Path, Result?)
+        +
+          rec-msg(parse-handler-done(Pid))
+          . Result := UNDEFINED
+        )  
+      else
+        Result := UNDEFINED
+      fi
+    else
+      Result := UNDEFINED
+    fi
+  . snd-msg(tm-end-transaction(term-parsing))
+endlet
+
+process TermToSdfModuleId (ModuleId : str, SdfModuleId : str?) is
+let
+  Language : str
+in
+  MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
+  . 
+  if not-equal(Language, UNDEFINED) then
+    MM-GetModuleIdByAttribute(SDF_NAMESPACE, "name", Language, SdfModuleId?)
+  else
+    SdfModuleId := UNDEFINED
+  fi
+endlet
+
+process ShowTree(Path: str, LayoutOn: bool, LeafsOn: bool, SharingOn: bool) is
+let
+  Tree : term,
+  TermModuleId: str,
+  SdfModuleId: str,
+  RStore: term
+in
+  GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+  . TermToSdfModuleId(TermModuleId, SdfModuleId?)
+  . GetTermParsetree(SdfModuleId, Path, Tree?)
+  .
+  if not-equal(Tree, UNDEFINED) then
+    snd-msg(gs-tree-to-relation(Tree, LayoutOn, LeafsOn, SharingOn))
+    . rec-msg(gs-relation(RStore?))
+    . snd-msg(vt-show-graph(Path, RStore))
+  else
+    printf("Error: could not get parse tree for %s\n", Path)
+  fi
+endlet
+
+
+#endif /* __TERM__UTILS__ */

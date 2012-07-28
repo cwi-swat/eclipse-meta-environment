@@ -1,0 +1,34 @@
+#ifndef __SDF_EDITOR_ACTIONS__
+#define __SDF_EDITOR_ACTIONS__
+
+#include <sdf-namespace.h>
+#include <module-manager.tb>
+#include <module-utils.tb>
+#include <sdf-pretty.tb>
+#include <parse-utils.tb>
+#include <pretty-print-utils.tb>
+#include <extract-sdf.idef>
+
+process PrettyPrintSdfAction(Filename: str, Language: str) is
+let
+  PrettyTree: term,
+  PrettyText : str,
+  ModuleTree : term,
+  ModuleId : str
+in
+  GetModule(SDF_NAMESPACE, Filename, ModuleId?) 
+  . GetSDFParsetree(ModuleId, ModuleTree?)
+  . PrettyPrintSdf(Filename, ModuleTree, PrettyTree?)
+  . UnParseTerm(PrettyTree, PrettyText?)  
+  . snd-msg(et-edit-term(Filename, SDF_NAMESPACE, PrettyText))
+endlet
+
+process ExtractSDFAction(Filename: str, Language : str) is
+let
+  ModuleId : str
+in
+  GetModule(SDF_NAMESPACE, Filename, ModuleId?) 
+  . SDFExtraction(ModuleId)
+endlet
+
+#endif /* __SDF_EDITOR_ACTIONS__ */

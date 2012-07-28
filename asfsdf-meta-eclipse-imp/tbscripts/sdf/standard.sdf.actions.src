@@ -1,0 +1,6 @@
+configuration([
+  import("./meta.actions"),
+  editor("StartSDFEditor","languages/sdf2/syntax/Sdf2",".sdf"),
+  library-path("SDF Grammar Library","platform:/plugin/sdf_library_VERSION/install/share/sdf-library/library"),
+  library-path("ASF+SDF Library","platform:/plugin/asf_library_VERSION/install/share/asf-library/library")
+])

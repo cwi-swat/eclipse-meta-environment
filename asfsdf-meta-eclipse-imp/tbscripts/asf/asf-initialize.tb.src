@@ -1,0 +1,21 @@
+#ifndef __ASF_INITIALIZE__
+#define __ASF_INITIALIZE__
+
+process AddAsfProperties is
+let
+  Contents: str,
+  Error: term
+in
+  snd-msg(ioj-read-file("platform:/plugin/asfsdf_meta_eclipse_imp_1.0/tbscripts/asf/standard.asfsdf.actions")) .
+  (
+    rec-msg(ioj-file-contents(Contents?))
+    . snd-msg(cm-add-system-properties(Contents))
+  +
+    rec-msg(ioj-error-reading(Error?))
+    . printf("AddAsfProperties: %t\n", Error)
+  )
+endlet
+
+toolbus(AddAsfProperties)
+
+#endif /* __ASF_INITIALIZE__ */

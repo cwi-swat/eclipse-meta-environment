@@ -1,0 +1,159 @@
+#ifndef __ASF_LISTENERS__
+#define __ASF_LISTENERS__
+
+#include <asf-namespace.h>
+#include <asf-utils.tb>
+#include <module-utils.tb>
+
+process CleanASFForNewSDFListener is
+let
+  Event: attribute-changed-event,
+  ModuleId: str,
+  Tree: term,
+  Result: term,
+  Parents: list
+in
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,complete)
+  .
+  (
+    rec-note(mm-attribute-changed(Event?))
+    . ACE-GetModuleId(Event, ModuleId?)
+    . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", dirty)
+  )
+  *
+  delta
+endlet
+
+toolbus(CleanASFForNewSDFListener)
+
+process ASFModuleRegistrar is
+let
+  Event: attribute-changed-event,
+  ModuleId: str,
+  NewPath: term,
+  Idle: term
+in
+  Idle := no
+  . MM-Subscribe-Attribute-Changed(<str>,ASF_NAMESPACE,"status",<term>, created) 
+  .
+  (
+    rec-note(mm-attribute-changed(Event?))
+    . ACE-GetModuleId(Event, ModuleId?)
+    . RegisterASFModule(ModuleId)
+  )
+  *
+  delta
+endlet
+
+toolbus(ASFModuleRegistrar)
+
+process ASFSDFSyntaxChecker is
+let
+  Event: attribute-changed-event,
+  ModuleId: str,
+  Tree: term,
+  Result: term,
+  Parents: list
+in
+  MM-Subscribe-Attribute-Changed(<str>,SDF_NAMESPACE,"status",<term>,complete)
+  .
+  (
+    rec-note(mm-attribute-changed(Event?))
+    . ACE-GetModuleId(Event, ModuleId?)
+    .  CheckASFSDFSyntax(ModuleId)
+  )
+  *
+  delta
+endlet
+
+toolbus(ASFSDFSyntaxChecker)
+
+process ASFModuleChecker is
+let
+  Event: attribute-changed-event,
+  ModuleId: str,
+  NewPath: term,
+  Tree: term
+in
+  MM-Subscribe-Attribute-Changed(<str>,ASF_NAMESPACE,"status",dirty,parsed)  
+  .
+  (
+    rec-note(mm-attribute-changed(Event?))
+    . ACE-GetModuleId(Event, ModuleId?)
+    . CheckASFModule(ModuleId)
+  )
+  *
+  delta
+endlet
+
+toolbus(ASFModuleChecker)
+
+process ASFAutoBuild is
+let
+  Event: attribute-changed-event,
+  ModuleId: str,
+  SdfModuleId : str,
+  Tree: term
+in
+  MM-Subscribe-Attribute-Changed(<str>,ASF_NAMESPACE,"status",<term>, clean)
+  .
+  (
+  
+    rec-note(mm-attribute-changed(Event?))
+    . ACE-GetModuleId(Event, ModuleId?)
+    . printf("listener: parsing ASF file for module id %t \n", ModuleId)
+    . GetASFParseTree(ModuleId, Tree?)
+    .
+    if not-equal(Tree, UNDEFINED) then
+       printf("ASF parsed\n") .
+       MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", parsed)
+    else
+       MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", error)
+    fi
+    . Tree := UNDEFINED
+  )
+  *
+  delta
+endlet 
+
+toolbus(ASFAutoBuild)
+
+process ASFEditorParser is
+let
+  Filename : str,
+  Contents : str,
+  Table : term,
+  Tree : term,
+  ErrorSummary : term,
+  ParseResult : term,
+  Annotated : term,
+  ModuleId : str,
+  SdfModuleId : str
+in
+  (
+    rec-msg(pc-parse-event(ASF_NAMESPACE, Filename?, Contents?))
+    . GetASFModuleId(Filename, ModuleId?)
+    . Asf2SdfId(ModuleId, SdfModuleId?)
+    . printf("received pc-parse-event for asf\n")
+    . GetParseTable(SdfModuleId, ASF_NAMESPACE, Table?)
+    .
+    if not-equal(Table, UNDEFINED) then
+      snd-msg(sglr-parse(Contents, Table, ASF_TOPSORT, on))
+      .
+      (
+        rec-msg(sglr-parse-tree(ParseResult?, ErrorSummary?))
+        . AnnotateTree(ParseResult, Filename, Annotated?)
+        . snd-msg(pc-parse-result(ASF_NAMESPACE, Filename, ParseResult, ErrorSummary))
+      +
+        rec-msg(sglr-parse-error(ErrorSummary?))
+        . snd-msg(pc-parse-error(ASF_NAMESPACE, Filename, ErrorSummary))
+      )
+    else
+       snd-msg(pc-parse-error(ASF_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
+    fi
+  ) * delta
+endlet
+
+toolbus(ASFEditorParser)
+
+#endif /* __ASF_LISTENERS__ */

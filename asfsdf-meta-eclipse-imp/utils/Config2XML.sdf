@@ -1,0 +1,37 @@
+module Config2XML
+
+imports basic/Configuration
+imports basic/Whitespace
+imports basic/Comments
+imports basic/Strings
+imports basic/Identifiers
+imports languages/aterm/syntax/ATerms
+imports languages/xml/syntax/XML
+
+exports
+
+context-free syntax
+
+  "@" StrCon -> AttValue
+  IdCon -> AttValue
+
+  config2xml ( Configuration ) -> Element
+  visit-properties ( Configuration , Content* ) -> Content* {traversal(accu, top-down, break)}
+  visit-properties ( Property , Content* ) -> Content* {traversal(accu, top-down, break)}
+  generate-editor-menu ( IdCon , {Item ","}*, ShortCut?, StrCon , StrCon) -> Content*
+  generate-editor-submenu ( {Item ","}*, ShortCut?, StrCon , StrCon) -> Content*
+  generate-editor-menuaction ( Item, ShortCut?, StrCon , StrCon) -> Content*
+
+variables
+  "$Property"[0-9]* -> Property
+  "$Property*"[0-9]* -> {Property ","}*
+  "$Configuration"[0-9]* -> Configuration
+  "$Id"[0-9]* -> IdCon
+  "$Str"[0-9]* -> StrCon
+  "$Item"[0-9]* -> Item
+  "$Item*"[0-9]* -> {Item ","}*
+  "$ShortCut"[0-9]* -> ShortCut
+  "$OptionalShortCut"[0-9]* -> ShortCut?
+  "$Element"[0-9]* -> Element
+  "$Content*"[0-9]* -> Content*
+  "$ActionDescription+"[0-9]* -> {ActionDescription ","}+

@@ -1,0 +1,501 @@
+#ifndef __ASF_UTILS__
+#define __ASF_UTILS__
+
+#include <parsetable-utils.tb>
+#include <asf-namespace.h>
+#include <sdf-namespace.h>
+#include <term-namespace.h>
+#include <error-support.idef>
+#include <sdf-renaming.idef>
+#include <asfoperations.idef>
+#include <asfe.idef>
+#include <asfc.idef>
+#include <asfchecker.idef>
+#include <term-utils.tb>
+#include <sdf-utils.tb>  
+#include <asfsdfchecker.idef>
+#include <cache-utils.tb>
+#include <attribute-changed-event.tb>
+#include <module-utils.tb>
+
+toolbus(ClearCacheHandler(ASF_NAMESPACE, 
+                           [".asf.nrm", ".asf.pt", ".eqs"]))
+                           
+
+process AsfPath2SdfPath(AsfPath : str, SdfPath : str?) is
+  ReplaceExtension(AsfPath, SDF_EXTENSION, SdfPath?)
+  
+process SdfPath2AsfPath(SdfPath : str, AsfPath : str?) is
+  ReplaceExtension(SdfPath, ASF_EXTENSION, AsfPath?)
+  
+/* RegisterASFModule forges the link between an ASF and an SDF module.
+ * It reuses the same module Id, and constructs an ASF path from
+ * a SDF path.
+ */
+process RegisterASFModule(ModuleId: str) is
+let
+  AsfPath: str,
+  Modulename: str,
+  SdfPath: str,
+  SdfModuleId: str
+in
+  GetModulePath(ModuleId, ASF_NAMESPACE, AsfPath?)
+  . printf("Asf path: %t\n", AsfPath)
+  . AsfPath2SdfPath(AsfPath, SdfPath?)
+  . printf("Sdf path: %t\n", SdfPath)
+  . GetOrCreateModule(SDF_NAMESPACE, SdfPath, SdfModuleId?)
+  . MM-SetAttribute(SdfModuleId, ASF_NAMESPACE, "path", path(AsfPath))
+  . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "path", path(AsfPath))
+  . MM-GetAttribute(SdfModuleId, SDF_NAMESPACE, "name", Modulename?)
+  . MM-SetAttribute(SdfModuleId, ASF_NAMESPACE, "name", Modulename)
+  . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "sdf-id", SdfModuleId)
+  . MM-SetAttribute(SdfModuleId, ASF_NAMESPACE, "sdf-id", SdfModuleId)
+  . printf("registered sdf-id for %t (%t)\n", ModuleId, SdfModuleId)
+  . MM-SetAttribute(SdfModuleId, ASF_NAMESPACE, "status", dirty)
+  . MM-SetAttribute(ModuleId, SDF_NAMESPACE, "status", linked)
+endlet
+
+
+
+process Asf2SdfId(AsfModuleId: str, SdfModuleId: str?) is
+let
+  AsfPath : str,
+  SdfPath : str
+in
+  MM-GetAttribute(AsfModuleId, ASF_NAMESPACE, "sdf-id", SdfModuleId?)
+  .
+  if equal(SdfModuleId, UNDEFINED) then
+     GetModulePath(AsfModuleId, ASF_NAMESPACE, AsfPath?)
+     . AsfPath2SdfPath(AsfPath, SdfPath?)
+     . GetOrCreateModule(SDF_NAMESPACE, SdfPath, SdfModuleId?)
+  else
+    tau
+  fi
+endlet
+
+process Sdf2AsfId(SdfModuleId: str, AsfModuleId: str?) is
+let
+  AsfPath : str,
+  SdfPath : str
+in
+  MM-GetAttribute(SdfModuleId, ASF_NAMESPACE, "asf-id", AsfModuleId?)
+  .
+  if equal(AsfModuleId, UNDEFINED) then
+     GetModulePath(SdfModuleId, SDF_NAMESPACE, SdfPath?)
+     . SdfPath2AsfPath(SdfPath, AsfPath?)
+     . GetOrCreateModule(ASF_NAMESPACE, AsfPath, AsfModuleId?)
+  else
+    tau
+  fi
+endlet
+  
+process GetASFModuleId(Filename : str, ModuleId : str?) is
+  GetOrCreateModule(ASF_NAMESPACE, Filename, ModuleId?)
+
+process OpenASFModule(ModuleId: str) is
+let
+  AsfPath: str,
+  Editable: bool,
+  LibraryModule: bool
+in
+  GetModulePath(ModuleId, ASF_NAMESPACE, AsfPath?)
+  . snd-msg(ioj-exists-file(AsfPath))
+  .
+  (
+    rec-msg(ioj-file-exists)
+    . IsLibraryModule(ModuleId, LibraryModule?)
+    . Editable := not(LibraryModule)
+    . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "editable", Editable)
+    . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", dirty)
+  +
+    rec-msg(ioj-file-not-exists)
+    . MM-SetAttribute(ModuleId, ASF_NAMESPACE, "status", unavailable)
+  )
+endlet
+
+process CheckASFSDFSyntax(ModuleId : str) is
+let
+  Syntax: term,
+  Feedback: term,
+  Modulename: str,
+  Summary: summary,
+  Errors: list
+in
+  AddJob("Checking syntax definition") 
+  . snd-msg(tm-request-transaction(syntax-definition))
+  . GetSyntaxDefinition(ModuleId, Syntax?)
+  . snd-msg(tm-end-transaction(syntax-definition))
+  .
+  if not-equal(Syntax, UNDEFINED) then
+    MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+    . snd-msg(check-asfsdf(Syntax, Modulename)) 
+    . rec-msg(checked-asfsdf(Feedback?)) 
+    . snd-msg(convert-feedback(Feedback)) 
+    . rec-msg(converted-feedback(Summary?)) 
+    . ReplaceSummaryInfo(Summary?, "asfsdf-checker", Modulename)
+    . RemoveSummary("asfsdf-checker", Modulename)
+    . DisplaySummary(Summary)
+    . Syntax := UNDEFINED
+  else
+    tau
+  fi
+  . JobDone("Checking syntax definition") 
+endlet
+
+process CheckASFModule(AsfModuleId: str) is
+let
+  Summary : summary,
+  Errors: list,
+  Modulename: str,
+  Tree: term,
+  SdfModuleId : str,
+  Path : str
+in
+  GetASFParseTree(AsfModuleId, Tree?)
+  .
+  if not-equal(Tree, UNDEFINED) then
+    snd-msg(check-asf(Tree))
+    . rec-msg(messages(Errors?))
+    . GetModulePath(AsfModuleId, ASF_NAMESPACE, Path?)
+    . RemoveSummary("asf-checker", Path)
+    . snd-msg(es-make-summary("asf-checker", Path, Errors))
+    . rec-msg(es-summary(Summary?))
+    . DisplaySummary(Summary)
+  else
+    tau
+  fi
+endlet
+
+process GetASFParseTree(AsfModuleId: str, Result: term?) is
+let
+  AmbPid: int,
+  ParseTable: term,
+  SdfPath: str,
+  AsfPath: str,
+  SdfModuleId : str,
+  Pid: int,
+  Text: str,
+  Type: str,
+  Tree: term
+in
+  printf("GetASFParseTree: %t\n", AsfModuleId)
+  . snd-msg(tm-request-transaction(asf-parsing))
+  . GetModulePath(AsfModuleId, ASF_NAMESPACE, AsfPath?)
+  . GetCachedValue(".asf.pt", AsfPath, Tree?)
+  .
+  if and(equal(Tree, UNDEFINED), not-equal(AsfPath, "")) then
+    printf("GetASFParseTree: not cached\n")
+    . ReadText(AsfPath, Text?)
+    .
+    if not-equal(Text, "") then
+      printf("Getting parse table %t %t\n", SdfModuleId, Type)
+      . Asf2SdfId(AsfModuleId, SdfModuleId?)
+      . GetParseTable(SdfModuleId, ASF_NAMESPACE, ParseTable?)
+      .
+      if not-equal(ParseTable, UNDEFINED) then
+        create(ParseTreeHandler(SdfModuleId, AsfPath), Pid?)
+	    . RemoveAmbiguitySummary(AsfPath)
+	    . printf("ParseText for ASF equations: %s\n", Text)
+        . ParseText(Pid, Text, ParseTable, ASF_TOPSORT, on)
+        .
+        (
+          rec-msg(parse-handler-done(Pid, SdfModuleId, Tree?))
+	      . create(AmbiguityHandler(Tree, AsfPath), AmbPid?)
+          . AnnotateTree(Tree, AsfPath, Result?) 
+          . PutCachedValue(AsfPath, ".asf.pt", Result)
+        +
+          rec-msg(parse-handler-done(Pid))
+          . Result := UNDEFINED
+        )
+      else 
+        Result := UNDEFINED
+      fi
+    else
+      Result := UNDEFINED
+    fi
+  else
+    printf("GetASFParseTree: retrieved from cache\n")
+    . Result := Tree
+  fi 
+  . snd-msg(tm-end-transaction(asf-parsing))
+endlet
+
+process RunCompiler(Modulename: str, Table: term, Equations: term, OutputFile: str ) is
+let
+  Progress : str,
+  Id : int
+in
+  Id := process-id
+  . subscribe(asfc-progress(<term>))
+  . snd-msg(compile-module(Modulename, OutputFile, Equations, Table)) .
+  (
+    rec-note(asfc-progress(Progress?)).
+    snd-note(ui-status(endstat(Id))).
+    snd-note(ui-status(statf(Id,"Compiling %s - %s", [Modulename, Progress])))
+  )
+  *
+  rec-msg(compilation-done(Modulename))
+endlet
+
+process CompileModule(ModuleId : str, OutputFile: str) is
+let
+  Equations: term,
+  Error: str,
+  Id: term,
+  Pid: int,
+  Specification: term,
+  Table: term,
+  Modulename: str
+in
+   AddJob("Compiling")
+   . GetSpecification(ModuleId, Specification?)
+   .
+   if not-equal(Specification, UNDEFINED) then
+     GetSpecificationEquations(ModuleId, Specification, Equations?)
+     . GetParseTable(ModuleId, TERM_NAMESPACE, Table?)
+     .
+     if not-equal(Table, UNDEFINED) then
+       MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+       . RunCompiler(Modulename, Table, Equations, OutputFile)   
+     else
+       snd-note(ui-status(statf(Id, "Specification could not be compiled")))
+     fi
+   else
+     snd-note(ui-status(statf(Id, "Specification could not be compiled")))
+     . snd-note(ui-status(stop(Id)))
+   fi
+   . JobDone("Compiling")
+endlet
+
+
+
+process NormalizeEquations(ModuleId : str, Equations: term, Result : term?) is
+let
+  Tree : term,
+  SdfPath : str
+in
+  Tree := UNDEFINED
+  . GetModulePath(ModuleId, SDF_NAMESPACE, SdfPath?)
+  . GetCachedValue(".asf.nrm", SdfPath, Tree?)
+  .
+  if not-equal(Tree, UNDEFINED) then
+    Result := Tree
+  else
+    AddJob("Normalizing ...")
+    . snd-msg(ao-normalize-module(Equations)) 
+    . rec-msg(ao-normalize-module-result(Tree?))
+    . PutCachedValue(SdfPath, ".asf.nrm", Tree)
+    . Result := Tree
+    . JobDone("Normalizing ...")
+  fi 
+endlet
+
+process RenameEquations(Modulename: str, Imports : list, Equations : term,
+                        Result : term?)
+is
+  AddJob("Renaming ...")
+  . snd-msg(sr-rename-module(Imports, Modulename, Equations))
+  . rec-msg(sr-renamed-module(Result?))
+  . JobDone("Renaming ...")
+
+process GetSpecification(ModuleId: str, Result: term?) is
+let
+  Error: term,
+  CurModule: str,
+  Equations: term,
+  NormalizedEquations: term,
+  RenamedEquations: term,
+  Imports: list,
+  Modulename: str,
+  Modules: list,
+  Opened: bool,
+  Pid: int,
+  Specification: term,
+  Id : int,
+  Count : int,
+  Done : int,
+  AsfModuleId : str
+in
+  Id := process-id
+  . snd-note(ui-status(start(Id, "Get Specification")))
+  . AddJob("Collecting and normalizing specification")
+  . MM-GetAllModuleDependencies(ModuleId, Modules?)
+  . Modules := join([ModuleId], Modules)
+  . GetImportsForRenaming(ModuleId, Modules, Imports?)
+  . Count := size(Modules)
+  . Specification := []
+  . 
+  if and(not-equal(Modules, []), equal(Error, undefined)) then
+    CurModule := first(Modules)
+    . Sdf2AsfId(CurModule?,AsfModuleId?) 
+    . GetASFParseTree(AsfModuleId, Equations?)
+    .
+    if equal(Equations, UNDEFINED) then
+      tau
+    else
+    /* normalization should occur BEFORE renaming 
+     * proposal: merge the renaming and normalization tools,
+     * possibly including the get-imports tool. 
+     */
+      MM-GetAttribute(CurModule, SDF_NAMESPACE, "name", Modulename?)
+      . NormalizeEquations(CurModule, Equations, NormalizedEquations?)
+      . RenameEquations(Modulename, Imports, NormalizedEquations, RenamedEquations?)
+      . Specification := join(Specification, RenamedEquations)
+      . MM-SetAttribute(CurModule, ASF_NAMESPACE, "status", complete)
+    fi
+    . Modules := next(Modules)
+    . Done := sub(Count, size(Modules))
+  fi
+  *
+  (
+    if not-equal(Error, undefined) then
+      Result := UNDEFINED
+    fi
+  +
+    if equal(Modules, []) then
+      Result := Specification
+    fi
+  )
+  . snd-msg(ao-restart)
+  . JobDone("Collecting and normalizing specification")
+endlet
+
+process GetSpecificationEquations(ModuleId :str, Specification: term, Equations: term?) is
+let
+  AsfPath : str
+in
+  snd-msg(ao-extract-equations(Specification))
+  . rec-msg(ao-extract-equations-result(Equations?))
+  . GetModulePath(ModuleId, SDF_NAMESPACE, AsfPath?)
+  . snd-msg(res-save-build(AsfPath, ".eqs", Equations))
+endlet
+
+process GetSpecificationTests(Specification: term, Tests: term?) is
+  snd-msg(ao-extract-tests(Specification))
+  . rec-msg(ao-extract-tests-result(Tests?))
+
+process TestAsfSpecification(ModuleId: str, Debugging: term) is
+let
+  Specification : term,
+  Equations : term,
+  ParseTable : term,
+  Tests : term,
+  Id : int,
+  Pid : int,
+  Errors : list,
+  Summary: summary,
+  Modulename: str
+in
+  AddJob("Testing ASF Specification")
+  . snd-note(ui-status(stat(Id, "Retrieving equations and tests"))) 
+  . GetSpecification(ModuleId, Specification?)
+  .
+  if not-equal(Specification, UNDEFINED) then
+    GetSpecificationEquations(ModuleId, Specification, Equations?) 
+    . GetSpecificationTests(Specification, Tests?) 
+    . GetTermParseTable(ModuleId, ParseTable?)
+    . snd-note(ui-status(endstat(Id))) 
+    . snd-note(ui-status(stat(Id, "Running tests"))) 
+    . snd-msg(asfe-run-tests(Equations, Tests, ParseTable, Debugging)) 
+    .
+    (
+      rec-msg(asfe-test-results(Errors?)) 
+      . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+      . RemoveSummary("asf-tests",Modulename)
+      .
+      if equal(Errors, []) then
+        snd-msg(show-message-dialog("All tests succeeded"))
+      else
+        snd-msg(es-make-summary("asf-tests", Modulename, Errors))
+        . rec-msg(es-summary(Summary?))
+        . DisplaySummary(Summary)
+      fi
+    +
+      rec-msg(asfe-rewrite-errors(Errors?))
+      . RemoveSummary("asfe", "all")
+      . snd-msg(es-make-summary("asfe", "all", Errors)) 
+      . rec-msg(es-summary(Summary?)) 
+      . DisplaySummary(Summary)
+    ) 
+    . snd-note(ui-status(endstat(Id))) 
+  else
+    /*TODO("Summary is undefined here!\n")
+    . */DisplaySummary(Summary)
+    . snd-note(ui-status(endstat(Id))) 
+    . snd-note(ui-status(errorf("Equations incomplete for %s", [Modulename])))
+  fi
+  . JobDone("Testing ASF Specification")
+endlet
+
+process ReduceTerm(Tree: term, ModuleId: str, Debugging: term, NormalForm: term?) is
+let
+  Summary: summary,
+  Equations: term,
+  Id: int,
+  Modulename: str,
+  Pid: int,
+  Specification: term,
+  Text: str,
+  Errors: list,
+  ParseTable: term,
+  NormalFormWithoutBrackets: term
+in
+  Id := process-id
+  . GetSpecification(ModuleId, Specification?)
+  .
+  if not-equal(Specification, UNDEFINED) then
+    GetSpecificationEquations(ModuleId, Specification, Equations?)
+    . GetTermParseTable(ModuleId, ParseTable?)
+    . AddJobWithAborter("Rewriting...", asfe-abort)
+    . MM-GetAttribute(ModuleId, SDF_NAMESPACE, "name", Modulename?)
+    . snd-msg(asfe-rewrite(Modulename, Equations, ParseTable, Tree, Debugging))
+    .
+    (
+      rec-msg(asfe-rewrite-result(NormalFormWithoutBrackets?))
+      . RestoreTermBrackets(ModuleId, NormalFormWithoutBrackets, NormalForm?)
+      . RemoveSummary("asfe", "all")
+    +
+      rec-msg(asfe-rewrite-result-with-errors(NormalFormWithoutBrackets?,Errors?))
+      . RemoveSummary("asfe", "all")
+      . snd-msg(es-make-summary("asfe", "all", Errors)) 
+      . rec-msg(es-summary(Summary?)) 
+      . DisplaySummary(Summary)
+      . RestoreTermBrackets(ModuleId, NormalFormWithoutBrackets, NormalForm?)
+    +
+      rec-msg(asfe-rewrite-errors(Errors?))
+      . RemoveSummary("asfe", "all")
+      . snd-msg(es-make-summary("asfe", "all", Errors)) 
+      . rec-msg(es-summary(Summary?)) 
+      . DisplaySummary(Summary)
+    )
+    . JobDone("Rewriting...")
+  else
+    NormalForm := UNDEFINED
+  fi
+endlet
+
+process Reduce(ModuleId : str, Path : str, Debugging: term, Tree: term?) is
+let
+  Parsetree: term,
+  ResultTree: term
+in
+  GetTermParsetree(ModuleId, Path, Parsetree?)
+  . Tree := UNDEFINED
+  .
+  if not-equal(Parsetree, UNDEFINED) then 
+    ReduceTerm(Parsetree, ModuleId, Debugging, ResultTree?)
+    .
+    if not-equal(ResultTree, UNDEFINED) then
+      snd-msg(promote-posinfo-to-origin(ResultTree))
+      . rec-msg(promoted-posinfo-to-origin(ResultTree?))
+      . AnnotateTree(ResultTree, "reduct.out", Tree?)
+    else
+      tau
+    fi
+  else
+    tau
+  fi
+endlet
+
+#endif /* __ASF_UTILS__ */
+

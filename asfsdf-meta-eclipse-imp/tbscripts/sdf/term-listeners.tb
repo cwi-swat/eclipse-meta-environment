@@ -1,0 +1,96 @@
+#ifndef TERM_LISTENERS
+#define TERM_LISTENERS
+#include <term-namespace.h>
+#include <module-utils.tb>
+
+process TermCreator is
+let
+  ModuleId : str,
+  Event : attribute-changed-event
+in
+  MM-Subscribe-Attribute-Changed(<str>,TERM_NAMESPACE,"status",<term>,created)
+  .
+  ( 
+    rec-note(mm-attribute-changed(Event?))
+    . ACE-GetModuleId(Event, ModuleId?)
+    . MM-SetAttribute(ModuleId, TERM_NAMESPACE, "status", idle)
+    /*. MM-SetAttribute(ModuleId, TERM_NAMESPACE, "language", UNDEFINED)*/
+  ) * delta
+endlet
+
+toolbus(TermCreator)
+
+process TermLanguageSetter is
+let
+  Filename : str,
+  Language : str,
+  ModuleId : str,
+  SdfModuleId : str
+in
+  subscribe(tlr-set-language(<str>, <str>))
+  .
+  (
+    rec-note(tlr-set-language(Filename?, Language?))
+    . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
+    . MM-SetAttribute(ModuleId, TERM_NAMESPACE, "language", Language)
+    /* Remove the old dependancies and add the new one. */
+    . MM-DeleteModuleDependencies(ModuleId) 
+    . TermToSdfModuleId(ModuleId, SdfModuleId?)
+    . MM-AddModuleDependency(ModuleId, SdfModuleId)
+  +
+    rec-msg(tlr-get-language(Filename?))
+    . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
+    . MM-GetAttribute(ModuleId, TERM_NAMESPACE, "language", Language?)
+    . snd-msg(tlr-language(Filename, Language))
+  ) * delta
+endlet
+
+toolbus(TermLanguageSetter)
+
+process TermEditorParser is
+let
+  Filename : str,
+  Contents : str,
+  Table : term,
+  Tree : term,
+  ErrorSummary : term,
+  ParseResult : term,
+  Annotated : term,
+  Language : str,
+  SdfModuleId : str,
+  ModuleId : str
+in
+  printf("listening for pc-parse-event(TERM_NAMESPACE, Filename?, Contents?)\n") .
+  (
+    rec-msg(pc-parse-event(TERM_NAMESPACE, Filename?, Contents?))
+    . printf("received pc-parse-event for TERM_NAMESPACE\n")
+    . GetOrCreateModule(TERM_NAMESPACE, Filename, ModuleId?)
+    . TermToSdfModuleId(ModuleId, SdfModuleId?)
+    .
+    if not-equal(SdfModuleId, UNDEFINED) then
+      GetParseTable(SdfModuleId, TERM_NAMESPACE, Table?)
+      . printf("parsing term with sdfmoduleid: %t\n", SdfModuleId)
+      .
+      if not-equal(Table, UNDEFINED) then
+        snd-msg(sglr-parse(Contents, Table, "", off))
+        .
+        (
+          rec-msg(sglr-parse-tree(ParseResult?, ErrorSummary?))
+          . AnnotateTree(ParseResult, Filename, Annotated?)
+          . snd-msg(pc-parse-result(TERM_NAMESPACE, Filename, ParseResult, ErrorSummary))
+        +
+          rec-msg(sglr-parse-error(ErrorSummary?))
+          . snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, ErrorSummary))
+        )
+      else
+        snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
+      fi
+   else
+      snd-msg(pc-parse-error(TERM_NAMESPACE, Filename, summary("sdf-parser",Filename,[])))
+    fi
+  ) * delta 
+endlet
+
+toolbus(TermEditorParser)
+
+#endif

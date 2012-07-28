@@ -1,0 +1,72 @@
+#ifndef __TERM_EDITOR_ACTIONS__
+#define __TERM_EDITOR_ACTIONS__
+
+/**
+ * This file contains action implementations for features in term
+ * editors that are implemented using SDF functionality.
+ */
+
+#include <term-namespace.h>
+#include <term-utils.tb>
+
+/* Tree */
+
+process ShowTreeAction(Path: str, Language: str) is
+	ShowTree(Path, false, false, false)
+
+process ShowFullTreeWithoutLayoutAction(Path: str, Language: str) is
+	ShowTree(Path, false, true, false)
+
+process ShowFullTreeAction(Path: str, Language: str) is
+	ShowTree(Path, true, true, false)
+
+process ShowSharedTreeAction(Path: str, Language: str) is
+	ShowTree(Path, true, true, true)
+
+/* Tools */
+
+process AddBracketsAction(Path: str, Language: str) is
+let
+	TermModuleId : str,
+	SdfModuleId : str,
+	Tree : term,
+	BracketedTree : term,
+	BracketedText : str
+in
+	GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+	. TermToSdfModuleId(TermModuleId, SdfModuleId?)
+	. GetTermParsetree(SdfModuleId, Path, Tree?)
+	.
+	if not-equal(Tree, UNDEFINED) then
+		AddTermBrackets(SdfModuleId, Tree, BracketedTree?)
+		.
+		if not-equal(BracketedTree, UNDEFINED) then
+			UnParseTerm(BracketedTree, BracketedText?)  
+			. snd-msg(et-edit-term(Path, TERM_NAMESPACE, BracketedText))
+		else tau fi
+	else tau fi
+endlet
+
+process DefaultPrettyPrintAction(Path: str, Language: str) is
+let
+	TermModuleId : str,
+	SdfModuleId : str,
+	Tree : term,
+	PrettyTree : term,
+	PrettyText : str
+in
+	GetOrCreateModule(TERM_NAMESPACE, Path, TermModuleId?)
+	. TermToSdfModuleId(TermModuleId, SdfModuleId?)
+	. GetTermParsetree(SdfModuleId, Path, Tree?)
+	.
+	if not-equal(Tree, UNDEFINED) then
+		PrettyPrint(Path, Tree, PrettyTree?)
+		.
+		if not-equal(PrettyTree, UNDEFINED) then
+			UnParseTerm(PrettyTree, PrettyText?)  
+			. snd-msg(et-edit-term(Path, TERM_NAMESPACE, PrettyText))
+		else tau fi
+	else tau fi
+endlet
+
+#endif

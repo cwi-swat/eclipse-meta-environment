@@ -1,0 +1,4 @@
+configuration([
+  import("__PREFIX__/share/asfsdf-meta-eclipse-imp/sdf/standard.sdf.actions"),
+  editor("StartASFEditor","languages/asf/syntax/Asf",".asf")
+])

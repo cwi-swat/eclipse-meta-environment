@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="sdf"
+            description="Syntax Definition Formalism"
+            language="sdf">
+      </language>
+   </extension>
+    <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="asf"
+            description="Algebraic Specification Formalism"
+            language="asf">
+      </language>
+   </extension>
+     <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="trm"
+            description="Terms to parsed and transformed"
+            language="trm">
+      </language>
+   </extension>
+  <extension
+        point="org.eclipse.imp.runtime.parser">
+        <parser class="org.meta_environment.eclipse.parser.ParseController" language="sdf"/>
+  </extension>
+   <extension
+        point="org.eclipse.imp.runtime.parser">
+        <parser class="org.meta_environment.eclipse.parser.ParseController" language="trm"/>
+  </extension>
+   <extension
+        point="org.eclipse.imp.runtime.parser">
+        <parser class="org.meta_environment.eclipse.parser.ParseController" language="asf"/>
+  </extension>
+    <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="org.meta_environment.eclipse.tokens.TokenColorer"
+            language="sdf">
+      </tokenColorer>
+   </extension>
+    <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="org.meta_environment.eclipse.tokens.TokenColorer"
+            language="asf">
+      </tokenColorer>
+   </extension>
+    <extension
+         point="org.eclipse.imp.runtime.tokenColorer">
+      <tokenColorer
+            class="org.meta_environment.eclipse.tokens.TokenColorer"
+            language="trm">
+      </tokenColorer>
+   </extension>
+    <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.terms.EditorActionContributor"
+             language="trm"/>
+    </extension>
+    <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.actions.LanguageActions"
+             language="trm">
+       </editorActionContributor>
+    </extension>
+    <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.actions.LanguageActions"
+             language="asf"/>
+    </extension>
+     <extension
+          point="org.eclipse.imp.runtime.editorActionContributions">
+       <editorActionContributor
+             class="org.meta_environment.eclipse.actions.LanguageActions"
+             language="sdf"/>
+    </extension>
+    <extension
+          point="org.meta_environment.eclipse.actions.EditorMenus">
+<EditorMenu 
+  language="trm"
+  name="trm">
+
+<EditorSubmenu name="Edit">
+<EditorMenuAction
+  description="Open an editor for the SDF module  that defines the syntax of this term"
+  name="Syntax"
+  toolbus_action="EditorEditSyntaxAction"/> 
+<EditorMenuAction
+  description="Edit the ASF equations of this module"
+  name="Equations"
+  toolbus_action="EditorEditEquationsAction"/>
+</EditorSubmenu> 
+
+<EditorSubmenu name="Tools"> 
+<EditorMenuAction
+  description="Normalize this term by applying all available equations in an innermost (fixed point) fashion"
+  name="Reduce"
+  toolbus_action="ReduceAction"/> 
+<EditorMenuAction
+  description="Normalize this term by applying all available equations in an innermost fashion, letting the debugger control each computation step (See the Processes tab)"
+  name="Debug Reduce"
+  toolbus_action="DebugReduceAction"/> 
+<EditorMenuAction
+  description="If this term was obtained by reducing another, try jumping to the origin of the current focus"
+  name="Goto Origin"
+  toolbus_action="ShowOriginAction"/>
+<EditorMenuAction
+  description="Format the term using a default formatter that interprets the shape of the tree to come up with a reasonable layout"
+  name="Default Formatter"
+  toolbus_action="DefaultPrettyPrintAction"/> 
+<EditorMenuAction
+  description="Add brackets to all tree nodes that have a bracket production rule defined"
+  name="Add Brackets"
+  toolbus_action="AddBracketsAction"/> 
+<EditorMenuAction
+  description="Abort a running reducer"
+  name="Abort Reducer"
+  toolbus_action="AbortAsfeAction"/>
+</EditorSubmenu>
+<EditorSubmenu name="Focus">
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveDown"
+      description="Move the focus to the leftmost child of the current focus"
+      name="Down"
+      toolbus_action="MoveCursorDownAction"/> 
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveUp"
+      description="Move the focus one syntax tree node up"
+      name="Up"
+      toolbus_action="MoveCursorUpAction"/> 
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveRight"
+      description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
+      name="Right"
+      toolbus_action="MoveCursorRightAction"/> 
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveLeft"
+      description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+      name="Left"
+      toolbus_action="MoveCursorLeftAction"/>
+</EditorSubmenu> 
+
+<EditorSubmenu name="View">
+<EditorMenuAction
+  description="Visualize the tree structure for a specific focus as a graph, each tree node is maximally shared in this visualization, but not the information inside the nodes."
+  name="Shared Tree"
+  toolbus_action="ShowSharedTreeAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure for a specific focus as a graph, leaving out LAYOUT, but including lexical syntax"
+  name="Full Tree w/o Layout"
+  toolbus_action="ShowFullTreeWithoutLayoutAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure of a specific focus as a graph, including all LAYOUT and lexical syntax"
+  name="Full Tree"
+  toolbus_action="ShowFullTreeAction"/> 
+<EditorMenuAction
+  description="Visualize the tree structure of a specific focus as a graph, leaving out LAYOUT and lexical syntax"
+  name="Tree"
+  toolbus_action="ShowTreeAction"/>
+</EditorSubmenu> 
+
+<EditorSubmenu name="Export">
+<EditorMenuAction
+  description="Export focus for term"
+  name="Focus"
+  toolbus_action="DumpTermFocusAction"/> 
+<EditorMenuAction
+  description="Export parsetree for term"
+  name="Parsetree"
+  toolbus_action="DumpTermParsetreeAction"/>
+</EditorSubmenu>
+</EditorMenu> 
+<EditorMenu 
+  language="sdf"
+  name="sdf">
+<EditorSubmenu name="Focus">
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveDown"
+      description="Move the focus to the leftmost child of the current focus"
+      name="Down"
+      toolbus_action="MoveCursorDownAction"/> 
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveUp"
+      description="Move the focus one syntax tree node up"
+      name="Up"
+      toolbus_action="MoveCursorUpAction"/> 
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveRight"
+      description="Move the focus one syntax tree node to the right, or up if no more siblings exist"
+      name="Right"
+      toolbus_action="MoveCursorRightAction"/> 
+<EditorMenuAction
+      class="org.meta_environment.eclipse.focus.move.MoveLeft"
+      description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+      name="Left"
+      toolbus_action="MoveCursorLeftAction"/>
+</EditorSubmenu> 
+<EditorSubmenu name="Tools">
+   <EditorMenuAction
+         description="Format this SDF module according to some standard formatting rules"
+         name="Format"
+         toolbus_action="PrettyPrintSdfAction">
+   </EditorMenuAction>
+<EditorMenuAction
+  description="Get metrics data from this SDF definition and forward it to the fact browser"
+  name="Browse SDF Facts"
+  toolbus_action="ExtractSDFAction"/> 
+<EditorMenuAction
+  description="Compile the current module to a commandline source-to-source transformation tool"
+  name="Compile Equations..."
+  toolbus_action="CompileModuleAction"/>
+<EditorMenuAction
+      description="Run the ASF test equations for this module, and produce an error report if there are any failed tests"
+      name="Run Unit Tests"
+      toolbus_action="RunAsfTestsAction">
+</EditorMenuAction>
+<EditorMenuAction
+      description="Run the ASF test equations, letting the ASF debugger control each computation step (See the Processes tab)"
+      name="Debug Unit Tests"
+      toolbus_action="DebugRunAsfTestsAction">
+</EditorMenuAction>
+</EditorSubmenu> 
+<EditorSubmenu name="Export">
+<EditorMenuAction
+  description="Export a parse table for parsing terms for this module on the commandline"
+  name="Term ParseTable..."
+  toolbus_action="DumpParseTableAction"/> 
+<EditorMenuAction
+  description="Export the full syntax definition of this module including all its imports"
+  name="SDF Definition..."
+  toolbus_action="DumpSdfDefinitionAction"/> 
+<EditorMenuAction
+  description="Export a parse table for parsing ASF equations file, for debugging purposes"
+  name="ASF ParseTable..."
+  toolbus_action="DumpEquationsParseTableAction"/> 
+<EditorMenuAction
+  description="Export the list of all necessary ASF equations for reducing terms on the commandline, or compiling them to a standalone reducer."
+  name="ASF Equations..."
+  toolbus_action="DumpEquationsAction"/>
+</EditorSubmenu> 
+<EditorSubmenu
+      name="Edit">
+   <EditorMenuAction
+         description="Edit the ASF equations of this module"
+         name="Equations"
+         toolbus_action="EditorEditEquationsAction">
+   </EditorMenuAction>
+</EditorSubmenu>
+</EditorMenu> 
+<EditorMenu 
+  language="asf"
+  name="asf">
+<EditorSubmenu
+      name="Focus">
+   <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveDown"
+         description="Move the focus to the leftmost child of the current focus"
+         name="Down"
+         toolbus_action="MoveCursorDownAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveUp"
+         description="Move the focus one syntax tree node up"
+         name="Up"
+         toolbus_action="MoveCursorUpAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveRight"
+         description="Move the focus one syntax tree node to the right or up if no more siblings exist"
+         name="Right"
+         toolbus_action="MoveCursorRightAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         class="org.meta_environment.eclipse.focus.move.MoveLeft"
+         description="Move the focus one syntax tree node to the left, or up if no more siblings exist"
+         name="Left"
+         toolbus_action="MoveCursorLeftAction">
+   </EditorMenuAction>
+</EditorSubmenu>
+<EditorSubmenu
+      name="Edit">
+   <EditorMenuAction
+         description="Open an editor for the SDF syntax definition of this module"
+         name="Syntax"
+         toolbus_action="EditorEditSyntaxAction">
+   </EditorMenuAction>
+</EditorSubmenu>
+   <EditorSubmenu
+         name="Tools">
+      <EditorMenuAction
+            description="Format this SDF module according to some standard formatting rules"
+            name="Format"
+            toolbus_action="PrettyPrintSdfAction">
+      </EditorMenuAction>
+      <EditorMenuAction
+            description="Get metrics data from this SDF definition and forward it to the fact browser"
+            name="Browse SDF Facts"
+            toolbus_action="ExtractSDFAction">
+      </EditorMenuAction>
+      <EditorMenuAction
+            description="Compile the current module to a commandline source-to-source transformation tool"
+            name="Compile Equations..."
+            toolbus_action="CompileModuleAction">
+      </EditorMenuAction>
+      <EditorMenuAction
+            description="Run the ASF test equations for this module, and produce an error report if there are any failed tests"
+            name="Run Unit Tests"
+            toolbus_action="RunAsfTestsAction">
+      </EditorMenuAction>
+      <EditorMenuAction
+            description="Run the ASF test equations, letting the ASF debugger control each computation step (See the Processes tab)"
+            name="Debug Unit Tests"
+            toolbus_action="DebugRunAsfTestsAction">
+      </EditorMenuAction>
+   </EditorSubmenu>
+<EditorSubmenu
+      name="View">
+   <EditorMenuAction
+         description="Visualize the tree structure for a specific focus as a graph, leaving out LAYOUT, but including lexical syntax"
+         name="Full Tree w/o Layout"
+         toolbus_action="ShowFullTreeWithoutLayoutAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         description="Visualize the tree structure of a specific focus as a graph, including all LAYOUT and lexical syntax"
+         name="Full Tree"
+         toolbus_action="ShowFullTreeAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         description="Visualize the tree structure of a specific focus as a graph, leaving out LAYOUT and lexical syntax"
+         name="Tree"
+         toolbus_action="ShowTreeAction">
+   </EditorMenuAction>
+</EditorSubmenu>
+<EditorSubmenu
+      name="Export">
+   <EditorMenuAction
+         description="Export a parse table for parsing terms for this module on the commandline"
+         name="Term ParseTable..."
+         toolbus_action="DumpParseTableAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         description="Export the full syntax definition of this module including all its imports"
+         name="SDF Definition..."
+         toolbus_action="DumpSdfDefinitionAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         description="Export a parse table for parsing ASF equations file, for debugging purposes"
+         name="ASF ParseTable..."
+         toolbus_action="DumpEquationsParseTableAction">
+   </EditorMenuAction>
+   <EditorMenuAction
+         description="Export the list of all necessary ASF equations for reducing terms on the commandline, or compiling them to a standalone reducer."
+         name="ASF Equations..."
+         toolbus_action="DumpEquationsAction">
+   </EditorMenuAction>
+</EditorSubmenu>
+</EditorMenu> 
+    </extension>
+    <extension
+          point="org.eclipse.ui.perspectives">
+       <perspective
+             class="org.meta_environment.eclipse.sdf.Perspective"
+             id="asfsdf-meta-eclipse-imp.perspective"
+             name="ASF+SDF">
+          <description>
+             The ASF+SDF perspective loads the views that are apropriate for editing and testing ASF+SDF programs.
+          </description>
+       </perspective>
+    </extension>
+    <extension
+          point="toolbus.includePath">
+       <toolbus.includePath
+             path="tbscripts">
+       </toolbus.includePath>
+    </extension>
+    <extension
+          point="toolbus.mainScript">
+       <toolbus.mainScript
+             path="tbscripts/main.tb">
+       </toolbus.mainScript>
+    </extension>
+    </plugin>

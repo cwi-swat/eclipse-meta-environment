@@ -1,0 +1,76 @@
+#ifndef __ASF_EDITOR_ACTIONS__
+#define __ASF_EDITOR_ACTIONS__
+
+/**
+ * This file contains actions that are triggered from an ASF editor
+ */
+ 
+#include <sdf-namespace.h>
+#include <asf-namespace.h>
+#include <term-namespace.h>
+#include <module-manager.tb>
+#include <module-utils.tb>
+#include <asf-editor-utils.tb>
+#include <error-viewer.idef>
+#include <asf-pretty-print.tb>
+#include <jobs-manager.idef>
+
+process EditorEditEquationsAction(Filename: str, Language: str) is
+let 
+  ModuleId : str
+in
+  GetOrCreateModule(SDF_NAMESPACE, Filename, ModuleId?) 
+  . EditEquationsAction(ModuleId)
+endlet
+
+process EditEquationsAction(ModuleId : str) is
+let
+  Pid: int
+in
+  create(EditEquations(ModuleId), Pid?)
+endlet
+
+process EditorEditSyntaxAction(Filename: str, Language: str) is
+let 
+  AsfModuleId : str
+in
+  GetOrCreateModule(ASF_NAMESPACE, Filename, AsfModuleId?) 
+  . EditSyntaxAction(AsfModuleId)
+endlet
+
+process EditSyntaxAction(ModuleId : str) is
+let
+  Pid: int
+in
+  create(EditSyntax(ModuleId), Pid?)
+endlet
+
+process CompileModuleAction(Path: str, Language: str) is
+let
+	NewPath : str,
+	SdfModuleId : str
+in
+	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
+	. ReplaceExtension(Path, ".c", NewPath?)
+	. CompileModule(SdfModuleId, NewPath)
+endlet
+
+process RunAsfTestsAction(Path: str, Language: str) is
+let
+	NewPath : str,
+	SdfModuleId : str
+in
+	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
+	. TestAsfSpecification(SdfModuleId, off)
+endlet
+
+process DebugRunAsfTestsAction(Path: str, Language: str) is
+let
+	NewPath : str,
+	SdfModuleId : str
+in
+	GetOrCreateModule(SDF_NAMESPACE, Path, SdfModuleId?)
+	. TestAsfSpecification(SdfModuleId, on)
+endlet
+
+#endif /* __ASF_EDITOR_ACTIONS__ */
