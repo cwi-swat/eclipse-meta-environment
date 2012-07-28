@@ -1,0 +1,22 @@
+This eclipse-meta-environment repository is a collection of the trunk of the following repositories:
+
+  - asf-fragment
+  - asfsdf-feature
+  - asfsdf-fragment
+  - asfsdf-meta-eclipse-imp
+  - asfsdf-plugin
+  - aterm-to-pbf
+  - meta-eclipse
+  - meta-eclipse-imp
+  - org.eclipse.imp.pdb.viz.graph
+  - sdf-eclipse-installer
+  - sdf-eclipse-installer-feature
+  - sdf-eclipse-installer-linux-x86
+  - sdf-eclipse-installer-macosx-x86
+  - sdf-eclipse-installer-win32-x86
+  - sglr-invoker
+  - studio-plugin-template
+  - toolbus-ide
+  - vis-plugin-charts-imp
+  - vis-plugin-generic-imp
+  - vis-plugin-graph-imp
