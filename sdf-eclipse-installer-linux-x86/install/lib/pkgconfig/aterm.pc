@@ -1,0 +1,11 @@
+prefix=////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ufs/jurgenv/sdf-2.6.1pre.25674.60035
+Maintainers=e.t.j.scheffers@TUE.nl,jurgenv@cwi.nl
+
+Name: aterm
+Description: Abstract data type for exchanging tree-like data structures
+Version: 2.6
+Libs: -L${prefix}/lib -lATerm
+Cflags: -I${prefix}/include
+#uninstalled Libs: -L/export/scratch1/daybuild/sisyphus-builds/build/aterm/aterm -lATerm
+#uninstalled Cflags: -I/export/scratch1/daybuild/sisyphus-builds/build/aterm/aterm
+PkgConfigPath=

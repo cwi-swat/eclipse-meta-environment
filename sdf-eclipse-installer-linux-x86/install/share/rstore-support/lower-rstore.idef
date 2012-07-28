@@ -1,0 +1,24 @@
+#ifndef LOWER_RSTORE
+#define LOWER_RSTORE
+tool lower-rstore is { command = "/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ufs/jurgenv/sdf-2.6.1pre.25674.60035/bin/lower-rstore" }  
+
+process RStoreLowerTool is
+let
+  AT       : lower-rstore,
+  Store     : term,
+  NewStore     : term
+in
+  (
+    rec-msg(rs-lower-rstore(Store?)).
+    execute(lower-rstore, AT?).
+    snd-eval(AT, lower-rstore(Store)).
+    rec-value(AT, lowered-rstore(NewStore?)).
+    snd-terminate(AT, "done") .
+    snd-msg(rs-lowered-rstore(NewStore))
+  ) *
+  delta
+endlet
+
+toolbus(RStoreLowerTool)
+
+#endif
