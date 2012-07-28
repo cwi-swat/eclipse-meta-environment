@@ -1,0 +1,45 @@
+#ifndef __CACHE_UTILS__
+#define __CACHE_UTILS__
+
+#include <term-store.idef>
+#include <undefined.h>
+
+process ClearCacheHandler(Namespace : term, Targetexts : list) is
+let
+  WTargetexts : list, 
+  ModuleId : str,
+  TargetExt : str,
+  Path : str,
+  AttributeEvent : attribute-changed-event
+in
+  MM-Subscribe-Attribute-Changed(<str>, Namespace, "status", <term>, dirty)
+  .
+  (
+    rec-note(mm-attribute-changed(AttributeEvent?))
+    . ACE-GetModuleId(AttributeEvent, ModuleId?)
+    . GetModulePath(ModuleId, Namespace, Path?)
+    . WTargetexts := Targetexts
+    .
+    if not-equal(WTargetexts, []) then
+      TargetExt := first(WTargetexts)
+      . WTargetexts := next(WTargetexts)
+      . printf("MCleaning cache: %t %t %t\n", ModuleId, Path, TargetExt)
+      . snd-msg(res-clean-build(Path, TargetExt))
+    fi
+    *
+    if equal(WTargetexts, []) then
+      MM-SetAttribute(ModuleId, Namespace, "status", clean)
+    fi
+  ) * delta
+endlet
+  
+process GetCachedValue(Ext: str, SourcePath: str, Value: term?) is
+  printf("MGet: %t %t\n", SourcePath, Ext)
+  . snd-msg(res-load-build(SourcePath, Ext))
+  . rec-msg(res-build(SourcePath, Ext, Value?))
+
+process PutCachedValue(Path: str, Ext : str, Value: term) is
+  printf("PUT CACHE: %t %t\n", Path, Ext)
+  . snd-msg(res-save-build(Path, Ext, Value))
+
+#endif /* __CACHE_UTILS__ */

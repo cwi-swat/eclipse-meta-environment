@@ -1,0 +1,21 @@
+#ifndef __TEXT_UTILS__
+#define __TEXT_UTILS__
+
+#include <undefined.h>
+#include <io-utils.tb>
+
+process ReadText(Path: str, Contents: str?) is
+  ReadFile(Path, Contents?) . printf("ReadText(%s): %s\n", Path, Contents)
+
+/*
+  snd-msg(resources-get-file-contents(Path))
+  .
+  (
+    rec-msg(resources-file-contents(Path, Contents?))
+    . printf("Contents: %s\n", Contents)
+  +
+    rec-msg(resources-no-file-contents(Path))
+    . Contents := UNDEFINED
+  ) */
+
+#endif /*__TEXT_UTILS__*/

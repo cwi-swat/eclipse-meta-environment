@@ -1,0 +1,59 @@
+Thu May 29 12:34:06 2008    <bruntink@cwi.nl>
+
+	* LanguageActions.java: Using Lists instead of Sets menu actions
+	stay in their specified order. The toolbus now also gets the
+	language for which the action needs to performed.
+
+	
+Wed May 28 17:43:04 2008    <bruntink@cwi.nl>
+
+	* many files: Implemented a "language service" to add
+	language-specific menu actions to editors.
+
+Wed May 28 13:52:26 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Added
+	org.meta_environment.eclipse.actions to exported packages list.
+
+Tue May 27 14:55:26 2008    <bruntink@cwi.nl>
+
+	* src/org/meta-environment/eclipse/actions/LanguageActions.java,language-actions.idef:
+	Start of tool that queries config-manager for (menu) actions.
+	
+
+Wed May 21 11:23:13 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Removed dependency on editor-manager.
+
+Wed May 21 10:30:29 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Removed dependency on meta.
+
+Tue May 13 17:32:37 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Added dependency on meta.
+	* configure.ac: Allowed pattern ^META_.
+
+Sat May 10 11:43:22 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Re-added dependency on new
+	toolbug-ng-eclipse-imp. Doh!
+
+Sat May 10 00:41:37 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Added missing Jars declaration.
+
+Wed May  7 16:39:26 2008    <bruntink@cwi.nl>
+
+	* Added Eclipse meta data to repository.
+
+Wed May  7 16:10:52 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Added required bundles.
+
+Mon Apr 28 16:18:18 2008    <bruntink@cwi.nl>
+
+	* meta-eclipse-imp.pc.in: Changed dependency on module-support to module-support-java.
+
+Fri Apr 25 12:17:34 CEST 2008 <{jurgenv,bruntink}@cwi.nl>
+ * meta-eclipse-imp.pc.in,Makefile.am,etc: introduced default package structure

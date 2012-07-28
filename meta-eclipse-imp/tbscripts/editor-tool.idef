@@ -1,0 +1,29 @@
+#ifndef EDITOR_TOOL_IDEF
+#define EDITOR_TOOL_IDEF
+
+tool editor-tool is { }
+
+process EditorToolProcess is
+let
+  T : editor-tool,
+  Language : str,
+  Filename : str,
+  Modules : list,
+  Events : list,
+  Event : term,
+  Content : str
+in
+  rec-connect(T?) .
+  (
+    rec-msg(et-open-editor(Filename?, Language?))
+    . snd-do(T, open(Filename, Language))
+  +
+      rec-msg(et-edit-term(Filename?, Language?, Content?))
+    . snd-do(T, edit-term(Filename, Language, Content))
+  )
+  * delta
+endlet
+
+toolbus(EditorToolProcess)
+
+#endif

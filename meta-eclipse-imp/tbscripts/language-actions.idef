@@ -1,0 +1,24 @@
+
+tool language-actions is { }
+
+process LanguageActions is
+let
+  T : language-actions,
+  Action : str,
+  Filename : str,
+  Language : str,
+  Menu : list
+in
+  printf("language-actions: Waiting for Tool to connect...\n") .  
+  rec-connect(T?) .
+  printf("language-actions: Tool connected!\n") .
+  ( 
+    rec-event(T, perform-action(Action?, Language?, Filename?))
+    . snd-ack-event (T, perform-action)
+    . printf("LanguageActions: process called: %s, language %s\n", Action, Language)
+    . snd-note(handle-action(Action, Language, Filename))
+  ) *
+  rec-disconnect(T)
+endlet
+
+toolbus(LanguageActions)

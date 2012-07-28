@@ -1,0 +1,57 @@
+#include <selection-tracker.idef>
+
+process SelectionListener is
+let
+  Filename : str,
+  Tree : term,
+  BeginLine: int,
+  EndLine: int,
+  Offset: int,
+  Length: int,
+  Sort: str,
+  Focus: term,
+  AnnotatedTree: term
+in
+  (
+    rec-msg(st-selected(Tree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(add-posinfo-packed(Filename, Tree))
+    . rec-msg(tree-with-pos-info(AnnotatedTree?))
+    . snd-msg(se-get-selected-at-offset-in-tree(AnnotatedTree, Offset))
+    . rec-msg(se-got-selected-at-offset-in-tree(Sort?, Focus?))
+    . snd-msg(st-selected-area(Sort, Focus))
+  +
+    rec-msg(st-move-selection-up(Tree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(add-posinfo-packed(Filename, Tree))
+    . rec-msg(tree-with-pos-info(AnnotatedTree?))
+    . snd-msg(se-move-selection-up(AnnotatedTree, Offset))
+    . rec-msg(se-moved-selection-up(Sort?, Focus?))
+    . snd-msg(st-moved-selection-up(Sort, Focus))
+  +
+    rec-msg(st-move-selection-down(Tree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(add-posinfo-packed(Filename, Tree))
+    . rec-msg(tree-with-pos-info(AnnotatedTree?))
+    . snd-msg(se-move-selection-down(AnnotatedTree, Offset))
+    . rec-msg(se-moved-selection-down(Sort?, Focus?))
+    . snd-msg(st-moved-selection-down(Sort, Focus))
+  +
+    rec-msg(st-move-selection-left(Tree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(add-posinfo-packed(Filename, Tree))
+    . rec-msg(tree-with-pos-info(AnnotatedTree?))
+    . snd-msg(se-move-selection-left(AnnotatedTree, Offset))
+    . rec-msg(se-moved-selection-left(Sort?, Focus?))
+    . snd-msg(st-moved-selection-left(Sort, Focus))
+  +
+    rec-msg(st-move-selection-right(Tree?, Filename?, BeginLine?, EndLine?, Offset?, Length?))
+    . snd-msg(add-posinfo-packed(Filename, Tree))
+    . rec-msg(tree-with-pos-info(AnnotatedTree?))
+    . snd-msg(se-move-selection-right(AnnotatedTree, Offset))
+    . rec-msg(se-moved-selection-right(Sort?, Focus?))
+    . snd-msg(st-moved-selection-right(Sort, Focus))
+  +
+    rec-msg(st-get-current-selection)
+    . snd-msg(st-got-current-selection(Focus, Sort))
+  )
+  * delta
+endlet
+
+toolbus(SelectionListener)

@@ -1,0 +1,30 @@
+#ifndef __ERROR_OUTPUT__
+#define __ERROR_OUTPUT__
+
+#include <error-support.idef>
+
+/* This is for commandline error output only */
+
+process ConsoleMessage(Message: str) is
+  printf("%s\n", Message)
+
+process Error(Message: str) is
+  printf("error: %s\n", Message)
+
+process Warning(Message: str) is
+  printf("warning: %s\n", Message)
+  
+process DisplaySummary(Summary: summary) is
+  snd-msg(ui-show-feedback-summary("Issues", Summary)) .
+  snd-msg(display-feedback(Summary))
+
+process RefreshSummary(Summary: summary) is
+  snd-msg(ui-refresh-feedback-summary("Issues", Summary))
+  
+process RemoveSummaryFor(SummaryId: str) is
+  snd-msg(ui-remove-feedback-summary("Issues", SummaryId))
+  
+process RemoveSummary(Producer: str, SummaryId: str) is
+  snd-msg(ui-remove-feedback-summary("Issues", Producer, SummaryId))
+
+#endif /* __ERROR_OUTPUT__ */

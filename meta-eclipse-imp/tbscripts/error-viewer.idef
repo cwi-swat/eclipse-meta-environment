@@ -1,0 +1,47 @@
+#ifndef __ERROR_VIEWER__
+#define __ERROR_VIEWER__
+
+#include <error-output.tb>
+
+tool error-viewer is {  }
+
+process ErrorViewer is
+let
+  T : error-viewer,
+  Error : term,
+  Location : term,
+  Path: str,
+  Producer : str,
+  Summary : term,
+  SummaryId : str,
+  Panel: str,
+  Job : str
+in
+  rec-connect(T?)
+  . 
+  (
+    rec-msg(ui-show-feedback-summary(Panel?, Summary?))
+    . printf("Summary: %t\n", Summary)
+    . snd-do(T, show-feedback-summary(Panel, Summary))
+  +
+    rec-msg(ui-remove-feedback-summary(Panel?, Producer?, SummaryId?))
+    . snd-do(T, remove-feedback-summary(Panel, Producer, SummaryId))
+  +
+    rec-msg(ui-remove-feedback-summary(Panel?, Path?))
+    . snd-do(T, remove-feedback-summary(Panel, Path))
+  +
+    rec-msg(ui-refresh-feedback-summary(Panel?, Summary?))
+    . snd-do(T, refresh-feedback-summary(Panel, Summary))
+  +
+    rec-event(T, location-selected(Location?))
+    . snd-msg(ui-location-selected(Location))
+    . snd-ack-event(T, location-selected(Location))
+  )
+  *
+  rec-disconnect(T)
+endlet
+
+toolbus(ErrorViewer)
+  
+#endif
+

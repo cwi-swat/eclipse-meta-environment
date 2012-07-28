@@ -1,0 +1,99 @@
+#ifndef __MODULE_UTILS__
+#define __MODULE_UTILS__
+#include <module-manager.tb>
+
+/* This file extends the generic module concept:
+     - with a path for each module 
+     - binds the concept of 'language' to 'namespace'
+     - listens for external resource update notes to update the state of the module manager
+*/
+
+#define EMPTY_PATH ""
+
+process ResourcesService is
+let
+  Language : str,
+  Path : str,
+  ModuleId : str
+in
+  subscribe(res-create-module(<str>,<str>))
+  . subscribe(res-delete-module(<str>,<str>))
+  . subscribe(res-module-changed(<str>,<str>))
+  .
+  (
+    rec-note(res-create-module(Language?, Path?)) 
+    . CreateModule(Language, Path, ModuleId?)
+  + 
+    rec-note(res-delete-module(Language?, Path?))
+    . DeleteModule(Language, Path)
+  + 
+    rec-note(res-module-changed(Language?, Path?))
+    . ChangedModule(Language, Path)  
+  )
+  * delta
+
+endlet
+
+toolbus(ResourcesService)
+
+process CreateModule(Language : str, Path : str, ModuleId : str?) is
+   MM-CreateModule(Path, ModuleId?)
+   . MM-SetAttribute(ModuleId, Language, "path", path(Path))
+   . MM-SetAttribute(ModuleId, Language, "status", created)
+
+process GetModule(Language : str, Path : str, ModuleId : str?) is
+   CreateModule(Language, Path, ModuleId?)
+
+process GetOrCreateModule(Language : str, Path : str, ModuleId : str?) is
+   GetModule(Language, Path, ModuleId?)
+   .
+   if equal(ModuleId, UNDEFINED) then
+     CreateModule(Language, Path, ModuleId?)
+   else tau fi
+   
+process DeleteModule(Language : str, Path : str) is
+let
+  ModuleId : str
+in
+   ModuleId := Path
+   . 
+   if not-equal(ModuleId, UNDEFINED) then
+     MM-DeleteModule(ModuleId)
+   else
+     printf("Can not delete non-existing module %s\n", Path)
+   fi
+endlet
+
+process ChangedModule(Language : str, Path : str) is
+let
+  ModuleId : str
+in
+  printf("Changed module %t language %t\n", Path, Language)
+  . GetOrCreateModule(Language, Path, ModuleId?)
+  . MM-SetAttribute(ModuleId, Language, "status", dirty)
+endlet
+
+process GetModulePath(ModuleId: str, Namespace: str, Path: str?) is
+let
+  Term: path,
+  HasAttribute: bool
+in
+  MM-HasAttribute(ModuleId, Namespace, "path", HasAttribute?)
+  .
+  if equal(HasAttribute, true) then
+    MM-GetAttribute(ModuleId, Namespace, "path", Term?)
+    . Path := first(args(Term))
+  else
+    Path := EMPTY_PATH
+  fi
+endlet
+
+process SetModulePath(ModuleId: str, Namespace: str, Path: str) is
+let
+  Term: path
+in
+  Term := quote(path(Path))
+  . MM-SetAttribute(ModuleId, Namespace, "path", Term)
+endlet
+
+#endif /* __MODULE_UTILS__ */

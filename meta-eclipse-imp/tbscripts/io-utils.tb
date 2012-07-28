@@ -1,0 +1,91 @@
+#ifndef __IO_UTILS__
+#define __IO_UTILS__
+
+process RemoveFile(Path: str) is
+let
+  Summary: summary
+in
+  snd-msg(ioj-remove-file(Path))
+  .
+  (
+    rec-msg(ioj-file-removed(Path))
+  +
+    rec-msg(ioj-file-not-removed(Path, Summary?))
+    . DisplaySummary(Summary)
+  )
+endlet
+
+process ReadFile(Path: str, Contents: str?) is
+let
+  Summary: summary
+in
+  snd-msg(ioj-read-file(Path))
+  .
+  (
+    rec-msg(ioj-file-contents(Contents?))
+  +
+    rec-msg(ioj-error-reading(Summary?))
+    . Contents := ""
+  )
+endlet
+
+process BuildPath(Directory: str, Filename: str, Extension: str, Path: str?) is
+  snd-msg(ioj-get-filename(Directory, Filename, Extension))
+  . rec-msg(ioj-filename(Path?))
+
+process ReplaceExtension(SrcPath: str, NewExtension: str, DstPath: str?) is
+let
+  Directory: str,
+  OldExtension: str,
+  Filename: str
+in
+  SplitFilename(SrcPath, Filename?, Directory?, OldExtension?)
+  . BuildPath(Directory, Filename, NewExtension, DstPath?)
+endlet
+
+process DealWithMultipleOccurrences(Chosen: str, Name: str, Extension: str,
+                                    Peers: list) is
+let
+  Directories: list,
+  Directory: str,
+  FileName: str,
+  PeerName: str
+in
+  Directories := Peers
+  .
+  if not-equal(Directories, []) then
+    Directory := first(Directories)
+    . Directories := next(Directories)
+    . BuildPath(Directory, Name, Extension, FileName?)
+    . BuildPath(Chosen, Name, Extension, PeerName?)
+    . snd-msg(ioj-compare-files(PeerName, FileName))
+    .
+    (
+      rec-msg(ioj-files-equal)
+    +
+      rec-msg(ioj-files-differ)
+      . snd-note(ui-status(messagef("Multiple occurrences of %s. Continuing with %s", [Name, PeerName])))
+    )
+  fi
+  *
+  if equal(Directories, []) then
+    tau
+  fi
+endlet
+
+process SplitFilename(Path : str, FileName : str?, Directory : str?, Extension : str?) is
+  snd-msg(ioj-get-path-filename(Path))
+  . rec-msg(ioj-filename(Path, FileName?))
+  . snd-msg(ioj-get-path-directory(Path))
+  . rec-msg(ioj-directory(Path, Directory?))
+  . snd-msg(ioj-get-path-extension(Path))
+  . rec-msg(ioj-extension(Path, Extension?))
+
+process UnPackTree(Tree : term, UnpackedTree : term?) is
+  snd-msg(ioj-unpack-term(Tree))
+  . rec-msg(ioj-term(UnpackedTree?))
+
+process PackTree(Tree : term, PackedTree : term?) is
+  snd-msg(ioj-pack-term(Tree))
+  . rec-msg(ioj-term(PackedTree?))
+#endif
