@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.meta_environment.eclipse.imp.viz.graph"
+            targetID="org.eclipse.imp.pdb.factBrowser">
+         <action
+               class="org.meta_environment.eclipse.viz.graph.ShowGraphAction"
+               id="org.meta_environment.eclipse.viz.graph"
+               label="View Graph"
+               style="push"
+               toolbarPath="factBrowserActions"/>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.meta_environment.eclipse.viz.graph.GraphView"
+            default="false"
+            icon="none"
+            id="org.meta_environment.eclipse.viz.graph"
+            name="Meta-Environment Graph View">
+      </editor>
+   </extension>
+
+</plugin>
