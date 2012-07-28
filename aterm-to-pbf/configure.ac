@@ -1,0 +1,10 @@
+m4_include(float-order.m4)
+
+AC_INIT
+META_SETUP
+META_C_SETUP
+AC_PROG_LIBTOOL
+AC_OUTPUT
+
+AC_CHECK_SIZEOF([int])
+
